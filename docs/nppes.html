@@ -21,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -135,7 +169,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Overview</span></a>
+ <span class="menu-text">Home</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -216,44 +250,55 @@ GitHub
 </div>
 </div>
 <div class="cell">
-<pre><code>#&gt; # A tibble: 8 × 30
-#&gt;   npi       entity_type enum_date  last_update status prefix
-#&gt;   &lt;chr&gt;     &lt;fct&gt;       &lt;date&gt;     &lt;date&gt;      &lt;fct&gt;  &lt;chr&gt; 
-#&gt; 1 15280608… Individual  2005-06-01 2007-07-09  Active Mr.   
-#&gt; 2 15280608… Individual  2005-06-01 2007-07-09  Active Mr.   
-#&gt; 3 15280608… Individual  2005-06-01 2007-07-09  Active Mr.   
-#&gt; 4 15280608… Individual  2005-06-01 2007-07-09  Active Mr.   
-#&gt; 5 15280608… Individual  2005-06-01 2007-07-09  Active Mr.   
-#&gt; 6 15280608… Individual  2005-06-01 2007-07-09  Active Mr.   
-#&gt; 7 15280608… Individual  2005-06-01 2007-07-09  Active Mr.   
-#&gt; 8 15280608… Individual  2005-06-01 2007-07-09  Active Mr.   
-#&gt; # ℹ 24 more variables: first &lt;chr&gt;, middle &lt;chr&gt;,
-#&gt; #   last &lt;chr&gt;, gender &lt;fct&gt;, credential &lt;chr&gt;,
-#&gt; #   sole_prop &lt;lgl&gt;, purpose &lt;fct&gt;, address &lt;chr&gt;,
-#&gt; #   city &lt;chr&gt;, state &lt;ord&gt;, zip &lt;chr&gt;, country &lt;chr&gt;,
-#&gt; #   phone &lt;chr&gt;, fax &lt;chr&gt;, tx_code &lt;chr&gt;,
-#&gt; #   tx_primary &lt;lgl&gt;, tx_desc &lt;chr&gt;, tx_license &lt;chr&gt;,
-#&gt; #   tx_state &lt;ord&gt;, id_code &lt;chr&gt;, id_desc &lt;chr&gt;, …
-#&gt; # A tibble: 36 × 40
-#&gt;    npi        entity_type enum_date  cert_date  last_update
-#&gt;    &lt;chr&gt;      &lt;fct&gt;       &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     
-#&gt;  1 1194372532 Individual  2019-08-21 2021-09-14 2021-09-14 
-#&gt;  2 1194372532 Individual  2019-08-21 2021-09-14 2021-09-14 
-#&gt;  3 1194372532 Individual  2019-08-21 2021-09-14 2021-09-14 
-#&gt;  4 1740061209 Individual  2023-10-11 2024-12-05 2024-12-05 
-#&gt;  5 1952807166 Individual  2018-04-05 2021-07-28 2021-07-28 
-#&gt;  6 1811480411 Individual  2018-06-08 2023-05-11 2023-05-11 
-#&gt;  7 1639477235 Individual  2011-03-05 2021-06-17 2021-06-17 
-#&gt;  8 1396125076 Individual  2015-06-08 2021-06-18 2021-06-18 
-#&gt;  9 1073193538 Individual  2021-04-09 2024-07-02 2024-07-02 
-#&gt; 10 1255534194 Individual  2007-06-07 2021-05-20 2021-05-20 
-#&gt; # ℹ 26 more rows
-#&gt; # ℹ 35 more variables: status &lt;fct&gt;, prefix &lt;chr&gt;,
-#&gt; #   first &lt;chr&gt;, middle &lt;chr&gt;, last &lt;chr&gt;, gender &lt;fct&gt;,
-#&gt; #   credential &lt;chr&gt;, sole_prop &lt;lgl&gt;, purpose &lt;fct&gt;,
-#&gt; #   address &lt;chr&gt;, city &lt;chr&gt;, state &lt;ord&gt;, zip &lt;chr&gt;,
-#&gt; #   country &lt;chr&gt;, phone &lt;chr&gt;, fax &lt;chr&gt;, tx_code &lt;chr&gt;,
-#&gt; #   tx_primary &lt;lgl&gt;, tx_group &lt;chr&gt;, tx_desc &lt;chr&gt;, …</code></pre>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(provider)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">nppes</span>(<span class="at">npi =</span> <span class="dv">1528060837</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 8 × 30
+  npi       entity_type enum_date  last_update status prefix
+  &lt;chr&gt;     &lt;fct&gt;       &lt;date&gt;     &lt;date&gt;      &lt;fct&gt;  &lt;chr&gt; 
+1 15280608… Individual  2005-06-01 2007-07-09  Active Mr.   
+2 15280608… Individual  2005-06-01 2007-07-09  Active Mr.   
+3 15280608… Individual  2005-06-01 2007-07-09  Active Mr.   
+4 15280608… Individual  2005-06-01 2007-07-09  Active Mr.   
+5 15280608… Individual  2005-06-01 2007-07-09  Active Mr.   
+6 15280608… Individual  2005-06-01 2007-07-09  Active Mr.   
+7 15280608… Individual  2005-06-01 2007-07-09  Active Mr.   
+8 15280608… Individual  2005-06-01 2007-07-09  Active Mr.   
+# ℹ 24 more variables: first &lt;chr&gt;, middle &lt;chr&gt;,
+#   last &lt;chr&gt;, gender &lt;fct&gt;, credential &lt;chr&gt;,
+#   sole_prop &lt;lgl&gt;, purpose &lt;fct&gt;, address &lt;chr&gt;,
+#   city &lt;chr&gt;, state &lt;ord&gt;, zip &lt;chr&gt;, country &lt;chr&gt;,
+#   phone &lt;chr&gt;, fax &lt;chr&gt;, tx_code &lt;chr&gt;,
+#   tx_primary &lt;lgl&gt;, tx_desc &lt;chr&gt;, tx_license &lt;chr&gt;,
+#   tx_state &lt;ord&gt;, id_code &lt;chr&gt;, id_desc &lt;chr&gt;, …</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nppes</span>(<span class="at">city   =</span> <span class="st">"CARROLLTON"</span>,</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">state  =</span> <span class="st">"GA"</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">zip    =</span> <span class="dv">301173889</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">entype =</span> <span class="st">"I"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 36 × 40
+   npi        entity_type enum_date  cert_date  last_update
+   &lt;chr&gt;      &lt;fct&gt;       &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     
+ 1 1194372532 Individual  2019-08-21 2021-09-14 2021-09-14 
+ 2 1194372532 Individual  2019-08-21 2021-09-14 2021-09-14 
+ 3 1194372532 Individual  2019-08-21 2021-09-14 2021-09-14 
+ 4 1740061209 Individual  2023-10-11 2024-12-05 2024-12-05 
+ 5 1952807166 Individual  2018-04-05 2021-07-28 2021-07-28 
+ 6 1811480411 Individual  2018-06-08 2023-05-11 2023-05-11 
+ 7 1639477235 Individual  2011-03-05 2021-06-17 2021-06-17 
+ 8 1396125076 Individual  2015-06-08 2021-06-18 2021-06-18 
+ 9 1073193538 Individual  2021-04-09 2024-07-02 2024-07-02 
+10 1255534194 Individual  2007-06-07 2021-05-20 2021-05-20 
+# ℹ 26 more rows
+# ℹ 35 more variables: status &lt;fct&gt;, prefix &lt;chr&gt;,
+#   first &lt;chr&gt;, middle &lt;chr&gt;, last &lt;chr&gt;, gender &lt;fct&gt;,
+#   credential &lt;chr&gt;, sole_prop &lt;lgl&gt;, purpose &lt;fct&gt;,
+#   address &lt;chr&gt;, city &lt;chr&gt;, state &lt;ord&gt;, zip &lt;chr&gt;,
+#   country &lt;chr&gt;, phone &lt;chr&gt;, fax &lt;chr&gt;, tx_code &lt;chr&gt;,
+#   tx_primary &lt;lgl&gt;, tx_group &lt;chr&gt;, tx_desc &lt;chr&gt;, …</code></pre>
+</div>
 </div>
 
 

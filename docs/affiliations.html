@@ -21,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -135,7 +169,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Overview</span></a>
+ <span class="menu-text">Home</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -215,45 +249,60 @@ GitHub
 </a>
 </div>
 </div>
+<p><br></p>
 <div class="cell">
-<pre><code>#&gt; # A tibble: 7 × 8
-#&gt;   npi    pac   first middle last  facility_type facility_ccn
-#&gt;   &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;fct&gt;         &lt;chr&gt;       
-#&gt; 1 10831… 3072… JOSH… J      ASAM… Inpatient re… 67T055      
-#&gt; 2 11444… 3577… LYSA  LEE    CURRY Inpatient re… 67T055      
-#&gt; 3 15585… 8921… JOHN  D      ALFO… Inpatient re… 67T055      
-#&gt; 4 17101… 9739… VIDYA &lt;NA&gt;   AMAR… Inpatient re… 67T055      
-#&gt; 5 17200… 7012… WILL… WARREN JANES Inpatient re… 67T055      
-#&gt; 6 17405… 0345… GEOFF R      WEIK… Inpatient re… 67T055      
-#&gt; 7 19122… 5092… SAAD  MD     MANS… Inpatient re… 67T055      
-#&gt; # ℹ 1 more variable: parent_ccn &lt;chr&gt;
-#&gt; # A tibble: 2 × 7
-#&gt;   npi    pac   first middle last  facility_type facility_ccn
-#&gt;   &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;fct&gt;         &lt;chr&gt;       
-#&gt; 1 10432… 7810… MARK  K      FUNG  Hospital      470003      
-#&gt; 2 10432… 7810… MARK  K      FUNG  Hospital      330250
-#&gt; # A tibble: 189 × 8
-#&gt;    npi        pac    first middle last  suffix facility_type
-#&gt;    &lt;chr&gt;      &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;  &lt;fct&gt;        
-#&gt;  1 1003029125 62048… STACI L      CART… &lt;NA&gt;   Hospital     
-#&gt;  2 1013141860 80220… DEBO… M      KAMP… &lt;NA&gt;   Hospital     
-#&gt;  3 1013910256 58907… JOSE  M      ACOS… &lt;NA&gt;   Hospital     
-#&gt;  4 1023377843 69011… LIND… B      WILH… &lt;NA&gt;   Hospital     
-#&gt;  5 1043257819 03452… PAOLO &lt;NA&gt;   FEDI  &lt;NA&gt;   Hospital     
-#&gt;  6 1043397656 41837… ANTH… F      TRAM… &lt;NA&gt;   Hospital     
-#&gt;  7 1043672140 72142… VANE… &lt;NA&gt;   FIOR… &lt;NA&gt;   Hospital     
-#&gt;  8 1063409282 42845… NIDAL &lt;NA&gt;   MAKH… &lt;NA&gt;   Hospital     
-#&gt;  9 1073099172 05475… BROO… A      MAGGY &lt;NA&gt;   Hospital     
-#&gt; 10 1073585055 07492… TODD  J      WHIT… &lt;NA&gt;   Hospital     
-#&gt; # ℹ 179 more rows
-#&gt; # ℹ 1 more variable: facility_ccn &lt;chr&gt;
-#&gt; # A tibble: 3 × 8
-#&gt;   npi    pac   first middle last  facility_type facility_ccn
-#&gt;   &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;fct&gt;         &lt;chr&gt;       
-#&gt; 1 13969… 8921… MARY  K      HALL… Nursing home  33Z302      
-#&gt; 2 15381… 0547… IL    JUN    CHON  Nursing home  33Z302      
-#&gt; 3 18018… 3577… ROB   L      DEMU… Nursing home  33Z302      
-#&gt; # ℹ 1 more variable: parent_ccn &lt;chr&gt;</code></pre>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(provider)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">affiliations</span>(<span class="at">parent_ccn =</span> <span class="dv">670055</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 7 × 8
+  npi    pac   first middle last  facility_type facility_ccn
+  &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;fct&gt;         &lt;chr&gt;       
+1 10831… 3072… JOSH… J      ASAM… Inpatient re… 67T055      
+2 11444… 3577… LYSA  LEE    CURRY Inpatient re… 67T055      
+3 15585… 8921… JOHN  D      ALFO… Inpatient re… 67T055      
+4 17101… 9739… VIDYA &lt;NA&gt;   AMAR… Inpatient re… 67T055      
+5 17200… 7012… WILL… WARREN JANES Inpatient re… 67T055      
+6 17405… 0345… GEOFF R      WEIK… Inpatient re… 67T055      
+7 19122… 5092… SAAD  MD     MANS… Inpatient re… 67T055      
+# ℹ 1 more variable: parent_ccn &lt;chr&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">affiliations</span>(<span class="at">pac =</span> <span class="dv">7810891009</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 7
+  npi    pac   first middle last  facility_type facility_ccn
+  &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;fct&gt;         &lt;chr&gt;       
+1 10432… 7810… MARK  K      FUNG  Hospital      470003      
+2 10432… 7810… MARK  K      FUNG  Hospital      330250      </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">affiliations</span>(<span class="at">facility_ccn =</span> <span class="dv">331302</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 189 × 8
+   npi        pac    first middle last  suffix facility_type
+   &lt;chr&gt;      &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;  &lt;fct&gt;        
+ 1 1003029125 62048… STACI L      CART… &lt;NA&gt;   Hospital     
+ 2 1013141860 80220… DEBO… M      KAMP… &lt;NA&gt;   Hospital     
+ 3 1013910256 58907… JOSE  M      ACOS… &lt;NA&gt;   Hospital     
+ 4 1023377843 69011… LIND… B      WILH… &lt;NA&gt;   Hospital     
+ 5 1043257819 03452… PAOLO &lt;NA&gt;   FEDI  &lt;NA&gt;   Hospital     
+ 6 1043397656 41837… ANTH… F      TRAM… &lt;NA&gt;   Hospital     
+ 7 1043672140 72142… VANE… &lt;NA&gt;   FIOR… &lt;NA&gt;   Hospital     
+ 8 1063409282 42845… NIDAL &lt;NA&gt;   MAKH… &lt;NA&gt;   Hospital     
+ 9 1073099172 05475… BROO… A      MAGGY &lt;NA&gt;   Hospital     
+10 1073585055 07492… TODD  J      WHIT… &lt;NA&gt;   Hospital     
+# ℹ 179 more rows
+# ℹ 1 more variable: facility_ccn &lt;chr&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">affiliations</span>(<span class="at">facility_ccn =</span> <span class="st">"33Z302"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 8
+  npi    pac   first middle last  facility_type facility_ccn
+  &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;fct&gt;         &lt;chr&gt;       
+1 13969… 8921… MARY  K      HALL… Nursing home  33Z302      
+2 15381… 0547… IL    JUN    CHON  Nursing home  33Z302      
+3 18018… 3577… ROB   L      DEMU… Nursing home  33Z302      
+# ℹ 1 more variable: parent_ccn &lt;chr&gt;</code></pre>
+</div>
 </div>
 
 
