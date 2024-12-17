@@ -1,11 +1,5 @@
 options(width = 60)
 
-knitr::opts_chunk$set(
-  comment = "#>",
-  collapse = TRUE,
-  echo = FALSE
-)
-
 btn_link <- function(href, label) {
   htmltools::tags$a(
     href = href,
