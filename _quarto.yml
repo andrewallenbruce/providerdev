@@ -5,39 +5,97 @@ project:
     - images/
     - assets/
 
-highlight-style: tango
+execute:
+  freeze: auto
+  echo: true
+  dev: "ragg_png"
+  dpi: 740
+  out.width: "80%"
+  fig.width: 6
+  fig.asp: 0.618
+  fig.retina: 3
+  fig.align: "center"
+  fig.show: "hold"
 
 book:
-  title: "provider DevNotes"
-  subtitle: "A personal guide to rewriting an R package"
+  title: "Refactoring Provider"
+  subtitle: "Building a better version of my package `{provider}`, brick-by-brick"
   author: "Andrew Allen Bruce"
+  date: "today"
   description: |
-    This is a personal guide to rewriting an R package. It is a work in progress and will be updated as I learn more about the process.
-
+    This is a personal, informal guide to rewriting an R package that I wrote from the ground up. It is a work in progress and will be updated as I learn more about the process.
+  sidebar:
+    style: docked
+    background: light
   site-url: https://andrewallenbruce.github.io/providerdev/
   repo-url: https://github.com/andrewallenbruce/providerdev
   repo-actions: [edit, issue, source]
   sharing: [twitter, linkedin]
   reader-mode: true
   page-navigation: true
+  back-to-top-navigation: true
+  search: true
 
 
   chapters:
     - index.qmd
     - overview.qmd
 
-    - part: core.qmd
+    - part: "API"
+      chapters:
+        - api.qmd # data.CMS.gov API FAQ examples
+        - schema.qmd # CMS Public API Open Data Catalog (DCAT-US Schema v1.1)
+        - store.qmd
+        - meta.qmd
+        - cache.qmd
+
+    - part: "Tidy"
+      chapters:
+        - common.qmd
+        - method.qmd
+
+    - part: "Core"
       chapters:
         - affiliations.qmd
+        - clinicians.qmd
+        - hospitals.qmd
+        - laboratories.qmd
         - nppes.qmd
+        - opt_out.qmd
+        - order_refer.qmd
+        - providers.qmd
+        - reassignments.qmd
 
-    - references.qmd
+    - part: "Classification"
+      chapters:
+        - crosswalk.qmd
+        - taxonomies.qmd
+        - rbcs.qmd
+        - ndc.qmd
 
-bibliography: references.bib
+    - part: "Reporting"
+      chapters:
+        - quality_payment.qmd
+        - quality_eligibility.qmd
+        - open_payments.qmd
+        - prescribers.qmd
+        - utilization.qmd
 
 format:
   html:
-    theme: cosmo
+    theme: [cosmo, theme.scss]
+    mainfont: "Roboto Condensed"
+    monofont: "Red Hat Mono"
+    highlight-style: tango
+    monobackgroundcolor: "#F7F7F7"
+    code-link: true
+    code-copy: true
+    anchor-sections: true
+    smooth-scroll: true
+    code-links:
+      - text: Provider repo
+        icon: file-code
+        href: https://github.com/andrewallenbruce/provider
 
 editor: source
 
