@@ -22,40 +22,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -116,7 +82,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Preface</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Refactoring Overview</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -144,7 +110,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Preface</span></a>
+ <span class="menu-text">Refactoring Overview</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -175,7 +141,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#preface" id="toc-preface" class="nav-link active" data-scroll-target="#preface">Preface</a></li>
+  <li><a href="#refactoring-overview" id="toc-refactoring-overview" class="nav-link active" data-scroll-target="#refactoring-overview">Refactoring Overview</a>
+  <ul class="collapse">
+  <li><a href="#core-functionality" id="toc-core-functionality" class="nav-link" data-scroll-target="#core-functionality">Core Functionality</a></li>
+  <li><a href="#value-complexity-added" id="toc-value-complexity-added" class="nav-link" data-scroll-target="#value-complexity-added">Value ≥ Complexity Added?</a></li>
+  <li><a href="#questioning-out-of-scope" id="toc-questioning-out-of-scope" class="nav-link" data-scroll-target="#questioning-out-of-scope">Questioning: Out of Scope</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -213,18 +184,53 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="preface" class="level1 unnumbered">
-<h1 class="unnumbered">Preface</h1>
-<p>This is a Quarto book.</p>
-<p>To learn more about Quarto books visit <a href="https://quarto.org/docs/books" class="uri">https://quarto.org/docs/books</a>.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
+<section id="refactoring-overview" class="level1 unnumbered">
+<h1 class="unnumbered">Refactoring Overview</h1>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="_book/schema-diagram.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:95.0%"></p>
+</figure>
 </div>
-</div>
+<section id="core-functionality" class="level2">
+<h2 class="anchored" data-anchor-id="core-functionality">Core Functionality</h2>
+<p>Representative of the initial aim: quick access to <strong>current</strong> Healthcare Provider information that is <strong>administrative</strong> in nature:</p>
+<ol type="1">
+<li><code>affiliations()</code></li>
+<li><code>clinicians()</code></li>
+<li><code>crosswalk()</code></li>
+<li><code>hospitals()</code></li>
+<li><code>laboratories()</code></li>
+<li><code>nppes()</code></li>
+<li><code>opt_out()</code></li>
+<li><code>order_refer()</code></li>
+<li><code>providers()</code></li>
+<li><code>reassignments()</code></li>
+<li><code>pending()</code></li>
+<li><code>taxonomies()</code></li>
+</ol>
+</section>
+<section id="value-complexity-added" class="level2">
+<h2 class="anchored" data-anchor-id="value-complexity-added">Value ≥ Complexity Added?</h2>
+<p>Added value is significant, but tooling, maintenance, etc. much more complex than the core functionality.</p>
+<ol type="1">
+<li><code>quality_payment()</code></li>
+<li><code>quality_eligibility()</code></li>
+<li><code>open_payments()</code></li>
+<li><code>utilization()</code></li>
+<li><code>outpatient()</code></li>
+<li><code>prescribers()</code></li>
+</ol>
+</section>
+<section id="questioning-out-of-scope" class="level2">
+<h2 class="anchored" data-anchor-id="questioning-out-of-scope">Questioning: Out of Scope</h2>
+<p>Surplus to requirements, e.g.&nbsp;historical provider data (either kept current or no longer updated), an applicable area of interest large enough to be moved into its own package, or tangential functionality:</p>
+<ol type="1">
+<li><code>outpatient()</code></li>
+<li><code>beneficiaries()</code></li>
+</ol>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
