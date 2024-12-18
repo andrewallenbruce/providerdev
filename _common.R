@@ -1,4 +1,4 @@
-options(width = 60)
+# options(width = 60)
 
 btn_link <- function(href, label) {
 
