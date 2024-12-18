@@ -1,0 +1,92 @@
+# API
+
+```{r setup}
+#| echo: false
+#| message: false
+#| warning: false
+knitr::opts_chunk$set(
+  dev        = "ragg_png",
+  dpi        = 320,
+  out.width  = "100%",
+  fig.width  = 8,
+  fig.asp    = 0.818,
+  fig.retina = 2,
+  fig.align  = "center",
+  fig.show   = "hold"
+)
+options(scipen = 999, digits = 3)
+
+library(tidyverse)
+library(fastverse)
+library(provider)
+library(fuimus)
+library(httr2)
+```
+
+## New CMS API
+
+   * [Centers for Medicare & Medicaid Services Data API](https://data.cms.gov/api-docs)
+   * [API FAQ for data.CMS.gov | OCTOBER 2024 VERSION 1.6](https://data.cms.gov/sites/default/files/2024-10/7ef65521-65a4-41ed-b600-3a0011f8ec4b/API%20Guide%20Formatted%201_6.pdf)
+
+### Finding Data
+
+> Is there a catalog of available data?
+
+Yes, the [`data.json`](https://data.cms.gov/data.json) file is an [**Open Data**](https://resources.data.gov/resources/dcat-us/) catalog containing the datasets available on our site. As new data is added, it is automatically updated to the **data.json**.
+
+In the **data.json**, there is an array called **dataset**. You can search through this array using the title of your dataset, such as `"Payroll Based Journal Daily Nurse Staffing"`. 
+
+Inside of the dataset, there is an array called **distribution** which will contain all the versions of the data in all available formats for each version. In this array there are a few different types of entries:
+
+The first entry (with a description of 'latest') will provide a URL that will always point to the latest data, even as new versions are published.
+
+The remaining entries will provide references to the data at fixed points in time, listed in descending order by date. 
+
+For example, the URL in the following example will *always* point to the **Payroll Based Journal Daily Nurse Staffing** data from **Q2 2021**:
+
+```{r}
+#| label: url_nurse
+url_nurse <- "https://data.cms.gov/data-api/v1/dataset/d10d792e-ea6e-4145-8512-34efbc1be04b/data"
+
+httr2::url_parse(url_nurse)
+
+head(
+  httr2::request(url_nurse) |> 
+  httr2::req_perform(verbosity = 3) |> 
+  httr2::resp_body_json(simplifyVector = TRUE), 1) |> 
+  dplyr::glimpse()
+```
+
+
+Some datasets will have multiple historical versions available and some will only have the most recent data available.
+
+The data with mediaType of "text/csv" is downloadable as a CSV file and data with mediaType of "application/zip" is downloadable as a ZIP file.
+
+The data with a format of "API" will point to an API endpoint.
+
+> How can I get an earlier version of the data?
+
+If your data has earlier versions available, there is a "temporal" field in the distribution section of the data.json file which will indicate the time period. An example is below.
+
+
+```{r}
+#| label: url_hospital
+#| eval: false
+url          = "https://data.cms.gov/data.json"
+search_title = "Medicare Inpatient Hospitals - by Provider and Service"
+time_period  = "2017-01-01/2017-12-31"
+
+httr2::url_parse(url)
+
+resp <- httr2::request(url) |> 
+  httr2::req_perform(verbosity = 3) |> 
+  httr2::resp_body_json(simplifyVector = TRUE)
+
+resp |> 
+  head(10)
+
+resp$dataset |> 
+  dplyr::filter(
+    grepl(search_title, title)) |> 
+  dplyr::glimpse()
+```

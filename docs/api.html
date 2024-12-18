@@ -8,7 +8,7 @@
 
 <meta name="description" content="This is a personal, informal guide to rewriting an R package that I wrote from the ground up. It is a work in progress and will be updated as I learn more about the process.">
 
-<title>2&nbsp; Affiliations – Refactoring Provider</title>
+<title>1&nbsp; API – Refactoring Provider</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -65,7 +65,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./api.html" rel="prev">
+<link href="./affiliations.html" rel="next">
+<link href="./overview.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -116,7 +117,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./affiliations.html">Core</a></li><li class="breadcrumb-item"><a href="./affiliations.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Affiliations</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./api.html">API</a></li><li class="breadcrumb-item"><a href="./api.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">API</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -193,7 +194,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./api.html" class="sidebar-item-text sidebar-link">
+  <a href="./api.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">API</span></span></a>
   </div>
 </li>
@@ -214,7 +215,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./affiliations.html" class="sidebar-item-text sidebar-link active">
+  <a href="./affiliations.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Affiliations</span></span></a>
   </div>
 </li>
@@ -234,14 +235,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider repo</a></li></ul></div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#new-cms-api" id="toc-new-cms-api" class="nav-link active" data-scroll-target="#new-cms-api"><span class="header-section-number">1.1</span> New CMS API</a>
+  <ul class="collapse">
+  <li><a href="#finding-data" id="toc-finding-data" class="nav-link" data-scroll-target="#finding-data"><span class="header-section-number">1.1.1</span> Finding Data</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/andrewallenbruce/providerdev/edit/main/api.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/blob/main/api.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider repo</a></li></ul></div></nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./affiliations.html">Core</a></li><li class="breadcrumb-item"><a href="./affiliations.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Affiliations</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./api.html">API</a></li><li class="breadcrumb-item"><a href="./api.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">API</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Affiliations</span></h1>
+<h1 class="title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">API</span></h1>
 </div>
 
 
@@ -258,73 +268,166 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<div class="cell">
-<div class="cell-output-display">
-<a href="https://andrewallenbruce.github.io/provider/reference/affiliations.html" class="btn btn-outline-secondary" role="button" target="_blank">
-<i class="bi bi-box-arrow-up-right"></i>
-pkgdown
-</a>
-</div>
-<div class="cell-output-display">
-<a href="https://github.com/andrewallenbruce/provider/blob/main/R/affiliations.R" class="btn btn-outline-secondary" role="button" target="_blank">
-<i class="bi bi-box-arrow-up-right"></i>
-github
-</a>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(provider)</span>
+<section id="new-cms-api" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="new-cms-api"><span class="header-section-number">1.1</span> New CMS API</h2>
+<ul>
+<li><a href="https://data.cms.gov/api-docs">Centers for Medicare &amp; Medicaid Services Data API</a></li>
+<li><a href="https://data.cms.gov/sites/default/files/2024-10/7ef65521-65a4-41ed-b600-3a0011f8ec4b/API%20Guide%20Formatted%201_6.pdf">API FAQ for data.CMS.gov | OCTOBER 2024 VERSION 1.6</a></li>
+</ul>
+<section id="finding-data" class="level3" data-number="1.1.1">
+<h3 data-number="1.1.1" class="anchored" data-anchor-id="finding-data"><span class="header-section-number">1.1.1</span> Finding Data</h3>
+<blockquote class="blockquote">
+<p>Is there a catalog of available data?</p>
+</blockquote>
+<p>Yes, the <a href="https://data.cms.gov/data.json"><code>data.json</code></a> file is an <a href="https://resources.data.gov/resources/dcat-us/"><strong>Open Data</strong></a> catalog containing the datasets available on our site. As new data is added, it is automatically updated to the <strong>data.json</strong>.</p>
+<p>In the <strong>data.json</strong>, there is an array called <strong>dataset</strong>. You can search through this array using the title of your dataset, such as <code>"Payroll Based Journal Daily Nurse Staffing"</code>.</p>
+<p>Inside of the dataset, there is an array called <strong>distribution</strong> which will contain all the versions of the data in all available formats for each version. In this array there are a few different types of entries:</p>
+<p>The first entry (with a description of ‘latest’) will provide a URL that will always point to the latest data, even as new versions are published.</p>
+<p>The remaining entries will provide references to the data at fixed points in time, listed in descending order by date.</p>
+<p>For example, the URL in the following example will <em>always</em> point to the <strong>Payroll Based Journal Daily Nurse Staffing</strong> data from <strong>Q2 2021</strong>:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>url_nurse <span class="ot">&lt;-</span> <span class="st">"https://data.cms.gov/data-api/v1/dataset/d10d792e-ea6e-4145-8512-34efbc1be04b/data"</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">affiliations</span>(<span class="at">parent_ccn =</span> <span class="dv">670055</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 7 × 8
-  npi        pac        first middle last  facility_type facility_ccn parent_ccn
-  &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;fct&gt;         &lt;chr&gt;        &lt;chr&gt;     
-1 1083145494 3072883404 JOSH… J      ASAM… Inpatient re… 67T055       670055    
-2 1144429580 3577659580 LYSA  LEE    CURRY Inpatient re… 67T055       670055    
-3 1558595660 8921241142 JOHN  D      ALFO… Inpatient re… 67T055       670055    
-4 1710112370 9739337122 VIDYA &lt;NA&gt;   AMAR… Inpatient re… 67T055       670055    
-5 1720069859 7012947229 WILL… WARREN JANES Inpatient re… 67T055       670055    
-6 1740577212 0345473773 GEOFF R      WEIK… Inpatient re… 67T055       670055    
-7 1912260464 5092036509 SAAD  MD     MANS… Inpatient re… 67T055       670055    </code></pre>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>httr2<span class="sc">::</span><span class="fu">url_parse</span>(url_nurse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>&lt;httr2_url&gt;
+https://data.cms.gov/data-api/v1/dataset/d10d792e-ea6e-4145-8512-34efbc1be04b/data</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">affiliations</span>(<span class="at">pac =</span> <span class="dv">7810891009</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 7
-  npi        pac        first middle last  facility_type facility_ccn
-  &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;fct&gt;         &lt;chr&gt;       
-1 1043245657 7810891009 MARK  K      FUNG  Hospital      470003      
-2 1043245657 7810891009 MARK  K      FUNG  Hospital      330250      </code></pre>
+<div class="cell-output cell-output-stderr">
+<pre><code>• scheme: https</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">affiliations</span>(<span class="at">facility_ccn =</span> <span class="dv">331302</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 189 × 8
-   npi        pac        first   middle last   suffix facility_type facility_ccn
-   &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;  &lt;fct&gt;         &lt;chr&gt;       
- 1 1003029125 6204824378 STACI   L      CARTE… &lt;NA&gt;   Hospital      331302      
- 2 1013141860 8022069558 DEBORAH M      KAMPS… &lt;NA&gt;   Hospital      331302      
- 3 1013910256 5890719371 JOSE    M      ACOST… &lt;NA&gt;   Hospital      331302      
- 4 1023377843 6901115278 LINDSEY B      WILHE… &lt;NA&gt;   Hospital      331302      
- 5 1043257819 0345243655 PAOLO   &lt;NA&gt;   FEDI   &lt;NA&gt;   Hospital      331302      
- 6 1043397656 4183764558 ANTHONY F      TRAMO… &lt;NA&gt;   Hospital      331302      
- 7 1043672140 7214229350 VANESSA &lt;NA&gt;   FIORI… &lt;NA&gt;   Hospital      331302      
- 8 1063409282 4284548819 NIDAL   &lt;NA&gt;   MAKHO… &lt;NA&gt;   Hospital      331302      
- 9 1073099172 0547519381 BROOKE  A      MAGGY  &lt;NA&gt;   Hospital      331302      
-10 1073585055 0749217313 TODD    J      WHITM… &lt;NA&gt;   Hospital      331302      
-# ℹ 179 more rows</code></pre>
+<div class="cell-output cell-output-stderr">
+<pre><code>• hostname: data.cms.gov</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">affiliations</span>(<span class="at">facility_ccn =</span> <span class="st">"33Z302"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 3 × 8
-  npi        pac        first middle last  facility_type facility_ccn parent_ccn
-  &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;fct&gt;         &lt;chr&gt;        &lt;chr&gt;     
-1 1396989059 8921259557 MARY  K      HALL… Nursing home  33Z302       331302    
-2 1538173869 0547299091 IL    JUN    CHON  Nursing home  33Z302       331302    
-3 1801893318 3577568724 ROB   L      DEMU… Nursing home  33Z302       331302    </code></pre>
+<div class="cell-output cell-output-stderr">
+<pre><code>• path: /data-api/v1/dataset/d10d792e-ea6e-4145-8512-34efbc1be04b/data</code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st"> "</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">request</span>(url_nurse) <span class="sc">|&gt;</span> </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">req_perform</span>(<span class="at">verbosity =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>), <span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>*  Host data.cms.gov:443 was resolved.
+*  IPv6: 2600:1403:9c00:5aa::28a, 2600:1403:9c00:5b7::28a
+*  IPv4: 72.246.62.101
+*    Trying [2600:1403:9c00:5aa::28a]:443...
+*  schannel: disabled automatic use of client certificate
+*  Connected to data.cms.gov (2600:1403:9c00:5aa::28a) port 443
+*  using HTTP/1.x
+-&gt; GET /data-api/v1/dataset/d10d792e-ea6e-4145-8512-34efbc1be04b/data HTTP/1.1
+-&gt; Host: data.cms.gov
+-&gt; User-Agent: httr2/1.0.7 r-curl/6.0.1 libcurl/8.10.1
+-&gt; Accept: */*
+-&gt; Accept-Encoding: deflate, gzip
+-&gt; 
+*  Request completely sent off
+*  schannel: failed to decrypt data, need more data
+&lt;- HTTP/1.1 200 OK
+&lt;- Accept-Ranges: bytes
+&lt;- Content-Encoding: gzip
+&lt;- Content-Language: en
+&lt;- Content-Security-Policy: report-uri /report-csp-violation
+&lt;- Content-Type: application/json
+&lt;- ETag: "1734497934-gzip"
+&lt;- Last-Modified: Wed, 18 Dec 2024 04:58:54 GMT
+&lt;- Referrer-Policy: no-referrer-when-downgrade
+&lt;- X-Age: 0
+&lt;- X-AH-Environment: prod
+&lt;- x-akamai-original-url: 08ff4c8072129a48657f3e6043a1820662e60637
+&lt;- X-Consumer-ID: 07eafadc-1bac-4607-8441-20c35fa46f17
+&lt;- X-Content-Type-Options: nosniff
+&lt;- X-Drupal-Dynamic-Cache: HIT
+&lt;- X-File-System-Cache: MISS
+&lt;- X-Frame-Options: SAMEORIGIN
+&lt;- X-Generator: Drupal 10 (https://www.drupal.org)
+&lt;- X-Request-ID: v-c7aa8152-bcfc-11ef-b7fa-5ff8f4bb3c62
+&lt;- X-XSS-Protection: 1; mode=block
+&lt;- Content-Length: 39279
+&lt;- Expires: Wed, 18 Dec 2024 23:39:50 GMT
+&lt;- Cache-Control: max-age=0, no-cache, no-store
+&lt;- Pragma: no-cache
+&lt;- Date: Wed, 18 Dec 2024 23:39:50 GMT
+&lt;- Connection: keep-alive
+&lt;- Vary: Accept-Encoding
+&lt;- Strict-Transport-Security: max-age=31536000
+&lt;- X-XSS-Protection: 1; mode=block
+&lt;- 
+&lt;&lt; 15395 bytes of binary data
+*  schannel: failed to decrypt data, need more data
+&lt;&lt; 9181 bytes of binary data
+&lt;&lt; 14703 bytes of binary data
+*  Connection #0 to host data.cms.gov left intact
+Rows: 1
+Columns: 33
+$ PROVNUM          &lt;chr&gt; "015010"
+$ PROVNAME         &lt;chr&gt; "COOSA VALLEY HEALTHCARE CENTER"
+$ CITY             &lt;chr&gt; "SYLACAUGA"
+$ STATE            &lt;chr&gt; "AL"
+$ COUNTY_NAME      &lt;chr&gt; "Talladega"
+$ COUNTY_FIPS      &lt;chr&gt; "121"
+$ CY_Qtr           &lt;chr&gt; "2021Q2"
+$ WorkDate         &lt;chr&gt; "20210401"
+$ MDScensus        &lt;chr&gt; "70"
+$ Hrs_RNDON        &lt;chr&gt; "8"
+$ Hrs_RNDON_emp    &lt;chr&gt; "8"
+$ Hrs_RNDON_ctr    &lt;chr&gt; "0"
+$ Hrs_RNadmin      &lt;chr&gt; "48.25"
+$ Hrs_RNadmin_emp  &lt;chr&gt; "48.25"
+$ Hrs_RNadmin_ctr  &lt;chr&gt; "0"
+$ Hrs_RN           &lt;chr&gt; "32"
+$ Hrs_RN_emp       &lt;chr&gt; "32"
+$ Hrs_RN_ctr       &lt;chr&gt; "0"
+$ Hrs_LPNadmin     &lt;chr&gt; "0"
+$ Hrs_LPNadmin_emp &lt;chr&gt; "0"
+$ Hrs_LPNadmin_ctr &lt;chr&gt; "0"
+$ Hrs_LPN          &lt;chr&gt; "63.25"
+$ Hrs_LPN_emp      &lt;chr&gt; "63.25"
+$ Hrs_LPN_ctr      &lt;chr&gt; "0"
+$ Hrs_CNA          &lt;chr&gt; "189.5"
+$ Hrs_CNA_emp      &lt;chr&gt; "189.5"
+$ Hrs_CNA_ctr      &lt;chr&gt; "0"
+$ Hrs_NAtrn        &lt;chr&gt; "0"
+$ Hrs_NAtrn_emp    &lt;chr&gt; "0"
+$ Hrs_NAtrn_ctr    &lt;chr&gt; "0"
+$ Hrs_MedAide      &lt;chr&gt; "0"
+$ Hrs_MedAide_emp  &lt;chr&gt; "0"
+$ Hrs_MedAide_ctr  &lt;chr&gt; "0"</code></pre>
+</div>
+</div>
+<p>Some datasets will have multiple historical versions available and some will only have the most recent data available.</p>
+<p>The data with mediaType of “text/csv” is downloadable as a CSV file and data with mediaType of “application/zip” is downloadable as a ZIP file.</p>
+<p>The data with a format of “API” will point to an API endpoint.</p>
+<blockquote class="blockquote">
+<p>How can I get an earlier version of the data?</p>
+</blockquote>
+<p>If your data has earlier versions available, there is a “temporal” field in the distribution section of the data.json file which will indicate the time period. An example is below.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>url          <span class="ot">=</span> <span class="st">"https://data.cms.gov/data.json"</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>search_title <span class="ot">=</span> <span class="st">"Medicare Inpatient Hospitals - by Provider and Service"</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>time_period  <span class="ot">=</span> <span class="st">"2017-01-01/2017-12-31"</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>httr2<span class="sc">::</span><span class="fu">url_parse</span>(url)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st"> "</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>resp <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">request</span>(url) <span class="sc">|&gt;</span> </span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">req_perform</span>(<span class="at">verbosity =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>resp <span class="sc">|&gt;</span> </span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>resp<span class="sc">$</span>dataset <span class="sc">|&gt;</span> </span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(search_title, title)) <span class="sc">|&gt;</span> </span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -746,11 +849,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./api.html" class="pagination-link" aria-label="API">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">API</span></span>
+      <a href="./overview.html" class="pagination-link" aria-label="Overview">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Overview</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="./affiliations.html" class="pagination-link" aria-label="Affiliations">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Affiliations</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->
@@ -758,5 +864,5 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/andrewallenbruce/providerdev/edit/main/affiliations.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/blob/main/affiliations.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/andrewallenbruce/providerdev/edit/main/api.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/blob/main/api.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
