@@ -1,5 +1,106 @@
----
-title: "meta"
-format: html
----
+# Metadata
 
+```{r setup}
+#| echo: false
+#| message: false
+#| warning: false
+knitr::opts_chunk$set(
+  dev        = "ragg_png",
+  dpi        = 320,
+  out.width  = "100%",
+  fig.width  = 8,
+  fig.asp    = 0.818,
+  fig.retina = 2,
+  fig.align  = "center",
+  fig.show   = "hold"
+)
+options(scipen = 999, digits = 3)
+
+library(tidyverse)
+library(fastverse)
+library(provider)
+library(fuimus)
+library(httr2)
+
+source("_common.R")
+htmltools::tagList(
+  btn_link("https://andrewallenbruce.github.io/provider/reference/nppes.html", "Pkgdown"),
+  btn_link("https://github.com/andrewallenbruce/provider/blob/main/R/nppes.R", "GitHub"))
+```
+
+## Example
+
+```{r}
+#| label: ndf
+meta_ndf <- \(fname) {
+  
+  stopifnot(curl::has_internet())
+  
+  x <- request(
+    paste0(
+      "https://data.cms.gov/",
+      "provider-data/api/1/",
+      "metastore/schemas/",
+      "dataset/items/",
+      switch(fname, 
+             affiliations = "27ea-46a8", 
+             clinicians   = "mj5m-pzi6", 
+             stop("Invalid argument")),
+    "?show-reference-ids=true")) |>
+       req_perform() |>
+       resp_body_json(
+         check_type     = FALSE,
+         simplifyVector = TRUE)
+  
+  distro <- gelm(gelm(x, "distribution"), "identifier")
+  
+  y <- request(
+    paste0(
+    "https://data.cms.gov/", 
+    "provider-data/api/1/",
+    "datastore/query/", 
+    distro, 
+    "?limit=1&offset=100&",
+    "count=true&results=true&", 
+    "schema=true&keys=true&",
+    "format=json&rowIds=true")) |>
+       req_perform() |>
+       resp_body_json(
+         check_type = FALSE,
+         simplifyVector = TRUE)
+  
+  z <- gelm(gelm(gelm(y, "schema"), distro), "fields")
+  
+  list(
+    title        = gelm(x, "title"),
+    description  = gelm(x, "description"),
+    identifier   = gelm(gelm(x, "identifier"), "identifier"),
+    distribution = distro,
+    issued       = gelm(x, "issued"), 
+    modified     = gelm(x, "modified")[[1]], 
+    released     = gelm(x, "released"),
+    dimensions   = paste0(gelm(gelm(y, "count"), is.numeric), " x ", gelm(gelm(z, "record_number"), "length")), 
+    fields       = names(z),
+    site         = gelm(x, "landingPage"),
+    csv          = gelm(gelm(gelm(x, "distribution"), "data"), "downloadURL", m = "df"),
+    dictionary   = paste0("https://data.cms.gov/provider-data/sites/default/files/data_dictionaries/physician/DOC_Data_Dictionary.pdf"))
+}
+```
+
+### Test for Column Names Equality
+
+```{r}
+#| label: affcols
+#| layout-ncol: 2
+aff <- provider::affiliations(npi = 1558595660, na.rm = FALSE, tidy = FALSE)
+cat(utils::formatOL(meta_ndf("affiliations")$fields, offset = 0), sep = "\n")
+cat(utils::formatOL(names(aff), offset = 0), sep = "\n")
+```
+
+```{r}
+#| label: clncols
+#| layout-ncol: 2
+cln <- provider::clinicians(npi = 1558595660, na.rm = FALSE, tidy = FALSE)
+cat(utils::formatOL(meta_ndf("clinicians")$fields), sep = "\n")
+cat(utils::formatOL(names(cln), offset = 1), sep = "\n")
+```

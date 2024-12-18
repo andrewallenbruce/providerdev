@@ -1,5 +1,78 @@
----
-title: "store"
-format: html
----
+# Store
 
+```{r setup}
+#| echo: false
+#| message: false
+#| warning: false
+knitr::opts_chunk$set(
+  dev        = "ragg_png",
+  dpi        = 320,
+  out.width  = "100%",
+  fig.width  = 8,
+  fig.asp    = 0.818,
+  fig.retina = 2,
+  fig.align  = "center",
+  fig.show   = "hold"
+)
+options(scipen = 999, digits = 3)
+
+library(tidyverse)
+library(fastverse)
+library(provider)
+library(fuimus)
+library(httr2)
+
+source("_common.R")
+htmltools::tagList(
+  btn_link("https://andrewallenbruce.github.io/provider/reference/nppes.html", "Pkgdown"),
+  btn_link("https://github.com/andrewallenbruce/provider/blob/main/R/nppes.R", "GitHub"))
+```
+
+## URLs
+
+```{r}
+httr2::url_parse("https://data.cms.gov/provider-data/api/1/datastore/query/")
+    
+distro 
+
+unclass(httr2::url_parse("?limit=1&offset=100&count=true&results=true&schema=true&keys=true&format=json&rowIds=true"))
+```
+
+
+```{r}
+#| label: url_handling
+fname = "affiliations"
+
+ndf_identifier <- \(x) {
+  kit::nswitch(
+    x,
+    "affiliations", "27ea-46a8",
+    "clinicians", "mj5m-pzi6",
+    default = NA_character_,
+    nThread = 4L
+  )
+}
+
+url_ndf <- httr2::url_parse("https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/")
+
+url_tmp <- url_ndf |> 
+  httr2::url_build() |> 
+  httr2::request()
+
+httr2::req_template(url_tmp, "/{fname}?show-reference-ids=true", fname = ndf_identifier(fname))
+```
+
+
+```{r}
+#| label: url_building
+#| eval: false
+url_ndf |> 
+  httr2::url_build() |> 
+  httr2::request() |> 
+  httr2::req_url_path_append(
+    ndf_identifier(fname)
+    ) |> 
+  httr2::req_url_path_append("?show-reference-ids=true") |>
+  httr2::req_perform() |>
+  httr2::resp_body_json(check_type = FALSE, simplifyVector = TRUE)
+```
