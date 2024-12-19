@@ -1,4 +1,8 @@
-# API FAQ
+---
+title: "API FAQ"
+editor_options: 
+   chunk_output_type: console
+---
 
 Working through the new (October 2024 - Version 1.6) [API FAQ](https://data.cms.gov/sites/default/files/2024-10/7ef65521-65a4-41ed-b600-3a0011f8ec4b/API%20Guide%20Formatted%201_6.pdf) for [data.CMS.gov](https://data.cms.gov/api-docs), extracting the relevant information
 
@@ -19,20 +23,20 @@ knitr::opts_chunk$set(
 options(scipen = 999, digits = 3)
 
 library(tidyverse)
-library(fastverse)
+# library(fastverse)
 library(provider)
 library(fuimus)
 library(httr2)
 library(arrow)
 ```
 
-## Data Catalog
+## Access the Data Catalog
 
-The [`data.json`](https://data.cms.gov/data.json) file is an [**Open Data**](https://resources.data.gov/resources/dcat-us/) catalog containing the datasets available on our site. As new data is added, it is automatically updated to the **data.json**.
+The [`data.json` file](https://data.cms.gov/data.json) is an [**Open Data** catalog](https://resources.data.gov/resources/dcat-us/) containing the datasets available on our site. As new data is added, it is automatically updated to `data.json`.
 
 
 ```{r}
-#| label: catalog1
+#| label: data_json
 data_json_meta <- read_json_arrow(
   file = "https://data.cms.gov/data.json",
   col_select = c("dataset"),
@@ -43,12 +47,26 @@ data_json_meta |>
   glimpse()
 ```
 
+> **Note:** Removing `col_select = c("dataset")` from the above call returns the following metadata:
 
-In the **data.json**, there is an array called **dataset**. You can search through this array using the title of your dataset, such as `"Payroll Based Journal Daily Nurse Staffing"`:
+```{r}
+#| label: col_select_remove
+#| echo: false
+c("@context    <chr> https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld", 
+  "@id         <chr> https://data.cms.gov/data.json", 
+  "@type       <chr> dcat:Catalog", 
+  "conformsTo  <chr> https://project-open-data.cio.gov/v1.1/schema", 
+  "describedBy <chr> https://project-open-data.cio.gov/v1.1/schema/catalog.json", 
+  "dataset     <list> [<data.frame[138 x 22]>]") |> 
+  cat(sep = "\n")
+```
+
+
+Within `data.json`, there is an array called `dataset`. You can search through this array using the **title** of your dataset, such as `"Payroll Based Journal Daily Nurse Staffing"`:
 
 
 ```{r}
-#| label: catalog2
+#| label: dataset_title
 data_json_meta |> 
   pull(dataset) |> 
   pluck(1) |> 
@@ -57,69 +75,89 @@ data_json_meta |>
 ```
 
 
-Inside of the dataset, there is an array called **distribution** which will contain all the versions of the data in all available formats for each version. 
+Inside of the dataset, there is an array called `distribution` which will contain all versions of the data in all available formats for each version:
 
 ```{r}
-#| label: catalog3
-data_json_meta |> 
+#| label: distribution_example
+distro_ex <- data_json_meta |> 
   pull(dataset) |> 
   pluck(1) |> 
-  slice(1) |> 
   select(distribution) |> 
-  unnest(distribution) |> 
-  glimpse()
+  unnest(distribution)
+
+distro_ex
 ```
-
-
 
 
 In this array there are a few different types of entries:
 
-The first entry (with a description of 'latest') will provide a URL that will always point to the latest data, even as new versions are published.
+   * First entry: Description == `"latest"`; provides a URL that will always point to the latest data, even as new versions are published.
+   
+   * Remaining entries: Provide references to the data at fixed points in time, listed in descending order by date. 
 
-The remaining entries will provide references to the data at fixed points in time, listed in descending order by date. 
 
 For example, the URL in the following example will *always* point to the **Payroll Based Journal Daily Nurse Staffing** data from **Q2 2021**:
 
-
 ```{r}
 #| label: url_nurse
-resp_nurse <- request("https://data.cms.gov/data-api/v1/dataset/d10d792e-ea6e-4145-8512-34efbc1be04b/data") |> 
-  req_perform(verbosity = 3) |> 
+resp_nurse <- request(
+  "https://data.cms.gov/data-api/v1/dataset/d10d792e-ea6e-4145-8512-34efbc1be04b/data") |> 
+  req_perform() |>
   resp_body_json(simplifyVector = TRUE)
 
 glimpse(head(resp_nurse, 1))
 ```
 
+## `mediaType` & `format`
+
+The data with `mediaType` of `"text/csv"` is downloadable as a CSV file 
+
+Data with `mediaType` of `"application/zip"` is downloadable as a ZIP file.
+
+Data with a `format` of `"API"` is an API endpoint.
+
+## Earlier versions of the data
 
 Some datasets will have multiple historical versions available and some will only have the most recent data available.
 
-The data with mediaType of "text/csv" is downloadable as a CSV file and data with mediaType of "application/zip" is downloadable as a ZIP file.
+If your data has earlier versions available, there is a "temporal" field in the distribution section of the `data.json` file which will indicate the time period. 
 
-The data with a format of "API" will point to an API endpoint.
-
-> How can I get an earlier version of the data?
-
-If your data has earlier versions available, there is a "temporal" field in the distribution section of the data.json file which will indicate the time period. An example is below.
-
-
+The following example finds the API link for the [2017 Medicare Inpatient Hospitals - by Provider and Service Data](https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatienthospitals/medicare-inpatient-hospitals-by-provider-and-service):
 
 ```{r}
 #| label: url_hospital
-data_json_url <- "https://data.cms.gov/data.json"
-dataset_title <- "Medicare Inpatient Hospitals - by Provider and Service"
-time_period   <- "2017-01-01/2017-12-31"
-
-data_json_meta <- read_json_arrow(
-  file = data_json_url,
-  col_select = c("dataset"),
-    as_data_frame = TRUE)
-
-meta <- to_duckdb(data_json_meta) |> 
-  pull(dataset) |> 
-  pluck(1)
-  
-meta |> 
-  dplyr::filter(grepl(dataset_title, title)) |> 
-  dplyr::glimpse()
+distro_ex |> 
+  filter(
+    grepl("Medicare Inpatient Hospitals - by Provider and Service", title), 
+    temporal == "2017-01-01/2017-12-31") |> 
+  glimpse()
 ```
+
+
+## Access the Latest Data
+
+There are two ways to find the latest data. Both methods will provide a URL that will point to the latest version of the data. The URL will not change as new versions are added. It is recommended to always start with the data.json rather than hardcoding any URL.
+
+
+   1. Use the distribution with the latest description
+   
+      * In the data.json the dataset elements will have a “distribution” array, in which the first element is marked with “description” of ”latest”. Find the “accessURL” element and it will have the URL to always points to the latest data.
+      * This URL returns data as a standard JSON. 
+      * For example, this URL for Opt Out Affidavits is `"https://data.cms.gov/dataapi/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data"` 
+   
+   2. Use the URL in the identifier field:
+      * In the data.json the dataset will have a field called “identifier” and the value for this field is a URL that always points to the latest data.
+      * This URL returns data using the JSON:API specification, which has a different response structure that includes metadata about the dataset, otherwise it is identical to the URL in option 1.
+      * For example, this URL for Opt Out Affidavits `"https://data.cms.gov/dataapi/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data-viewer"`
+
+The following example finds the API link for the latest [Order and Referring Data](https://data.cms.gov/provider-characteristics/medicare-provider-supplierenrollment/order-and-referring):
+
+```{r}
+#| label: url_order
+distro_ex |> 
+  filter(grepl("Order and Referring", title),
+         description == "latest") |> 
+  glimpse()
+```
+
+

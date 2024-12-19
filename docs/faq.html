@@ -235,7 +235,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#data-catalog" id="toc-data-catalog" class="nav-link active" data-scroll-target="#data-catalog"><span class="header-section-number">1.1</span> Data Catalog</a></li>
+  <li><a href="#access-the-data-catalog" id="toc-access-the-data-catalog" class="nav-link active" data-scroll-target="#access-the-data-catalog"><span class="header-section-number">1.1</span> Access the Data Catalog</a></li>
+  <li><a href="#mediatype-format" id="toc-mediatype-format" class="nav-link" data-scroll-target="#mediatype-format"><span class="header-section-number">1.2</span> <code>mediaType</code> &amp; <code>format</code></a></li>
+  <li><a href="#earlier-versions-of-the-data" id="toc-earlier-versions-of-the-data" class="nav-link" data-scroll-target="#earlier-versions-of-the-data"><span class="header-section-number">1.3</span> Earlier versions of the data</a></li>
+  <li><a href="#access-the-latest-data" id="toc-access-the-latest-data" class="nav-link" data-scroll-target="#access-the-latest-data"><span class="header-section-number">1.4</span> Access the Latest Data</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/andrewallenbruce/providerdev/edit/main/faq.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/blob/main/faq.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider repo</a></li></ul></div></nav>
     </div>
@@ -262,9 +265,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>Working through the new (October 2024 - Version 1.6) <a href="https://data.cms.gov/sites/default/files/2024-10/7ef65521-65a4-41ed-b600-3a0011f8ec4b/API%20Guide%20Formatted%201_6.pdf">API FAQ</a> for <a href="https://data.cms.gov/api-docs">data.CMS.gov</a>, extracting the relevant information</p>
-<section id="data-catalog" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="data-catalog"><span class="header-section-number">1.1</span> Data Catalog</h2>
-<p>The <a href="https://data.cms.gov/data.json"><code>data.json</code></a> file is an <a href="https://resources.data.gov/resources/dcat-us/"><strong>Open Data</strong></a> catalog containing the datasets available on our site. As new data is added, it is automatically updated to the <strong>data.json</strong>.</p>
+<section id="access-the-data-catalog" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="access-the-data-catalog"><span class="header-section-number">1.1</span> Access the Data Catalog</h2>
+<p>The <a href="https://data.cms.gov/data.json"><code>data.json</code> file</a> is an <a href="https://resources.data.gov/resources/dcat-us/"><strong>Open Data</strong> catalog</a> containing the datasets available on our site. As new data is added, it is automatically updated to <code>data.json</code>.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>data_json_meta <span class="ot">&lt;-</span> <span class="fu">read_json_arrow</span>(</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">"https://data.cms.gov/data.json"</span>,</span>
@@ -281,13 +284,26 @@ Database: DuckDB v1.1.3 [Andrew@Windows 10 x64:R 4.4.2/:memory:]
 $ dataset &lt;list&gt; [&lt;data.frame[138 x 22]&gt;]</code></pre>
 </div>
 </div>
-<p>In the <strong>data.json</strong>, there is an array called <strong>dataset</strong>. You can search through this array using the title of your dataset, such as <code>"Payroll Based Journal Daily Nurse Staffing"</code>:</p>
+<blockquote class="blockquote">
+<p><strong>Note:</strong> Removing <code>col_select = c("dataset")</code> from the above call returns the following metadata:</p>
+</blockquote>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>data_json_meta <span class="sc">|&gt;</span> </span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(dataset) <span class="sc">|&gt;</span> </span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">grepl</span>(<span class="st">"Payroll Based Journal Daily Nurse Staffing"</span>, title)) <span class="sc">|&gt;</span> </span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>@context    &lt;chr&gt; https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld
+@id         &lt;chr&gt; https://data.cms.gov/data.json
+@type       &lt;chr&gt; dcat:Catalog
+conformsTo  &lt;chr&gt; https://project-open-data.cio.gov/v1.1/schema
+describedBy &lt;chr&gt; https://project-open-data.cio.gov/v1.1/schema/catalog.json
+dataset     &lt;list&gt; [&lt;data.frame[138 x 22]&gt;]</code></pre>
+</div>
+</div>
+<p>Within <code>data.json</code>, there is an array called <code>dataset</code>. You can search through this array using the <strong>title</strong> of your dataset, such as <code>"Payroll Based Journal Daily Nurse Staffing"</code>:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>data_json_meta <span class="sc">|&gt;</span> </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(dataset) <span class="sc">|&gt;</span> </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">grepl</span>(<span class="st">"Payroll Based Journal Daily Nurse Staffing"</span>, title)) <span class="sc">|&gt;</span> </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 1
 Columns: 22
@@ -315,90 +331,46 @@ $ title              &lt;chr&gt; "Payroll Based Journal Daily Nurse Staffing"
 $ describedByType    &lt;chr&gt; NA</code></pre>
 </div>
 </div>
-<p>Inside of the dataset, there is an array called <strong>distribution</strong> which will contain all the versions of the data in all available formats for each version.</p>
+<p>Inside of the dataset, there is an array called <code>distribution</code> which will contain all versions of the data in all available formats for each version:</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>data_json_meta <span class="sc">|&gt;</span> </span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(dataset) <span class="sc">|&gt;</span> </span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(distribution) <span class="sc">|&gt;</span> </span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(distribution) <span class="sc">|&gt;</span> </span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>distro_ex <span class="ot">&lt;-</span> data_json_meta <span class="sc">|&gt;</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(dataset) <span class="sc">|&gt;</span> </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(distribution) <span class="sc">|&gt;</span> </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(distribution)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>distro_ex</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Rows: 25
-Columns: 10
-$ `@type`      &lt;chr&gt; "dcat:Distribution", "dcat:Distribution", "dcat:Distribut…
-$ format       &lt;chr&gt; "API", NA, "API", NA, "API", NA, "API", NA, "API", NA, "A…
-$ accessURL    &lt;chr&gt; "https://data.cms.gov/data-api/v1/dataset/9767cb68-8ea9-4…
-$ resourcesAPI &lt;chr&gt; "https://data.cms.gov/data-api/v1/dataset-resources/9767c…
-$ description  &lt;chr&gt; "latest", NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
-$ title        &lt;chr&gt; "Accountable Care Organization Participants : 2024-01-24"…
-$ modified     &lt;dttm&gt; 2024-01-29, 2024-01-29, 2024-01-29, 2023-03-06, 2023-03-…
-$ temporal     &lt;chr&gt; "2024-01-01/2024-12-31", "2024-01-01/2024-12-31", "2024-0…
-$ downloadURL  &lt;chr&gt; NA, "https://data.cms.gov/sites/default/files/2024-01/afc…
-$ mediaType    &lt;chr&gt; NA, "text/csv", NA, "text/csv", NA, "text/csv", NA, "appl…</code></pre>
+<pre><code># A tibble: 3,884 × 10
+   `@type`   format accessURL resourcesAPI description title modified           
+   &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt; &lt;dttm&gt;             
+ 1 dcat:Dis… API    https://… https://dat… latest      Acco… 2024-01-29 00:00:00
+ 2 dcat:Dis… &lt;NA&gt;   &lt;NA&gt;      https://dat… &lt;NA&gt;        Acco… 2024-01-29 00:00:00
+ 3 dcat:Dis… API    https://… https://dat… &lt;NA&gt;        Acco… 2024-01-29 00:00:00
+ 4 dcat:Dis… &lt;NA&gt;   &lt;NA&gt;      https://dat… &lt;NA&gt;        Acco… 2023-03-06 00:00:00
+ 5 dcat:Dis… API    https://… https://dat… &lt;NA&gt;        Acco… 2023-03-06 00:00:00
+ 6 dcat:Dis… &lt;NA&gt;   &lt;NA&gt;      https://dat… &lt;NA&gt;        Acco… 2022-01-26 00:00:00
+ 7 dcat:Dis… API    https://… https://dat… &lt;NA&gt;        Acco… 2022-01-26 00:00:00
+ 8 dcat:Dis… &lt;NA&gt;   &lt;NA&gt;      https://dat… &lt;NA&gt;        Acco… 2022-01-27 00:00:00
+ 9 dcat:Dis… API    https://… https://dat… &lt;NA&gt;        Acco… 2022-01-27 00:00:00
+10 dcat:Dis… &lt;NA&gt;   &lt;NA&gt;      https://dat… &lt;NA&gt;        Acco… 2022-01-27 00:00:00
+# ℹ 3,874 more rows
+# ℹ 3 more variables: temporal &lt;chr&gt;, downloadURL &lt;chr&gt;, mediaType &lt;chr&gt;</code></pre>
 </div>
 </div>
 <p>In this array there are a few different types of entries:</p>
-<p>The first entry (with a description of ‘latest’) will provide a URL that will always point to the latest data, even as new versions are published.</p>
-<p>The remaining entries will provide references to the data at fixed points in time, listed in descending order by date.</p>
+<ul>
+<li><p>First entry: Description == <code>"latest"</code>; provides a URL that will always point to the latest data, even as new versions are published.</p></li>
+<li><p>Remaining entries: Provide references to the data at fixed points in time, listed in descending order by date.</p></li>
+</ul>
 <p>For example, the URL in the following example will <em>always</em> point to the <strong>Payroll Based Journal Daily Nurse Staffing</strong> data from <strong>Q2 2021</strong>:</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>resp_nurse <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://data.cms.gov/data-api/v1/dataset/d10d792e-ea6e-4145-8512-34efbc1be04b/data"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>(<span class="at">verbosity =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>*  Host data.cms.gov:443 was resolved.
-*  IPv6: 2600:1403:9c00:5b7::28a, 2600:1403:9c00:5aa::28a
-*  IPv4: 96.17.33.127
-*    Trying [2600:1403:9c00:5b7::28a]:443...
-*  schannel: disabled automatic use of client certificate
-*  Connected to data.cms.gov (2600:1403:9c00:5b7::28a) port 443
-*  using HTTP/1.x
--&gt; GET /data-api/v1/dataset/d10d792e-ea6e-4145-8512-34efbc1be04b/data HTTP/1.1
--&gt; Host: data.cms.gov
--&gt; User-Agent: httr2/1.0.7 r-curl/6.0.1 libcurl/8.10.1
--&gt; Accept: */*
--&gt; Accept-Encoding: deflate, gzip
--&gt; 
-*  Request completely sent off
-&lt;- HTTP/1.1 200 OK
-&lt;- Accept-Ranges: bytes
-&lt;- Content-Encoding: gzip
-&lt;- Content-Language: en
-&lt;- Content-Security-Policy: report-uri /report-csp-violation
-&lt;- Content-Type: application/json
-&lt;- ETag: "1734497934-gzip"
-&lt;- Last-Modified: Wed, 18 Dec 2024 04:58:54 GMT
-&lt;- Referrer-Policy: no-referrer-when-downgrade
-&lt;- X-Age: 0
-&lt;- X-AH-Environment: prod
-&lt;- x-akamai-original-url: 08ff4c8072129a48657f3e6043a1820662e60637
-&lt;- X-Consumer-ID: 07eafadc-1bac-4607-8441-20c35fa46f17
-&lt;- X-Content-Type-Options: nosniff
-&lt;- X-Drupal-Dynamic-Cache: HIT
-&lt;- X-File-System-Cache: MISS
-&lt;- X-Frame-Options: SAMEORIGIN
-&lt;- X-Generator: Drupal 10 (https://www.drupal.org)
-&lt;- X-Request-ID: v-c7aa8152-bcfc-11ef-b7fa-5ff8f4bb3c62
-&lt;- X-XSS-Protection: 1; mode=block
-&lt;- Content-Length: 39279
-&lt;- Expires: Thu, 19 Dec 2024 04:06:21 GMT
-&lt;- Cache-Control: max-age=0, no-cache, no-store
-&lt;- Pragma: no-cache
-&lt;- Date: Thu, 19 Dec 2024 04:06:21 GMT
-&lt;- Connection: keep-alive
-&lt;- Vary: Accept-Encoding
-&lt;- Strict-Transport-Security: max-age=31536000
-&lt;- X-XSS-Protection: 1; mode=block
-&lt;- 
-&lt;&lt; 15395 bytes of binary data
-*  schannel: failed to decrypt data, need more data
-&lt;&lt; 9181 bytes of binary data
-&lt;&lt; 14703 bytes of binary data
-*  Connection #0 to host data.cms.gov left intact</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(<span class="fu">head</span>(resp_nurse, <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>resp_nurse <span class="ot">&lt;-</span> <span class="fu">request</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"https://data.cms.gov/data-api/v1/dataset/d10d792e-ea6e-4145-8512-34efbc1be04b/data"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(<span class="fu">head</span>(resp_nurse, <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 1
 Columns: 33
@@ -437,55 +409,76 @@ $ Hrs_MedAide_emp  &lt;chr&gt; "0"
 $ Hrs_MedAide_ctr  &lt;chr&gt; "0"</code></pre>
 </div>
 </div>
+</section>
+<section id="mediatype-format" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="mediatype-format"><span class="header-section-number">1.2</span> <code>mediaType</code> &amp; <code>format</code></h2>
+<p>The data with <code>mediaType</code> of <code>"text/csv"</code> is downloadable as a CSV file</p>
+<p>Data with <code>mediaType</code> of <code>"application/zip"</code> is downloadable as a ZIP file.</p>
+<p>Data with a <code>format</code> of <code>"API"</code> is an API endpoint.</p>
+</section>
+<section id="earlier-versions-of-the-data" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="earlier-versions-of-the-data"><span class="header-section-number">1.3</span> Earlier versions of the data</h2>
 <p>Some datasets will have multiple historical versions available and some will only have the most recent data available.</p>
-<p>The data with mediaType of “text/csv” is downloadable as a CSV file and data with mediaType of “application/zip” is downloadable as a ZIP file.</p>
-<p>The data with a format of “API” will point to an API endpoint.</p>
-<blockquote class="blockquote">
-<p>How can I get an earlier version of the data?</p>
-</blockquote>
-<p>If your data has earlier versions available, there is a “temporal” field in the distribution section of the data.json file which will indicate the time period. An example is below.</p>
+<p>If your data has earlier versions available, there is a “temporal” field in the distribution section of the <code>data.json</code> file which will indicate the time period.</p>
+<p>The following example finds the API link for the <a href="https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatienthospitals/medicare-inpatient-hospitals-by-provider-and-service">2017 Medicare Inpatient Hospitals - by Provider and Service Data</a>:</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>data_json_url <span class="ot">&lt;-</span> <span class="st">"https://data.cms.gov/data.json"</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>dataset_title <span class="ot">&lt;-</span> <span class="st">"Medicare Inpatient Hospitals - by Provider and Service"</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>time_period   <span class="ot">&lt;-</span> <span class="st">"2017-01-01/2017-12-31"</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>data_json_meta <span class="ot">&lt;-</span> <span class="fu">read_json_arrow</span>(</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">file =</span> data_json_url,</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_select =</span> <span class="fu">c</span>(<span class="st">"dataset"</span>),</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">as_data_frame =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>meta <span class="ot">&lt;-</span> <span class="fu">to_duckdb</span>(data_json_meta) <span class="sc">|&gt;</span> </span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(dataset) <span class="sc">|&gt;</span> </span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="dv">1</span>)</span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>meta <span class="sc">|&gt;</span> </span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="fu">grepl</span>(dataset_title, title)) <span class="sc">|&gt;</span> </span>
-<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>distro_ex <span class="sc">|&gt;</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">grepl</span>(<span class="st">"Medicare Inpatient Hospitals - by Provider and Service"</span>, title), </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    temporal <span class="sc">==</span> <span class="st">"2017-01-01/2017-12-31"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 2
+Columns: 10
+$ `@type`      &lt;chr&gt; "dcat:Distribution", "dcat:Distribution"
+$ format       &lt;chr&gt; NA, "API"
+$ accessURL    &lt;chr&gt; NA, "https://data.cms.gov/data-api/v1/dataset/b61ba5eb-02…
+$ resourcesAPI &lt;chr&gt; "https://data.cms.gov/data-api/v1/dataset-resources/b61ba…
+$ description  &lt;chr&gt; NA, NA
+$ title        &lt;chr&gt; "Medicare Inpatient Hospitals - by Provider and Service :…
+$ modified     &lt;dttm&gt; 2023-05-10, 2023-05-10
+$ temporal     &lt;chr&gt; "2017-01-01/2017-12-31", "2017-01-01/2017-12-31"
+$ downloadURL  &lt;chr&gt; "https://data.cms.gov/sites/default/files/2023-05/ec9287b…
+$ mediaType    &lt;chr&gt; "text/csv", NA</code></pre>
+</div>
+</div>
+</section>
+<section id="access-the-latest-data" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="access-the-latest-data"><span class="header-section-number">1.4</span> Access the Latest Data</h2>
+<p>There are two ways to find the latest data. Both methods will provide a URL that will point to the latest version of the data. The URL will not change as new versions are added. It is recommended to always start with the data.json rather than hardcoding any URL.</p>
+<ol type="1">
+<li><p>Use the distribution with the latest description</p>
+<ul>
+<li>In the data.json the dataset elements will have a “distribution” array, in which the first element is marked with “description” of ”latest”. Find the “accessURL” element and it will have the URL to always points to the latest data.</li>
+<li>This URL returns data as a standard JSON.</li>
+<li>For example, this URL for Opt Out Affidavits is <code>"https://data.cms.gov/dataapi/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data"</code></li>
+</ul></li>
+<li><p>Use the URL in the identifier field:</p>
+<ul>
+<li>In the data.json the dataset will have a field called “identifier” and the value for this field is a URL that always points to the latest data.</li>
+<li>This URL returns data using the JSON:API specification, which has a different response structure that includes metadata about the dataset, otherwise it is identical to the URL in option 1.</li>
+<li>For example, this URL for Opt Out Affidavits <code>"https://data.cms.gov/dataapi/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data-viewer"</code></li>
+</ul></li>
+</ol>
+<p>The following example finds the API link for the latest <a href="https://data.cms.gov/provider-characteristics/medicare-provider-supplierenrollment/order-and-referring">Order and Referring Data</a>:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>distro_ex <span class="sc">|&gt;</span> </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">grepl</span>(<span class="st">"Order and Referring"</span>, title),</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>         description <span class="sc">==</span> <span class="st">"latest"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 1
-Columns: 22
-$ `@type`            &lt;chr&gt; "dcat:Dataset"
-$ accessLevel        &lt;chr&gt; "public"
-$ accrualPeriodicity &lt;chr&gt; "R/P1Y"
-$ bureauCode         &lt;list&gt; "009:38"
-$ contactPoint       &lt;df[,3]&gt; &lt;data.frame[1 x 3]&gt;
-$ describedBy        &lt;chr&gt; "https://data.cms.gov/resources/medicare-inpatient-…
-$ dataQuality        &lt;lgl&gt; TRUE
-$ description        &lt;chr&gt; "The Medicare Inpatient Hospitals by Provider and S…
-$ distribution       &lt;list&gt; [&lt;data.frame[21 x 10]&gt;]
-$ identifier         &lt;chr&gt; "https://data.cms.gov/data-api/v1/dataset/690ddc6c-…
-$ keyword            &lt;list&gt; &lt;"Medicare", "Original Medicare", "Hospitals &amp; Fac…
-$ landingPage        &lt;chr&gt; "https://data.cms.gov/provider-summary-by-type-o…
-$ language           &lt;list&gt; "en-US"
-$ license            &lt;chr&gt; "https://www.usa.gov/government-works"
-$ modified           &lt;dttm&gt; 2024-06-04
-$ programCode        &lt;list&gt; "009:000"
-$ publisher          &lt;df[,2]&gt; &lt;data.frame[1 x 2]&gt;
-$ references         &lt;list&gt; "https://data.cms.gov/resources/medicare-inpatient-…
-$ temporal           &lt;chr&gt; "2013-01-01/2022-12-31"
-$ theme              &lt;list&gt; "Medicare"
-$ title              &lt;chr&gt; "Medicare Inpatient Hospitals - by Provider and Ser…
-$ describedByType    &lt;chr&gt; NA</code></pre>
+Columns: 10
+$ `@type`      &lt;chr&gt; "dcat:Distribution"
+$ format       &lt;chr&gt; "API"
+$ accessURL    &lt;chr&gt; "https://data.cms.gov/data-api/v1/dataset/c99b5865-1119-4…
+$ resourcesAPI &lt;chr&gt; "https://data.cms.gov/data-api/v1/dataset-resources/c99b5…
+$ description  &lt;chr&gt; "latest"
+$ title        &lt;chr&gt; "Order and Referring : 2024-12-17"
+$ modified     &lt;dttm&gt; 2024-12-17
+$ temporal     &lt;chr&gt; "2024-12-08/2024-12-14"
+$ downloadURL  &lt;chr&gt; NA
+$ mediaType    &lt;chr&gt; NA</code></pre>
 </div>
 </div>
 
