@@ -1,4 +1,4 @@
-# API
+# API FAQ
 
 ```{r setup}
 #| echo: false
@@ -21,9 +21,8 @@ library(fastverse)
 library(provider)
 library(fuimus)
 library(httr2)
+library(arrow)
 ```
-
-## New CMS API
 
    * [Centers for Medicare & Medicaid Services Data API](https://data.cms.gov/api-docs)
    * [API FAQ for data.CMS.gov | OCTOBER 2024 VERSION 1.6](https://data.cms.gov/sites/default/files/2024-10/7ef65521-65a4-41ed-b600-3a0011f8ec4b/API%20Guide%20Formatted%201_6.pdf)
@@ -46,15 +45,16 @@ For example, the URL in the following example will *always* point to the **Payro
 
 ```{r}
 #| label: url_nurse
-url_nurse <- "https://data.cms.gov/data-api/v1/dataset/d10d792e-ea6e-4145-8512-34efbc1be04b/data"
+url_nurse <- url_parse("https://data.cms.gov/data-api/v1/dataset/d10d792e-ea6e-4145-8512-34efbc1be04b/data")
 
-httr2::url_parse(url_nurse)
+url_nurse
 
-head(
-  httr2::request(url_nurse) |> 
-  httr2::req_perform(verbosity = 3) |> 
-  httr2::resp_body_json(simplifyVector = TRUE), 1) |> 
-  dplyr::glimpse()
+resp_nurse <- request(
+  url_build(url_nurse)) |> 
+  req_perform(verbosity = 3) |> 
+  resp_body_json(simplifyVector = TRUE)
+
+glimpse(head(resp_nurse, 1))
 ```
 
 
@@ -69,24 +69,23 @@ The data with a format of "API" will point to an API endpoint.
 If your data has earlier versions available, there is a "temporal" field in the distribution section of the data.json file which will indicate the time period. An example is below.
 
 
+
 ```{r}
 #| label: url_hospital
-#| eval: false
-url          = "https://data.cms.gov/data.json"
-search_title = "Medicare Inpatient Hospitals - by Provider and Service"
-time_period  = "2017-01-01/2017-12-31"
+data_json_url <- "https://data.cms.gov/data.json"
+dataset_title <- "Medicare Inpatient Hospitals - by Provider and Service"
+time_period   <- "2017-01-01/2017-12-31"
 
-httr2::url_parse(url)
+data_json_meta <- read_json_arrow(
+  file = data_json_url,
+  col_select = c("dataset"),
+    as_data_frame = TRUE)
 
-resp <- httr2::request(url) |> 
-  httr2::req_perform(verbosity = 3) |> 
-  httr2::resp_body_json(simplifyVector = TRUE)
-
-resp |> 
-  head(10)
-
-resp$dataset |> 
-  dplyr::filter(
-    grepl(search_title, title)) |> 
+meta <- to_duckdb(data_json_meta) |> 
+  pull(dataset) |> 
+  pluck(1)
+  
+meta |> 
+  dplyr::filter(grepl(dataset_title, title)) |> 
   dplyr::glimpse()
 ```
