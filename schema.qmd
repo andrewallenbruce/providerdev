@@ -1,0 +1,75 @@
+---
+title: "Metadata Schema"
+editor_options: 
+   chunk_output_type: console
+---
+
+
+```{r setup}
+#| echo: false
+#| message: false
+#| warning: false
+knitr::opts_chunk$set(
+  dev        = "ragg_png",
+  dpi        = 320,
+  out.width  = "100%",
+  fig.width  = 8,
+  fig.asp    = 0.818,
+  fig.retina = 2,
+  fig.align  = "center",
+  fig.show   = "hold"
+)
+options(scipen = 999, digits = 3)
+
+# library(tidyverse)
+# library(provider)
+# library(fuimus)
+# library(httr2)
+# library(arrow)
+```
+
+
+[DCAT-US Schema v1.1 (Project Open Data Metadata Schema)](https://resources.data.gov/resources/dcat-us/)
+
+
+## `accrualPeriodicity`
+
+[ISO 8601 Guidance](https://resources.data.gov/schemas/dcat-us/v1.1/iso8601_guidance/#accrualperiodicity)
+
+```{r}
+#| label: accrualPeriodicity
+accrual_key <- c("
+Term 	                ISO_8601
+Decennial 	          R/P10Y
+Quadrennial 	        R/P4Y
+Annual 	              R/P1Y
+Bimonthly 	          R/P2M or R/P0.5M
+Semiweekly 	          R/P3.5D
+Daily 	              R/P1D
+Biweekly 	            R/P2W or R/P0.5W
+Semiannual 	          R/P6M
+Biennial 	            R/P2Y
+Triennial 	          R/P3Y
+Three times a week 	  R/P0.33W
+Three times a month 	R/P0.33M
+Continuously updated 	R/PT1S
+Monthly             	R/P1M
+Quarterly 	          R/P3M
+Semimonthly 	        R/P0.5M
+Three times a year 	  R/P4M
+Weekly 	              R/P1W
+Hourly 	              R/PT1H
+")
+
+accrual_key <- gsub(" \t", ", ", accrual_key)
+accrual_key <- gsub("^\n|\n$", "", accrual_key)
+accrual_key <- strsplit(accrual_key, "\n")[[1]]
+accrual_key <- strsplit(accrual_key, ", ")
+accrual_key <- trimws(unlist(accrual_key))
+accrual_key <- accrual_key[c(-1, -2)]
+
+data.frame(
+ term = accrual_key[c(TRUE, FALSE)],
+ iso_8601 = accrual_key[c(FALSE, TRUE)])
+```
+
