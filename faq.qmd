@@ -1,5 +1,7 @@
 # API FAQ
 
+Working through the new (October 2024 - Version 1.6) [API FAQ](https://data.cms.gov/sites/default/files/2024-10/7ef65521-65a4-41ed-b600-3a0011f8ec4b/API%20Guide%20Formatted%201_6.pdf) for [data.CMS.gov](https://data.cms.gov/api-docs), extracting the relevant information
+
 ```{r setup}
 #| echo: false
 #| message: false
@@ -24,18 +26,54 @@ library(httr2)
 library(arrow)
 ```
 
-   * [Centers for Medicare & Medicaid Services Data API](https://data.cms.gov/api-docs)
-   * [API FAQ for data.CMS.gov | OCTOBER 2024 VERSION 1.6](https://data.cms.gov/sites/default/files/2024-10/7ef65521-65a4-41ed-b600-3a0011f8ec4b/API%20Guide%20Formatted%201_6.pdf)
+## Data Catalog
 
-### Finding Data
+The [`data.json`](https://data.cms.gov/data.json) file is an [**Open Data**](https://resources.data.gov/resources/dcat-us/) catalog containing the datasets available on our site. As new data is added, it is automatically updated to the **data.json**.
 
-> Is there a catalog of available data?
 
-Yes, the [`data.json`](https://data.cms.gov/data.json) file is an [**Open Data**](https://resources.data.gov/resources/dcat-us/) catalog containing the datasets available on our site. As new data is added, it is automatically updated to the **data.json**.
+```{r}
+#| label: catalog1
+data_json_meta <- read_json_arrow(
+  file = "https://data.cms.gov/data.json",
+  col_select = c("dataset"),
+    as_data_frame = TRUE) |> 
+  to_duckdb()
 
-In the **data.json**, there is an array called **dataset**. You can search through this array using the title of your dataset, such as `"Payroll Based Journal Daily Nurse Staffing"`. 
+data_json_meta |> 
+  glimpse()
+```
 
-Inside of the dataset, there is an array called **distribution** which will contain all the versions of the data in all available formats for each version. In this array there are a few different types of entries:
+
+In the **data.json**, there is an array called **dataset**. You can search through this array using the title of your dataset, such as `"Payroll Based Journal Daily Nurse Staffing"`:
+
+
+```{r}
+#| label: catalog2
+data_json_meta |> 
+  pull(dataset) |> 
+  pluck(1) |> 
+  filter(grepl("Payroll Based Journal Daily Nurse Staffing", title)) |> 
+  glimpse()
+```
+
+
+Inside of the dataset, there is an array called **distribution** which will contain all the versions of the data in all available formats for each version. 
+
+```{r}
+#| label: catalog3
+data_json_meta |> 
+  pull(dataset) |> 
+  pluck(1) |> 
+  slice(1) |> 
+  select(distribution) |> 
+  unnest(distribution) |> 
+  glimpse()
+```
+
+
+
+
+In this array there are a few different types of entries:
 
 The first entry (with a description of 'latest') will provide a URL that will always point to the latest data, even as new versions are published.
 
@@ -43,14 +81,10 @@ The remaining entries will provide references to the data at fixed points in tim
 
 For example, the URL in the following example will *always* point to the **Payroll Based Journal Daily Nurse Staffing** data from **Q2 2021**:
 
+
 ```{r}
 #| label: url_nurse
-url_nurse <- url_parse("https://data.cms.gov/data-api/v1/dataset/d10d792e-ea6e-4145-8512-34efbc1be04b/data")
-
-url_nurse
-
-resp_nurse <- request(
-  url_build(url_nurse)) |> 
+resp_nurse <- request("https://data.cms.gov/data-api/v1/dataset/d10d792e-ea6e-4145-8512-34efbc1be04b/data") |> 
   req_perform(verbosity = 3) |> 
   resp_body_json(simplifyVector = TRUE)
 
