@@ -21,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -41,7 +75,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-3f1e4bb296bcec7b1a5c2d2957ac94c3.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-1430b014f48aa13513a7d390b4c6b195.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-d8bb085b9265994618eca33a7d923795.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -260,7 +294,8 @@ ISO8601 Guidance
 <h1 data-number="3"><span class="header-section-number">3</span> <code>dataset</code> Fields</h1>
 <section id="bureaucode" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="bureaucode"><span class="header-section-number">3.1</span> <code>bureauCode</code></h2>
-<p>Federal agencies, combined agency and bureau code from <a href="https://obamawhitehouse.archives.gov/sites/default/files/omb/assets/a11_current_year/app_c.pdf">OMB Circular A-11, Appendix C</a> in the format of <code>015:11</code>.</p>
+<p>Federal agencies, combined agency and bureau code from <a href="https://obamawhitehouse.archives.gov/sites/default/files/omb/assets/a11_current_year/app_c.pdf">OMB Circular A-11, Appendix C</a>.</p>
+<p>Use the format of <code>015:11</code>.</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 368 × 6
@@ -282,7 +317,8 @@ ISO8601 Guidance
 </section>
 <section id="programcode" class="level2" data-number="3.2">
 <h2 data-number="3.2" class="anchored" data-anchor-id="programcode"><span class="header-section-number">3.2</span> <code>programCode</code></h2>
-<p>Federal agencies, list the primary program related to this data asset, from the <a href="https://resources.data.gov/schemas/dcat-us/v1.1/FederalProgramInventory_FY13_MachineReadable_091613.csv">Federal Program Inventory</a>. Use the format of <code>015:001</code>.</p>
+<p>Federal agencies, list the primary program related to this data asset, from the <a href="https://resources.data.gov/schemas/dcat-us/v1.1/FederalProgramInventory_FY13_MachineReadable_091613.csv">Federal Program Inventory</a>.</p>
+<p>Use the format of <code>015:001</code>.</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1,554 × 6
@@ -328,6 +364,60 @@ ISO8601 Guidance
 17   Three times a year            R/P4M
 18               Weekly            R/P1W
 19               Hourly           R/PT1H</code></pre>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>iso_8601 <span class="ot">&lt;-</span> \(x) {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  kit<span class="sc">::</span><span class="fu">nswitch</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    x,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P10Y"</span>,   <span class="st">"Decennial"</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P4Y"</span>,    <span class="st">"Quadrennial"</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P1Y"</span>,    <span class="st">"Annual"</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P0.5M"</span>,  <span class="st">"Bimonthly"</span>,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P2M"</span>,    <span class="st">"Bimonthly"</span>,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P0.5W"</span>,  <span class="st">"Biweekly"</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P2W"</span>,    <span class="st">"Biweekly"</span>,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P3.5D"</span>,  <span class="st">"Semiweekly"</span>,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P1D"</span>,    <span class="st">"Daily"</span>,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P6M"</span>,    <span class="st">"Semiannual"</span>,</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P2Y"</span>,    <span class="st">"Biennial"</span>,</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P3Y"</span>,    <span class="st">"Triennial"</span>,</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P0.33W"</span>, <span class="st">"Three Times a Week"</span>,</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P0.33M"</span>, <span class="st">"Three Times a Month"</span>,</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/PT1S"</span>,   <span class="st">"Continuously Updated"</span>,</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P1M"</span>,    <span class="st">"Monthly"</span>,</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P3M"</span>,    <span class="st">"Quarterly"</span>,</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P0.5M"</span>,  <span class="st">"Semimonthly"</span>,</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P4M"</span>,    <span class="st">"Three Times a Year"</span>,</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P1W"</span>,    <span class="st">"Weekly"</span>,</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/PT1H"</span>,   <span class="st">"Hourly"</span>)</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>accrual_key <span class="sc">|&gt;</span> </span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">iso_test =</span> <span class="fu">iso_8601</span>(iso_8601)</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                   term         iso_8601             iso_test
+1             Decennial           R/P10Y            Decennial
+2           Quadrennial            R/P4Y          Quadrennial
+3                Annual            R/P1Y               Annual
+4             Bimonthly R/P2M or R/P0.5M                 &lt;NA&gt;
+5            Semiweekly          R/P3.5D           Semiweekly
+6                 Daily            R/P1D                Daily
+7              Biweekly R/P2W or R/P0.5W                 &lt;NA&gt;
+8            Semiannual            R/P6M           Semiannual
+9              Biennial            R/P2Y             Biennial
+10            Triennial            R/P3Y            Triennial
+11   Three times a week         R/P0.33W   Three Times a Week
+12  Three times a month         R/P0.33M  Three Times a Month
+13 Continuously updated           R/PT1S Continuously Updated
+14              Monthly            R/P1M              Monthly
+15            Quarterly            R/P3M            Quarterly
+16          Semimonthly          R/P0.5M          Semimonthly
+17   Three times a year            R/P4M   Three Times a Year
+18               Weekly            R/P1W               Weekly
+19               Hourly           R/PT1H               Hourly</code></pre>
 </div>
 </div>
 
