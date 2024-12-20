@@ -1,5 +1,3 @@
-# options(width = 60)
-
 btn_link <- function(href, label) {
 
   htmltools::tags$a(

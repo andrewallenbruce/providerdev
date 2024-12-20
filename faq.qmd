@@ -4,8 +4,6 @@ editor_options:
    chunk_output_type: console
 ---
 
-Working through the new (October 2024 - Version 1.6) [API FAQ](https://data.cms.gov/sites/default/files/2024-10/7ef65521-65a4-41ed-b600-3a0011f8ec4b/API%20Guide%20Formatted%201_6.pdf) for [data.CMS.gov](https://data.cms.gov/api-docs), extracting the relevant information
-
 ```{r setup}
 #| echo: false
 #| message: false
@@ -22,6 +20,8 @@ knitr::opts_chunk$set(
 )
 options(scipen = 999, digits = 3)
 
+source("_common.R")
+
 library(tidyverse)
 # library(fastverse)
 library(provider)
@@ -31,51 +31,16 @@ library(arrow)
 ```
 
 
-## Schema
-
-```r
-[data.json]
-   |--@context
-   |--@id
-   |--@type
-   |--conformsTo
-   |--describedBy
-   |==[dataset]
-   |     |--@type
-   |     |--accessLevel
-   |     |--accrualPeriodicity
-   |     |--bureauCode
-   |     |--contactPoint
-   |     |--describedBy
-   |     |--dataQuality
-   |     |--description
-   |     |==[distribution]
-   |     |     |--@type
-   |     |     |--format
-   |     |     |--accessURL
-   |     |     |--resourcesAPI
-   |     |     |--description
-   |     |     |--title
-   |     |     |--modified
-   |     |     |--temporal
-   |     |     |--downloadURL
-   |     |     |--mediaType
-   |     |--identifier
-   |     |--keyword
-   |     |--landingPage
-   |     |--language
-   |     |--license
-   |     |--modified
-   |     |--programCode
-   |     |--publisher
-   |     |--references
-   |     |--temporal
-   |     |--theme
-   |     |--title
-   |_____|--describedBy
+```{r}
+htmltools::tagList(
+  btn_link("https://data.cms.gov/api-docs", "CMS API Docs"),
+  btn_link("https://data.cms.gov/sites/default/files/2024-10/7ef65521-65a4-41ed-b600-3a0011f8ec4b/API%20Guide%20Formatted%201_6.pdf", 
+           "API FAQ"))
 ```
 
-## Accessing the Data Catalog
+Working through the new (October 2024 - Version 1.6) [API FAQ](https://data.cms.gov/sites/default/files/2024-10/7ef65521-65a4-41ed-b600-3a0011f8ec4b/API%20Guide%20Formatted%201_6.pdf) for [data.CMS.gov](https://data.cms.gov/api-docs), extracting the relevant information
+
+# Accessing the Data Catalog
 
 The [`data.json`](https://data.cms.gov/data.json) file is an [**Open Data**](https://resources.data.gov/resources/dcat-us/) catalog containing all available datasets. As new data is added, `data.json` is automatically updated.
 
@@ -214,4 +179,52 @@ distribution |>
   glimpse()
 ```
 
+# Using the API
 
+
+
+-------------------------------------------------------------------------------
+
+## Schema
+
+```r
+[data.json]
+   |--@context
+   |--@id
+   |--@type
+   |--conformsTo
+   |--describedBy
+   |==[dataset]
+   |     |--@type
+   |     |--accessLevel
+   |     |--accrualPeriodicity
+   |     |--bureauCode
+   |     |--contactPoint
+   |     |--describedBy
+   |     |--dataQuality
+   |     |--description
+   |     |==[distribution]
+   |     |     |--@type
+   |     |     |--format
+   |     |     |--accessURL
+   |     |     |--resourcesAPI
+   |     |     |--description
+   |     |     |--title
+   |     |     |--modified
+   |     |     |--temporal
+   |     |     |--downloadURL
+   |     |     |--mediaType
+   |     |--identifier
+   |     |--keyword
+   |     |--landingPage
+   |     |--language
+   |     |--license
+   |     |--modified
+   |     |--programCode
+   |     |--publisher
+   |     |--references
+   |     |--temporal
+   |     |--theme
+   |     |--title
+   |_____|--describedBy
+```
