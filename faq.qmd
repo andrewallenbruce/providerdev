@@ -99,10 +99,7 @@ distribution <- data_json |>
 
 distribution
 
-fuimus::describe2(distribution[c(-7)]) |> 
-  gt() |> 
-  tab_options(quarto.disable_processing = TRUE) |> 
-  gtUtils::gt_theme_athletic()
+fuimus::describe2(distribution[c(-7)])
 ```
 
 ## Formats
@@ -115,15 +112,18 @@ fuimus::describe2(distribution[c(-7)]) |>
 
 ```{r}
 distribution |> 
-  count(description, format, mediaType) |> 
+  count(description, 
+        format, 
+        mediaType) |> 
   gt() |> 
-  tab_options(quarto.disable_processing = TRUE) |> 
-  gtUtils::gt_theme_athletic()
+  gtExtras::gt_theme_538() |> 
+  tab_options(
+    quarto.disable_processing = TRUE,
+    quarto.use_bootstrap = FALSE)
 ```
 
 
 For example, the URL in the following example will *always* point to the **Payroll Based Journal Daily Nurse Staffing** data from **Q2 2021**:
-
 
 ```{r}
 #| label: staffing
@@ -143,13 +143,15 @@ glimpse(head(staffing, 1))
 
 ## Temporal Data
 
-Datasets with multiple historical versions available will have a `temporal` field in the `distribution` array of the `data.json` file which will indicate the time period. 
+Datasets with multiple historical versions available will have a `temporal` field in the `distribution` array of the `data.json` file which will indicate the time period.
+
+**Format**: `yyyy-mm-dd/yyyy-mm-dd`
 
 The following example finds the API link for the [2017 Medicare Inpatient Hospitals - by Provider and Service Data](https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatienthospitals/medicare-inpatient-hospitals-by-provider-and-service):
 
 
 ```{r}
-#| label: inpatienthospitals
+#| label: temporal_data
 distribution |> 
   filter(
     grepl("Medicare Inpatient Hospitals - by Provider and Service", title), 
@@ -158,19 +160,28 @@ distribution |>
   glimpse()
 ```
 
+## Methods: Same Data, Different Output
 
-## Latest Data Access Methods
+There are two methods of accessing the latest data. 
 
-There are two ways to find the latest data. Both methods provide a URL that points to the latest version. The URL will not change as new versions are added. As such, it is recommended to *always* start with `data.json` rather than hardcoding any URL.
+Both result in a URL pointing to the most recent version of the dataset. This URL is canonical, i.e., will not change as new versions are added. 
 
-### JSON
+For this reason, it is _recommended to **always** start with the **`data.json` object** as opposed to hardcoding any URL_.
 
-> `data.json` ==> `dataset` ==> `distribution` --> `description == "latest"` --> `accessURL`
+### Method 1: Standard JSON
 
+```r
+<data_json>
+    => <dataset> 
+    => <distribution> 
+    -> $(description == "latest")
+    -> $(accessURL)
+```
 Use the `distribution` with the "latest" `description`. This URL returns **standard JSON**.
 
-   
-For example, this URL for Opt Out Affidavits is `"https://data.cms.gov/dataapi/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data"` 
+> For example, this URL for Opt Out Affidavits is 
+> `"https://data.cms.gov/dataapi/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data"` 
+
 
 ```{r}
 #| label: json_standard
@@ -188,16 +199,23 @@ json_standard[["accessURL"]]
 json_standard[["resourcesAPI"]]
 ```
 
+### Method 2: JSON:API
 
-### JSON:API
+```r
+<data_json>
+    => <dataset> 
+    -> $(title == "Order and Referring")
+    -> $(identifier)
+```
 
-> `data.json` ==> `dataset` --> `title == "Order and Referring"` --> `identifier`
+Use the URL in the `identifier` field. 
 
-Use the URL in the `identifier` field. This URL returns **JSON:API**, which has a different response structure that includes metadata about the dataset, otherwise it is identical to the URL in option 1. 
+This URL returns JSON in the **JSON:API** form. It has a different response structure that includes metadata about the dataset. Otherwise it is identical to Method 1. 
 
-For example, this URL for Opt Out Affidavits `"https://data.cms.gov/dataapi/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data-viewer"`
+> For example, this URL for Opt Out Affidavits: 
+> `"https://data.cms.gov/dataapi/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data-viewer"`
 
-The following example finds the API link for the latest [Order and Referring Data](https://data.cms.gov/provider-characteristics/medicare-provider-supplierenrollment/order-and-referring):
+The following example finds the API link for the latest [Order and Referring](https://data.cms.gov/provider-characteristics/medicare-provider-supplierenrollment/order-and-referring) Data:
 
 ```{r}
 #| label: json_api
@@ -207,29 +225,51 @@ json_api <- data_json |>
   dplyr::tibble() |> 
   filter(grepl("Order and Referring", title))
 
-json_api |> 
-  glimpse()
+json_api |> glimpse()
 
 json_api$identifier
 ```
 
+--------------------------------------------------------------------------------
 
-# Using the API
+# Using Pagination
 
-Data is available on the API in JSON and JSON:API formats. You can also download the source CSV file directly. 
+The default is to provide the first 1,000 rows per request. However, there is an ability to increase the limit to 5,000 rows per request. You can use pagination to retrieve the entire dataset. 
 
-To get the entire dataset?
+For example, with our [Opt Out Affidavits]() dataset:
 
-The default is to provide the first 1,000 rows per request. However, there is an ability to increase the limit to 5,000 rows per request. You can use pagination to retrieve the entire dataset. For example, with our Opt Out Affidavits dataset:
+   1. Start with the following request to get the number of rows:
 
-   1. Start with this request to get the number of rows:
-      * _https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data/stats_
-   
-   2. Make a request for the first 5,000 rows:
-      * _https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data?size=5000&offset=0_
+    ```{r}
+    request(
+      "https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data/stats"
+      ) |> 
+      req_perform() |> 
+      resp_body_json(simplifyVector = TRUE)
+    ```
       
-   3. Make a request for the next 5,000 rows:
-      * _https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data?size=5000&offset=5000_
+   
+   2. Make a request for the *first* 5,000 rows:
+      
+    ```{r}
+    request(
+      "https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data?size=5000&offset=0"
+      ) |> 
+      req_perform() |> 
+      resp_body_json(simplifyVector = TRUE) |> 
+      dplyr::tibble()
+    ```
+      
+   3. Make a request for the *next* 5,000 rows:
+   
+    ```{r}
+    request(
+      "https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data?size=5000&offset=5000"
+      ) |> 
+      req_perform() |> 
+      resp_body_json(simplifyVector = TRUE) |> 
+      dplyr::tibble()
+    ```
 
    4. Continue increasing the offset until you reach the count from step 1
 
