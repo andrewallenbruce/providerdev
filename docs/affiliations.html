@@ -196,7 +196,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./schema.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Metadata Schema</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Schema</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -247,7 +247,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#examples" id="toc-examples" class="nav-link active" data-scroll-target="#examples"><span class="header-section-number">4.1</span> Examples</a></li>
-  <li><a href="#interdependencies" id="toc-interdependencies" class="nav-link" data-scroll-target="#interdependencies"><span class="header-section-number">4.2</span> Interdependencies</a></li>
+  <li><a href="#interdependencies" id="toc-interdependencies" class="nav-link" data-scroll-target="#interdependencies"><span class="header-section-number">4.2</span> Interdependencies</a>
+  <ul class="collapse">
+  <li><a href="#individual-provider" id="toc-individual-provider" class="nav-link" data-scroll-target="#individual-provider"><span class="header-section-number">4.2.1</span> Individual Provider</a></li>
+  <li><a href="#organizational-provider" id="toc-organizational-provider" class="nav-link" data-scroll-target="#organizational-provider"><span class="header-section-number">4.2.2</span> Organizational Provider</a></li>
+  </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/andrewallenbruce/providerdev/edit/main/affiliations.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/blob/main/affiliations.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider repo</a></li></ul></div></nav>
     </div>
@@ -331,19 +335,17 @@ Source
 </section>
 <section id="interdependencies" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="interdependencies"><span class="header-section-number">4.2</span> Interdependencies</h2>
-<blockquote class="blockquote">
-<p><strong>Individual Provider</strong>:</p>
-</blockquote>
+<section id="individual-provider" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="individual-provider"><span class="header-section-number">4.2.1</span> Individual Provider</h3>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lst</span>(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">nppes =</span> <span class="fu">nppes</span>(<span class="at">npi =</span> <span class="dv">1043245657</span>),</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">providers =</span> <span class="fu">providers</span>(nppes<span class="sc">$</span>npi),</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">order_refer =</span> <span class="fu">order_refer</span>(nppes<span class="sc">$</span>npi, <span class="at">pivot =</span> <span class="cn">FALSE</span>),</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">clinicians =</span> <span class="fu">clinicians</span>(nppes<span class="sc">$</span>npi),</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">nppes        =</span> <span class="fu">nppes</span>(<span class="at">npi =</span> <span class="dv">1043245657</span>),</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">providers    =</span> <span class="fu">providers</span>(nppes<span class="sc">$</span>npi),</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">order_refer  =</span> <span class="fu">order_refer</span>(nppes<span class="sc">$</span>npi, <span class="at">pivot =</span> <span class="cn">FALSE</span>),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">clinicians   =</span> <span class="fu">clinicians</span>(nppes<span class="sc">$</span>npi),</span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">affiliations =</span> <span class="fu">affiliations</span>(nppes<span class="sc">$</span>npi),</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">hospitals =</span> <span class="fu">map_dfr</span>(affiliations<span class="sc">$</span>facility_ccn, <span class="sc">~</span> </span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>                        <span class="fu">hospitals</span>(<span class="at">facility_ccn =</span> .x))</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">hospitals    =</span> <span class="fu">map_dfr</span>(affiliations<span class="sc">$</span>facility_ccn, <span class="sc">~</span> </span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>                 <span class="fu">hospitals</span>(<span class="at">facility_ccn =</span> .x)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$nppes
 # A tibble: 1 × 29
@@ -398,14 +400,14 @@ $hospitals
 #   registration &lt;fct&gt;, multi_npi &lt;lgl&gt;, reh_conversion &lt;lgl&gt;, subgroup &lt;fct&gt;</code></pre>
 </div>
 </div>
-<blockquote class="blockquote">
-<p><strong>Organizational Provider</strong>:</p>
-</blockquote>
+</section>
+<section id="organizational-provider" class="level3" data-number="4.2.2">
+<h3 data-number="4.2.2" class="anchored" data-anchor-id="organizational-provider"><span class="header-section-number">4.2.2</span> Organizational Provider</h3>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lst</span>(</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">hospitals =</span> <span class="fu">hospitals</span>(<span class="at">organization =</span> <span class="st">"Elizabethtown Community Hospital"</span>),</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">affiliations =</span> <span class="fu">map_dfr</span>(hospitals<span class="sc">$</span>facility_ccn, <span class="sc">~</span> <span class="fu">affiliations</span>(<span class="at">facility_ccn =</span> .x))</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">hospitals    =</span> <span class="fu">hospitals</span>(<span class="at">organization =</span> <span class="st">"Elizabethtown Community Hospital"</span>),</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">affiliations =</span> <span class="fu">map_dfr</span>(hospitals<span class="sc">$</span>facility_ccn, <span class="sc">~</span> </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>                 <span class="fu">affiliations</span>(<span class="at">facility_ccn =</span> .x)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$hospitals
 # A tibble: 2 × 20
@@ -437,6 +439,7 @@ $affiliations
 </div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

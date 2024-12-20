@@ -47,26 +47,25 @@ affiliations(facility_ccn = "33Z302")
 
 ## Interdependencies
 
-> **Individual Provider**:
+### Individual Provider
 
 ```{r}
 lst(
-  nppes = nppes(npi = 1043245657),
-  providers = providers(nppes$npi),
-  order_refer = order_refer(nppes$npi, pivot = FALSE),
-  clinicians = clinicians(nppes$npi),
+  nppes        = nppes(npi = 1043245657),
+  providers    = providers(nppes$npi),
+  order_refer  = order_refer(nppes$npi, pivot = FALSE),
+  clinicians   = clinicians(nppes$npi),
   affiliations = affiliations(nppes$npi),
-  hospitals = map_dfr(affiliations$facility_ccn, ~ 
-                        hospitals(facility_ccn = .x))
-)
+  hospitals    = map_dfr(affiliations$facility_ccn, ~ 
+                 hospitals(facility_ccn = .x)))
 ```
 
-> **Organizational Provider**:
+### Organizational Provider
 
 ```{r}
 lst(
-  hospitals = hospitals(organization = "Elizabethtown Community Hospital"),
-  affiliations = map_dfr(hospitals$facility_ccn, ~ affiliations(facility_ccn = .x))
-)
+  hospitals    = hospitals(organization = "Elizabethtown Community Hospital"),
+  affiliations = map_dfr(hospitals$facility_ccn, ~ 
+                 affiliations(facility_ccn = .x)))
 ```
 

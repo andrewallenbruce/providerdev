@@ -8,7 +8,7 @@
 
 <meta name="description" content="This is a personal, informal guide to rewriting an R package that I wrote from the ground up. It is a work in progress and will be updated as I learn more about the process.">
 
-<title>2&nbsp; Metadata Schema – Refactoring Provider</title>
+<title>2&nbsp; Schema – Refactoring Provider</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,40 +20,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -117,7 +83,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./faq.html">APIs</a></li><li class="breadcrumb-item"><a href="./schema.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Metadata Schema</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./faq.html">APIs</a></li><li class="breadcrumb-item"><a href="./schema.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Schema</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -197,7 +163,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./schema.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Metadata Schema</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Schema</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -247,16 +213,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#accrualperiodicity" id="toc-accrualperiodicity" class="nav-link active" data-scroll-target="#accrualperiodicity"><span class="header-section-number">2.1</span> <code>accrualPeriodicity</code></a></li>
+  <li><a href="#dataset-fields" id="toc-dataset-fields" class="nav-link active" data-scroll-target="#dataset-fields"><span class="header-section-number">3</span> <code>dataset</code> Fields</a>
+  <ul class="collapse">
+  <li><a href="#bureaucode" id="toc-bureaucode" class="nav-link" data-scroll-target="#bureaucode"><span class="header-section-number">3.1</span> <code>bureauCode</code></a></li>
+  <li><a href="#programcode" id="toc-programcode" class="nav-link" data-scroll-target="#programcode"><span class="header-section-number">3.2</span> <code>programCode</code></a></li>
+  <li><a href="#accrualperiodicity" id="toc-accrualperiodicity" class="nav-link" data-scroll-target="#accrualperiodicity"><span class="header-section-number">3.3</span> <code>accrualPeriodicity</code></a></li>
+  </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/andrewallenbruce/providerdev/edit/main/schema.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/blob/main/schema.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider repo</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./faq.html">APIs</a></li><li class="breadcrumb-item"><a href="./schema.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Metadata Schema</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./faq.html">APIs</a></li><li class="breadcrumb-item"><a href="./schema.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Schema</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Metadata Schema</span></h1>
+<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Schema</span></h1>
 </div>
 
 
@@ -273,44 +244,69 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><a href="https://resources.data.gov/resources/dcat-us/">DCAT-US Schema v1.1 (Project Open Data Metadata Schema)</a></p>
-<section id="accrualperiodicity" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="accrualperiodicity"><span class="header-section-number">2.1</span> <code>accrualPeriodicity</code></h2>
-<p><a href="https://resources.data.gov/schemas/dcat-us/v1.1/iso8601_guidance/#accrualperiodicity">ISO 8601 Guidance</a></p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>accrual_key <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="st">Term                    ISO_8601</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="st">Decennial             R/P10Y</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="st">Quadrennial             R/P4Y</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="st">Annual                R/P1Y</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="st">Bimonthly             R/P2M or R/P0.5M</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="st">Semiweekly            R/P3.5D</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="st">Daily                 R/P1D</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="st">Biweekly                R/P2W or R/P0.5W</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="st">Semiannual            R/P6M</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="st">Biennial                R/P2Y</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="st">Triennial             R/P3Y</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="st">Three times a week    R/P0.33W</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="st">Three times a month     R/P0.33M</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="st">Continuously updated    R/PT1S</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="st">Monthly                 R/P1M</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="st">Quarterly             R/P3M</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="st">Semimonthly             R/P0.5M</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="st">Three times a year    R/P4M</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="st">Weekly                R/P1W</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="st">Hourly                R/PT1H</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="st">"</span>)</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>accrual_key <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">" </span><span class="sc">\t</span><span class="st">"</span>, <span class="st">", "</span>, accrual_key)</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>accrual_key <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"^</span><span class="sc">\n</span><span class="st">|</span><span class="sc">\n</span><span class="st">$"</span>, <span class="st">""</span>, accrual_key)</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>accrual_key <span class="ot">&lt;-</span> <span class="fu">strsplit</span>(accrual_key, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)[[<span class="dv">1</span>]]</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>accrual_key <span class="ot">&lt;-</span> <span class="fu">strsplit</span>(accrual_key, <span class="st">", "</span>)</span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>accrual_key <span class="ot">&lt;-</span> <span class="fu">trimws</span>(<span class="fu">unlist</span>(accrual_key))</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>accrual_key <span class="ot">&lt;-</span> accrual_key[<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="sc">-</span><span class="dv">2</span>)]</span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a> <span class="at">term =</span> accrual_key[<span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>)],</span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a> <span class="at">iso_8601 =</span> accrual_key[<span class="fu">c</span>(<span class="cn">FALSE</span>, <span class="cn">TRUE</span>)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<a href="https://resources.data.gov/resources/dcat-us/" class="btn btn-outline-secondary" role="button" target="_blank">
+<i class="bi bi-box-arrow-up-right"></i>
+DCAT Schema v1.1
+</a>
+<a href="https://resources.data.gov/schemas/dcat-us/v1.1/iso8601_guidance/#accrualperiodicity" class="btn btn-outline-secondary" role="button" target="_blank">
+<i class="bi bi-box-arrow-up-right"></i>
+ISO8601 Guidance
+</a>
+</div>
+</div>
+<section id="dataset-fields" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> <code>dataset</code> Fields</h1>
+<section id="bureaucode" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="bureaucode"><span class="header-section-number">3.1</span> <code>bureauCode</code></h2>
+<p>Federal agencies, combined agency and bureau code from <a href="https://obamawhitehouse.archives.gov/sites/default/files/omb/assets/a11_current_year/app_c.pdf">OMB Circular A-11, Appendix C</a> in the format of <code>015:11</code>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 368 × 6
+   agency_name       bureau_name agency_code bureau_code treasury_code cgac_code
+   &lt;chr&gt;             &lt;chr&gt;       &lt;chr&gt;       &lt;chr&gt;       &lt;chr&gt;         &lt;chr&gt;    
+ 1 Legislative Bran… Senate      001         05          00            000      
+ 2 Legislative Bran… House of R… 001         10          00            000      
+ 3 Legislative Bran… Joint Items 001         11          00            000      
+ 4 Legislative Bran… Capitol Po… 001         13          02            002      
+ 5 Legislative Bran… Office of … 001         12          09            009      
+ 6 Legislative Bran… Congressio… 001         14          08            008      
+ 7 Legislative Bran… Architect … 001         15          01            001      
+ 8 Legislative Bran… Botanic Ga… 001         18          09            009      
+ 9 Legislative Bran… Library of… 001         25          03            003      
+10 Legislative Bran… Government… 001         30          04            004      
+# ℹ 358 more rows</code></pre>
+</div>
+</div>
+</section>
+<section id="programcode" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="programcode"><span class="header-section-number">3.2</span> <code>programCode</code></h2>
+<p>Federal agencies, list the primary program related to this data asset, from the <a href="https://resources.data.gov/schemas/dcat-us/v1.1/FederalProgramInventory_FY13_MachineReadable_091613.csv">Federal Program Inventory</a>. Use the format of <code>015:001</code>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,554 × 6
+   agency_name      program_name additional_informati…¹ agency_code program_code
+   &lt;chr&gt;            &lt;chr&gt;        &lt;chr&gt;                  &lt;chr&gt;       &lt;chr&gt;       
+ 1 Department of A… Rural Busin… &lt;NA&gt;                   005         005-001     
+ 2 Department of A… Rural Busin… &lt;NA&gt;                   005         005-002     
+ 3 Department of A… Energy Assi… &lt;NA&gt;                   005         005-003     
+ 4 Department of A… Distance Le… &lt;NA&gt;                   005         005-004     
+ 5 Department of A… Rural Elect… &lt;NA&gt;                   005         005-005     
+ 6 Department of A… Rural Water… &lt;NA&gt;                   005         005-006     
+ 7 Department of A… Single Fami… &lt;NA&gt;                   005         005-007     
+ 8 Department of A… Multi-Famil… &lt;NA&gt;                   005         005-008     
+ 9 Department of A… Farm labor … &lt;NA&gt;                   005         005-009     
+10 Department of A… Rental Assi… &lt;NA&gt;                   005         005-010     
+# ℹ 1,544 more rows
+# ℹ abbreviated name: ¹​additional_information_optional
+# ℹ 1 more variable: program_code_pod_format &lt;chr&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="accrualperiodicity" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="accrualperiodicity"><span class="header-section-number">3.3</span> <code>accrualPeriodicity</code></h2>
+<div class="cell" data-layout-align="center">
 <div class="cell-output cell-output-stdout">
 <pre><code>                   term         iso_8601
 1             Decennial           R/P10Y
@@ -336,6 +332,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

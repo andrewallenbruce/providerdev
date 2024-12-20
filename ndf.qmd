@@ -21,7 +21,6 @@ knitr::opts_chunk$set(
 options(scipen = 999, digits = 3)
 
 library(tidyverse)
-# library(fastverse)
 library(provider)
 library(fuimus)
 library(httr2)
@@ -29,64 +28,55 @@ library(httr2)
 
 ## National Downloadable File
 
->   **Previous Work**
->
->   * [provider #60 - version 1](https://github.com/andrewallenbruce/provider/issues/60#issue-2000723817)
->   * [provider #60 - version 2](https://github.com/andrewallenbruce/provider/issues/60#issuecomment-1820270391)
-
-
-   * [Centers for Medicare & Medicaid Services Data API](https://data.cms.gov/api-docs)
-   * [API FAQ for data.CMS.gov | OCTOBER 2024 - VERSION 1.6](https://data.cms.gov/sites/default/files/2024-10/7ef65521-65a4-41ed-b600-3a0011f8ec4b/API%20Guide%20Formatted%201_6.pdf)
-
-
 ```{r}
+#| label: url_handling
 httr2::url_parse("https://data.cms.gov/provider-data/api/1/datastore/query/")
     
 # distro 
 
-unclass(httr2::url_parse("?limit=1&offset=100&count=true&results=true&schema=true&keys=true&format=json&rowIds=true"))
-```
-
-
-```{r}
-#| label: url_handling
-fname = "affiliations"
+unclass(
+  httr2::url_parse(
+    "?limit=1&offset=100&count=true&results=true&schema=true&keys=true&format=json&rowIds=true"
+    )
+  )
 
 ndf_identifier <- \(x) {
-  kit::nswitch(
-    x,
+  kit::nswitch(x,
     "affiliations", "27ea-46a8",
     "clinicians", "mj5m-pzi6",
     default = NA_character_,
-    nThread = 4L
-  )
+    nThread = 4L)
 }
 
-url_ndf <- httr2::url_parse("https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/")
+url_ndf <- httr2::url_parse(
+  "https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/"
+  )
 
 url_tmp <- url_ndf |> 
   httr2::url_build() |> 
   httr2::request()
 
-httr2::req_template(url_tmp, "/{fname}?show-reference-ids=true", fname = ndf_identifier(fname))
+httr2::req_template(
+  url_tmp, 
+  "/{fname}?show-reference-ids=true", 
+  fname = ndf_identifier("affiliations"))
 ```
-
 
 ```{r}
 #| label: url_building
+#| echo: false
 #| eval: false
 url_ndf |> 
   httr2::url_build() |> 
   httr2::request() |> 
   httr2::req_url_path_append(
-    ndf_identifier(fname)
-    ) |> 
+    ndf_identifier(fname)) |> 
   httr2::req_url_path_append("?show-reference-ids=true") |>
   httr2::req_perform() |>
   httr2::resp_body_json(check_type = FALSE, simplifyVector = TRUE)
 ```
 
-
+## Function Draft
 
 ```{r}
 #| label: ndf
@@ -142,23 +132,57 @@ meta_ndf <- \(fname) {
     site         = gelm(x, "landingPage"),
     csv          = gelm(gelm(gelm(x, "distribution"), "data"), "downloadURL", m = "df"),
     dictionary   = paste0("https://data.cms.gov/provider-data/sites/default/files/data_dictionaries/physician/DOC_Data_Dictionary.pdf"))
+  
 }
 ```
 
 ### Field Comparison
 
 ```{r}
+#| label: meta_affiliations
+m_aff <- meta_ndf("affiliations")
+
+m_aff
+
+m_clin <- meta_ndf("clinicians")
+
+m_clin
+```
+
+```{r}
 #| label: affcols
 #| layout-ncol: 2
-aff <- provider::affiliations(npi = 1558595660, na.rm = FALSE, tidy = FALSE)
-cat(utils::formatOL(meta_ndf("affiliations")$fields, offset = 0), sep = "\n")
-cat(utils::formatOL(names(aff), offset = 0), sep = "\n")
+aff <- provider::affiliations(
+  npi = 1558595660, 
+  na.rm = FALSE, 
+  tidy = FALSE)
+
+cat(
+  utils::formatOL(
+    m_aff$fields), 
+  sep = "\n")
+
+cat(
+  utils::formatOL(
+    names(aff)), 
+  sep = "\n")
 ```
 
 ```{r}
 #| label: clncols
 #| layout-ncol: 2
-cln <- provider::clinicians(npi = 1558595660, na.rm = FALSE, tidy = FALSE)
-cat(utils::formatOL(meta_ndf("clinicians")$fields), sep = "\n")
-cat(utils::formatOL(names(cln), offset = 1), sep = "\n")
+cln <- provider::clinicians(
+  npi = 1558595660, 
+  na.rm = FALSE, 
+  tidy = FALSE)
+
+cat(
+  utils::formatOL(
+    m_clin$fields), 
+  sep = "\n")
+
+cat(
+  utils::formatOL(
+    names(cln)), 
+  sep = "\n")
 ```

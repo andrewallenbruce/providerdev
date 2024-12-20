@@ -1,9 +1,8 @@
 ---
-title: "Metadata Schema"
+title: "Schema"
 editor_options: 
    chunk_output_type: console
 ---
-
 
 ```{r setup}
 #| echo: false
@@ -21,23 +20,76 @@ knitr::opts_chunk$set(
 )
 options(scipen = 999, digits = 3)
 
-# library(tidyverse)
-# library(provider)
-# library(fuimus)
-# library(httr2)
-# library(arrow)
+source("_common.R")
+
+library(tidyverse)
+library(provider)
+library(httr2)
 ```
 
+```{r}
+#| echo: false
+htmltools::tagList(
+  btn_link("https://resources.data.gov/resources/dcat-us/", "DCAT Schema v1.1"),
+  btn_link("https://resources.data.gov/schemas/dcat-us/v1.1/iso8601_guidance/#accrualperiodicity", "ISO8601 Guidance"))
+```
 
-[DCAT-US Schema v1.1 (Project Open Data Metadata Schema)](https://resources.data.gov/resources/dcat-us/)
+# `dataset` Fields
 
+## `bureauCode`
+
+Federal agencies, combined agency and bureau code from [OMB Circular A-11, Appendix C](https://obamawhitehouse.archives.gov/sites/default/files/omb/assets/a11_current_year/app_c.pdf) in the format of `015:11`.
+
+```{r}
+#| label: bureauCode
+#| echo: false
+bureauCode <- readr::read_csv(
+  here::here("data/omb_bureau_codes.csv"), 
+  show_col_types = FALSE,
+  col_types = readr::cols(
+  agency_name = readr::col_character(),
+  bureau_name = readr::col_character(),
+  agency_code = readr::col_character(),
+  bureau_code = readr::col_character(),
+  treasury_code = readr::col_character(),
+  cgac_code = readr::col_character()),
+  name_repair = janitor::make_clean_names) |> 
+  dplyr::mutate(
+    agency_code = stringr::str_pad(agency_code, width = 3, pad = "0"),
+    bureau_code = stringr::str_pad(bureau_code, width = 2, pad = "0"),
+    treasury_code = stringr::str_pad(treasury_code, width = 2, pad = "0"),
+    cgac_code = stringr::str_pad(cgac_code, width = 3, pad = "0"))
+
+bureauCode
+```
+
+## `programCode`
+
+Federal agencies, list the primary program related to this data asset, from the [Federal Program Inventory](https://resources.data.gov/schemas/dcat-us/v1.1/FederalProgramInventory_FY13_MachineReadable_091613.csv). Use the format of `015:001`.
+
+```{r}
+#| label: programCode
+#| echo: false
+programCode <- readr::read_csv(
+  here::here("data/FederalProgramInventory_FY13_MachineReadable_091613.csv"), 
+  show_col_types = FALSE,
+  col_types = readr::cols(
+  agency_name = readr::col_character(),
+  program_name = readr::col_character(),
+  additional_information_optional = readr::col_character(),
+  agency_code = readr::col_character(),
+  program_code = readr::col_character(),
+  program_code_pod_format = readr::col_character()),
+  name_repair = janitor::make_clean_names)
+
+programCode
+```
 
 ## `accrualPeriodicity`
 
-[ISO 8601 Guidance](https://resources.data.gov/schemas/dcat-us/v1.1/iso8601_guidance/#accrualperiodicity)
-
 ```{r}
 #| label: accrualPeriodicity
+#| echo: false
 accrual_key <- c("
 Term 	                ISO_8601
 Decennial 	          R/P10Y
