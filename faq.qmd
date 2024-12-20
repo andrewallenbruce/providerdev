@@ -22,22 +22,20 @@ options(scipen = 999, digits = 3)
 
 source("_common.R")
 
-library(tidyverse)
-library(provider)
-library(httr2)
-library(arrow)
-```
-
-
-```{r}
-#| echo: false
 htmltools::tagList(
   btn_link("https://data.cms.gov/api-docs", "CMS API Docs"),
   btn_link("https://data.cms.gov/sites/default/files/2024-10/7ef65521-65a4-41ed-b600-3a0011f8ec4b/API%20Guide%20Formatted%201_6.pdf", 
            "API FAQ"))
+
+library(tidyverse)
+library(provider)
+library(httr2)
+library(arrow)
+library(gt)
 ```
 
-Working through the new (October 2024 - Version 1.6) [API FAQ](https://data.cms.gov/sites/default/files/2024-10/7ef65521-65a4-41ed-b600-3a0011f8ec4b/API%20Guide%20Formatted%201_6.pdf) for [data.CMS.gov](https://data.cms.gov/api-docs), extracting the relevant information
+
+Working through the new *(October 2024 - Version 1.6)* [API FAQ](https://data.cms.gov/sites/default/files/2024-10/7ef65521-65a4-41ed-b600-3a0011f8ec4b/API%20Guide%20Formatted%201_6.pdf) for [data.CMS.gov](https://data.cms.gov/api-docs), extracting the relevant information
 
 # Accessing the Data Catalog
 
@@ -80,7 +78,10 @@ Within `data.json`, there is an array called `dataset`. One can search through t
 data_json |> 
   pull(dataset) |> 
   pluck(1) |> 
-  filter(grepl("Payroll Based Journal Daily Nurse Staffing", title)) |> 
+  filter(
+    grepl(
+      "Payroll Based Journal Daily Nurse Staffing", 
+      title)) |> 
   glimpse()
 ```
 
@@ -97,6 +98,11 @@ distribution <- data_json |>
   unnest(distribution)
 
 distribution
+
+fuimus::describe2(distribution[c(-7)]) |> 
+  gt() |> 
+  tab_options(quarto.disable_processing = TRUE) |> 
+  gtUtils::gt_theme_athletic()
 ```
 
 ## Formats
@@ -109,7 +115,10 @@ distribution
 
 ```{r}
 distribution |> 
-  count(description, format, mediaType)
+  count(description, format, mediaType) |> 
+  gt() |> 
+  tab_options(quarto.disable_processing = TRUE) |> 
+  gtUtils::gt_theme_athletic()
 ```
 
 
@@ -154,76 +163,120 @@ distribution |>
 
 There are two ways to find the latest data. Both methods provide a URL that points to the latest version. The URL will not change as new versions are added. As such, it is recommended to *always* start with `data.json` rather than hardcoding any URL.
 
-### Standard JSON
+### JSON
+
+> `data.json` ==> `dataset` ==> `distribution` --> `description == "latest"` --> `accessURL`
+
+Use the `distribution` with the "latest" `description`. This URL returns **standard JSON**.
+
+   
+For example, this URL for Opt Out Affidavits is `"https://data.cms.gov/dataapi/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data"` 
+
+```{r}
+#| label: json_standard
+json_standard <- distribution |> 
+  filter(
+    grepl("Order and Referring", title),
+    description == "latest")
 
 
-   1. Use the `distribution` with the "latest" `description`
-   
-      * Within `data.json/distribution`, filter the `description` to `"latest"`. Pull the `"accessURL"`.
-      * This URL returns data as a standard JSON. 
-      * For example, this URL for Opt Out Affidavits is `"https://data.cms.gov/dataapi/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data"` 
-   
-   2. Use the URL in the identifier field:
-      * In the data.json the dataset will have a field called “identifier” and the value for this field is a URL that always points to the latest data.
-      * This URL returns data using the JSON:API specification, which has a different response structure that includes metadata about the dataset, otherwise it is identical to the URL in option 1.
-      * For example, this URL for Opt Out Affidavits `"https://data.cms.gov/dataapi/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data-viewer"`
+json_standard |> 
+  glimpse()
+
+json_standard[["accessURL"]]
+
+json_standard[["resourcesAPI"]]
+```
+
+
+### JSON:API
+
+> `data.json` ==> `dataset` --> `title == "Order and Referring"` --> `identifier`
+
+Use the URL in the `identifier` field. This URL returns **JSON:API**, which has a different response structure that includes metadata about the dataset, otherwise it is identical to the URL in option 1. 
+
+For example, this URL for Opt Out Affidavits `"https://data.cms.gov/dataapi/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data-viewer"`
 
 The following example finds the API link for the latest [Order and Referring Data](https://data.cms.gov/provider-characteristics/medicare-provider-supplierenrollment/order-and-referring):
 
 ```{r}
-#| label: url_order
-distribution |> 
-  filter(grepl("Order and Referring", title),
-         description == "latest") |> 
+#| label: json_api
+json_api <- data_json |> 
+  pull(dataset) |> 
+  pluck(1) |> 
+  dplyr::tibble() |> 
+  filter(grepl("Order and Referring", title))
+
+json_api |> 
   glimpse()
+
+json_api$identifier
 ```
+
 
 # Using the API
 
+Data is available on the API in JSON and JSON:API formats. You can also download the source CSV file directly. 
 
+To get the entire dataset?
+
+The default is to provide the first 1,000 rows per request. However, there is an ability to increase the limit to 5,000 rows per request. You can use pagination to retrieve the entire dataset. For example, with our Opt Out Affidavits dataset:
+
+   1. Start with this request to get the number of rows:
+      * _https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data/stats_
+   
+   2. Make a request for the first 5,000 rows:
+      * _https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data?size=5000&offset=0_
+      
+   3. Make a request for the next 5,000 rows:
+      * _https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data?size=5000&offset=5000_
+
+   4. Continue increasing the offset until you reach the count from step 1
+
+Pagination Code Example
 
 -------------------------------------------------------------------------------
 
 ## Schema
 
 ```r
-<[data.json]
-   |--@context
-   |--@id
-   |--@type
-   |--conformsTo
-   |--describedBy
-   |==[dataset]
-   |     |--@type
-   |     |--accessLevel
-   |     |--accrualPeriodicity
-   |     |--bureauCode
-   |     |--contactPoint
-   |     |--describedBy
-   |     |--dataQuality
-   |     |--description
-   |     |==[distribution]
-   |     |     |--@type
-   |     |     |--format
-   |     |     |--accessURL
-   |     |     |--resourcesAPI
-   |     |     |--description
-   |     |     |--title
-   |     |     |--modified
-   |     |     |--temporal
-   |     |     |--downloadURL
-   |     |     |--mediaType
-   |     |--identifier
-   |     |--keyword
-   |     |--landingPage
-   |     |--language
-   |     |--license
-   |     |--modified
-   |     |--programCode
-   |     |--publisher
-   |     |--references
-   |     |--temporal
-   |     |--theme
-   |     |--title
-   |_____|--describedBy
+<data.json>
+  |--@context
+  |--@id
+  |--@type
+  |--conformsTo
+  |--describedBy
+  |==<dataset>
+  |    |--@type
+  |    |--accessLevel
+  |    |--accrualPeriodicity
+  |    |--bureauCode
+  |    |--contactPoint
+  |    |--describedBy
+  |    |--dataQuality
+  |    |--description
+  |    |==<distribution>
+  |    |    |--@type
+  |    |    |--format
+  |    |    |--accessURL
+  |    |    |--resourcesAPI
+  |    |    |--description
+  |    |    |--title
+  |    |    |--modified
+  |    |    |--temporal
+  |    |    |--downloadURL
+  |    |    |--mediaType
+  |    |--identifier
+  |    |--keyword
+  |    |--landingPage
+  |    |--language
+  |    |--license
+  |    |--modified
+  |    |--programCode
+  |    |--publisher
+  |    |--references
+  |    |--temporal
+  |    |--theme
+  |    |--title
+  |____|--describedByType
 ```
