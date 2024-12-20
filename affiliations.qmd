@@ -1,22 +1,72 @@
-# Affiliations
+---
+title: "Affiliations"
+editor_options: 
+   chunk_output_type: console
+---
 
 ```{r setup}
 #| echo: false
+#| message: false
+#| warning: false
+knitr::opts_chunk$set(
+  dev        = "ragg_png",
+  dpi        = 320,
+  out.width  = "100%",
+  fig.width  = 8,
+  fig.asp    = 0.818,
+  fig.retina = 2,
+  fig.align  = "center",
+  fig.show   = "hold"
+)
+options(scipen = 999, digits = 3)
+
 source("_common.R")
-btn_link("https://andrewallenbruce.github.io/provider/reference/affiliations.html", "pkgdown")
-btn_link("https://github.com/andrewallenbruce/provider/blob/main/R/affiliations.R", "github")
+
+library(tidyverse)
+library(provider)
+library(httr2)
 ```
 
 ```{r}
+#| echo: false
+htmltools::tagList(
+  btn_link("https://andrewallenbruce.github.io/provider/reference/affiliations.html", "Documentation"),
+  btn_link("https://github.com/andrewallenbruce/provider/blob/main/R/affiliations.R", "Source"))
+```
+
+## Examples
+
+```{r}
 #| label: examples
-
-library(provider)
-
 affiliations(parent_ccn = 670055)
-
-affiliations(pac = 7810891009)
 
 affiliations(facility_ccn = 331302)
 
 affiliations(facility_ccn = "33Z302")
 ```
+
+## Interdependencies
+
+> **Individual Provider**:
+
+```{r}
+lst(
+  nppes = nppes(npi = 1043245657),
+  providers = providers(nppes$npi),
+  order_refer = order_refer(nppes$npi, pivot = FALSE),
+  clinicians = clinicians(nppes$npi),
+  affiliations = affiliations(nppes$npi),
+  hospitals = map_dfr(affiliations$facility_ccn, ~ 
+                        hospitals(facility_ccn = .x))
+)
+```
+
+> **Organizational Provider**:
+
+```{r}
+lst(
+  hospitals = hospitals(organization = "Elizabethtown Community Hospital"),
+  affiliations = map_dfr(hospitals$facility_ccn, ~ affiliations(facility_ccn = .x))
+)
+```
+

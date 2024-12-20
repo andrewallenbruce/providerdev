@@ -1,0 +1,164 @@
+---
+title: "NDF"
+editor_options: 
+   chunk_output_type: console
+---
+
+```{r setup}
+#| echo: false
+#| message: false
+#| warning: false
+knitr::opts_chunk$set(
+  dev        = "ragg_png",
+  dpi        = 320,
+  out.width  = "100%",
+  fig.width  = 8,
+  fig.asp    = 0.818,
+  fig.retina = 2,
+  fig.align  = "center",
+  fig.show   = "hold"
+)
+options(scipen = 999, digits = 3)
+
+library(tidyverse)
+# library(fastverse)
+library(provider)
+library(fuimus)
+library(httr2)
+```
+
+## National Downloadable File
+
+>   **Previous Work**
+>
+>   * [provider #60 - version 1](https://github.com/andrewallenbruce/provider/issues/60#issue-2000723817)
+>   * [provider #60 - version 2](https://github.com/andrewallenbruce/provider/issues/60#issuecomment-1820270391)
+
+
+   * [Centers for Medicare & Medicaid Services Data API](https://data.cms.gov/api-docs)
+   * [API FAQ for data.CMS.gov | OCTOBER 2024 - VERSION 1.6](https://data.cms.gov/sites/default/files/2024-10/7ef65521-65a4-41ed-b600-3a0011f8ec4b/API%20Guide%20Formatted%201_6.pdf)
+
+
+```{r}
+httr2::url_parse("https://data.cms.gov/provider-data/api/1/datastore/query/")
+    
+# distro 
+
+unclass(httr2::url_parse("?limit=1&offset=100&count=true&results=true&schema=true&keys=true&format=json&rowIds=true"))
+```
+
+
+```{r}
+#| label: url_handling
+fname = "affiliations"
+
+ndf_identifier <- \(x) {
+  kit::nswitch(
+    x,
+    "affiliations", "27ea-46a8",
+    "clinicians", "mj5m-pzi6",
+    default = NA_character_,
+    nThread = 4L
+  )
+}
+
+url_ndf <- httr2::url_parse("https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/")
+
+url_tmp <- url_ndf |> 
+  httr2::url_build() |> 
+  httr2::request()
+
+httr2::req_template(url_tmp, "/{fname}?show-reference-ids=true", fname = ndf_identifier(fname))
+```
+
+
+```{r}
+#| label: url_building
+#| eval: false
+url_ndf |> 
+  httr2::url_build() |> 
+  httr2::request() |> 
+  httr2::req_url_path_append(
+    ndf_identifier(fname)
+    ) |> 
+  httr2::req_url_path_append("?show-reference-ids=true") |>
+  httr2::req_perform() |>
+  httr2::resp_body_json(check_type = FALSE, simplifyVector = TRUE)
+```
+
+
+
+```{r}
+#| label: ndf
+meta_ndf <- \(fname) {
+  
+  stopifnot(curl::has_internet())
+  
+  x <- request(
+    paste0(
+      "https://data.cms.gov/",
+      "provider-data/api/1/",
+      "metastore/schemas/",
+      "dataset/items/",
+      switch(fname, 
+             affiliations = "27ea-46a8", 
+             clinicians   = "mj5m-pzi6", 
+             stop("Invalid argument")),
+    "?show-reference-ids=true")) |>
+       req_perform() |>
+       resp_body_json(
+         check_type     = FALSE,
+         simplifyVector = TRUE)
+  
+  distro <- gelm(gelm(x, "distribution"), "identifier")
+  
+  y <- request(
+    paste0(
+    "https://data.cms.gov/", 
+    "provider-data/api/1/",
+    "datastore/query/", 
+    distro, 
+    "?limit=1&offset=100&",
+    "count=true&results=true&", 
+    "schema=true&keys=true&",
+    "format=json&rowIds=true")) |>
+       req_perform() |>
+       resp_body_json(
+         check_type = FALSE,
+         simplifyVector = TRUE)
+  
+  z <- gelm(gelm(gelm(y, "schema"), distro), "fields")
+  
+  list(
+    title        = gelm(x, "title"),
+    description  = gelm(x, "description"),
+    identifier   = gelm(gelm(x, "identifier"), "identifier"),
+    distribution = distro,
+    issued       = gelm(x, "issued"), 
+    modified     = gelm(x, "modified")[[1]], 
+    released     = gelm(x, "released"),
+    dimensions   = paste0(gelm(gelm(y, "count"), is.numeric), " x ", gelm(gelm(z, "record_number"), "length")), 
+    fields       = names(z),
+    site         = gelm(x, "landingPage"),
+    csv          = gelm(gelm(gelm(x, "distribution"), "data"), "downloadURL", m = "df"),
+    dictionary   = paste0("https://data.cms.gov/provider-data/sites/default/files/data_dictionaries/physician/DOC_Data_Dictionary.pdf"))
+}
+```
+
+### Field Comparison
+
+```{r}
+#| label: affcols
+#| layout-ncol: 2
+aff <- provider::affiliations(npi = 1558595660, na.rm = FALSE, tidy = FALSE)
+cat(utils::formatOL(meta_ndf("affiliations")$fields, offset = 0), sep = "\n")
+cat(utils::formatOL(names(aff), offset = 0), sep = "\n")
+```
+
+```{r}
+#| label: clncols
+#| layout-ncol: 2
+cln <- provider::clinicians(npi = 1558595660, na.rm = FALSE, tidy = FALSE)
+cat(utils::formatOL(meta_ndf("clinicians")$fields), sep = "\n")
+cat(utils::formatOL(names(cln), offset = 1), sep = "\n")
+```
