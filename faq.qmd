@@ -35,7 +35,7 @@ library(gt)
 ```
 
 
-Working through the new *(October 2024 - Version 1.6)* [API FAQ](https://data.cms.gov/sites/default/files/2024-10/7ef65521-65a4-41ed-b600-3a0011f8ec4b/API%20Guide%20Formatted%201_6.pdf) for [data.CMS.gov](https://data.cms.gov/api-docs), extracting the relevant information
+Working through the updated [API FAQ](https://data.cms.gov/sites/default/files/2024-10/7ef65521-65a4-41ed-b600-3a0011f8ec4b/API%20Guide%20Formatted%201_6.pdf) *(Oct 2024 - v1.6)*  for [data.CMS.gov](https://data.cms.gov/api-docs), extracting the relevant information
 
 # Accessing the Data Catalog
 
@@ -114,12 +114,12 @@ fuimus::describe2(distribution[c(-7)])
 distribution |> 
   count(description, 
         format, 
-        mediaType) |> 
-  gt() |> 
-  gtExtras::gt_theme_538() |> 
-  tab_options(
-    quarto.disable_processing = TRUE,
-    quarto.use_bootstrap = FALSE)
+        mediaType) #|> 
+  # gt() |> 
+  # gtExtras::gt_theme_538() |> 
+  # tab_options(
+  #   quarto.disable_processing = TRUE,
+  #   quarto.use_bootstrap = FALSE)
 ```
 
 
@@ -232,7 +232,7 @@ json_api$identifier
 
 --------------------------------------------------------------------------------
 
-# Using Pagination
+# Pagination
 
 The default is to provide the first 1,000 rows per request. However, there is an ability to increase the limit to 5,000 rows per request. You can use pagination to retrieve the entire dataset. 
 
@@ -240,40 +240,123 @@ For example, with our [Opt Out Affidavits]() dataset:
 
    1. Start with the following request to get the number of rows:
 
-    ```{r}
-    request(
-      "https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data/stats"
-      ) |> 
-      req_perform() |> 
-      resp_body_json(simplifyVector = TRUE)
-    ```
+```{r}
+#| label: pagination_1
+request("https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data/stats") |>
+  req_perform() |> 
+  resp_body_json(simplifyVector = TRUE)
+```
       
-   
    2. Make a request for the *first* 5,000 rows:
       
-    ```{r}
-    request(
-      "https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data?size=5000&offset=0"
-      ) |> 
-      req_perform() |> 
-      resp_body_json(simplifyVector = TRUE) |> 
-      dplyr::tibble()
-    ```
+```{r}
+#| label: pagination_2
+request("https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data?size=5000&offset=0") |>
+  req_perform() |> 
+  resp_body_json(simplifyVector = TRUE) |> 
+  dplyr::tibble()
+```
       
    3. Make a request for the *next* 5,000 rows:
    
-    ```{r}
-    request(
-      "https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data?size=5000&offset=5000"
-      ) |> 
-      req_perform() |> 
-      resp_body_json(simplifyVector = TRUE) |> 
-      dplyr::tibble()
-    ```
+```{r}
+#| label: pagination_3
+request("https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data?size=5000&offset=5000") |>
+  req_perform() |> 
+  resp_body_json(simplifyVector = TRUE) |> 
+  dplyr::tibble()
+```
 
    4. Continue increasing the offset until you reach the count from step 1
 
-Pagination Code Example
+```{r}
+#| label: pagination_4
+request("https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data?size=5000&offset=10000") |>
+  req_perform() |> 
+  resp_body_json(simplifyVector = TRUE) |> 
+  dplyr::tibble()
+```
+
+## Pagination Example
+
+Paginates through the [Opt Out Affidavits](https://data.cms.gov/provider-characteristics/medicare-provider-supplier-enrollment/opt-out-affidavits) data:
+
+```{r}
+#| label: pagination_optout
+optout_n <- distribution |> 
+  filter(
+    grepl("Opt Out Affidavits : ", title), 
+    format == "API",
+    description == "latest") |> 
+  str_glue_data("{accessURL}/stats") |> 
+  request() |> 
+  req_perform() |> 
+  resp_body_json()
+
+optout_n$total_rows / 5000
+
+# req_perform_iterative()
+```
+
+## Find the Number of Rows
+
+You can use the `data-viewer/stats` or `data/stats` endpoints i.e., `https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data-viewer/stats` or `https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data/stats`.
+
+
+# Download CSV/ZIP versions
+
+   1. Start with a request to the `data.json`. 
+   2. Find the dataset within the catalog by matching the `title` with the name of the dataset.
+   3. Within each dataset, there is an array called distribution which will contain all the versions of the data in all available formats for each version.
+   4. The most recent release will be at the top of the distribution list, there is also a temporal field which can be used to find earlier releases.
+   5. Datasets are available as either CSV or ZIP files; this will be designated in the `mediaType` field. Please review the distribution list to determine what formats are available for the dataset.
+   6. The `downloadURL` will provide a direct download link for the data.
+
+## CSV Example
+
+```{r}
+#| label: csv_download
+orderrefer_url <- distribution |> 
+  filter(
+    grepl("Order and Referring", title), 
+    mediaType == "text/csv",
+    modified == max(modified)) |> 
+  pull(downloadURL)
+  
+orderrefer_csv <- read_csv_arrow(
+  file = orderrefer_url, 
+  as_data_frame = TRUE) |> 
+  to_duckdb()
+
+# approx 2 million rows
+orderrefer_csv
+```
+
+## ZIP Example
+
+_CMS Summary Statistics/COVID data -> Likely not relevant to package scope_
+
+```{r}
+#| label: zip_download
+# providers_url <- distribution |> 
+#   filter(mediaType == "application/zip", modified == max(modified), .by = resourcesAPI) |> 
+#   count(title)
+```
+
+# Additional Resources
+
+The data.json has been updated to include a resources API that allows you to easily find the download URL for resources, which are supplemental documents to the main dataset.
+1. Start with a request to the data.json. Always start with the catalog, do not hard code or try to predict the download URL. The catalog will update automatically when new data is available.
+2. Find the dataset within the catalog by matching the “title” with the name of the dataset.
+3. Within each dataset, there is an array called distribution which will contain all the versions of the data in all available formats for each version.
+4. The most recent release will be at the top of the distribution list, there is also a “temporal” field which can be used to find earlier releases.
+5. The “resourcesAPI” is a secondary API endpoint from data.json that will provide a link for the resources connected to the dataset and the download URL for the supporting documents.
+6. Using the link stored in the “resourcesAPI”, limit by the “name” of the resource you want to download. The name of the resource may change between versions.
+7. The “downloadURL” will provide a direct download link for the resource.
+
+## Resource Example
+
+Resource File Download URL Link for Latest Dataset Code Example
 
 -------------------------------------------------------------------------------
 
