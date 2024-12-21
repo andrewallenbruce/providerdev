@@ -25,17 +25,58 @@ source("_common.R")
 htmltools::tagList(
   btn_link("https://data.cms.gov/api-docs", "CMS API Docs"),
   btn_link("https://data.cms.gov/sites/default/files/2024-10/7ef65521-65a4-41ed-b600-3a0011f8ec4b/API%20Guide%20Formatted%201_6.pdf", 
-           "API FAQ"))
+           "API FAQ")
+  )
 
 library(tidyverse)
 library(provider)
+library(fuimus)
 library(httr2)
 library(arrow)
-library(gt)
+# library(gt)
 ```
 
 
 Working through the updated [API FAQ](https://data.cms.gov/sites/default/files/2024-10/7ef65521-65a4-41ed-b600-3a0011f8ec4b/API%20Guide%20Formatted%201_6.pdf) *(Oct 2024 - v1.6)*  for [data.CMS.gov](https://data.cms.gov/api-docs), extracting the relevant information
+
+## What's new
+
+Resources, which are supplemental documents to the main dataset, are now available for programmatic download in the API. Through our Public API Open Data Catalog, you can find direct download links for resources such as sub-files, tables, supplementary data, reports, and documentation.  The new endpoints can be accessed using the 'resourcesAPI' field. For more details on the data catalog and code examples, download our API FAQ document.
+
+## API integrations
+
+Our API responses are in a JSON format. To integrate your endpoint requests with the data.cms.gov Public API, follow these steps:
+
+   1. Find your Dataset & its Unique Identifier: [Search for your dataset](https://data.cms.gov/search) and visit its 'overview' page. Click on ‘Access API’ and then on the ‘API Docs for the Dataset’ link.
+   2. Integrate your Dataset Endpoint Paths
+      * Dataset API endpoints have this structure: `data.cms.gov/data-api/v1/dataset/{{dataset_id}}/data` 
+      * Use this URL with your dataset ID obtained from Step 1.
+      * Example: `https://data.cms.gov/data-api/v1/dataset/2457ea29-fc82-48b0-86ec-3b0755de7515/data`
+   3. Integrate your API Endpoint Requests
+      * The system uses the JSONAPI query syntax.
+      * The simplest, most common filter is a key-value filter: `?filter[field_name]=value&filter[field_other]=value`
+      * Examples
+         * Exact match search on 1 column: 
+            * To filter Medicare Fee-For-Service Public Provider Enrollment Dataset, by column PROVIDER_TYPE_DESC, use the following request: `data.cms.gov/data-api/v1/dataset/2457ea29-fc82-48b0-86ec-3b0755de7515/data?filter[PROVIDER_TYPE_DESC]=PRACTITIONER%20-%20GENERAL%20PRACTICE`
+         * Contains search on 1 column:
+            * To filter the ‘Medicare Fee-For-Service Public Provider Enrollment’ Dataset and find all rows that contain ‘SUPPLIER’ in the ‘PROVIDER_TYPE_DESC’ column, the request is: `data.cms.gov/data-api/v1/dataset/2457ea29-fc82-48b0-86ec-3b0755de7515/data?filter[example][condition][path]=PROVIDER_TYPE_DESC&filter[example][condition][operator]=CONTAINS&filter[example][condition][value]=SUPPLIER`
+          * Combination search on 2 columns:
+             * To filter the ‘Medicare Fee-For-Service Public Provider Enrollment’ Dataset and find all rows that contain ‘PRACTITIONER’ in the ‘PROVIDER_TYPE_DESC’ column where the 'STATE_CD' is 'MD', the request is: `data.cms.gov/data-api/v1/dataset/2457ea29-fc82-48b0-86ec-3b0755de7515/data?filter[filter-1][condition][path]=PROVIDER_TYPE_DESC&filter[filter-1][condition][operator]=CONTAINS&filter[filter-1][condition][value]=PRACTITIONER&filter[filter-2][condition][path]=STATE_CD&filter[filter-2][condition][operator]==&filter[filter-2][condition][value]=MD`
+    4. Integrate your API Endpoint Requests to support paging
+       * API Responses are paged and support a max page size of 5000 rows. Use the size & offset query parameters to page through the data, as shown below:
+          * 1st example: this request returns the first 50 rows of a dataset: `data.cms.gov/data-api/v1/dataset/2457ea29-fc82-48b0-86ec-3b0755de7515/data?size=50&offset=0`
+          * 2nd example: this request returns the next 50 rows (51 - 100): data.cms.gov/data-api/v1/dataset/2457ea29-fc82-48b0-86ec-3b0755de7515/data?size=50&offset=50                                       
+
+
+[Refer to the Drupal documentation](https://www.drupal.org/docs/core-modules-and-themes/core-modules/jsonapi-module/filtering) for more information on filtering API requests.
+ 
+## Additional information
+
+The Application Programming Interface (API) offers access to the Centers for Medicare & Medicaid Services public data allowing you to interactively analyze our datasets in real-time. Our APIs are organized around REST and have predictable resource-oriented URLs, accept form-encoded requests and returns JSON & JSON:API encoded responses and uses standard HTTP response codes.
+
+
+
+--------------------------------------------------------------------------------
 
 # Accessing the Data Catalog
 
@@ -114,12 +155,7 @@ fuimus::describe2(distribution[c(-7)])
 distribution |> 
   count(description, 
         format, 
-        mediaType) #|> 
-  # gt() |> 
-  # gtExtras::gt_theme_538() |> 
-  # tab_options(
-  #   quarto.disable_processing = TRUE,
-  #   quarto.use_bootstrap = FALSE)
+        mediaType)
 ```
 
 
@@ -357,6 +393,38 @@ The data.json has been updated to include a resources API that allows you to eas
 ## Resource Example
 
 Resource File Download URL Link for Latest Dataset Code Example
+
+Finds the download link for the latest [Medicare Fee-For-Service Public Provider Enrollment Reassignment Sub-File](https://data.cms.gov/provider-characteristics/medicare-provider-supplier-enrollment/medicare-fee-for-service-public-provider-enrollment)
+
+```{r}
+#| label: add_resources
+resp_resources <- distribution |> 
+  filter(
+  grepl("Medicare Fee-For-Service", title),
+  description == "latest") |> 
+  pull(resourcesAPI) |> 
+  request() |> 
+  req_perform() |> 
+  resp_body_json(simplifyVector = FALSE) |> 
+  list_flatten() |> 
+  list_flatten()
+
+reassign_url <- dplyr::tibble(
+  name = fuimus::gelm(resp_resources, "name$") |> fuimus::delist(),
+  size = fuimus::gelm(resp_resources, "fileSize$") |> fuimus::delist(),
+  url = fuimus::gelm(resp_resources, "downloadURL$") |> fuimus::delist()) |> 
+  filter(grepl("Reassignment", name)) |> 
+  pull(url)
+
+reassign_csv <- read_csv_arrow(
+  file = reassign_url, 
+  as_data_frame = TRUE) |> 
+  to_duckdb()
+
+reassign_csv
+```
+
+# Filtering and Manipulating Data
 
 -------------------------------------------------------------------------------
 
