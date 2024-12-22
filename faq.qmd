@@ -35,7 +35,38 @@ library(httr2)
 library(arrow)
 library(terse)
 library(emphatic)
+
+purse <- function(x, 
+                  pre = "- ", 
+                  wid = 100, 
+                  sep = " ") {
+  terse::terse(
+    x = x, 
+    prefix = pre, 
+    width = wid, 
+    config = list(
+      gsep = sep, 
+      ansi = FALSE))
+}
 ```
+
+<style>
+.codeblock-label {
+  color: #000;
+  display: inline-block;
+  border-top-left-radius: .5rem;
+  border-top-right-radius: .5rem;
+  padding: 0.25rem 0.75rem;
+  background-color: #cccccc;
+  margin-bottom: 0;
+  font-size: 0.875em;
+  font-family: var(--bs-font-monospace);
+}
+  
+.codeblock-label + div.sourceCode {
+  margin-top: 0;
+}
+</style>
 
 The **data.CMS.gov/data.json** API:
 
@@ -71,6 +102,28 @@ To integrate endpoint requests with the **data.cms.gov Public API**, follow thes
 
 call:     /data?
           filter[PROVIDER_TYPE_DESC]=PRACTITIONER%20-%20GENERAL%20PRACTICE
+```
+
+```{yaml filename="query.yml"}
+#| label: query_yml
+#| eval: false
+catalog: "data.json"
+format: "API"
+description: "latest"
+title:  "Medicare Fee-For-Service Public Provider Enrollment"
+accessURL: ""
+
+url: 
+  scheme: "https://"
+  hostname: "data.cms.gov/"
+  api: "data-api/v1/dataset/"
+  identifier: "d10d792e-ea6e-4145-8512-34efbc1be04b"
+  path: "/data?"
+  query: 
+    - filter: 1
+      path: "PROVIDER_TYPE_DESC"
+      operator: "EQUALS"
+      value: "PRACTITIONER - GENERAL PRACTICE"
 ```
 
 **Contains Search on Column**:
@@ -167,7 +220,7 @@ data_json |>
     theme = delist(theme)) |> 
   unnest_wider(contactPoint, names_sep = "_") |>
   unnest_wider(publisher, names_sep = "_") |>
-  terse(width = 110, prefix = "- ", config = list(gsep = " ", ansi = FALSE))
+  purse()
 ```
 
 
@@ -182,7 +235,8 @@ distribution <- data_json |>
   select(distribution) |> 
   unnest(distribution)
 
-distribution
+distribution |> 
+  purse()
 ```
 
 ## Formats
@@ -219,7 +273,7 @@ staffing <- distribution |>
   resp_body_json(simplifyVector = TRUE)
 
 head(staffing, 1) |> 
-  terse(width = 110, prefix = "- ", config = list(gsep = " ", ansi = FALSE))
+  purse()
 ```
 
 ## Temporal Data
@@ -238,7 +292,7 @@ distribution |>
     grepl("Medicare Inpatient Hospitals - by Provider and Service", title), 
     format == "API",
     temporal == "2017-01-01/2017-12-31") |> 
-  terse(width = 110, prefix = "- ", config = list(gsep = " ", ansi = FALSE))
+  purse()
 ```
 
 ## Methods: Same Data, Different Output
@@ -272,7 +326,7 @@ json_standard <- distribution |>
     description == "latest")
 
 json_standard |> 
-  terse(width = 110, prefix = "- ", config = list(gsep = " ", ansi = FALSE))
+  purse()
 ```
 
 ### Method 2: JSON:API
@@ -298,7 +352,7 @@ The following example finds the API link for the latest [Order and Referring](ht
 json_api <- data_json |> 
   pull(dataset) |> 
   pluck(1) |> 
-  dplyr::tibble() |> 
+  tibble() |> 
   filter(
     grepl(
       "Order and Referring", 
@@ -318,7 +372,7 @@ json_api |>
     theme = delist(theme)) |> 
   unnest_wider(contactPoint, names_sep = "_") |>
   unnest_wider(publisher, names_sep = "_") |> 
-  terse(width = 110, prefix = "- ", config = list(gsep = " ", ansi = FALSE))
+  purse()
 ```
 
 --------------------------------------------------------------------------------
@@ -335,7 +389,8 @@ For example, with our [Opt Out Affidavits]() dataset:
 #| label: pagination_1
 request("https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data/stats") |>
   req_perform() |> 
-  resp_body_json(simplifyVector = TRUE)
+  resp_body_json(simplifyVector = TRUE) |> 
+  purse()
 ```
       
    2. Make a request for the *first* 5,000 rows:
@@ -346,7 +401,7 @@ request("https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77
   req_perform() |> 
   resp_body_json(simplifyVector = TRUE) |> 
   tibble() |> 
-  terse(width = 110, prefix = "- ", config = list(gsep = " ", ansi = FALSE))
+  purse()
 ```
       
    3. Make a request for the *next* 5,000 rows:
@@ -357,7 +412,7 @@ request("https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77
   req_perform() |> 
   resp_body_json(simplifyVector = TRUE) |> 
   tibble() |> 
-  terse(width = 110, prefix = "- ", config = list(gsep = " ", ansi = FALSE))
+  purse()
 ```
 
    4. Continue increasing the offset until you reach the count from step 1
@@ -368,7 +423,7 @@ request("https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77
   req_perform() |> 
   resp_body_json(simplifyVector = TRUE) |> 
   tibble() |> 
-  terse(width = 110, prefix = "- ", config = list(gsep = " ", ansi = FALSE))
+  purse()
 ```
 
 ## Pagination Example
