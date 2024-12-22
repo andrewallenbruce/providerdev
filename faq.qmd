@@ -37,65 +37,78 @@ library(terse)
 library(emphatic)
 ```
 
+The **data.CMS.gov/data.json** API:
 
-> Working through the updated [API FAQ](https://data.cms.gov/sites/default/files/2024-10/7ef65521-65a4-41ed-b600-3a0011f8ec4b/API%20Guide%20Formatted%201_6.pdf) *(Oct 2024 - v1.6)*  for [data.CMS.gov](https://data.cms.gov/api-docs), extracting the relevant information
+   * offers access to CMS public data
+   * is REST-ful
+   * has predictable resource-oriented URLs
+   * accepts form-encoded requests
+   * returns JSON & JSON:API responses
+   * uses standard HTTP response codes.
 
-The Application Programming Interface (API) offers access to the Centers for Medicare & Medicaid Services public data allowing you to interactively analyze our datasets in real-time. Our APIs are organized around REST and have predictable resource-oriented URLs, accept form-encoded requests and returns JSON & JSON:API encoded responses and uses standard HTTP response codes.
+## API Integration
 
-## What's new
+To integrate endpoint requests with the **data.cms.gov Public API**, follow these steps:
 
-Resources, which are supplemental documents to the main dataset, are now available for programmatic download in the API. Through our Public API Open Data Catalog, you can find direct download links for resources such as sub-files, tables, supplementary data, reports, and documentation.  The new endpoints can be accessed using the 'resourcesAPI' field. For more details on the data catalog and code examples, download our API FAQ document.
+   1. Dataset & Identifier: 
+      * [Search for dataset](https://data.cms.gov/search) and visit its **overview** page
+      * Click on **Access API**, then **API Docs for the Dataset**
+   2. Endpoint structure:
+      * `data.cms.gov/data-api/v1/dataset/{{dataset_id}}/data` 
+   3. System uses **JSONAPI** query syntax:
+      * Key-values: `?filter[field_name]=value&filter[field_other]=value`
+      * Responses are paged and support a max page size of 5000 rows
+      * Use the `size` & `offset` query parameters to page through the data
 
-## API integrations
+### Query Syntax
 
-To integrate endpoint requests with the data.cms.gov Public API, follow these steps:
+**Exact Match Search on Column**:
 
-   1. Find Dataset & Identifier: 
-      * [Search for dataset](https://data.cms.gov/search) and visit its **overview** page. 
-      * Click on **Access API**, then **API Docs for the Dataset**.
-   2. Integrate Dataset Endpoint Paths:
-      * Endpoint structure: `data.cms.gov/data-api/v1/dataset/{{dataset_id}}/data` 
-   3. Integrate your API Endpoint Requests
-      * System uses **JSONAPI** query syntax.
-      * Most common: Key-value filter (`?filter[field_name]=value&filter[field_other]=value`)
-      * Responses are paged and support a max page size of 5000 rows. 
-      * Use the size & offset query parameters to page through the data
+```r
+- dataset   Medicare Fee-For-Service Public Provider Enrollment
+  column    PROVIDER_TYPE_DESC 
+  equals    PRACTITIONER-GENERAL PRACTICE
 
-### Filter Examples
+call:     /data?
+          filter[PROVIDER_TYPE_DESC]=PRACTITIONER%20-%20GENERAL%20PRACTICE
+```
 
-**Exact Match Search on Column:**
-    * <dataset> `"Medicare Fee-For-Service Public Provider Enrollment"`
-    * <column> `PROVIDER_TYPE_DESC` == `"PRACTITIONER-GENERAL PRACTICE"`
-    * REQUEST: `/data?`
-      * `filter[PROVIDER_TYPE_DESC]=PRACTITIONER%20-%20GENERAL%20PRACTICE`
+**Contains Search on Column**:
 
-**Contains Search on Column:**
-   * <dataset> Medicare Fee-For-Service Public Provider Enrollment Dataset 
-   * <column> `PROVIDER_TYPE_DESC`
-   * <contains> all rows that contain `SUPPLIER`
-   * REQUEST: `/data?`
-      * `filter[example][condition][path]=PROVIDER_TYPE_DESC&`
-      * `filter[example][condition][operator]=CONTAINS&`
-      * `filter[example][condition][value]=SUPPLIER`
+```r
+- dataset  Medicare Fee-For-Service Public Provider Enrollment
+  column   PROVIDER_TYPE_DESC
+  contains SUPPLIER
+
+call:    /data?
+          filter[example][condition][path]=PROVIDER_TYPE_DESC
+         &filter[example][condition][operator]=CONTAINS
+         &filter[example][condition][value]=SUPPLIER
+```
 
 **Combination search on 2 columns:** 
-   * <dataset> `"Medicare Fee-For-Service Public Provider Enrollment"`
-   * <column> `PROVIDER_TYPE_DESC`
-   * <contains> all rows that contain `PRACTITIONER`
-   * <column> `STATE_CD` == `"MD"`
-   * REQUEST: `/data?`
-      * `filter[filter-1][condition][path]=PROVIDER_TYPE_DESC&`
-      * `filter[filter-1][condition][operator]=CONTAINS&`
-      * `filter[filter-1][condition][value]=PRACTITIONER&`
-      * `filter[filter-2][condition][path]=STATE_CD&`
-      * `filter[filter-2][condition][operator]==&`
-      * `filter[filter-2][condition][value]=MD`
+
+```r
+- dataset  Medicare Fee-For-Service Public Provider Enrollment
+  column   PROVIDER_TYPE_DESC
+  contains PRACTITIONER
+  column   STATE_CD
+  equals   MD
+
+call:    /data?
+          filter[filter-1][condition][path]=PROVIDER_TYPE_DESC
+         &filter[filter-1][condition][operator]=CONTAINS
+         &filter[filter-1][condition][value]=PRACTITIONER
+         &filter[filter-2][condition][path]=STATE_CD
+         &filter[filter-2][condition][operator]==
+         &filter[filter-2][condition][value]=MD
+```
 
 [Refer to the Drupal documentation](https://www.drupal.org/docs/core-modules-and-themes/core-modules/jsonapi-module/filtering) for more information on filtering API requests.
 
 --------------------------------------------------------------------------------
 
-# Data Catalog API
+# Data Catalog file
 
 The [`data.json`](https://data.cms.gov/data.json) file is an [**Open Data**](https://resources.data.gov/resources/dcat-us/) catalog containing all available datasets. As new data is added, `data.json` is automatically updated.
 
@@ -108,8 +121,7 @@ data_json <- read_json_arrow(
     as_data_frame = TRUE) |> 
   to_duckdb()
 
-data_json |> 
-  glimpse()
+data_json |> glimpse()
 ```
 
 
@@ -154,7 +166,7 @@ data_json |>
     theme = delist(theme)) |> 
   unnest_wider(contactPoint, names_sep = "_") |>
   unnest_wider(publisher, names_sep = "_") |>
-  terse(width = 110, prefix = "- ", config = list(ansi = FALSE))
+  terse(width = 110, prefix = "- ", config = list(gsep = " ", ansi = FALSE))
 ```
 
 
@@ -206,9 +218,7 @@ staffing <- distribution |>
   resp_body_json(simplifyVector = TRUE)
 
 head(staffing, 1) |> 
-  terse(width = 110, 
-        prefix = "- ", 
-        config = list(ansi = FALSE))
+  terse(width = 110, prefix = "- ", config = list(gsep = " ", ansi = FALSE))
 ```
 
 ## Temporal Data
@@ -227,9 +237,7 @@ distribution |>
     grepl("Medicare Inpatient Hospitals - by Provider and Service", title), 
     format == "API",
     temporal == "2017-01-01/2017-12-31") |> 
-  terse(width = 110, 
-        prefix = "- ", 
-        config = list(ansi = FALSE))
+  terse(width = 110, prefix = "- ", config = list(gsep = " ", ansi = FALSE))
 ```
 
 ## Methods: Same Data, Different Output
@@ -263,9 +271,7 @@ json_standard <- distribution |>
     description == "latest")
 
 json_standard |> 
-  terse(width = 110, 
-        prefix = "- ", 
-        config = list(ansi = FALSE))
+  terse(width = 110, prefix = "- ", config = list(gsep = " ", ansi = FALSE))
 ```
 
 ### Method 2: JSON:API
@@ -311,9 +317,7 @@ json_api |>
     theme = delist(theme)) |> 
   unnest_wider(contactPoint, names_sep = "_") |>
   unnest_wider(publisher, names_sep = "_") |> 
-  terse(width = 110, 
-        prefix = "- ", 
-        config = list(ansi = FALSE))
+  terse(width = 110, prefix = "- ", config = list(gsep = " ", ansi = FALSE))
 ```
 
 --------------------------------------------------------------------------------
@@ -341,7 +345,7 @@ request("https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77
   req_perform() |> 
   resp_body_json(simplifyVector = TRUE) |> 
   tibble() |> 
-  terse(width = 110, prefix = "- ", config = list(gsep = "", ansi = FALSE))
+  terse(width = 110, prefix = "- ", config = list(gsep = " ", ansi = FALSE))
 ```
       
    3. Make a request for the *next* 5,000 rows:
@@ -352,7 +356,7 @@ request("https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77
   req_perform() |> 
   resp_body_json(simplifyVector = TRUE) |> 
   tibble() |> 
-  terse(width = 110, prefix = "- ", config = list(gsep = "", ansi = FALSE))
+  terse(width = 110, prefix = "- ", config = list(gsep = " ", ansi = FALSE))
 ```
 
    4. Continue increasing the offset until you reach the count from step 1
@@ -363,7 +367,7 @@ request("https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77
   req_perform() |> 
   resp_body_json(simplifyVector = TRUE) |> 
   tibble() |> 
-  terse(width = 110, prefix = "- ", config = list(gsep = "", ansi = FALSE))
+  terse(width = 110, prefix = "- ", config = list(gsep = " ", ansi = FALSE))
 ```
 
 ## Pagination Example
@@ -389,21 +393,19 @@ optout_n$total_rows / 5000
 
 ## Find the Number of Rows
 
-You can use the `data-viewer/stats` or `data/stats` endpoints i.e., 
+Use the `stats` endpoints i.e., 
 
    * `data.cms.gov/data-api/v1/dataset/{ID}/data-viewer/stats`
    * `data.cms.gov/data-api/v1/dataset/{ID}/data/stats`
 
-# Download CSV/ZIP versions
+# Download CSV versions
 
    1. Start with a request to the `data.json`. 
-   2. Matching the dataset `title` with its name.
-   3. The most recent release will be at the top of the `distribution` list. 
+   2. Match the dataset `title` with its name.
+   3. The most recent release will be at the top of the `distribution` array. 
    4. There is also a `temporal` field which can be used to find earlier releases.
-   5. Datasets available as either CSV or ZIP files will be designated in the `mediaType` field.
+   5. Datasets available as either CSV or ZIP files will be designated as such in the `mediaType` field.
    6. The `downloadURL` field will provide a direct download link for the data.
-
-## CSV Example
 
 ```{r}
 #| label: csv_download
@@ -423,26 +425,23 @@ orderrefer_csv <- read_csv_arrow(
 orderrefer_csv
 ```
 
+::: callout
+
 ## ZIP Example
 
 _CMS Summary Statistics/COVID data -> Likely not relevant to package scope_
 
-# Additional Resources
+::: 
 
-The data.json has been updated to include a resources API that allows you to easily find the download URL for resources, which are supplemental documents to the main dataset.
-1. Start with a request to the data.json. Always start with the catalog, do not hard code or try to predict the download URL. The catalog will update automatically when new data is available.
-2. Find the dataset within the catalog by matching the “title” with the name of the dataset.
-3. Within each dataset, there is an array called distribution which will contain all the versions of the data in all available formats for each version.
-4. The most recent release will be at the top of the distribution list, there is also a “temporal” field which can be used to find earlier releases.
-5. The “resourcesAPI” is a secondary API endpoint from data.json that will provide a link for the resources connected to the dataset and the download URL for the supporting documents.
-6. Using the link stored in the “resourcesAPI”, limit by the “name” of the resource you want to download. The name of the resource may change between versions.
-7. The “downloadURL” will provide a direct download link for the resource.
+# _New:_ **Resources**
 
-## Resource Example
+Resources (supplemental documents to the main dataset) are now available for download through the public API. Included are sub-files, tables, supplementary data, reports, and documentation. The new endpoints appear in the `resourcesAPI` field, a secondary endpoint from `data.json`. 
 
-Resource File Download URL Link for Latest Dataset Code Example
+> **Note**: Limit by the `name` of the resource you want to download. This name may change between versions.
 
-Finds the download link for the latest [Medicare Fee-For-Service Public Provider Enrollment Reassignment Sub-File](https://data.cms.gov/provider-characteristics/medicare-provider-supplier-enrollment/medicare-fee-for-service-public-provider-enrollment)
+## Example: Reassignment SubFile (`csv`)
+
+Site: [Public Provider Enrollment Reassignment SubFile](https://data.cms.gov/provider-characteristics/medicare-provider-supplier-enrollment/medicare-fee-for-service-public-provider-enrollment)
 
 ```{r}
 #| label: add_resources
@@ -464,9 +463,7 @@ reassign_url <- tibble(
   filter(grepl("Reassignment", name))
 
 reassign_url |> 
-  terse(width = 110, 
-        prefix = "- ", 
-        config = list(gsep = ""))
+  terse(width = 110, prefix = "- ", config = list(gsep = " ", ansi = FALSE))
 
 reassign_csv <- read_csv_arrow(
   file = reassign_url$url, 
