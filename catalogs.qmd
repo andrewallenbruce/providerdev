@@ -30,7 +30,7 @@ library(emphatic)
 
 purse <- function(x, 
                   pre = "- ", 
-                  wid = 100, 
+                  wid = 0, 
                   sep = " ") {
   terse::terse(
     x = x, 
@@ -42,40 +42,40 @@ purse <- function(x,
 }
 ```
 
-
-# Data Catalogs
-
 ## Main CMS
 
 ```{r}
-#| eval: false
-# https://data.cms.gov/data-api/v1/dataset/
-catalogs <- c(
-  main = read_json_arrow(
+#| label: data_json_metadata
+read_json_arrow(
     file = "https://data.cms.gov/data.json", 
-    col_select = c("dataset"),
-    as_data_frame = TRUE) |> 
-    to_duckdb(),
-  provider = request("https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items"),
-  open = request("https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids"),
-  eligibility = request("https://qpp.cms.gov/api/eligibility")
-)
-
-catalogs
+    col_select = c("@context", "@id", "@type", "conformsTo", "describedBy"),
+    as_data_frame = FALSE) |> 
+  collect() |> 
+  purse()
 ```
 
-> **Note:** Removing `col_select = c("dataset")` from the above call returns the following metadata:
-
 ```{r}
-#| label: col_select_remove
-#| echo: false
-c("@context    <chr> https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld", 
-  "@id         <chr> https://data.cms.gov/data.json", 
-  "@type       <chr> dcat:Catalog", 
-  "conformsTo  <chr> https://project-open-data.cio.gov/v1.1/schema", 
-  "describedBy <chr> https://project-open-data.cio.gov/v1.1/schema/catalog.json", 
-  "dataset     <list> [<data.frame[138 x 22]>]") |> 
-  cat(sep = "\n")
+#| label: data_json
+data_json <- read_json_arrow(
+  file = "https://data.cms.gov/data.json",
+  col_select = c("dataset"),
+    as_data_frame = TRUE) |> 
+  to_duckdb()
+
+data_json |> 
+  pull(dataset) |> 
+  pluck(1) |> 
+  tibble() |> 
+  mutate(
+    bureauCode = delist(bureauCode),
+    keyword = map_chr(keyword, \(x) paste0(delist(x), collapse = ", ")),
+    language = delist(language),
+    programCode = delist(programCode),
+    theme = map_chr(theme, \(x) paste0(delist(x), collapse = ", ")),
+    references = delist(references)) |>
+  unnest_wider(contactPoint, names_sep = "_") |>
+  unnest_wider(publisher, names_sep = "_") |> 
+  purse()
 ```
 
 ## Provider CMS
@@ -85,11 +85,36 @@ request('https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/item
   req_perform() |>
   resp_body_json(simplifyVector = TRUE) |> 
   tibble() |> 
+  mutate(
+    bureauCode = delist(bureauCode),
+    keyword = map_chr(keyword, \(x) paste0(delist(x), collapse = ", ")),
+    programCode = delist(programCode),
+    theme = map_chr(theme, \(x) paste0(delist(x), collapse = ", "))) |>
+  unnest_wider(contactPoint, names_sep = "_") |>
+  unnest_wider(publisher, names_sep = "_") |> 
+  purse()
+```
+
+## Open Payments
+
+```{r}
+request("https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids") |>
+  req_perform() |>
+  resp_body_json(simplifyVector = TRUE) |> 
+  tibble() |> 
+  mutate(
+    bureauCode = delist(bureauCode),
+    keyword = map_chr(keyword, \(x) paste0(delist(x), collapse = ", ")),
+    programCode = delist(programCode),
+    theme = map_chr(theme, \(x) paste0(delist(x), collapse = ", "))) |>
+  unnest_wider(contactPoint, names_sep = "_") |>
+  unnest_wider(publisher, names_sep = "_") |> 
+  unnest_wider(publisher_data, names_sep = "_") |> 
   purse()
 ```
 
 
-## QPP CMS
+## QPP CMS Endpoint
 
    * [QPP Eligibility API Documentation](https://cmsgov.github.io/qpp-eligibility-docs/)
    * [QPP Eligibility REST API Documentation](https://qpp.cms.gov/api/eligibility/docs/)
@@ -109,6 +134,21 @@ request("https://qpp.cms.gov/api/eligibility/npis/1043477615/?year=2025") |>
   resp_body_json(simplifyVector = TRUE) |> 
   pluck(1) |> 
   tibble() |> 
+  unnest_wider(specialty, names_sep = "_") |>
+  unnest_wider(organizations, names_sep = "_") |>
+  unnest_wider(organizations_apms, names_sep = "_") |>
+  unnest_wider(organizations_virtualGroups, names_sep = "_") |>
+  unnest_wider(organizations_individualScenario, names_sep = "_") |>
+  unnest_wider(organizations_groupScenario, names_sep = "_") |>
+  # organizations_individualScenario_extremeHardshipReasons
+  # organizations_individualScenario_extremeHardshipSources
+  # organizations_individualScenario_lowVolumeStatusReasons
+  # organizations_individualScenario_specialty
+  # organizations_individualScenario_isEligible
+  # organizations_groupScenario_extremeHardshipReasons
+  # organizations_groupScenario_extremeHardshipSources
+  # organizations_groupScenario_lowVolumeStatusReasons
+  # organizations_groupScenario_isEligible
   glimpse()
 ```
 
