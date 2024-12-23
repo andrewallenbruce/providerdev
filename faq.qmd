@@ -104,7 +104,7 @@ call:     /data?
           filter[PROVIDER_TYPE_DESC]=PRACTITIONER%20-%20GENERAL%20PRACTICE
 ```
 
-```{yaml filename="query.yml"}
+```{yml filename="query.yml"}
 #| label: query_yml
 #| eval: false
 catalog: "data.json"
@@ -141,8 +141,7 @@ call:    /data?
 
 **Combination search on 2 columns:** 
 
-```{r}
-#| eval: false
+```r
 - dataset  Medicare Fee-For-Service Public Provider Enrollment
   column   PROVIDER_TYPE_DESC
   contains PRACTITIONER
@@ -320,12 +319,10 @@ Use the `distribution` with the "latest" `description`. This URL returns **stand
 
 ```{r}
 #| label: json_standard
-json_standard <- distribution |> 
+distribution |> 
   filter(
     grepl("Order and Referring", title),
-    description == "latest")
-
-json_standard |> 
+    description == "latest") |> 
   purse()
 ```
 
@@ -387,10 +384,11 @@ For example, with our [Opt Out Affidavits]() dataset:
 
 ```{r}
 #| label: pagination_1
-request("https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data/stats") |>
+stats <- request("https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data/stats") |>
   req_perform() |> 
-  resp_body_json(simplifyVector = TRUE) |> 
-  purse()
+  resp_body_json(simplifyVector = TRUE)
+
+stats |> purse()
 ```
       
    2. Make a request for the *first* 5,000 rows:
@@ -430,22 +428,7 @@ request("https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77
 
 Paginates through the [Opt Out Affidavits](https://data.cms.gov/provider-characteristics/medicare-provider-supplier-enrollment/opt-out-affidavits) data:
 
-```{r}
-#| label: pagination_optout
-optout_n <- distribution |> 
-  filter(
-    grepl("Opt Out Affidavits : ", title), 
-    format == "API",
-    description == "latest") |> 
-  str_glue_data("{accessURL}/stats") |> 
-  request() |> 
-  req_perform() |> 
-  resp_body_json()
-
-optout_n$total_rows / 5000
-
-# req_perform_iterative()
-```
+::: callout
 
 ## Find the Number of Rows
 
@@ -453,6 +436,69 @@ Use the `stats` endpoints i.e.,
 
    * `data.cms.gov/data-api/v1/dataset/{ID}/data-viewer/stats`
    * `data.cms.gov/data-api/v1/dataset/{ID}/data/stats`
+
+::: 
+
+
+### THIS WORKS:
+"https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data/stats?filter[ex][path]=State%20Code&filter[ex][value]=GA"
+
+"https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data?size=5&filter[ex][path]=State%20Code&filter[ex][value]=GA"
+
+```{r}
+#| label: pagination_optout
+# accessURL |> 
+#   req_perform_iterative(
+#     next_req = iterate_with_offset(start = 1, offset = 5000)) |> 
+#   resp_body_json()
+
+offset_sequence <- \(found, limit = 5000) {
+  
+  if (found <= limit) 
+    return(found)
+  
+  seq.int(
+    from = 0, 
+    to = if ((found %% 5) == 0) found else (limit + found), 
+    by = limit)
+}
+
+# Not working
+offset_sequence(found = 47025)
+
+query <- glue::glue(
+  'list(
+  "filter[id-{FID}][path]" = "{PATH}",
+  "filter[id-{FID}][value]" = "{VALUE}"
+  )', 
+  FID = 1, 
+  PATH = "State Code", 
+  VALUE = "GA") |> 
+  rlang::parse_expr() |> 
+  rlang::eval_bare()
+
+accessURL <- distribution |> 
+  filter(
+    grepl("Opt Out Affidavits : ", title), 
+    format == "API",
+    description == "latest") |> 
+  pull(accessURL) |> 
+  request() |> 
+  req_url_query(size = 5000, !!!query)
+
+resp_found <- accessURL |> 
+  req_url_path_append("stats") |> 
+  req_perform() |> 
+  resp_body_json() |> 
+  fuimus::gelm("found")
+
+accessURL |> 
+  req_perform() |> 
+  resp_body_json(simplifyVector = TRUE) |> 
+  tibble() |> 
+  purse()
+```
+
 
 # Download CSV versions
 
@@ -536,43 +582,48 @@ reassign_csv
 ## Schema
 
 ```r
-<data.json>
-  |--@context
-  |--@id
-  |--@type
-  |--conformsTo
-  |--describedBy
-  |==<dataset>
-  |    |--@type
-  |    |--accessLevel
-  |    |--accrualPeriodicity
-  |    |--bureauCode
-  |    |--contactPoint
-  |    |--describedBy
-  |    |--dataQuality
-  |    |--description
-  |    |==<distribution>
-  |    |    |--@type
-  |    |    |--format
-  |    |    |--accessURL
-  |    |    |--resourcesAPI
-  |    |    |--description
-  |    |    |--title
-  |    |    |--modified
-  |    |    |--temporal
-  |    |    |--downloadURL
-  |    |    |--mediaType
-  |    |--identifier
-  |    |--keyword
-  |    |--landingPage
-  |    |--language
-  |    |--license
-  |    |--modified
-  |    |--programCode
-  |    |--publisher
-  |    |--references
-  |    |--temporal
-  |    |--theme
-  |    |--title
-  |____|--describedByType
+[data.json]
+ |--@context
+ |--@id
+ |--@type
+ |--conformsTo
+ |--describedBy
+ |--[dataset]
+     |--@type
+     |--accessLevel
+     |--accrualPeriodicity
+     |--bureauCode
+     |--[contactPoint]
+          |--@type
+          |--fn
+          |--hasEmail
+     |--describedBy
+     |--dataQuality
+     |--description
+     |--identifier
+     |--[keyword]
+     |--landingPage
+     |--language
+     |--license
+     |--modified
+     |--programCode
+     |--[publisher]
+          |--@type
+          |--name
+     |--references
+     |--temporal
+     |--theme
+     |--title
+     |--describedByType
+     |--[distribution]
+         |--@type
+         |--format
+         |--accessURL
+         |--resourcesAPI
+         |--description
+         |--title
+         |--modified
+         |--temporal
+         |--downloadURL
+         |--mediaType
 ```
