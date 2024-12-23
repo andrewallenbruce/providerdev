@@ -8,7 +8,7 @@
 
 <meta name="description" content="This is a personal, informal guide to rewriting an R package that I wrote from the ground up. It is a work in progress and will be updated as I learn more about the process.">
 
-<title>2&nbsp; Schema – Refactoring Provider</title>
+<title>4&nbsp; Query Syntax – Refactoring Provider</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -65,8 +65,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./ndf.html" rel="next">
-<link href="./faq.html" rel="prev">
+<link href="./affiliations.html" rel="next">
+<link href="./ndf.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -117,7 +117,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./catalogs.html">Data Catalogs</a></li><li class="breadcrumb-item"><a href="./schema.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Schema</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./catalogs.html">Data Catalogs</a></li><li class="breadcrumb-item"><a href="./syntax.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Query Syntax</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -196,7 +196,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./schema.html" class="sidebar-item-text sidebar-link active">
+  <a href="./schema.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Schema</span></span></a>
   </div>
 </li>
@@ -208,7 +208,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./syntax.html" class="sidebar-item-text sidebar-link">
+  <a href="./syntax.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Query Syntax</span></span></a>
   </div>
 </li>
@@ -253,21 +253,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#dataset-fields" id="toc-dataset-fields" class="nav-link active" data-scroll-target="#dataset-fields"><span class="header-section-number">3</span> <code>dataset</code> Fields</a>
+  <li><a href="#examples" id="toc-examples" class="nav-link active" data-scroll-target="#examples"><span class="header-section-number">4.1</span> Examples</a>
   <ul class="collapse">
-  <li><a href="#bureaucode" id="toc-bureaucode" class="nav-link" data-scroll-target="#bureaucode"><span class="header-section-number">3.1</span> <code>bureauCode</code></a></li>
-  <li><a href="#programcode" id="toc-programcode" class="nav-link" data-scroll-target="#programcode"><span class="header-section-number">3.2</span> <code>programCode</code></a></li>
-  <li><a href="#accrualperiodicity" id="toc-accrualperiodicity" class="nav-link" data-scroll-target="#accrualperiodicity"><span class="header-section-number">3.3</span> <code>accrualPeriodicity</code></a></li>
+  <li><a href="#exact-match-search-on-column" id="toc-exact-match-search-on-column" class="nav-link" data-scroll-target="#exact-match-search-on-column"><span class="header-section-number">4.1.1</span> Exact Match Search on Column</a></li>
+  <li><a href="#contains-search-on-one-column" id="toc-contains-search-on-one-column" class="nav-link" data-scroll-target="#contains-search-on-one-column"><span class="header-section-number">4.1.2</span> CONTAINS Search on One Column</a></li>
+  <li><a href="#combination-search-on-two-columns" id="toc-combination-search-on-two-columns" class="nav-link" data-scroll-target="#combination-search-on-two-columns"><span class="header-section-number">4.1.3</span> Combination Search on Two Columns</a></li>
+  </ul></li>
+  <li><a href="#filtering-and-manipulating-data" id="toc-filtering-and-manipulating-data" class="nav-link" data-scroll-target="#filtering-and-manipulating-data"><span class="header-section-number">4.2</span> Filtering and Manipulating Data</a>
+  <ul class="collapse">
+  <li><a href="#equals" id="toc-equals" class="nav-link" data-scroll-target="#equals"><span class="header-section-number">4.2.1</span> Equals</a></li>
+  <li><a href="#keyword" id="toc-keyword" class="nav-link" data-scroll-target="#keyword"><span class="header-section-number">4.2.2</span> Keyword</a></li>
+  <li><a href="#multiple-conditions-at-once" id="toc-multiple-conditions-at-once" class="nav-link" data-scroll-target="#multiple-conditions-at-once"><span class="header-section-number">4.2.3</span> Multiple Conditions at Once</a></li>
+  <li><a href="#in" id="toc-in" class="nav-link" data-scroll-target="#in"><span class="header-section-number">4.2.4</span> In</a></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/andrewallenbruce/providerdev/edit/main/schema.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/blob/main/schema.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider repo</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/andrewallenbruce/providerdev/edit/main/syntax.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/blob/main/syntax.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider repo</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./catalogs.html">Data Catalogs</a></li><li class="breadcrumb-item"><a href="./schema.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Schema</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./catalogs.html">Data Catalogs</a></li><li class="breadcrumb-item"><a href="./syntax.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Query Syntax</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Schema</span></h1>
+<h1 class="title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Query Syntax</span></h1>
 </div>
 
 
@@ -284,151 +291,115 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<a href="https://resources.data.gov/resources/dcat-us/" class="btn btn-outline-secondary" role="button" target="_blank">
-<i class="bi bi-box-arrow-up-right"></i>
-DCAT Schema
-</a>
-<a href="https://resources.data.gov/schemas/dcat-us/v1.1/iso8601_guidance/#accrualperiodicity" class="btn btn-outline-secondary" role="button" target="_blank">
-<i class="bi bi-box-arrow-up-right"></i>
-ISO8601
-</a>
-<a href="https://www.drupal.org/docs/core-modules-and-themes/core-modules/jsonapi-module/filtering" class="btn btn-outline-secondary" role="button" target="_blank">
-<i class="bi bi-box-arrow-up-right"></i>
-Drupal JSONAPI
-</a>
-</div>
-</div>
-<section id="dataset-fields" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> <code>dataset</code> Fields</h1>
-<section id="bureaucode" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="bureaucode"><span class="header-section-number">3.1</span> <code>bureauCode</code></h2>
-<p>Federal agencies, combined agency and bureau code from <a href="https://obamawhitehouse.archives.gov/sites/default/files/omb/assets/a11_current_year/app_c.pdf">OMB Circular A-11, Appendix C</a>.</p>
-<p>Use the format of <code>015:11</code>.</p>
-<div class="cell" data-layout-align="center">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 368 × 6
-   agency_name       bureau_name agency_code bureau_code treasury_code cgac_code
-   &lt;chr&gt;             &lt;chr&gt;       &lt;chr&gt;       &lt;chr&gt;       &lt;chr&gt;         &lt;chr&gt;    
- 1 Legislative Bran… Senate      001         05          00            000      
- 2 Legislative Bran… House of R… 001         10          00            000      
- 3 Legislative Bran… Joint Items 001         11          00            000      
- 4 Legislative Bran… Capitol Po… 001         13          02            002      
- 5 Legislative Bran… Office of … 001         12          09            009      
- 6 Legislative Bran… Congressio… 001         14          08            008      
- 7 Legislative Bran… Architect … 001         15          01            001      
- 8 Legislative Bran… Botanic Ga… 001         18          09            009      
- 9 Legislative Bran… Library of… 001         25          03            003      
-10 Legislative Bran… Government… 001         30          04            004      
-# ℹ 358 more rows</code></pre>
-</div>
-</div>
+<section id="examples" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="examples"><span class="header-section-number">4.1</span> Examples</h2>
+<section id="exact-match-search-on-column" class="level3" data-number="4.1.1">
+<h3 data-number="4.1.1" class="anchored" data-anchor-id="exact-match-search-on-column"><span class="header-section-number">4.1.1</span> Exact Match Search on Column</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span> dataset   Medicare Fee<span class="sc">-</span>For<span class="sc">-</span>Service Public Provider Enrollment</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  column    PROVIDER_TYPE_DESC </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  equals    PRACTITIONER<span class="sc">-</span>GENERAL PRACTICE</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>call<span class="sc">:</span>     <span class="er">/</span>data?</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>          filter[PROVIDER_TYPE_DESC]<span class="ot">=</span>PRACTITIONER<span class="sc">%20-%</span><span class="dv">20</span>GENERAL%<span class="dv">20</span>PRACTICE</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode yml code-with-copy"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: query_yml</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">catalog</span><span class="kw">:</span><span class="at"> </span><span class="st">"data.json"</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">format</span><span class="kw">:</span><span class="at"> </span><span class="st">"API"</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">description</span><span class="kw">:</span><span class="at"> </span><span class="st">"latest"</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span><span class="kw">:</span><span class="at">  </span><span class="st">"Medicare Fee-For-Service Public Provider Enrollment"</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">accessURL</span><span class="kw">:</span><span class="at"> </span><span class="st">""</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">url</span><span class="kw">:</span><span class="at"> </span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">scheme</span><span class="kw">:</span><span class="at"> </span><span class="st">"https://"</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">hostname</span><span class="kw">:</span><span class="at"> </span><span class="st">"data.cms.gov/"</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">api</span><span class="kw">:</span><span class="at"> </span><span class="st">"data-api/v1/dataset/"</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">identifier</span><span class="kw">:</span><span class="at"> </span><span class="st">"d10d792e-ea6e-4145-8512-34efbc1be04b"</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">path</span><span class="kw">:</span><span class="at"> </span><span class="st">"/data?"</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">query</span><span class="kw">:</span><span class="at"> </span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">filter</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">path</span><span class="kw">:</span><span class="at"> </span><span class="st">"PROVIDER_TYPE_DESC"</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">operator</span><span class="kw">:</span><span class="at"> </span><span class="st">"EQUALS"</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">value</span><span class="kw">:</span><span class="at"> </span><span class="st">"PRACTITIONER - GENERAL PRACTICE"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="programcode" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="programcode"><span class="header-section-number">3.2</span> <code>programCode</code></h2>
-<p>Federal agencies, list the primary program related to this data asset, from the <a href="https://resources.data.gov/schemas/dcat-us/v1.1/FederalProgramInventory_FY13_MachineReadable_091613.csv">Federal Program Inventory</a>.</p>
-<p>Use the format of <code>015:001</code>.</p>
-<div class="cell" data-layout-align="center">
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1,554 × 6
-   agency_name      program_name additional_informati…¹ agency_code program_code
-   &lt;chr&gt;            &lt;chr&gt;        &lt;chr&gt;                  &lt;chr&gt;       &lt;chr&gt;       
- 1 Department of A… Rural Busin… &lt;NA&gt;                   005         005-001     
- 2 Department of A… Rural Busin… &lt;NA&gt;                   005         005-002     
- 3 Department of A… Energy Assi… &lt;NA&gt;                   005         005-003     
- 4 Department of A… Distance Le… &lt;NA&gt;                   005         005-004     
- 5 Department of A… Rural Elect… &lt;NA&gt;                   005         005-005     
- 6 Department of A… Rural Water… &lt;NA&gt;                   005         005-006     
- 7 Department of A… Single Fami… &lt;NA&gt;                   005         005-007     
- 8 Department of A… Multi-Famil… &lt;NA&gt;                   005         005-008     
- 9 Department of A… Farm labor … &lt;NA&gt;                   005         005-009     
-10 Department of A… Rental Assi… &lt;NA&gt;                   005         005-010     
-# ℹ 1,544 more rows
-# ℹ abbreviated name: ¹​additional_information_optional
-# ℹ 1 more variable: program_code_pod_format &lt;chr&gt;</code></pre>
-</div>
-</div>
+<section id="contains-search-on-one-column" class="level3" data-number="4.1.2">
+<h3 data-number="4.1.2" class="anchored" data-anchor-id="contains-search-on-one-column"><span class="header-section-number">4.1.2</span> CONTAINS Search on One Column</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span> dataset  Medicare Fee<span class="sc">-</span>For<span class="sc">-</span>Service Public Provider Enrollment</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  column   PROVIDER_TYPE_DESC</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  contains SUPPLIER</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>call<span class="sc">:</span>    <span class="er">/</span>data?</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>          filter[example][condition][path]<span class="ot">=</span>PROVIDER_TYPE_DESC</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>         <span class="sc">&amp;</span>filter[example][condition][operator]<span class="ot">=</span>CONTAINS</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>         <span class="sc">&amp;</span>filter[example][condition][value]<span class="ot">=</span>SUPPLIER</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="accrualperiodicity" class="level2" data-number="3.3">
-<h2 data-number="3.3" class="anchored" data-anchor-id="accrualperiodicity"><span class="header-section-number">3.3</span> <code>accrualPeriodicity</code></h2>
-<div class="cell" data-layout-align="center">
-<div class="cell-output cell-output-stdout">
-<pre><code>                   term         iso_8601
-1             Decennial           R/P10Y
-2           Quadrennial            R/P4Y
-3                Annual            R/P1Y
-4             Bimonthly R/P2M or R/P0.5M
-5            Semiweekly          R/P3.5D
-6                 Daily            R/P1D
-7              Biweekly R/P2W or R/P0.5W
-8            Semiannual            R/P6M
-9              Biennial            R/P2Y
-10            Triennial            R/P3Y
-11   Three times a week         R/P0.33W
-12  Three times a month         R/P0.33M
-13 Continuously updated           R/PT1S
-14              Monthly            R/P1M
-15            Quarterly            R/P3M
-16          Semimonthly          R/P0.5M
-17   Three times a year            R/P4M
-18               Weekly            R/P1W
-19               Hourly           R/PT1H</code></pre>
-</div>
-</div>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>iso_8601 <span class="ot">&lt;-</span> \(x) {</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  kit<span class="sc">::</span><span class="fu">nswitch</span>(</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    x,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P10Y"</span>,   <span class="st">"Decennial"</span>,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P4Y"</span>,    <span class="st">"Quadrennial"</span>,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P1Y"</span>,    <span class="st">"Annual"</span>,</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P0.5M"</span>,  <span class="st">"Bimonthly"</span>,</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P2M"</span>,    <span class="st">"Bimonthly"</span>,</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P0.5W"</span>,  <span class="st">"Biweekly"</span>,</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P2W"</span>,    <span class="st">"Biweekly"</span>,</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P3.5D"</span>,  <span class="st">"Semiweekly"</span>,</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P1D"</span>,    <span class="st">"Daily"</span>,</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P6M"</span>,    <span class="st">"Semiannual"</span>,</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P2Y"</span>,    <span class="st">"Biennial"</span>,</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P3Y"</span>,    <span class="st">"Triennial"</span>,</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P0.33W"</span>, <span class="st">"Three Times a Week"</span>,</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P0.33M"</span>, <span class="st">"Three Times a Month"</span>,</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/PT1S"</span>,   <span class="st">"Continuously Updated"</span>,</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P1M"</span>,    <span class="st">"Monthly"</span>,</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P3M"</span>,    <span class="st">"Quarterly"</span>,</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P0.5M"</span>,  <span class="st">"Semimonthly"</span>,</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P4M"</span>,    <span class="st">"Three Times a Year"</span>,</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P1W"</span>,    <span class="st">"Weekly"</span>,</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/PT1H"</span>,   <span class="st">"Hourly"</span>)</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>accrual_key <span class="sc">|&gt;</span> </span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">iso_test =</span> <span class="fu">iso_8601</span>(iso_8601), <span class="at">.before =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>                   term             iso_test         iso_8601
-1             Decennial            Decennial           R/P10Y
-2           Quadrennial          Quadrennial            R/P4Y
-3                Annual               Annual            R/P1Y
-4             Bimonthly                 &lt;NA&gt; R/P2M or R/P0.5M
-5            Semiweekly           Semiweekly          R/P3.5D
-6                 Daily                Daily            R/P1D
-7              Biweekly                 &lt;NA&gt; R/P2W or R/P0.5W
-8            Semiannual           Semiannual            R/P6M
-9              Biennial             Biennial            R/P2Y
-10            Triennial            Triennial            R/P3Y
-11   Three times a week   Three Times a Week         R/P0.33W
-12  Three times a month  Three Times a Month         R/P0.33M
-13 Continuously updated Continuously Updated           R/PT1S
-14              Monthly              Monthly            R/P1M
-15            Quarterly            Quarterly            R/P3M
-16          Semimonthly          Semimonthly          R/P0.5M
-17   Three times a year   Three Times a Year            R/P4M
-18               Weekly               Weekly            R/P1W
-19               Hourly               Hourly           R/PT1H</code></pre>
-</div>
-</div>
+<section id="combination-search-on-two-columns" class="level3" data-number="4.1.3">
+<h3 data-number="4.1.3" class="anchored" data-anchor-id="combination-search-on-two-columns"><span class="header-section-number">4.1.3</span> Combination Search on Two Columns</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="sc">-</span> dataset  Medicare Fee<span class="sc">-</span>For<span class="sc">-</span>Service Public Provider Enrollment</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  column   PROVIDER_TYPE_DESC</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  contains PRACTITIONER</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  column   STATE_CD</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  equals   MD</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>call<span class="sc">:</span>    <span class="er">/</span>data?</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>          filter[filter<span class="dv">-1</span>][condition][path]<span class="ot">=</span>PROVIDER_TYPE_DESC</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>         <span class="sc">&amp;</span>filter[filter<span class="dv">-1</span>][condition][operator]<span class="ot">=</span>CONTAINS</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>         <span class="sc">&amp;</span>filter[filter<span class="dv">-1</span>][condition][value]<span class="ot">=</span>PRACTITIONER</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>         <span class="sc">&amp;</span>filter[filter<span class="dv">-2</span>][condition][path]<span class="ot">=</span>STATE_CD</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>         <span class="sc">&amp;</span>filter[filter<span class="dv">-2</span>][condition][operator]<span class="sc">==</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>         <span class="er">&amp;</span>filter[filter<span class="dv">-2</span>][condition][value]<span class="ot">=</span>MD</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><a href="https://www.drupal.org/docs/core-modules-and-themes/core-modules/jsonapi-module/filtering">Refer to the Drupal documentation</a> for more information on filtering API requests.</p>
+</section>
+</section>
+<section id="filtering-and-manipulating-data" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="filtering-and-manipulating-data"><span class="header-section-number">4.2</span> Filtering and Manipulating Data</h2>
+<section id="equals" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="equals"><span class="header-section-number">4.2.1</span> Equals</h3>
+<p>This example is an equals filter searching the Accountable Care Organizations 2021 dataset for a single ID.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>data.cms.gov<span class="sc">/</span>data<span class="sc">-</span>api<span class="sc">/</span>v1<span class="sc">/</span>dataset<span class="sc">/</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="dv">0</span>ece71c6<span class="dv">-1112-47</span>b3<span class="dv">-8</span>f7a<span class="fl">-5385087e7041</span><span class="sc">/</span>data?</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>filter[filter<span class="dv">-0-0</span>][condition][path]<span class="ot">=</span>aco_id<span class="sc">&amp;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>filter[filter<span class="dv">-0-0</span>][condition][operator]<span class="ot">=</span>%<span class="dv">3</span>D<span class="sc">&amp;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>filter[filter<span class="dv">-0-0</span>][condition][value]<span class="ot">=</span>A4807</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>An equals filter can be simplified like this.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>data.cms.gov<span class="sc">/</span>data<span class="sc">-</span>api<span class="sc">/</span>v1<span class="sc">/</span>dataset<span class="sc">/</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="dv">0</span>ece71c6<span class="dv">-1112-47</span>b3<span class="dv">-8</span>f7a<span class="fl">-5385087e7041</span><span class="sc">/</span>data?</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>filter[aco_id]<span class="ot">=</span>A4807</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="keyword" class="level3" data-number="4.2.2">
+<h3 data-number="4.2.2" class="anchored" data-anchor-id="keyword"><span class="header-section-number">4.2.2</span> Keyword</h3>
+<p>The keyword search will look for matching words in every column. This example will check for “Alex” in the Order and Referring dataset. Notice that it finds matches on both the first and last name fields.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>data.cms.gov<span class="sc">/</span>data<span class="sc">-</span>api<span class="sc">/</span>v1<span class="sc">/</span>dataset<span class="sc">/</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>c99b5865<span class="dv">-1119-4436</span><span class="sc">-</span>bb80<span class="sc">-</span>c5af2773ea1f<span class="sc">/</span>data?</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>keyword<span class="ot">=</span>alex</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="multiple-conditions-at-once" class="level3" data-number="4.2.3">
+<h3 data-number="4.2.3" class="anchored" data-anchor-id="multiple-conditions-at-once"><span class="header-section-number">4.2.3</span> Multiple Conditions at Once</h3>
+<p>This search returns results from the Medicare Fee-For-Service Public Provider Enrollment dataset where the provider specialty is “PRACTITIONER - OPTOMETRY” and the location is Virginia.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>data.cms.gov<span class="sc">/</span>data<span class="sc">-</span>api<span class="sc">/</span>v1<span class="sc">/</span>dataset<span class="sc">/</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="dv">2457</span>ea29<span class="sc">-</span>fc82<span class="dv">-48</span>b0<span class="dv">-86</span>ec<span class="dv">-3</span>b0755de7515<span class="sc">/</span>data?<span class="sc">&amp;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>filter[root<span class="sc">-</span>group][group][conjunction]<span class="ot">=</span>AND<span class="sc">&amp;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>filter[group<span class="dv">-0</span>][group][conjunction]<span class="ot">=</span>AND<span class="sc">&amp;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>filter[group<span class="dv">-0</span>][group][memberOf]<span class="ot">=</span>root<span class="sc">-</span>group<span class="sc">&amp;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>filter[filter<span class="dv">-0-0</span>][condition][path]<span class="ot">=</span>PROVIDER_TYPE_DESC<span class="sc">&amp;</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>filter[filter<span class="dv">-0-0</span>][condition][operator]<span class="ot">=</span>%<span class="dv">3</span>D<span class="sc">&amp;</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>filter[filter<span class="dv">-0-0</span>][condition][value]<span class="ot">=</span>PRACTITIONER<span class="sc">%20-%</span><span class="dv">20</span>OPTOMETRY<span class="sc">&amp;</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>filter[filter<span class="dv">-0-0</span>][condition][memberOf]<span class="ot">=</span>group<span class="dv">-0</span><span class="sc">&amp;</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>filter[filter<span class="dv">-0-1</span>][condition][path]<span class="ot">=</span>STATE_CD<span class="sc">&amp;</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>filter[filter<span class="dv">-0-1</span>][condition][operator]<span class="ot">=</span>%<span class="dv">3</span>D<span class="sc">&amp;</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>filter[filter<span class="dv">-0-1</span>][condition][value]<span class="ot">=</span>VA<span class="sc">&amp;</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>filter[filter<span class="dv">-0-1</span>][condition][memberOf]<span class="ot">=</span>group<span class="dv">-0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="in" class="level3" data-number="4.2.4">
+<h3 data-number="4.2.4" class="anchored" data-anchor-id="in"><span class="header-section-number">4.2.4</span> In</h3>
+<p>This search returns results from the Opioid Treatment Program Providers dataset where the provider is located from MD, MI, or VA with the results sorted by NPI.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>data.cms.gov<span class="sc">/</span>data<span class="sc">-</span>api<span class="sc">/</span>v1<span class="sc">/</span>dataset<span class="sc">/</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>f1a8c197<span class="sc">-</span>b53d<span class="dv">-4</span>c24<span class="dv">-9770</span><span class="sc">-</span>aea5d5a97dfb<span class="sc">/</span>data?</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>filter[condition][path]<span class="ot">=</span>STATE<span class="sc">&amp;</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>filter[condition][operator]<span class="ot">=</span>IN<span class="sc">&amp;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>filter[condition][value][]<span class="ot">=</span>MI<span class="sc">&amp;</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>filter[condition][value][]<span class="ot">=</span>VA<span class="sc">&amp;</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>filter[condition][value][]<span class="ot">=</span>MD<span class="sc">&amp;</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>sort<span class="ot">=</span>NPI</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
 </section>
@@ -854,13 +825,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./faq.html" class="pagination-link" aria-label="API FAQ">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">API FAQ</span></span>
+      <a href="./ndf.html" class="pagination-link" aria-label="NDF">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">NDF</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./ndf.html" class="pagination-link" aria-label="NDF">
-        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">NDF</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./affiliations.html" class="pagination-link" aria-label="Affiliations">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Affiliations</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -869,5 +840,5 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/andrewallenbruce/providerdev/edit/main/schema.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/blob/main/schema.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/andrewallenbruce/providerdev/edit/main/syntax.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/blob/main/syntax.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

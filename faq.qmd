@@ -82,82 +82,14 @@ The **data.CMS.gov/data.json** API:
 To integrate endpoint requests with the **data.cms.gov Public API**, follow these steps:
 
    1. Dataset & Identifier: 
-      * [Search for dataset](https://data.cms.gov/search) and visit its **overview** page
-      * Click on **Access API**, then **API Docs for the Dataset**
+      * [Search for dataset](https://data.cms.gov/search) and visit its **Overview** page
+      * Click **Access API** then **API Docs for the Dataset**
    2. Endpoint structure:
       * `data.cms.gov/data-api/v1/dataset/{{dataset_id}}/data` 
-   3. System uses **JSONAPI** query syntax:
+   3. System uses **JSON:API** query syntax:
       * Key-values: `?filter[field_name]=value&filter[field_other]=value`
       * Responses are paged and support a max page size of 5000 rows
-      * Use the `size` & `offset` query parameters to page through the data
-
-### Query Syntax
-
-**Exact Match Search on Column**:
-
-```r
-- dataset   Medicare Fee-For-Service Public Provider Enrollment
-  column    PROVIDER_TYPE_DESC 
-  equals    PRACTITIONER-GENERAL PRACTICE
-
-call:     /data?
-          filter[PROVIDER_TYPE_DESC]=PRACTITIONER%20-%20GENERAL%20PRACTICE
-```
-
-```yml
-#| label: query_yml
-#| eval: false
-catalog: "data.json"
-format: "API"
-description: "latest"
-title:  "Medicare Fee-For-Service Public Provider Enrollment"
-accessURL: ""
-
-url: 
-  scheme: "https://"
-  hostname: "data.cms.gov/"
-  api: "data-api/v1/dataset/"
-  identifier: "d10d792e-ea6e-4145-8512-34efbc1be04b"
-  path: "/data?"
-  query: 
-    - filter: 1
-      path: "PROVIDER_TYPE_DESC"
-      operator: "EQUALS"
-      value: "PRACTITIONER - GENERAL PRACTICE"
-```
-
-**Contains Search on Column**:
-
-```r
-- dataset  Medicare Fee-For-Service Public Provider Enrollment
-  column   PROVIDER_TYPE_DESC
-  contains SUPPLIER
-
-call:    /data?
-          filter[example][condition][path]=PROVIDER_TYPE_DESC
-         &filter[example][condition][operator]=CONTAINS
-         &filter[example][condition][value]=SUPPLIER
-```
-
-**Combination search on 2 columns:** 
-
-```r
-- dataset  Medicare Fee-For-Service Public Provider Enrollment
-  column   PROVIDER_TYPE_DESC
-  contains PRACTITIONER
-  column   STATE_CD
-  equals   MD
-
-call:    /data?
-          filter[filter-1][condition][path]=PROVIDER_TYPE_DESC
-         &filter[filter-1][condition][operator]=CONTAINS
-         &filter[filter-1][condition][value]=PRACTITIONER
-         &filter[filter-2][condition][path]=STATE_CD
-         &filter[filter-2][condition][operator]==
-         &filter[filter-2][condition][value]=MD
-```
-
-[Refer to the Drupal documentation](https://www.drupal.org/docs/core-modules-and-themes/core-modules/jsonapi-module/filtering) for more information on filtering API requests.
+      * Use `size` & `offset` query parameters to page through the data
 
 --------------------------------------------------------------------------------
 
@@ -244,7 +176,7 @@ distribution |>
    * __mediaType__ `"text/csv"` is a downloadable CSV file
    * __mediaType__ `"application/zip"` is a downloadable ZIP file
    * __format__ `"API"` is an API endpoint
-   * Remaining entries provide references to the data at fixed points in time, listed in descending order by date.
+   * Remaining entries provide references to data at fixed points in time
 
 ```{r}
 distribution |> 
@@ -256,11 +188,12 @@ distribution |>
   hl_adjust(text_contrast = 0.5, na = "-")
 ```
 
-For example, the URL in the following example will *always* point to the **Payroll Based Journal Daily Nurse Staffing** data from **Q2 2021**:
+For instance, the following URL will *always* point to the **Q2 2021 Payroll Based Journal Daily Nurse Staffing** data:
 
 ```{r}
 #| label: staffing
 # "https://data.cms.gov/data-api/v1/dataset/d10d792e-ea6e-4145-8512-34efbc1be04b/data"
+
 staffing <- distribution |> 
   filter(
     grepl("Payroll Based Journal Daily Nurse Staffing", title),
@@ -277,12 +210,11 @@ head(staffing, 1) |>
 
 ## Temporal Data
 
-Datasets with multiple historical versions available will have a `temporal` field in the `distribution` array of the `data.json` file which will indicate the time period.
+Datasets with multiple historical versions available will have a `temporal` field in the `distribution` array of the `data.json`.
 
-**Format**: `yyyy-mm-dd/yyyy-mm-dd`
+> **Format**: `YYYY-mm-dd/YYYY-mm-dd`
 
-The following example finds the API link for the [2017 Medicare Inpatient Hospitals - by Provider and Service Data](https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatienthospitals/medicare-inpatient-hospitals-by-provider-and-service):
-
+The following example returns the [2017 Medicare Inpatient Hospitals - by Provider and Service Data](https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatienthospitals/medicare-inpatient-hospitals-by-provider-and-service):
 
 ```{r}
 #| label: temporal_data
@@ -294,15 +226,17 @@ distribution |>
   purse()
 ```
 
-## Methods: Same Data, Different Output
+## Different JSON Methods
 
 There are two methods of accessing the latest data. 
 
 Both result in a URL pointing to the most recent version of the dataset. This URL is canonical, i.e., will not change as new versions are added. 
 
-For this reason, it is _recommended to **always** start with the **`data.json` object** as opposed to hardcoding any URL_.
+> For this reason, it is _recommended to **always** start with the **`data.json` object** as opposed to hardcoding any URL_.
 
-### Method 1: Standard JSON
+### Standard JSON
+
+Use the __`distribution`__ with the `"latest"` __`description`__:
 
 ```r
 <data_json>
@@ -311,10 +245,11 @@ For this reason, it is _recommended to **always** start with the **`data.json` o
     -> $(description == "latest")
     -> $(accessURL)
 ```
-Use the `distribution` with the "latest" `description`. This URL returns **standard JSON**.
 
 > For example, this URL for Opt Out Affidavits is 
-> `"https://data.cms.gov/dataapi/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data"` 
+> `"https://data.cms.gov/data-api/v1/dataset/"`
+> `"9887a515-7552-4693-bf58-735c77af46d7/data"`
+>                                        ^^^^
 
 
 ```{r}
@@ -326,7 +261,12 @@ distribution |>
   purse()
 ```
 
-### Method 2: JSON:API
+### JSON:API
+
+The **JSON:API** form has a slightly different structure that includes metadata about the dataset. Otherwise it is identical to Method 1. 
+
+Use the URL in the `identifier` field. 
+
 
 ```r
 <data_json>
@@ -335,14 +275,10 @@ distribution |>
     -> $(identifier)
 ```
 
-Use the URL in the `identifier` field. 
-
-This URL returns JSON in the **JSON:API** form. It has a different response structure that includes metadata about the dataset. Otherwise it is identical to Method 1. 
-
 > For example, this URL for Opt Out Affidavits: 
-> `"https://data.cms.gov/dataapi/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data-viewer"`
-
-The following example finds the API link for the latest [Order and Referring](https://data.cms.gov/provider-characteristics/medicare-provider-supplierenrollment/order-and-referring) Data:
+> `"https://data.cms.gov/data-api/v1/dataset/"`
+> `"9887a515-7552-4693-bf58-735c77af46d7/data-viewer"`
+>                                        ^^^^^^^^^^^
 
 ```{r}
 #| label: json_api
@@ -378,7 +314,7 @@ json_api |>
 
 The default is to provide the first 1,000 rows per request. However, there is an ability to increase the limit to 5,000 rows per request. You can use pagination to retrieve the entire dataset. 
 
-For example, with our [Opt Out Affidavits]() dataset:
+For example, with the Opt Out Affidavits dataset:
 
    1. Start with the following request to get the number of rows:
 
@@ -440,10 +376,17 @@ Use the `stats` endpoints i.e.,
 ::: 
 
 
-### THIS WORKS:
-"https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data/stats?filter[ex][path]=State%20Code&filter[ex][value]=GA"
+```r
+data/
+stats?
+filter[ex][path]=State%20Code&
+filter[ex][value]=GA
 
-"https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data?size=5&filter[ex][path]=State%20Code&filter[ex][value]=GA"
+data?
+size=5&
+filter[ex][path]=State%20Code&
+filter[ex][value]=GA
+```
 
 ```{r}
 #| label: pagination_optout
@@ -500,7 +443,7 @@ accessURL |>
 ```
 
 
-# Download CSV versions
+# CSVs
 
    1. Start with a request to the `data.json`. 
    2. Match the dataset `title` with its name.
@@ -574,8 +517,6 @@ reassign_csv <- read_csv_arrow(
 
 reassign_csv
 ```
-
-# Filtering and Manipulating Data
 
 -------------------------------------------------------------------------------
 
