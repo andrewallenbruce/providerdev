@@ -6,11 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Andrew Allen Bruce">
-<meta name="dcterms.date" content="2024-12-23">
 <meta name="description" content="This is a personal, informal guide to rewriting an R package that I wrote from the ground up. It is a work in progress and will be updated as I learn more about the process.">
 
-<title>Refactoring Provider</title>
+<title>Data Catalogs – Refactoring Provider</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -33,7 +65,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./overview.html" rel="next">
+<link href="./faq.html" rel="next">
+<link href="./overview.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -84,7 +117,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Preface</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./catalogs.html">Data Catalogs</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -136,7 +169,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Preface</span></a>
   </div>
 </li>
@@ -148,7 +181,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="./catalogs.html" class="sidebar-item-text sidebar-link">
+            <a href="./catalogs.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Data Catalogs</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
@@ -214,41 +247,31 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#preface" id="toc-preface" class="nav-link active" data-scroll-target="#preface">Preface</a></li>
+  <li><a href="#data-catalogs" id="toc-data-catalogs" class="nav-link active" data-scroll-target="#data-catalogs">Data Catalogs</a>
+  <ul class="collapse">
+  <li><a href="#main-cms" id="toc-main-cms" class="nav-link" data-scroll-target="#main-cms">Main CMS</a></li>
+  <li><a href="#provider-cms" id="toc-provider-cms" class="nav-link" data-scroll-target="#provider-cms">Provider CMS</a></li>
+  <li><a href="#qpp-cms" id="toc-qpp-cms" class="nav-link" data-scroll-target="#qpp-cms">QPP CMS</a>
+  <ul class="collapse">
+  <li><a href="#graphql-api" id="toc-graphql-api" class="nav-link" data-scroll-target="#graphql-api">GraphQL API</a></li>
+  </ul></li>
+  </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/andrewallenbruce/providerdev/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/blob/main/index.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider repo</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/andrewallenbruce/providerdev/edit/main/catalogs.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/blob/main/catalogs.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider repo</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Refactoring Provider</h1>
-<p class="subtitle lead">Building a better version of my package <code>{provider}</code>, brick-by-brick</p>
+<h1 class="title">Data Catalogs</h1>
 </div>
 
-<div>
-  <div class="description">
-    <p>This is a personal, informal guide to rewriting an R package that I wrote from the ground up. It is a work in progress and will be updated as I learn more about the process.</p>
-  </div>
-</div>
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Andrew Allen Bruce </p>
-          </div>
-  </div>
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">December 23, 2024</p>
-    </div>
-  </div>
   
     
   </div>
@@ -258,15 +281,138 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="preface" class="level1 unnumbered">
-<h1 class="unnumbered">Preface</h1>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/schema-diagram.svg" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
-</figure>
+<section id="data-catalogs" class="level1">
+<h1>Data Catalogs</h1>
+<section id="main-cms" class="level2">
+<h2 class="anchored" data-anchor-id="main-cms">Main CMS</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># https://data.cms.gov/data-api/v1/dataset/</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>catalogs <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">main =</span> <span class="fu">read_json_arrow</span>(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">file =</span> <span class="st">"https://data.cms.gov/data.json"</span>, </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">col_select =</span> <span class="fu">c</span>(<span class="st">"dataset"</span>),</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">as_data_frame =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">to_duckdb</span>(),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">provider =</span> <span class="fu">request</span>(<span class="st">"https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items"</span>),</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">open =</span> <span class="fu">request</span>(<span class="st">"https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids"</span>),</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">eligibility =</span> <span class="fu">request</span>(<span class="st">"https://qpp.cms.gov/api/eligibility"</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>catalogs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<blockquote class="blockquote">
+<p><strong>Note:</strong> Removing <code>col_select = c("dataset")</code> from the above call returns the following metadata:</p>
+</blockquote>
+<div class="cell" data-layout-align="center">
+<div class="cell-output cell-output-stdout">
+<pre><code>@context    &lt;chr&gt; https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld
+@id         &lt;chr&gt; https://data.cms.gov/data.json
+@type       &lt;chr&gt; dcat:Catalog
+conformsTo  &lt;chr&gt; https://project-open-data.cio.gov/v1.1/schema
+describedBy &lt;chr&gt; https://project-open-data.cio.gov/v1.1/schema/catalog.json
+dataset     &lt;list&gt; [&lt;data.frame[138 x 22]&gt;]</code></pre>
+</div>
+</div>
+</section>
+<section id="provider-cms" class="level2">
+<h2 class="anchored" data-anchor-id="provider-cms">Provider CMS</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">request</span>(<span class="st">'https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items'</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in (function (..., na.rm = FALSE) : an argument will be fractionally
+recycled</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>- $accessLevel    c234 public                                                                   ...
+- $landingPage    c234 https://data.cms.gov/provider-data/dataset/23ew-n7w9                     ...
+- $bureauCode     L234 list("009:38", "009:38", "009:38", "009:38", "009:38", "009:38", "009:38 ...
+- $issued         c234 2020-03-14                                                               ...
+- $@type          c234 dcat:Dataset                                                             ...
+- $modified       c234 2024-12-21                                                               ...
+- $released       c234 2024-10-23                                                               ...
+- $keyword        L234 list(c("Quality", "Quality Measures"), c("Quality", "Quality Measures"), ...
+- $contactPoint   L4   structure(list(c("vcard:Contact", "vcard:Contact", "vcard:Contact", "vca ...
+- $publisher      L2   structure(list(c("org:Organization", "org:Organization", "org:Organizati ...
+- $identifier     c234 23ew-n7w9                                                                ...
+- $description    c234 A list of all dialysis facilities registered with Medicare that includes ...
+- $title          c234 Dialysis Facility - Listing by Facility                                  ...
+- $programCode    L234 list("009:000", "009:000", "009:000", "009:000", "009:000", "009:000", " ...
+- $distribution   L234 list(structure(list("@type" = "dcat:Distribution", downloadURL = "https: ...
+- $theme          L234 list("Dialysis facilities", "Dialysis facilities", "Dialysis facilities" ...
+- $archiveExclude l234 NA                                                                       ...</code></pre>
+</div>
+</div>
+</section>
+<section id="qpp-cms" class="level2">
+<h2 class="anchored" data-anchor-id="qpp-cms">QPP CMS</h2>
+<ul>
+<li><a href="https://cmsgov.github.io/qpp-eligibility-docs/">QPP Eligibility API Documentation</a></li>
+<li><a href="https://qpp.cms.gov/api/eligibility/docs/">QPP Eligibility REST API Documentation</a></li>
+</ul>
+<blockquote class="blockquote">
+<p>Note: Not really a catalog</p>
+</blockquote>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">request</span>(<span class="st">"https://qpp.cms.gov/api/eligibility/stats/?year=2025"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_headers</span>(<span class="at">Accept =</span> <span class="st">"application/vnd.qpp.cms.gov.v6+json"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$data
+$data$individual
+$data$individual$hccRiskScoreAverage
+[1] 2.5
+
+$data$individual$dualEligibilityAverage
+[1] 0.507
 
 
+$data$group
+$data$group$hccRiskScoreAverage
+[1] 2.49
+
+$data$group$dualEligibilityAverage
+[1] 0.499</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">request</span>(<span class="st">"https://qpp.cms.gov/api/eligibility/npis/1043477615/?year=2025"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_headers</span>(<span class="at">Accept =</span> <span class="st">"application/vnd.qpp.cms.gov.v6+json"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_error</span>(<span class="at">body =</span> \(resp) <span class="fu">resp_body_json</span>(resp)<span class="sc">$</span>error<span class="sc">$</span>message) <span class="sc">|&gt;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 1
+Columns: 12
+$ firstName                      &lt;chr&gt; "SARAH"
+$ middleName                     &lt;chr&gt; "K"
+$ lastName                       &lt;chr&gt; "HUSSAIN"
+$ npi                            &lt;chr&gt; "1043477615"
+$ nationalProviderIdentifierType &lt;int&gt; 1
+$ firstApprovedDate              &lt;chr&gt; "2014-01-27"
+$ yearsInMedicare                &lt;int&gt; 10
+$ pecosEnrollmentDate            &lt;int&gt; 2014
+$ newlyEnrolled                  &lt;lgl&gt; FALSE
+$ specialty                      &lt;df[,3]&gt; &lt;data.frame[1 x 3]&gt;
+$ isMaqi                         &lt;lgl&gt; FALSE
+$ organizations                  &lt;list&gt; [&lt;data.frame[1 x 12]&gt;]</code></pre>
+</div>
+</div>
+<section id="graphql-api" class="level3">
+<h3 class="anchored" data-anchor-id="graphql-api">GraphQL API</h3>
+<ul>
+<li><a href="https://cmsgov.github.io/qpp-eligibility-docs/clinician">Basic Clinician GraphQL Example</a></li>
+<li><a href="https://qpp.cms.gov/api/eligibility/graphql">QPP Eligibility GraphQL API Documentation</a></li>
+</ul>
+
+
+</section>
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -689,10 +835,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="./overview.html" class="pagination-link" aria-label="Overview">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Overview</span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./overview.html" class="pagination-link" aria-label="Overview">
-        <span class="nav-page-text">Overview</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./faq.html" class="pagination-link" aria-label="API FAQ">
+        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">API FAQ</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -701,5 +850,5 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/andrewallenbruce/providerdev/edit/main/index.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/blob/main/index.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/andrewallenbruce/providerdev/edit/main/catalogs.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/blob/main/catalogs.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
