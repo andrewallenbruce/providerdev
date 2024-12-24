@@ -229,6 +229,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Affiliations</span></span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./quality_eligibility.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Quality Eligibility</span></span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -252,10 +258,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#main-cms" id="toc-main-cms" class="nav-link active" data-scroll-target="#main-cms">Main CMS</a></li>
   <li><a href="#provider-cms" id="toc-provider-cms" class="nav-link" data-scroll-target="#provider-cms">Provider CMS</a></li>
   <li><a href="#open-payments" id="toc-open-payments" class="nav-link" data-scroll-target="#open-payments">Open Payments</a></li>
-  <li><a href="#qpp-cms-endpoint" id="toc-qpp-cms-endpoint" class="nav-link" data-scroll-target="#qpp-cms-endpoint">QPP CMS Endpoint</a>
-  <ul class="collapse">
-  <li><a href="#graphql-api" id="toc-graphql-api" class="nav-link" data-scroll-target="#graphql-api">GraphQL API</a></li>
-  </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/andrewallenbruce/providerdev/edit/main/catalogs.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/blob/main/catalogs.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider repo</a></li></ul></div></nav>
     </div>
@@ -429,148 +431,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 - $accrualPeriodicity    c74 NA                                             ...</code></pre>
 </div>
 </div>
-</section>
-<section id="qpp-cms-endpoint" class="level2">
-<h2 class="anchored" data-anchor-id="qpp-cms-endpoint">QPP CMS Endpoint</h2>
-<ul>
-<li><a href="https://cmsgov.github.io/qpp-eligibility-docs/">QPP Eligibility API Documentation</a></li>
-<li><a href="https://qpp.cms.gov/api/eligibility/docs/">QPP Eligibility REST API Documentation</a></li>
-</ul>
-<blockquote class="blockquote">
-<p>Note: Not really a catalog</p>
-</blockquote>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">request</span>(<span class="st">"https://qpp.cms.gov/api/eligibility/stats/?year=2025"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_headers</span>(<span class="at">Accept =</span> <span class="st">"application/vnd.qpp.cms.gov.v6+json"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$data
-$data$individual
-$data$individual$hccRiskScoreAverage
-[1] 2.5
-
-$data$individual$dualEligibilityAverage
-[1] 0.507
 
 
-$data$group
-$data$group$hccRiskScoreAverage
-[1] 2.49
-
-$data$group$dualEligibilityAverage
-[1] 0.499</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">request</span>(<span class="st">"https://qpp.cms.gov/api/eligibility/npis/1043477615/?year=2025"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_headers</span>(<span class="at">Accept =</span> <span class="st">"application/vnd.qpp.cms.gov.v6+json"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_error</span>(<span class="at">body =</span> \(resp) <span class="fu">resp_body_json</span>(resp)<span class="sc">$</span>error<span class="sc">$</span>message) <span class="sc">|&gt;</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(specialty, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(organizations, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(organizations_apms, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(organizations_virtualGroups, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(organizations_individualScenario, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(organizations_groupScenario, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># organizations_individualScenario_extremeHardshipReasons</span></span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># organizations_individualScenario_extremeHardshipSources</span></span>
-<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># organizations_individualScenario_lowVolumeStatusReasons</span></span>
-<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># organizations_individualScenario_specialty</span></span>
-<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># organizations_individualScenario_isEligible</span></span>
-<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># organizations_groupScenario_extremeHardshipReasons</span></span>
-<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># organizations_groupScenario_extremeHardshipSources</span></span>
-<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># organizations_groupScenario_lowVolumeStatusReasons</span></span>
-<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># organizations_groupScenario_isEligible</span></span>
-<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Rows: 1
-Columns: 73
-$ firstName                                                 &lt;chr&gt; "SARAH"
-$ middleName                                                &lt;chr&gt; "K"
-$ lastName                                                  &lt;chr&gt; "HUSSAIN"
-$ npi                                                       &lt;chr&gt; "1043477615"
-$ nationalProviderIdentifierType                            &lt;int&gt; 1
-$ firstApprovedDate                                         &lt;chr&gt; "2014-01-27"
-$ yearsInMedicare                                           &lt;int&gt; 10
-$ pecosEnrollmentDate                                       &lt;int&gt; 2014
-$ newlyEnrolled                                             &lt;lgl&gt; FALSE
-$ specialty_specialtyDescription                            &lt;chr&gt; "Clinical/Ca…
-$ specialty_typeDescription                                 &lt;chr&gt; "Doctor of M…
-$ specialty_categoryReference                               &lt;chr&gt; "Physicians"
-$ isMaqi                                                    &lt;lgl&gt; FALSE
-$ organizations_prvdrOrgName                                &lt;chr&gt; "THE MILTON …
-$ organizations_hospitalVbpName                             &lt;lgl&gt; NA
-$ organizations_isFacilityBased                             &lt;lgl&gt; FALSE
-$ organizations_addressLineOne                              &lt;chr&gt; "890 POPLAR …
-$ organizations_addressLineTwo                              &lt;chr&gt; "STE 210 PEN…
-$ organizations_city                                        &lt;chr&gt; "CAMP HILL"
-$ organizations_state                                       &lt;chr&gt; "PA"
-$ organizations_zip                                         &lt;chr&gt; "170112210"
-$ organizations_apms_1                                      &lt;lgl&gt; NA
-$ organizations_virtualGroups_1                             &lt;lgl&gt; NA
-$ organizations_individualScenario_aciHardship              &lt;lgl&gt; FALSE
-$ organizations_individualScenario_aciReweighting           &lt;lgl&gt; TRUE
-$ organizations_individualScenario_ambulatorySurgicalCenter &lt;lgl&gt; FALSE
-$ organizations_individualScenario_extremeHardship          &lt;lgl&gt; FALSE
-$ organizations_individualScenario_extremeHardshipReasons   &lt;df[,4]&gt; &lt;data.frame[…
-$ organizations_individualScenario_extremeHardshipEventType &lt;lgl&gt; NA
-$ organizations_individualScenario_extremeHardshipSources   &lt;list&lt;list&gt;&gt; [[]]
-$ organizations_individualScenario_hospitalBasedClinician   &lt;lgl&gt; TRUE
-$ organizations_individualScenario_hpsaClinician            &lt;lgl&gt; FALSE
-$ organizations_individualScenario_iaStudy                  &lt;lgl&gt; FALSE
-$ organizations_individualScenario_isOptedIn                &lt;lgl&gt; NA
-$ organizations_individualScenario_isOptInEligible          &lt;lgl&gt; TRUE
-$ organizations_individualScenario_mipsEligibleSwitch       &lt;lgl&gt; TRUE
-$ organizations_individualScenario_nonPatientFacing         &lt;lgl&gt; FALSE
-$ organizations_individualScenario_optInDecisionDate        &lt;lgl&gt; NA
-$ organizations_individualScenario_ruralClinician           &lt;lgl&gt; FALSE
-$ organizations_individualScenario_smallGroupPractitioner   &lt;lgl&gt; FALSE
-$ organizations_individualScenario_lowVolumeSwitch          &lt;lgl&gt; TRUE
-$ organizations_individualScenario_lowVolumeStatusReasons   &lt;list&lt;list&gt;&gt; [[&lt;data.fram…
-$ organizations_individualScenario_hasPaymentAdjustmentCCN  &lt;lgl&gt; FALSE
-$ organizations_individualScenario_hasHospitalVbpCCN        &lt;lgl&gt; FALSE
-$ organizations_individualScenario_aggregationLevel         &lt;int&gt; 1
-$ organizations_individualScenario_hospitalVbpName          &lt;lgl&gt; NA
-$ organizations_individualScenario_hospitalVbpScore         &lt;int&gt; 0
-$ organizations_individualScenario_isFacilityBased          &lt;lgl&gt; FALSE
-$ organizations_individualScenario_specialtyCode            &lt;chr&gt; "21"
-$ organizations_individualScenario_specialty                &lt;df[,3]&gt; &lt;data.frame[…
-$ organizations_individualScenario_isEligible               &lt;df[,4]&gt; &lt;data.frame[…
-$ organizations_individualScenario_eligibilityScenario      &lt;int&gt; 475
-$ organizations_groupScenario_aciHardship                   &lt;lgl&gt; FALSE
-$ organizations_groupScenario_aciReweighting                &lt;lgl&gt; TRUE
-$ organizations_groupScenario_ambulatorySurgicalCenter      &lt;lgl&gt; FALSE
-$ organizations_groupScenario_extremeHardship               &lt;lgl&gt; FALSE
-$ organizations_groupScenario_extremeHardshipReasons        &lt;df[,4]&gt; &lt;data.frame[…
-$ organizations_groupScenario_extremeHardshipEventType      &lt;lgl&gt; NA
-$ organizations_groupScenario_extremeHardshipSources        &lt;list&lt;list&gt;&gt; [[]]
-$ organizations_groupScenario_hospitalBasedClinician        &lt;lgl&gt; TRUE
-$ organizations_groupScenario_hpsaClinician                 &lt;lgl&gt; FALSE
-$ organizations_groupScenario_iaStudy                       &lt;lgl&gt; FALSE
-$ organizations_groupScenario_isOptedIn                     &lt;lgl&gt; NA
-$ organizations_groupScenario_isOptInEligible               &lt;lgl&gt; FALSE
-$ organizations_groupScenario_mipsEligibleSwitch            &lt;lgl&gt; TRUE
-$ organizations_groupScenario_nonPatientFacing              &lt;lgl&gt; FALSE
-$ organizations_groupScenario_optInDecisionDate             &lt;lgl&gt; NA
-$ organizations_groupScenario_ruralClinician                &lt;lgl&gt; FALSE
-$ organizations_groupScenario_smallGroupPractitioner        &lt;lgl&gt; FALSE
-$ organizations_groupScenario_lowVolumeSwitch               &lt;lgl&gt; FALSE
-$ organizations_groupScenario_lowVolumeStatusReasons        &lt;list&lt;list&gt;&gt; [[]]
-$ organizations_groupScenario_aggregationLevel              &lt;int&gt; 2
-$ organizations_groupScenario_isEligible                    &lt;df[,1]&gt; &lt;data.frame[…</code></pre>
-</div>
-</div>
-<section id="graphql-api" class="level3">
-<h3 class="anchored" data-anchor-id="graphql-api">GraphQL API</h3>
-<ul>
-<li><a href="https://cmsgov.github.io/qpp-eligibility-docs/clinician">Basic Clinician GraphQL Example</a></li>
-<li><a href="https://qpp.cms.gov/api/eligibility/graphql">QPP Eligibility GraphQL API Documentation</a></li>
-</ul>
-
-
-</section>
 </section>
 
 </main> <!-- /main -->

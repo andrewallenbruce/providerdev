@@ -1,0 +1,56 @@
+---
+title: "Quality Eligibility"
+editor_options: 
+   chunk_output_type: console
+---
+
+```{r setup}
+#| echo: false
+#| message: false
+#| warning: false
+source("_common.R")
+```
+
+
+
+## QPP CMS Endpoint
+
+   * [QPP Eligibility API Documentation](https://cmsgov.github.io/qpp-eligibility-docs/)
+   * [QPP Eligibility REST API Documentation](https://qpp.cms.gov/api/eligibility/docs/)
+
+```{r}
+request("https://qpp.cms.gov/api/eligibility/stats/?year=2025") |>
+  req_headers(Accept = "application/vnd.qpp.cms.gov.v6+json") |>
+  req_perform() |>
+  resp_body_json(simplifyVector = TRUE)
+
+request("https://qpp.cms.gov/api/eligibility/npis/1043477615/?year=2025") |>
+  req_headers(Accept = "application/vnd.qpp.cms.gov.v6+json") |>
+  req_error(body = \(resp) resp_body_json(resp)$error$message) |>
+  req_perform() |>
+  resp_body_json(simplifyVector = TRUE) |> 
+  pluck(1) |> 
+  tibble() |> 
+  unnest_wider(specialty, names_sep = "_") |>
+  unnest_wider(organizations, names_sep = "_") |>
+  unnest_wider(organizations_apms, names_sep = "_") |>
+  unnest_wider(organizations_virtualGroups, names_sep = "_") |>
+  unnest_wider(organizations_individualScenario, names_sep = "_") |>
+  unnest_wider(organizations_groupScenario, names_sep = "_") |>
+  # organizations_individualScenario_extremeHardshipReasons
+  # organizations_individualScenario_extremeHardshipSources
+  # organizations_individualScenario_lowVolumeStatusReasons
+  # organizations_individualScenario_specialty
+  # organizations_individualScenario_isEligible
+  # organizations_groupScenario_extremeHardshipReasons
+  # organizations_groupScenario_extremeHardshipSources
+  # organizations_groupScenario_lowVolumeStatusReasons
+  # organizations_groupScenario_isEligible
+  glimpse()
+```
+
+
+### GraphQL API
+
+   * [Basic Clinician GraphQL Example](https://cmsgov.github.io/qpp-eligibility-docs/clinician)
+   * [QPP Eligibility GraphQL API Documentation](https://qpp.cms.gov/api/eligibility/graphql)

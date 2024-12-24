@@ -8,46 +8,12 @@ editor_options:
 #| echo: false
 #| message: false
 #| warning: false
-knitr::opts_chunk$set(
-  dev        = "ragg_png",
-  dpi        = 320,
-  out.width  = "100%",
-  fig.width  = 8,
-  fig.asp    = 0.818,
-  fig.retina = 2,
-  fig.align  = "center",
-  fig.show   = "hold"
-)
-options(scipen = 999, digits = 3)
-
 source("_common.R")
 
 htmltools::tagList(
   btn_link("https://data.cms.gov/api-docs", "CMS API Docs"),
   btn_link("https://data.cms.gov/sites/default/files/2024-10/7ef65521-65a4-41ed-b600-3a0011f8ec4b/API%20Guide%20Formatted%201_6.pdf", 
-           "API FAQ")
-  )
-
-library(tidyverse)
-library(provider)
-library(fuimus)
-library(httr2)
-library(arrow)
-library(terse)
-library(emphatic)
-
-purse <- function(x, 
-                  pre = "- ", 
-                  wid = 100, 
-                  sep = " ") {
-  terse::terse(
-    x = x, 
-    prefix = pre, 
-    width = wid, 
-    config = list(
-      gsep = sep, 
-      ansi = FALSE))
-}
+           "API FAQ"))
 ```
 
 <style>
@@ -183,9 +149,9 @@ distribution |>
   count(description, 
         format, 
         mediaType) |> 
-  as_emphatic() |> 
-  hl(ggplot2::scale_colour_viridis_c(), cols = "n") |>
-  hl_adjust(text_contrast = 0.5, na = "-")
+  emphatic::as_emphatic() |> 
+  emphatic::hl(ggplot2::scale_colour_viridis_c(), cols = "n") |>
+  emphatic::hl_adjust(text_contrast = 0.5, na = "-")
 ```
 
 For instance, the following URL will *always* point to the **Q2 2021 Payroll Based Journal Daily Nurse Staffing** data:
@@ -508,7 +474,7 @@ reassign_url <- tibble(
   filter(grepl("Reassignment", name))
 
 reassign_url |> 
-  terse(width = 110, prefix = "- ", config = list(gsep = " ", ansi = FALSE))
+  purse()
 
 reassign_csv <- read_csv_arrow(
   file = reassign_url$url, 
