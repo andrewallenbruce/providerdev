@@ -238,150 +238,29 @@
     "href": "syntax.html",
     "title": "4  Query Syntax",
     "section": "",
-    "text": "4.1 JSON:API\nThe Drupal core JSON:API module implements the JSON:API spec for Drupal entities. It provides a zero-configuration required, opinionated, way to allow RESTful CRUD for a Drupal site’s content.\nIt is closely coupled to Drupal’s Entity and Field APIs, response caching, and authentication and authorization systems. Because it follows the shared JSON:API conventions it can help increase productivity and allow you to take advantage of non-Drupal specific tooling.\nRefer to the Drupal documentation for more information on filtering API requests.",
+    "text": "4.1 Query Generation\nfoo &lt;- \\(nm, vals) {\n  \n  setNames(\n    vals, \n    paste0(\n      nm, \n      \"[\", \n      seq_along(vals), \n      \"]\"\n      )\n    )\n}\n\nfoo(\"ID\", 5:7)\n\nID[1] ID[2] ID[3] \n    5     6     7 \n\nrequest(\"https://example.com\") |&gt;\n  req_url_query(!!!foo(\"ID\", 5:7))\n\n&lt;httr2_request&gt;\n\n\nGET https://example.com?ID%5B1%5D=5&ID%5B2%5D=6&ID%5B3%5D=7\n\n\nBody: empty",
     "crumbs": [
       "Data Catalogs",
       "<span class='chapter-number'>4</span>  <span class='chapter-title'>Query Syntax</span>"
     ]
   },
   {
-    "objectID": "syntax.html#building-filters",
-    "href": "syntax.html#building-filters",
+    "objectID": "syntax.html#jsonapi",
+    "href": "syntax.html#jsonapi",
     "title": "4  Query Syntax",
-    "section": "5.1 Building Filters",
-    "text": "5.1 Building Filters\nThe fundamental building blocks of JSON:API’s filters are conditions and groups. Conditions assert that something is true and groups let you compose those assertions into logical sets to make bigger condition groups. Those sets can be nested to make super fine queries. You can think of those nested sets like a tree:\nConventional representation:\n\na( b() && c( d() || e() ) )\n\nTree representation:\n\n   a\n  / \\\n b & c\n    / \\\n   d | e\n\nIn both representations:\n\n\"d\" and \"e\" are members of \"c\" in an OR group.\n\"b\" and \"c\" are members of \"a\" in an AND group.\nSo, what’s inside a condition?\nA condition tells you a TRUE or FALSE thing about a resource and some assertion you make about it, like “was this entity created by a particular user?” When the condition is FALSE for a resource, that resource won’t be included in the collection.\nA condition has 3 primary parts: a path, an operator and a value.\n* A `path` identifies a field on a resource\n* An `operator` is a method of comparison\n* A `value` is the thing you compare against\nIn pseudo-code, a condition looks like this:\n($field !== \"space\")\nWhere:\n* `$field` is the field of the resource identified by its `path`\n* the `operator` is `!==`\n* the `value` is the string `\"space\"`\nIn the JSON:API module, we can’t make it look as pretty as that because we need to make it work inside a URL query string. To do that, we represent each condition with key/value pairs.\nIf we were filtering on a user’s first name, a condition might look something like this:\n?filter[a-label][condition][path]=field_first_name\n&filter[a-label][condition][operator]=%3D  ## %3D is encoded \"=\" symbol\n&filter[a-label][condition][value]=Janis\nNotice that we put a label inside the first set of square brackets. We could easily have made it [b-label] or [this_is_my_super_awesome_label]. The point is that every condition or group should have an identifier.\nBut what if we have lots of Janises in the system?\nLet’s add another filter so we only get Janises with a last name that starts with “J”:\n?filter[first-name-filter][condition][path]=field_first_name\n&filter[first-name-filter][condition][operator]=%3D\n&filter[first-name-filter][condition][value]=Janis\n\n&filter[last-name-filter][condition][path]=field_last_name\n&filter[last-name-filter][condition][operator]=STARTS_WITH\n&filter[last-name-filter][condition][value]=J\nThere are many more filter operators than just = and STARTS_WITH. Here’s the complete list that’s taken right from the JSON:API codebase:\njsonapi\\Query\\EntityCondition::$allowedOperators\n\n  '=', \n  '&lt;&gt;',\n  '&gt;', \n  '&gt;=', \n  '&lt;', \n  '&lt;=',\n  'STARTS_WITH', \n  'CONTAINS', \n  'ENDS_WITH',\n  'IN', \n  'NOT IN',\n  'BETWEEN', \n  'NOT BETWEEN',\n  'IS NULL', \n  'IS NOT NULL'\n  \n\nNote: Symbol operators need to be url-encoded",
+    "section": "4.2 JSON:API",
+    "text": "4.2 JSON:API\nThe Drupal core JSON:API module implements the JSON:API spec for Drupal entities. It provides a zero-configuration required, opinionated, way to allow RESTful CRUD for a Drupal site’s content.\nIt is closely coupled to Drupal’s Entity and Field APIs, response caching, and authentication and authorization systems. Because it follows the shared JSON:API conventions it can help increase productivity and allow you to take advantage of non-Drupal specific tooling.\nRefer to the Drupal documentation for more information on filtering API requests.",
     "crumbs": [
       "Data Catalogs",
       "<span class='chapter-number'>4</span>  <span class='chapter-title'>Query Syntax</span>"
     ]
   },
   {
-    "objectID": "syntax.html#condition-groups",
-    "href": "syntax.html#condition-groups",
+    "objectID": "syntax.html#filtering",
+    "href": "syntax.html#filtering",
     "title": "4  Query Syntax",
-    "section": "5.2 Condition Groups",
-    "text": "5.2 Condition Groups\nNow we know how to build conditions, but we don’t yet know how to build groups of conditions. How do we build a tree like we saw above?\nIn order to do that, we need to have a “group”. A group is a set of conditions joined by a “conjunction.” All groups have conjunctions and a conjunction is either AND or OR.\nNow our filter is a bit too specific! Let’s say we want to find all users with a last name that starts with “J” and either have the first name “Janis” or the first name “Joan”.\nTo do that, we add a group:\n?filter[rock-group][group][conjunction]=OR\nThen, we need assign our filters to that new group.\nTo do that, we add a memberOf key. Every condition and group can have a memberOf key.\n\nTip: Groups can have a memberOf key just like conditions, which means you can have groups of groups\n\n\nNote: Every filter without a memberOf key is assumed to be part of a “root” group with a conjunction of AND.\n\nAll together now:\n?filter[rock-group][group][conjunction]=OR\n\n&filter[janis-filter][condition][path]=field_first_name\n&filter[janis-filter][condition][operator]=%3D\n&filter[janis-filter][condition][value]=Janis\n&filter[janis-filter][condition][memberOf]=rock-group\n\n&filter[joan-filter][condition][path]=field_first_name\n&filter[joan-filter][condition][operator]=%3D\n&filter[joan-filter][condition][value]=Joan\n&filter[joan-filter][condition][memberOf]=rock-group\n\n&filter[last-name-filter][condition][path]=field_last_name\n&filter[last-name-filter][condition][operator]=STARTS_WITH\n&filter[last-name-filter][condition][value]=J\nDoes that look familiar?\nIt should, we saw it above as a tree:\n   a         a = root-and-group\n  / \\\n /   \\       b = last-name-filter\nb     c      c = rock-group\n     / \\\n    /   \\    d = janis-filter\n   d     e   e = joan-filter\nYou can nest these groups as deeply as your heart desires.",
-    "crumbs": [
-      "Data Catalogs",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Query Syntax</span>"
-    ]
-  },
-  {
-    "objectID": "syntax.html#paths",
-    "href": "syntax.html#paths",
-    "title": "4  Query Syntax",
-    "section": "5.3 Paths",
-    "text": "5.3 Paths\nConditions have one last feature: ‘paths’\nPaths provide a way to filter based on relationship values.\nUp to this point, we’ve just been filtering by the hypothetical field_first_name and field_last_name on the user resource.\nLet’s imagine that we want to filter by the name of a user’s career, where career types are stored as a separate resource. We could add a filter like this:\n?filter[career][condition][path]=field_career.name\n&filter[career][condition][operator]=%3D\n&filter[career][condition][value]=Rockstar\nPaths use a “dot notation” to traverse relationships.\n\nIf a resource has a relationship, you can add a filter against it by concatenating the relationship field name and the relationship’s field name with a . (dot).\n\nYou can even filter by relationships of relationships (and so on) just by adding more field names and dots.\n\nTip: You can filter on a specific index of a relationship by putting a non-negative integer in the path. So the path some_relationship.1.some_attribute would only filter by the 2nd related resource.\n\n\nTip: You can filter by sub-properties of a field. For example, a path like field_phone.country_code will work even though field_phone isn’t a relationship.\n\n\nTip: When filtering against configuration properties, you can use an asterisk (*) to stand-in for any portion of a path. For example, /jsonapi/field_config/field_config?filter[dependencies.config.*]=comment.type.comment would match all field configs in which [\"attributes\"][\"dependencies\"][\"config\"] (an indexed array) contains the value \"comment.type.comment\".",
-    "crumbs": [
-      "Data Catalogs",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Query Syntax</span>"
-    ]
-  },
-  {
-    "objectID": "syntax.html#exact-match-search-on-column",
-    "href": "syntax.html#exact-match-search-on-column",
-    "title": "4  Query Syntax",
-    "section": "5.4 Exact Match Search on Column",
-    "text": "5.4 Exact Match Search on Column\n- dataset   Medicare Fee-For-Service Public Provider Enrollment\n  column    PROVIDER_TYPE_DESC \n  equals    PRACTITIONER - GENERAL PRACTICE\n\ncall:     /data?\n          filter[PROVIDER_TYPE_DESC]=PRACTITIONER - GENERAL PRACTICE\ncatalog:        data.json\n  format:       API\n  description:  latest\n  title:        Medicare Fee-For-Service Public Provider Enrollment\n  accessURL:    \"\"\n\nurl: \n  scheme: \"https://\"\n  hostname: \"data.cms.gov/\"\n  api: \"data-api/v1/dataset/\"\n  identifier: \"d10d792e-ea6e-4145-8512-34efbc1be04b\"\n  path: \"/data?\"\n  query: \n    - filter: 1\n      path: \"PROVIDER_TYPE_DESC\"\n      operator: \"EQUALS\"\n      value: \"PRACTITIONER - GENERAL PRACTICE\"",
-    "crumbs": [
-      "Data Catalogs",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Query Syntax</span>"
-    ]
-  },
-  {
-    "objectID": "syntax.html#contains-search-on-one-column",
-    "href": "syntax.html#contains-search-on-one-column",
-    "title": "4  Query Syntax",
-    "section": "5.5 CONTAINS Search on One Column",
-    "text": "5.5 CONTAINS Search on One Column\n- dataset  Medicare Fee-For-Service Public Provider Enrollment\n  column   PROVIDER_TYPE_DESC\n  contains SUPPLIER\n\ncall:    /data?\n          filter[example][condition][path]=PROVIDER_TYPE_DESC\n         &filter[example][condition][operator]=CONTAINS\n         &filter[example][condition][value]=SUPPLIER",
-    "crumbs": [
-      "Data Catalogs",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Query Syntax</span>"
-    ]
-  },
-  {
-    "objectID": "syntax.html#combination-search-on-two-columns",
-    "href": "syntax.html#combination-search-on-two-columns",
-    "title": "4  Query Syntax",
-    "section": "5.6 Combination Search on Two Columns",
-    "text": "5.6 Combination Search on Two Columns\n- dataset  Medicare Fee-For-Service Public Provider Enrollment\n  column   PROVIDER_TYPE_DESC\n  contains PRACTITIONER\n  column   STATE_CD\n  equals   MD\n\ncall:    /data?\n          filter[filter-1][condition][path]=PROVIDER_TYPE_DESC\n         &filter[filter-1][condition][operator]=CONTAINS\n         &filter[filter-1][condition][value]=PRACTITIONER\n         &filter[filter-2][condition][path]=STATE_CD\n         &filter[filter-2][condition][operator]==\n         &filter[filter-2][condition][value]=MD",
-    "crumbs": [
-      "Data Catalogs",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Query Syntax</span>"
-    ]
-  },
-  {
-    "objectID": "syntax.html#equals",
-    "href": "syntax.html#equals",
-    "title": "4  Query Syntax",
-    "section": "5.7 Equals",
-    "text": "5.7 Equals\nThis example is an equals filter searching the Accountable Care Organizations 2021 dataset for a single ID.\nhttps://data.cms.gov/data-api/v1/dataset/\n0ece71c6-1112-47b3-8f7a-5385087e7041/data?\nfilter[filter-0-0][condition][path]=aco_id&\nfilter[filter-0-0][condition][operator]=%3D&\nfilter[filter-0-0][condition][value]=A4807\nAn equals filter can be simplified like this.\nhttps://data.cms.gov/data-api/v1/dataset/\n0ece71c6-1112-47b3-8f7a-5385087e7041/data?\nfilter[aco_id]=A4807",
-    "crumbs": [
-      "Data Catalogs",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Query Syntax</span>"
-    ]
-  },
-  {
-    "objectID": "syntax.html#keyword",
-    "href": "syntax.html#keyword",
-    "title": "4  Query Syntax",
-    "section": "5.8 Keyword",
-    "text": "5.8 Keyword\nThe keyword search will look for matching words in every column. This example will check for “Alex” in the Order and Referring dataset. Notice that it finds matches on both the first and last name fields.\nhttps://data.cms.gov/data-api/v1/dataset/\nc99b5865-1119-4436-bb80-c5af2773ea1f/data?\nkeyword=alex",
-    "crumbs": [
-      "Data Catalogs",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Query Syntax</span>"
-    ]
-  },
-  {
-    "objectID": "syntax.html#multiple-conditions-at-once",
-    "href": "syntax.html#multiple-conditions-at-once",
-    "title": "4  Query Syntax",
-    "section": "5.9 Multiple Conditions at Once",
-    "text": "5.9 Multiple Conditions at Once\nThis search returns results from the Medicare Fee-For-Service Public Provider Enrollment dataset where the provider specialty is “PRACTITIONER - OPTOMETRY” and the location is Virginia.\nhttps://data.cms.gov/data-api/v1/dataset/\n2457ea29-fc82-48b0-86ec-3b0755de7515/data?&\nfilter[root-group][group][conjunction]=AND&\nfilter[group-0][group][conjunction]=AND&\nfilter[group-0][group][memberOf]=root-group&\nfilter[filter-0-0][condition][path]=PROVIDER_TYPE_DESC&\nfilter[filter-0-0][condition][operator]=%3D&\nfilter[filter-0-0][condition][value]=PRACTITIONER%20-%20OPTOMETRY&\nfilter[filter-0-0][condition][memberOf]=group-0&\nfilter[filter-0-1][condition][path]=STATE_CD&\nfilter[filter-0-1][condition][operator]=%3D&\nfilter[filter-0-1][condition][value]=VA&\nfilter[filter-0-1][condition][memberOf]=group-0",
-    "crumbs": [
-      "Data Catalogs",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Query Syntax</span>"
-    ]
-  },
-  {
-    "objectID": "syntax.html#in",
-    "href": "syntax.html#in",
-    "title": "4  Query Syntax",
-    "section": "5.10 IN",
-    "text": "5.10 IN\nThis search returns results from the Opioid Treatment Program Providers dataset where the provider is located from MD, MI, or VA with the results sorted by NPI.\nhttps://data.cms.gov/data-api/v1/dataset/\nf1a8c197-b53d-4c24-9770-aea5d5a97dfb/data?\nfilter[condition][path]=STATE&\nfilter[condition][operator]=IN&\nfilter[condition][value][]=MI&\nfilter[condition][value][]=VA&\nfilter[condition][value][]=MD&\nsort=NPI",
-    "crumbs": [
-      "Data Catalogs",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Query Syntax</span>"
-    ]
-  },
-  {
-    "objectID": "syntax.html#sorting-results",
-    "href": "syntax.html#sorting-results",
-    "title": "4  Query Syntax",
-    "section": "5.11 Sorting Results",
-    "text": "5.11 Sorting Results\nYou can use the sort query parameter to specify which column the results should be sorted by. This example show how to sort the Opt Out Affidavits dataset by NPI.\nLowest first: https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data?sort=NPI Highest first: https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data?sort=-NPI",
-    "crumbs": [
-      "Data Catalogs",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Query Syntax</span>"
-    ]
-  },
-  {
-    "objectID": "syntax.html#select-subset-of-columns",
-    "href": "syntax.html#select-subset-of-columns",
-    "title": "4  Query Syntax",
-    "section": "5.12 Select Subset of Columns",
-    "text": "5.12 Select Subset of Columns\nYou can use the column query parameter to limit the columns that are returned to you by providing a comma separated list of the columns to include.\nThis example will return just the NPI, First Name, and Last Name from the Order and Referring dataset.\nhttps://data.cms.gov/data-api/v1/dataset/c99b5865-1119-4436-bb80-c5af2773ea1f/data?column=NPI,FIRST_NAME,LAST_NAME",
-    "crumbs": [
-      "Data Catalogs",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Query Syntax</span>"
-    ]
-  },
-  {
-    "objectID": "syntax.html#specify-number-of-results",
-    "href": "syntax.html#specify-number-of-results",
-    "title": "4  Query Syntax",
-    "section": "5.13 Specify Number of Results",
-    "text": "5.13 Specify Number of Results\nYou can use the size and offset parameters to accomplish this.",
+    "section": "4.3 Filtering",
+    "text": "4.3 Filtering\nCollections are listings of resources. When you make an unfiltered request to a collection endpoint like /jsonapi/node/article, you’ll just get every article that you’re allowed to see. Without filters, you can’t get only the articles that you want.\nThe simplest, most common filter is a key-value filter:\n?filter[field_name]=value&\n filter[field_other]=value\nThis matches all resources with field_name equal to \"value\" and field_other equal to \"value\".\n\n4.3.1 Building Filters\nThe fundamental building blocks of JSON:API’s filters are conditions and groups. Conditions assert that something is true and groups let you compose those assertions into logical sets to make bigger condition groups. Those sets can be nested to make super fine queries. You can think of those nested sets like a tree:\nConventional representation:\n\na( b() && c( d() || e() ) )\n\nTree representation:\n\n   a\n  / \\\n b & c\n    / \\\n   d | e\n\nIn both representations:\n\n\"d\" and \"e\" are members of \"c\" in an OR group.\n\"b\" and \"c\" are members of \"a\" in an AND group.\nSo, what’s inside a condition?\nA condition tells you a TRUE or FALSE thing about a resource and some assertion you make about it, like “was this entity created by a particular user?” When the condition is FALSE for a resource, that resource won’t be included in the collection.\nA condition has 3 primary parts: a path, an operator and a value.\n* A `path` identifies a field on a resource\n* An `operator` is a method of comparison\n* A `value` is the thing you compare against\nIn pseudo-code, a condition looks like this:\n($field !== \"space\")\nWhere:\n* `$field` is the field of the resource identified by its `path`\n* the `operator` is `!==`\n* the `value` is the string `\"space\"`\nIn the JSON:API module, we can’t make it look as pretty as that because we need to make it work inside a URL query string. To do that, we represent each condition with key/value pairs.\nIf we were filtering on a user’s first name, a condition might look something like this:\n?filter[a-label][condition][path]=field_first_name\n&filter[a-label][condition][operator]=%3D  ## %3D is encoded \"=\" symbol\n&filter[a-label][condition][value]=Janis\nNotice that we put a label inside the first set of square brackets. We could easily have made it [b-label] or [this_is_my_super_awesome_label]. The point is that every condition or group should have an identifier.\nBut what if we have lots of Janises in the system?\nLet’s add another filter so we only get Janises with a last name that starts with “J”:\n?filter[first-name-filter][condition][path]=field_first_name\n&filter[first-name-filter][condition][operator]=%3D\n&filter[first-name-filter][condition][value]=Janis\n\n&filter[last-name-filter][condition][path]=field_last_name\n&filter[last-name-filter][condition][operator]=STARTS_WITH\n&filter[last-name-filter][condition][value]=J\nThere are many more filter operators than just = and STARTS_WITH. Here’s the complete list that’s taken right from the JSON:API codebase:\njsonapi\\Query\\EntityCondition::$allowedOperators\n\n  '=', \n  '&lt;&gt;',\n  '&gt;', \n  '&gt;=', \n  '&lt;', \n  '&lt;=',\n  'STARTS_WITH', \n  'CONTAINS', \n  'ENDS_WITH',\n  'IN', \n  'NOT IN',\n  'BETWEEN', \n  'NOT BETWEEN',\n  'IS NULL', \n  'IS NOT NULL'\n  \n\nNote: Symbol operators need to be url-encoded\n\n\n\n4.3.2 Condition Groups\nNow we know how to build conditions, but we don’t yet know how to build groups of conditions. How do we build a tree like we saw above?\nIn order to do that, we need to have a “group”. A group is a set of conditions joined by a “conjunction.” All groups have conjunctions and a conjunction is either AND or OR.\nNow our filter is a bit too specific! Let’s say we want to find all users with a last name that starts with “J” and either have the first name “Janis” or the first name “Joan”.\nTo do that, we add a group:\n?filter[rock-group][group][conjunction]=OR\nThen, we need assign our filters to that new group.\nTo do that, we add a memberOf key. Every condition and group can have a memberOf key.\n\nTip: Groups can have a memberOf key just like conditions, which means you can have groups of groups\n\n\nNote: Every filter without a memberOf key is assumed to be part of a “root” group with a conjunction of AND.\n\nAll together now:\n?filter[rock-group][group][conjunction]=OR\n\n&filter[janis-filter][condition][path]=field_first_name\n&filter[janis-filter][condition][operator]=%3D\n&filter[janis-filter][condition][value]=Janis\n&filter[janis-filter][condition][memberOf]=rock-group\n\n&filter[joan-filter][condition][path]=field_first_name\n&filter[joan-filter][condition][operator]=%3D\n&filter[joan-filter][condition][value]=Joan\n&filter[joan-filter][condition][memberOf]=rock-group\n\n&filter[last-name-filter][condition][path]=field_last_name\n&filter[last-name-filter][condition][operator]=STARTS_WITH\n&filter[last-name-filter][condition][value]=J\nDoes that look familiar?\nIt should, we saw it above as a tree:\n   a         a = root-and-group\n  / \\\n /   \\       b = last-name-filter\nb     c      c = rock-group\n     / \\\n    /   \\    d = janis-filter\n   d     e   e = joan-filter\nYou can nest these groups as deeply as your heart desires.\n\n\n4.3.3 Paths\nConditions have one last feature: ‘paths’\nPaths provide a way to filter based on relationship values.\nUp to this point, we’ve just been filtering by the hypothetical field_first_name and field_last_name on the user resource.\nLet’s imagine that we want to filter by the name of a user’s career, where career types are stored as a separate resource. We could add a filter like this:\n?filter[career][condition][path]=field_career.name\n&filter[career][condition][operator]=%3D\n&filter[career][condition][value]=Rockstar\nPaths use a “dot notation” to traverse relationships.\n\nIf a resource has a relationship, you can add a filter against it by concatenating the relationship field name and the relationship’s field name with a . (dot).\n\nYou can even filter by relationships of relationships (and so on) just by adding more field names and dots.\n\nTip: You can filter on a specific index of a relationship by putting a non-negative integer in the path. So the path some_relationship.1.some_attribute would only filter by the 2nd related resource.\n\n\nTip: You can filter by sub-properties of a field. For example, a path like field_phone.country_code will work even though field_phone isn’t a relationship.\n\n\nTip: When filtering against configuration properties, you can use an asterisk (*) to stand-in for any portion of a path. For example, /jsonapi/field_config/field_config?filter[dependencies.config.*]=comment.type.comment would match all field configs in which [\"attributes\"][\"dependencies\"][\"config\"] (an indexed array) contains the value \"comment.type.comment\".\n\n\n\n4.3.4 Shortcuts\nThat’s a lot of characters to type. Most of the time, you don’t need such complicated filters and for those cases, the JSON:API module has a few “shortcuts” to help you write filters faster.\nWhen the operator is =, you don’t have to include it. It’s just assumed. Thus:\n?filter[a-label][condition][path]=field_first_name\n&filter[a-label][condition][operator]=%3D\n&filter[a-label][condition][value]=Janis\nbecomes\n?filter[janis-filter][condition][path]=field_first_name\n&filter[janis-filter][condition][value]=Janis\nIt’s also rare that you’ll need to filter by the same field twice (although it’s possible). So, when the operator is = and you don’t need to filter by the same field twice, the path can be the identifier. Thus:\n?filter[janis-filter][condition][path]=field_first_name\n&filter[janis-filter][condition][value]=Janis\nbecomes\n?filter[field_first_name][value]=Janis\nThat extra value is pesky. That’s why you can reduce the simplest equality checks down to a key-value form:\n?filter[field_first_name]=Janis\n\n\n4.3.5 Filters and Access Control\nFirst, a warning: don’t make the mistake of confusing filters for access control. Just because you’ve written a filter to remove something that a user shouldn’t be able to see, doesn’t mean it’s not accessible. Always perform access checks on the backend.\nWith that big caveat, let’s talk about using filters to complement access control. To improve performance, you should filter out what your users will not be able to see. The most frequent support request in the JSON:API issue queues can be solved by this one simple trick!\nIf you know your users cannot see unpublished content, add the following filter:\n?filter[status][value]=1\nUsing this method, you’ll lower the number of unnecessary requests that you need to make. That’s because JSON:API doesn’t return data for resources to which a user doesn’t have access. You can see which resources may have been affected by inspecting the meta.errors section of JSON:API document.\nSo, do your best to filter out inaccessible resources ahead of time.\n\n\n\n4.3.6 Exact Match Search on Column\n- dataset   Medicare Fee-For-Service Public Provider Enrollment\n  column    PROVIDER_TYPE_DESC \n  equals    PRACTITIONER - GENERAL PRACTICE\n\ncall:     /data?\n          filter[PROVIDER_TYPE_DESC]=PRACTITIONER - GENERAL PRACTICE\ncatalog:        data.json\n  format:       API\n  description:  latest\n  title:        Medicare Fee-For-Service Public Provider Enrollment\n  accessURL:    \"\"\n\nurl: \n  scheme: \"https://\"\n  hostname: \"data.cms.gov/\"\n  api: \"data-api/v1/dataset/\"\n  identifier: \"d10d792e-ea6e-4145-8512-34efbc1be04b\"\n  path: \"/data?\"\n  query: \n    - filter: 1\n      path: \"PROVIDER_TYPE_DESC\"\n      operator: \"EQUALS\"\n      value: \"PRACTITIONER - GENERAL PRACTICE\"\n\n\n4.3.7 CONTAINS Search on One Column\n- dataset  Medicare Fee-For-Service Public Provider Enrollment\n  column   PROVIDER_TYPE_DESC\n  contains SUPPLIER\n\ncall:    /data?\n          filter[example][condition][path]=PROVIDER_TYPE_DESC\n         &filter[example][condition][operator]=CONTAINS\n         &filter[example][condition][value]=SUPPLIER\n\n\n4.3.8 Combination Search on Two Columns\n- dataset  Medicare Fee-For-Service Public Provider Enrollment\n  column   PROVIDER_TYPE_DESC\n  contains PRACTITIONER\n  column   STATE_CD\n  equals   MD\n\ncall:    /data?\n          filter[filter-1][condition][path]=PROVIDER_TYPE_DESC\n         &filter[filter-1][condition][operator]=CONTAINS\n         &filter[filter-1][condition][value]=PRACTITIONER\n         &filter[filter-2][condition][path]=STATE_CD\n         &filter[filter-2][condition][operator]==\n         &filter[filter-2][condition][value]=MD\n\n\n4.3.9 Equals\nThis example is an equals filter searching the Accountable Care Organizations 2021 dataset for a single ID.\nhttps://data.cms.gov/data-api/v1/dataset/\n0ece71c6-1112-47b3-8f7a-5385087e7041/data?\nfilter[filter-0-0][condition][path]=aco_id&\nfilter[filter-0-0][condition][operator]=%3D&\nfilter[filter-0-0][condition][value]=A4807\nAn equals filter can be simplified like this.\nhttps://data.cms.gov/data-api/v1/dataset/\n0ece71c6-1112-47b3-8f7a-5385087e7041/data?\nfilter[aco_id]=A4807\n\n\n4.3.10 Keyword\nThe keyword search will look for matching words in every column. This example will check for “Alex” in the Order and Referring dataset. Notice that it finds matches on both the first and last name fields.\nhttps://data.cms.gov/data-api/v1/dataset/\nc99b5865-1119-4436-bb80-c5af2773ea1f/data?\nkeyword=alex\n\n\n4.3.11 Multiple Conditions at Once\nThis search returns results from the Medicare Fee-For-Service Public Provider Enrollment dataset where the provider specialty is “PRACTITIONER - OPTOMETRY” and the location is Virginia.\nhttps://data.cms.gov/data-api/v1/dataset/\n2457ea29-fc82-48b0-86ec-3b0755de7515/data?&\nfilter[root-group][group][conjunction]=AND&\nfilter[group-0][group][conjunction]=AND&\nfilter[group-0][group][memberOf]=root-group&\nfilter[filter-0-0][condition][path]=PROVIDER_TYPE_DESC&\nfilter[filter-0-0][condition][operator]=%3D&\nfilter[filter-0-0][condition][value]=PRACTITIONER%20-%20OPTOMETRY&\nfilter[filter-0-0][condition][memberOf]=group-0&\nfilter[filter-0-1][condition][path]=STATE_CD&\nfilter[filter-0-1][condition][operator]=%3D&\nfilter[filter-0-1][condition][value]=VA&\nfilter[filter-0-1][condition][memberOf]=group-0\n\n\n4.3.12 IN\nThis search returns results from the Opioid Treatment Program Providers dataset where the provider is located from MD, MI, or VA with the results sorted by NPI.\nhttps://data.cms.gov/data-api/v1/dataset/\nf1a8c197-b53d-4c24-9770-aea5d5a97dfb/data?\nfilter[condition][path]=STATE&\nfilter[condition][operator]=IN&\nfilter[condition][value][]=MI&\nfilter[condition][value][]=VA&\nfilter[condition][value][]=MD&\nsort=NPI\n\n\n4.3.13 Sorting Results\nYou can use the sort query parameter to specify which column the results should be sorted by. This example shows how to sort the Opt Out Affidavits dataset by NPI.\nLowest first:\nhttps://data.cms.gov/data-api/v1/dataset/\n9887a515-7552-4693-bf58-735c77af46d7/data?\nsort=NPI\nHighest first:\nhttps://data.cms.gov/data-api/v1/dataset/\n9887a515-7552-4693-bf58-735c77af46d7/data?\nsort=-NPI\n\n\n4.3.14 Select Subset of Columns\nYou can use the column query parameter to limit the columns that are returned to you by providing a comma separated list of the columns to include.\nThis example will return just the NPI, First Name, and Last Name from the Order and Referring dataset:\nhttps://data.cms.gov/data-api/v1/dataset/\nc99b5865-1119-4436-bb80-c5af2773ea1f/data?\ncolumn=NPI,FIRST_NAME,LAST_NAME\n\n\n4.3.15 Specify Number of Results\nUse the size and offset parameters to accomplish this.",
     "crumbs": [
       "Data Catalogs",
       "<span class='chapter-number'>4</span>  <span class='chapter-title'>Query Syntax</span>"

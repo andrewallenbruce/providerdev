@@ -12,6 +12,29 @@ source("_common.R")
 ```
 
 
+## Query Generation
+
+```{r}
+foo <- \(nm, vals) {
+  
+  setNames(
+    vals, 
+    paste0(
+      nm, 
+      "[", 
+      seq_along(vals), 
+      "]"
+      )
+    )
+}
+
+foo("ID", 5:7)
+
+request("https://example.com") |>
+  req_url_query(!!!foo("ID", 5:7))
+```
+
+
 ## JSON:API
 
 The Drupal core [JSON:API module](https://www.drupal.org/docs/core-modules-and-themes/core-modules/jsonapi-module) implements the JSON:API spec for Drupal entities. It provides a zero-configuration required, opinionated, way to allow RESTful CRUD for a Drupal site's content.
@@ -20,7 +43,7 @@ It is closely coupled to Drupal's Entity and Field APIs, response caching, and a
 
 [Refer to the Drupal documentation](https://www.drupal.org/docs/core-modules-and-themes/core-modules/jsonapi-module/filtering) for more information on filtering API requests.
 
-# Filtering
+## Filtering
 
 [Collections](https://www.drupal.org/docs/8/modules/json-api/collections-filtering-and-sorting) are listings of resources. When you make an unfiltered request to a collection endpoint like /jsonapi/node/article, you'll just get every article that you're allowed to see. Without filters, you can't get only the articles that you want.
 
@@ -33,7 +56,7 @@ The simplest, most common filter is a **key-value filter**:
 
 This matches all resources with `field_name` equal to `"value"` and `field_other` equal to `"value"`.
 
-## Building Filters
+### Building Filters
 
 The fundamental building blocks of JSON:API's filters are conditions and groups. Conditions assert that something is true and groups let you compose those assertions into logical sets to make bigger condition groups. Those sets can be nested to make super fine queries. You can think of those nested sets like a tree:
 
@@ -129,7 +152,7 @@ jsonapi\Query\EntityCondition::$allowedOperators
 
 > __Note__: Symbol operators need to be url-encoded
 
-## Condition Groups
+### Condition Groups
 
 Now we know how to build conditions, but we don't yet know how to build groups of conditions. How do we build a tree like we saw above?
 
@@ -187,7 +210,7 @@ b     c      c = rock-group
 
 You can nest these groups as deeply as your heart desires.
 
-## Paths
+### Paths
 
 Conditions have one last feature: 'paths'
 
@@ -215,7 +238,65 @@ You can even filter by relationships of relationships (and so on) just by adding
 
 > Tip: When filtering against configuration properties, you can use an asterisk (`*`) to stand-in for any portion of a path. For example, `/jsonapi/field_config/field_config?filter[dependencies.config.*]=comment.type.comment` would match all field configs in which `["attributes"]["dependencies"]["config"]` (an indexed array) contains the value `"comment.type.comment"`.
 
-## Exact Match Search on Column
+### Shortcuts
+
+That's a lot of characters to type. Most of the time, you don't need such complicated filters and for those cases, the JSON:API module has a few "shortcuts" to help you write filters faster.
+
+When the operator is `=`, you don't have to include it. It's just assumed. Thus:
+
+```r
+?filter[a-label][condition][path]=field_first_name
+&filter[a-label][condition][operator]=%3D
+&filter[a-label][condition][value]=Janis
+```
+becomes
+
+```r
+?filter[janis-filter][condition][path]=field_first_name
+&filter[janis-filter][condition][value]=Janis
+```
+
+It's also rare that you'll need to filter by the same field twice (although it's possible). So, when the operator is = and you don't need to filter by the same field twice, the path can be the identifier. Thus:
+
+```r
+?filter[janis-filter][condition][path]=field_first_name
+&filter[janis-filter][condition][value]=Janis
+```
+
+becomes
+
+```r
+?filter[field_first_name][value]=Janis
+```
+
+That extra value is pesky. That's why you can reduce the simplest equality checks down to a key-value form:
+
+
+```r
+?filter[field_first_name]=Janis
+```
+
+### Filters and Access Control
+
+First, a warning: don't make the mistake of confusing filters for access control. Just because you've written a filter to remove something that a user shouldn't be able to see, doesn't mean it's not accessible. **Always perform access checks on the backend.**
+
+With that big caveat, let's talk about using filters to complement access control. To improve performance, you should filter out what your users will not be able to see. The most frequent support request in the JSON:API issue queues can be solved by this one simple trick!
+
+If you know your users cannot see unpublished content, add the following filter:
+
+
+```r
+?filter[status][value]=1
+```
+
+Using this method, you'll lower the number of unnecessary requests that you need to make. **That's because JSON:API doesn't return data for resources to which a user doesn't have access.** You can see which resources may have been affected by inspecting the meta.errors section of JSON:API document.
+
+So, do your best to filter out inaccessible resources ahead of time.
+
+--------------------------------------------------------------------------------
+
+
+### Exact Match Search on Column
 
 ```r
 - dataset   Medicare Fee-For-Service Public Provider Enrollment
@@ -246,7 +327,7 @@ url:
       value: "PRACTITIONER - GENERAL PRACTICE"
 ```
 
-## CONTAINS Search on One Column
+### CONTAINS Search on One Column
 
 ```r
 - dataset  Medicare Fee-For-Service Public Provider Enrollment
@@ -259,7 +340,7 @@ call:    /data?
          &filter[example][condition][value]=SUPPLIER
 ```
 
-## Combination Search on Two Columns
+### Combination Search on Two Columns
 
 ```r
 - dataset  Medicare Fee-For-Service Public Provider Enrollment
@@ -277,7 +358,7 @@ call:    /data?
          &filter[filter-2][condition][value]=MD
 ```
 
-## Equals
+### Equals
 
 This example is an equals filter searching the Accountable Care Organizations 2021 dataset for a single ID.
 
@@ -296,7 +377,7 @@ https://data.cms.gov/data-api/v1/dataset/
 0ece71c6-1112-47b3-8f7a-5385087e7041/data?
 filter[aco_id]=A4807
 ```
-## Keyword
+### Keyword
 
 The keyword search will look for matching words in every column. This example will check for "Alex" in the Order and Referring dataset. Notice that it finds matches on both the first and last name fields.
 
@@ -306,7 +387,7 @@ c99b5865-1119-4436-bb80-c5af2773ea1f/data?
 keyword=alex
 ```
 
-## Multiple Conditions at Once
+### Multiple Conditions at Once
 
 This search returns results from the Medicare Fee-For-Service Public Provider Enrollment dataset where the provider specialty is "PRACTITIONER - OPTOMETRY" and the location is Virginia.
 
@@ -326,7 +407,7 @@ filter[filter-0-1][condition][value]=VA&
 filter[filter-0-1][condition][memberOf]=group-0
 ```
 
-## IN
+### IN
 
 This search returns results from the Opioid Treatment Program Providers dataset where the provider is located from MD, MI, or VA with the results sorted by NPI.
 
@@ -341,21 +422,38 @@ filter[condition][value][]=MD&
 sort=NPI
 ```
 
-## Sorting Results
+### Sorting Results
 
-You can use the sort query parameter to specify which column the results should be sorted by. This example show how to sort the Opt Out Affidavits dataset by NPI.
+You can use the sort query parameter to specify which column the results should be sorted by. This example shows how to sort the Opt Out Affidavits dataset by NPI.
 
-Lowest first: https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data?sort=NPI
-Highest first: https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data?sort=-NPI
+Lowest first: 
 
-## Select Subset of Columns
+```r
+https://data.cms.gov/data-api/v1/dataset/
+9887a515-7552-4693-bf58-735c77af46d7/data?
+sort=NPI
+```
+
+Highest first: 
+
+```r
+https://data.cms.gov/data-api/v1/dataset/
+9887a515-7552-4693-bf58-735c77af46d7/data?
+sort=-NPI
+```
+
+### Select Subset of Columns
 
 You can use the column query parameter to limit the columns that are returned to you by providing a comma separated list of the columns to include.
 
-This example will return just the NPI, First Name, and Last Name from the Order and Referring dataset.
+This example will return just the NPI, First Name, and Last Name from the Order and Referring dataset:
 
-https://data.cms.gov/data-api/v1/dataset/c99b5865-1119-4436-bb80-c5af2773ea1f/data?column=NPI,FIRST_NAME,LAST_NAME
+```r
+https://data.cms.gov/data-api/v1/dataset/
+c99b5865-1119-4436-bb80-c5af2773ea1f/data?
+column=NPI,FIRST_NAME,LAST_NAME
+```
 
-## Specify Number of Results
+### Specify Number of Results
 
-You can use the size and offset parameters to accomplish this.
+Use the size and offset parameters to accomplish this.
