@@ -11,8 +11,6 @@ editor_options:
 source("_common.R")
 ```
 
-
-
 ## QPP CMS Endpoint
 
    * [QPP Eligibility API Documentation](https://cmsgov.github.io/qpp-eligibility-docs/)
@@ -37,16 +35,17 @@ request("https://qpp.cms.gov/api/eligibility/npis/1043477615/?year=2025") |>
   unnest_wider(organizations_virtualGroups, names_sep = "_") |>
   unnest_wider(organizations_individualScenario, names_sep = "_") |>
   unnest_wider(organizations_groupScenario, names_sep = "_") |>
-  # organizations_individualScenario_extremeHardshipReasons
-  # organizations_individualScenario_extremeHardshipSources
-  # organizations_individualScenario_lowVolumeStatusReasons
-  # organizations_individualScenario_specialty
-  # organizations_individualScenario_isEligible
-  # organizations_groupScenario_extremeHardshipReasons
-  # organizations_groupScenario_extremeHardshipSources
-  # organizations_groupScenario_lowVolumeStatusReasons
-  # organizations_groupScenario_isEligible
-  glimpse()
+  unnest_wider(organizations_individualScenario_extremeHardshipReasons, names_sep = "_") |>
+  unnest_wider(organizations_individualScenario_extremeHardshipSources, names_sep = "_") |>
+  unnest_wider(organizations_individualScenario_lowVolumeStatusReasons, names_sep = "_") |>
+  unnest_wider(organizations_individualScenario_lowVolumeStatusReasons_1, names_sep = "_") |>
+  unnest_wider(organizations_individualScenario_specialty, names_sep = "_") |>
+  unnest_wider(organizations_individualScenario_isEligible, names_sep = "_") |>
+  unnest_wider(organizations_groupScenario_extremeHardshipReasons, names_sep = "_") |>
+  unnest_wider(organizations_groupScenario_extremeHardshipSources, names_sep = "_") |>
+  unnest_wider(organizations_groupScenario_lowVolumeStatusReasons, names_sep = "_") |>
+  unnest_wider(organizations_groupScenario_isEligible, names_sep = "_") |>
+  purse()
 ```
 
 
