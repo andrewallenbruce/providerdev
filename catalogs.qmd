@@ -14,6 +14,24 @@ source("_common.R")
 ## Main CMS
 
 ```{r}
+catalog_data_json <- \() {
+  
+  metadata <- arrow::read_json_arrow(
+    file = "https://data.cms.gov/data.json", 
+    col_select = c("@context", "@id", "@type", "conformsTo", "describedBy"),
+    as_data_frame = FALSE) |> 
+  dplyr::collect()
+  
+  data_json <- arrow::read_json_arrow(
+  file = "https://data.cms.gov/data.json",
+  col_select = c("dataset"),
+    as_data_frame = TRUE) |> 
+  arrow::to_duckdb()
+}
+```
+
+
+```{r}
 #| label: data_json_metadata
 read_json_arrow(
     file = "https://data.cms.gov/data.json", 
@@ -31,11 +49,12 @@ data_json <- read_json_arrow(
     as_data_frame = TRUE) |> 
   to_duckdb()
 
-data_json |> 
+dataset_data_json <- data_json |> 
   pull(dataset) |> 
   pluck(1) |> 
   tibble() |> 
   mutate(
+    distribution = NULL,
     bureauCode = delist(bureauCode),
     keyword = map_chr(keyword, \(x) paste0(delist(x), collapse = ", ")),
     language = delist(language),
@@ -43,14 +62,24 @@ data_json |>
     theme = map_chr(theme, \(x) paste0(delist(x), collapse = ", ")),
     references = delist(references)) |>
   unnest_wider(contactPoint, names_sep = "_") |>
-  unnest_wider(publisher, names_sep = "_") |> 
-  purse()
+  unnest_wider(publisher, names_sep = "_")
+
+dataset_data_json |> purse()
+
+distribution_data_json <- data_json |> 
+  pull(dataset) |> 
+  pluck(1) |> 
+  tibble() |> 
+  select(distribution) |> 
+  unnest(distribution)
+
+distribution_data_json |> purse()
 ```
 
 ## Provider CMS
 
 ```{r}
-request('https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items') |>
+dataset_provider_data <- request('https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items') |>
   req_perform() |>
   resp_body_json(simplifyVector = TRUE) |> 
   tibble() |> 
@@ -60,8 +89,15 @@ request('https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/item
     programCode = delist(programCode),
     theme = map_chr(theme, \(x) paste0(delist(x), collapse = ", "))) |>
   unnest_wider(contactPoint, names_sep = "_") |>
-  unnest_wider(publisher, names_sep = "_") |> 
-  purse()
+  unnest_wider(publisher, names_sep = "_")
+
+dataset_provider_data |> purse()
+
+distribution_provider_data <- dataset_provider_data |> 
+  select(distribution) |> 
+  unnest(distribution)
+
+distribution_provider_data |> purse()
 ```
 
 ## Open Payments
