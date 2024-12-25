@@ -11,33 +11,32 @@ editor_options:
 source("_common.R")
 ```
 
+## Catalog
+
 ```{r}
-catalog_data_json <- \() {
+catalog_json <- \() {
   
-  metadata <- arrow::read_json_arrow(
+  m <- arrow::read_json_arrow(
     file = "https://data.cms.gov/data.json", 
     col_select = c("@context", "@id", "@type", "conformsTo", "describedBy"),
     as_data_frame = FALSE) |> 
-  dplyr::collect()
+  dplyr::collect() |> 
+  dplyr::rename_with(remove_at_symbol)
   
-  data_json <- arrow::read_json_arrow(
-  file = "https://data.cms.gov/data.json",
-  col_select = c("dataset"),
-    as_data_frame = TRUE) |> 
-  arrow::to_duckdb()
+  list(
+    context = m$context,
+    id = m$id,
+    type = m$type,
+    conformsTo = m$conformsTo,
+    describedBy = m$describedBy
+    )
 }
-```
 
-
-```{r}
-#| label: data_json_metadata
-read_json_arrow(
-    file = "https://data.cms.gov/data.json", 
-    col_select = c("@context", "@id", "@type", "conformsTo", "describedBy"),
-    as_data_frame = FALSE) |> 
-  collect() |> 
+catalog_json() |> 
   purse()
 ```
+
+## Dataset
 
 ```{r}
 #| label: data_json
@@ -45,12 +44,14 @@ data_json <- read_json_arrow(
   file = "https://data.cms.gov/data.json",
   col_select = c("dataset"),
     as_data_frame = TRUE) |> 
-  to_duckdb()
-
-dataset_data_json <- data_json |> 
+  to_duckdb() |> 
   pull(dataset) |> 
   pluck(1) |> 
-  tibble() |> 
+  tibble()
+
+dataset_json <- data_json |> 
+  unnest_wider(contactPoint, names_sep = "_") |>
+  unnest_wider(publisher, names_sep = "_") |> 
   mutate(
     distribution = NULL,
     bureauCode = delist(bureauCode),
@@ -59,17 +60,20 @@ dataset_data_json <- data_json |>
     programCode = delist(programCode),
     theme = map_chr(theme, \(x) paste0(delist(x), collapse = ", ")),
     references = delist(references)) |>
-  unnest_wider(contactPoint, names_sep = "_") |>
-  unnest_wider(publisher, names_sep = "_")
+  rename_with(remove_at_symbol)
 
-dataset_data_json |> purse()
+dataset_json |> 
+  purse()
+```
 
-distribution_data_json <- data_json |> 
-  pull(dataset) |> 
-  pluck(1) |> 
-  tibble() |> 
+
+## Distribution
+
+```{r}
+distribution_json <- data_json |> 
   select(distribution) |> 
   unnest(distribution)
 
-distribution_data_json |> purse()
+distribution_json |> 
+  purse()
 ```
