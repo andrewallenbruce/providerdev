@@ -1,0 +1,28 @@
+---
+title: "data_openpayments"
+editor_options: 
+   chunk_output_type: console
+---
+
+```{r setup}
+#| echo: false
+#| message: false
+#| warning: false
+source("_common.R")
+```
+
+```{r}
+request("https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids") |>
+  req_perform() |>
+  resp_body_json(simplifyVector = TRUE) |> 
+  tibble() |> 
+  mutate(
+    bureauCode = delist(bureauCode),
+    keyword = map_chr(keyword, \(x) paste0(delist(x), collapse = ", ")),
+    programCode = delist(programCode),
+    theme = map_chr(theme, \(x) paste0(delist(x), collapse = ", "))) |>
+  unnest_wider(contactPoint, names_sep = "_") |>
+  unnest_wider(publisher, names_sep = "_") |> 
+  unnest_wider(publisher_data, names_sep = "_") |> 
+  purse()
+```

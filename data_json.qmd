@@ -1,5 +1,5 @@
 ---
-title: "Data Catalogs"
+title: "data_json"
 editor_options: 
    chunk_output_type: console
 ---
@@ -10,8 +10,6 @@ editor_options:
 #| warning: false
 source("_common.R")
 ```
-
-## Main CMS
 
 ```{r}
 catalog_data_json <- \() {
@@ -74,46 +72,4 @@ distribution_data_json <- data_json |>
   unnest(distribution)
 
 distribution_data_json |> purse()
-```
-
-## Provider CMS
-
-```{r}
-dataset_provider_data <- request('https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items') |>
-  req_perform() |>
-  resp_body_json(simplifyVector = TRUE) |> 
-  tibble() |> 
-  mutate(
-    bureauCode = delist(bureauCode),
-    keyword = map_chr(keyword, \(x) paste0(delist(x), collapse = ", ")),
-    programCode = delist(programCode),
-    theme = map_chr(theme, \(x) paste0(delist(x), collapse = ", "))) |>
-  unnest_wider(contactPoint, names_sep = "_") |>
-  unnest_wider(publisher, names_sep = "_")
-
-dataset_provider_data |> purse()
-
-distribution_provider_data <- dataset_provider_data |> 
-  select(distribution) |> 
-  unnest(distribution)
-
-distribution_provider_data |> purse()
-```
-
-## Open Payments
-
-```{r}
-request("https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids") |>
-  req_perform() |>
-  resp_body_json(simplifyVector = TRUE) |> 
-  tibble() |> 
-  mutate(
-    bureauCode = delist(bureauCode),
-    keyword = map_chr(keyword, \(x) paste0(delist(x), collapse = ", ")),
-    programCode = delist(programCode),
-    theme = map_chr(theme, \(x) paste0(delist(x), collapse = ", "))) |>
-  unnest_wider(contactPoint, names_sep = "_") |>
-  unnest_wider(publisher, names_sep = "_") |> 
-  unnest_wider(publisher_data, names_sep = "_") |> 
-  purse()
 ```

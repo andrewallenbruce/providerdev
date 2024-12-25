@@ -1,5 +1,5 @@
 ---
-title: "NDF"
+title: "provider_data"
 editor_options: 
    chunk_output_type: console
 ---
@@ -11,10 +11,37 @@ editor_options:
 source("_common.R")
 ```
 
+
+## Provider CMS
+
+```{r}
+dataset_provider_data <- request('https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items') |>
+  req_perform() |>
+  resp_body_json(simplifyVector = TRUE) |> 
+  tibble() |> 
+  mutate(
+    bureauCode = delist(bureauCode),
+    keyword = map_chr(keyword, \(x) paste0(delist(x), collapse = ", ")),
+    programCode = delist(programCode),
+    theme = map_chr(theme, \(x) paste0(delist(x), collapse = ", "))) |>
+  unnest_wider(contactPoint, names_sep = "_") |>
+  unnest_wider(publisher, names_sep = "_")
+
+dataset_provider_data |> purse()
+
+distribution_provider_data <- dataset_provider_data |> 
+  select(distribution) |> 
+  unnest(distribution)
+
+distribution_provider_data |> purse()
+```
+
 ## National Downloadable File
 
 ```{r}
-#| label: url_handling
+#| label: url_building
+#| echo: false
+#| eval: false
 httr2::url_parse("https://data.cms.gov/provider-data/api/1/datastore/query/")
     
 # distro 
@@ -45,12 +72,7 @@ httr2::req_template(
   url_tmp, 
   "/{fname}?show-reference-ids=true", 
   fname = ndf_identifier("affiliations"))
-```
 
-```{r}
-#| label: url_building
-#| echo: false
-#| eval: false
 url_ndf |> 
   httr2::url_build() |> 
   httr2::request() |> 
@@ -61,10 +83,8 @@ url_ndf |>
   httr2::resp_body_json(check_type = FALSE, simplifyVector = TRUE)
 ```
 
-## Function Draft
-
 ```{r}
-#| label: ndf
+#| label: meta_ndf
 meta_ndf <- \(fname) {
   
   stopifnot(curl::has_internet())
@@ -121,53 +141,15 @@ meta_ndf <- \(fname) {
 }
 ```
 
-### Field Comparison
+### Examples
 
 ```{r}
 #| label: meta_affiliations
-m_aff <- meta_ndf("affiliations")
-
-m_aff
-
-m_clin <- meta_ndf("clinicians")
-
-m_clin
+meta_ndf("affiliations") |> purse()
 ```
 
-```{r}
-#| label: affcols
-#| layout-ncol: 2
-aff <- provider::affiliations(
-  npi = 1558595660, 
-  na.rm = FALSE, 
-  tidy = FALSE)
-
-cat(
-  utils::formatOL(
-    m_aff$fields), 
-  sep = "\n")
-
-cat(
-  utils::formatOL(
-    names(aff)), 
-  sep = "\n")
-```
 
 ```{r}
-#| label: clncols
-#| layout-ncol: 2
-cln <- provider::clinicians(
-  npi = 1558595660, 
-  na.rm = FALSE, 
-  tidy = FALSE)
-
-cat(
-  utils::formatOL(
-    m_clin$fields), 
-  sep = "\n")
-
-cat(
-  utils::formatOL(
-    names(cln)), 
-  sep = "\n")
+#| label: meta_clinicians
+meta_ndf("clinicians") |> purse()
 ```

@@ -9,29 +9,22 @@ editor_options:
 #| message: false
 #| warning: false
 source("_common.R")
-```
 
+htmltools::tagList(
+  btn_link("https://www.drupal.org/docs/core-modules-and-themes/core-modules/jsonapi-module/filtering", "Drupal JSONAPI"))
+```
 
 ## Query Generation
 
 ```{r}
-foo <- \(nm, vals) {
-  
-  setNames(
-    vals, 
-    paste0(
-      nm, 
-      "[", 
-      seq_along(vals), 
-      "]"
-      )
-    )
+format_syntax <- \(name, value) {
+  setNames(value, paste0(name, "[id-", seq_along(value), "][condition][value]"))
 }
 
-foo("ID", 5:7)
+format_syntax("filter", c("GA", "NY"))
 
 request("https://example.com") |>
-  req_url_query(!!!foo("ID", 5:7))
+  req_url_query(!!!format_syntax("ID", 5:7))
 ```
 
 

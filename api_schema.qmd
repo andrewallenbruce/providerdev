@@ -1,5 +1,5 @@
 ---
-title: "Schema"
+title: "DCAT Schema"
 editor_options: 
    chunk_output_type: console
 ---
@@ -12,17 +12,16 @@ source("_common.R")
 
 htmltools::tagList(
   btn_link("https://resources.data.gov/resources/dcat-us/", "DCAT Schema"),
-  btn_link("https://resources.data.gov/schemas/dcat-us/v1.1/iso8601_guidance/#accrualperiodicity", "ISO8601"),
-  btn_link("https://www.drupal.org/docs/core-modules-and-themes/core-modules/jsonapi-module/filtering", "Drupal JSONAPI"))
+  btn_link("https://resources.data.gov/schemas/dcat-us/v1.1/iso8601_guidance/#accrualperiodicity", "ISO8601"))
 ```
 
-# `dataset` Fields
+## `dataset` Fields
 
-## `bureauCode`
+### `bureauCode`
 
 Federal agencies, combined agency and bureau code from [OMB Circular A-11, Appendix C](https://obamawhitehouse.archives.gov/sites/default/files/omb/assets/a11_current_year/app_c.pdf). 
 
-Use the format of `015:11`.
+> __Format__: `015:11`
 
 ```{r}
 #| label: bureauCode
@@ -47,11 +46,11 @@ bureauCode <- readr::read_csv(
 bureauCode
 ```
 
-## `programCode`
+### `programCode`
 
 Federal agencies, list the primary program related to this data asset, from the [Federal Program Inventory](https://resources.data.gov/schemas/dcat-us/v1.1/FederalProgramInventory_FY13_MachineReadable_091613.csv). 
 
-Use the format of `015:001`.
+> __Format__: `015:001`
 
 ```{r}
 #| label: programCode
@@ -71,11 +70,12 @@ programCode <- readr::read_csv(
 programCode
 ```
 
-## `accrualPeriodicity`
+### `accrualPeriodicity`
 
 ```{r}
 #| label: accrualPeriodicity
 #| echo: false
+#| eval: false
 accrual_key <- c("
 Term 	                ISO_8601
 Decennial 	          R/P10Y
@@ -113,7 +113,6 @@ accrual_key <- data.frame(
 accrual_key
 ```
 
-
 ```{r}
 iso_8601 <- \(x) {
   kit::nswitch(
@@ -141,8 +140,8 @@ iso_8601 <- \(x) {
     "R/PT1H",   "Hourly")
 }
 
-accrual_key |> 
-  dplyr::mutate(
-    iso_test = iso_8601(iso_8601), .before = 2)
+# accrual_key |> 
+#   dplyr::mutate(
+#     iso_test = iso_8601(iso_8601), .before = 2)
 ```
 

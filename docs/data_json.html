@@ -8,7 +8,7 @@
 
 <meta name="description" content="This is a personal, informal guide to rewriting an R package that I wrote from the ground up. It is a work in progress and will be updated as I learn more about the process.">
 
-<title>Overview – Refactoring Provider</title>
+<title>4&nbsp; data_json – Refactoring Provider</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -30,8 +64,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./api_faq.html" rel="next">
-<link href="./index.html" rel="prev">
+<link href="./data_provider.html" rel="next">
+<link href="./api_syntax.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -117,7 +151,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./overview.html">Overview</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./data_json.html">Catalogs</a></li><li class="breadcrumb-item"><a href="./data_json.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">data_json</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -137,7 +171,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./overview.html" class="sidebar-item-text sidebar-link active">
+  <a href="./overview.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Overview</span></a>
   </div>
 </li>
@@ -181,7 +215,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./data_json.html" class="sidebar-item-text sidebar-link">
+  <a href="./data_json.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">data_json</span></span></a>
   </div>
 </li>
@@ -228,22 +262,14 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
-   
-  <ul>
-  <li><a href="#core-functionality" id="toc-core-functionality" class="nav-link active" data-scroll-target="#core-functionality">Core Functionality</a></li>
-  <li><a href="#value-complexity-added" id="toc-value-complexity-added" class="nav-link" data-scroll-target="#value-complexity-added">Value ≥ Complexity Added?</a></li>
-  <li><a href="#questioning-out-of-scope" id="toc-questioning-out-of-scope" class="nav-link" data-scroll-target="#questioning-out-of-scope">Questioning: Out of Scope</a></li>
-  </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/andrewallenbruce/providerdev/edit/main/overview.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/blob/main/overview.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider repo</a></li></ul></div></nav>
-    </div>
+        
+    <div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider repo</a></li></ul></div></div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./data_json.html">Catalogs</a></li><li class="breadcrumb-item"><a href="./data_json.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">data_json</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Overview</h1>
+<h1 class="title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">data_json</span></h1>
 </div>
 
 
@@ -260,46 +286,109 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>TODO</p>
-<section id="core-functionality" class="level2">
-<h2 class="anchored" data-anchor-id="core-functionality">Core Functionality</h2>
-<p>Representative of the initial aim: quick access to <strong>current</strong> Healthcare Provider information that is <strong>administrative</strong> in nature:</p>
-<ol type="1">
-<li><code>affiliations()</code></li>
-<li><code>clinicians()</code></li>
-<li><code>crosswalk()</code></li>
-<li><code>hospitals()</code></li>
-<li><code>laboratories()</code></li>
-<li><code>nppes()</code></li>
-<li><code>opt_out()</code></li>
-<li><code>order_refer()</code></li>
-<li><code>providers()</code></li>
-<li><code>reassignments()</code></li>
-<li><code>pending()</code></li>
-<li><code>taxonomies()</code></li>
-</ol>
-</section>
-<section id="value-complexity-added" class="level2">
-<h2 class="anchored" data-anchor-id="value-complexity-added">Value ≥ Complexity Added?</h2>
-<p>Added value is significant, but tooling, maintenance, etc. much more complex than the core functionality.</p>
-<ol type="1">
-<li><code>quality_payment()</code></li>
-<li><code>quality_eligibility()</code></li>
-<li><code>open_payments()</code></li>
-<li><code>utilization()</code></li>
-<li><code>prescribers()</code></li>
-</ol>
-</section>
-<section id="questioning-out-of-scope" class="level2">
-<h2 class="anchored" data-anchor-id="questioning-out-of-scope">Questioning: Out of Scope</h2>
-<p>Surplus to requirements, e.g.&nbsp;historical provider data (either kept current or no longer updated), an applicable area of interest large enough to be moved into its own package, or tangential functionality:</p>
-<ol type="1">
-<li><code>outpatient()</code></li>
-<li><code>beneficiaries()</code></li>
-</ol>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>catalog_data_json <span class="ot">&lt;-</span> \() {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  metadata <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">read_json_arrow</span>(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">file =</span> <span class="st">"https://data.cms.gov/data.json"</span>, </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">col_select =</span> <span class="fu">c</span>(<span class="st">"@context"</span>, <span class="st">"@id"</span>, <span class="st">"@type"</span>, <span class="st">"conformsTo"</span>, <span class="st">"describedBy"</span>),</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">as_data_frame =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">collect</span>()</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  data_json <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">read_json_arrow</span>(</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">"https://data.cms.gov/data.json"</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_select =</span> <span class="fu">c</span>(<span class="st">"dataset"</span>),</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">as_data_frame =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  arrow<span class="sc">::</span><span class="fu">to_duckdb</span>()</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_json_arrow</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">file =</span> <span class="st">"https://data.cms.gov/data.json"</span>, </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">col_select =</span> <span class="fu">c</span>(<span class="st">"@context"</span>, <span class="st">"@id"</span>, <span class="st">"@type"</span>, <span class="st">"conformsTo"</span>, <span class="st">"describedBy"</span>),</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">as_data_frame =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>- $@context    c1 https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld
+- $@id         c1 https://data.cms.gov/data.json                              
+- $@type       c1 dcat:Catalog                                                
+- $conformsTo  c1 https://project-open-data.cio.gov/v1.1/schema               
+- $describedBy c1 https://project-open-data.cio.gov/v1.1/schema/catalog.json  </code></pre>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>data_json <span class="ot">&lt;-</span> <span class="fu">read_json_arrow</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">"https://data.cms.gov/data.json"</span>,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_select =</span> <span class="fu">c</span>(<span class="st">"dataset"</span>),</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">as_data_frame =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">to_duckdb</span>()</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>dataset_data_json <span class="ot">&lt;-</span> data_json <span class="sc">|&gt;</span> </span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(dataset) <span class="sc">|&gt;</span> </span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">distribution =</span> <span class="cn">NULL</span>,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">bureauCode =</span> <span class="fu">delist</span>(bureauCode),</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">keyword =</span> <span class="fu">map_chr</span>(keyword, \(x) <span class="fu">paste0</span>(<span class="fu">delist</span>(x), <span class="at">collapse =</span> <span class="st">", "</span>)),</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">language =</span> <span class="fu">delist</span>(language),</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">programCode =</span> <span class="fu">delist</span>(programCode),</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">theme =</span> <span class="fu">map_chr</span>(theme, \(x) <span class="fu">paste0</span>(<span class="fu">delist</span>(x), <span class="at">collapse =</span> <span class="st">", "</span>)),</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">references =</span> <span class="fu">delist</span>(references)) <span class="sc">|&gt;</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(contactPoint, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(publisher, <span class="at">names_sep =</span> <span class="st">"_"</span>)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>dataset_data_json <span class="sc">|&gt;</span> <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>- $@type                 c139 dcat:Dataset                                  ...
+- $accessLevel           c139 public                                        ...
+- $accrualPeriodicity    c139 R/P1Y                                         ...
+- $bureauCode            c139 009:38                                        ...
+- $contactPoint_@type    c139 vcard:Contact                                 ...
+- $contactPoint_fn       c139 Shared Savings Program - CM                   ...
+- $contactPoint_hasEmail c139 mailto:SharedSavingsProgram@cms.hhs.gov       ...
+- $describedBy           c139 https://data.cms.gov/resources/accountable-ca ...
+- $dataQuality           l139 T                                             ...
+- $description           c139 The Accountable Care Organization Participant ...
+- $identifier            c139 https://data.cms.gov/data-api/v1/dataset/9767 ...
+- $keyword               c139 Medicare, Value-Based Care, Coordinated Care, ...
+- $landingPage           c139 https://data.cms.gov/medicare-shared-savings- ...
+- $language              c139 en-US                                         ...
+- $license               c139 https://www.usa.gov/government-works          ...
+- $modified              p139 2024-01-29                                    ...
+- $programCode           c139 009:000                                       ...
+- $publisher_@type       c139 org:Organization                              ...
+- $publisher_name        c139 Centers for Medicare &amp; Medicaid Services      ...
+- $references            c139 https://data.cms.gov/resources/acos-aco-parti ...
+- $temporal              c139 2014-01-01/2024-12-31                         ...
+- $theme                 c139 Medicare                                      ...
+- $title                 c139 Accountable Care Organization Participants    ...
+- $describedByType       c139 NA                                            ...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>distribution_data_json <span class="ot">&lt;-</span> data_json <span class="sc">|&gt;</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(dataset) <span class="sc">|&gt;</span> </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(distribution) <span class="sc">|&gt;</span> </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(distribution)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>distribution_data_json <span class="sc">|&gt;</span> <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>- $@type        c3909 dcat:Distribution                                     ...
+- $format       c3909 API                                                   ...
+- $accessURL    c3909 https://data.cms.gov/data-api/v1/dataset/9767cb68-8ea ...
+- $resourcesAPI c3909 https://data.cms.gov/data-api/v1/dataset-resources/97 ...
+- $description  c3909 latest                                                ...
+- $title        c3909 Accountable Care Organization Participants : 2024-01- ...
+- $modified     p3909 2024-01-29                                            ...
+- $temporal     c3909 2024-01-01/2024-12-31                                 ...
+- $downloadURL  c3909 NA                                                    ...
+- $mediaType    c3909 NA                                                    ...</code></pre>
+</div>
+</div>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -721,13 +810,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./index.html" class="pagination-link" aria-label="Preface">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Preface</span>
+      <a href="./api_syntax.html" class="pagination-link" aria-label="Query Syntax">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Query Syntax</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./api_faq.html" class="pagination-link" aria-label="API FAQ">
-        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">API FAQ</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./data_provider.html" class="pagination-link" aria-label="provider_data">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">provider_data</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
@@ -736,5 +825,5 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/andrewallenbruce/providerdev/edit/main/overview.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/blob/main/overview.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/andrewallenbruce/providerdev/edit/main/data_json.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li><li><a href="https://github.com/andrewallenbruce/providerdev/blob/main/data_json.qmd" class="toc-action"><i class="bi empty"></i>View source</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
