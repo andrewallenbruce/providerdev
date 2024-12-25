@@ -12,25 +12,25 @@ source("_common.R")
 ```
 
 ```{r}
-dataset_provider_data <- request('https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items') |>
+dataset_provider <- request("https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items") |>
   req_perform() |>
   resp_body_json(simplifyVector = TRUE) |> 
   tibble() |> 
   mutate(
     bureauCode = delist(bureauCode),
-    keyword = map_chr(keyword, \(x) paste0(delist(x), collapse = ", ")),
+    keyword = flatten_column(keyword),
     programCode = delist(programCode),
-    theme = map_chr(theme, \(x) paste0(delist(x), collapse = ", "))) |>
+    theme = flatten_column(theme)) |>
   unnest_wider(contactPoint, names_sep = "_") |>
   unnest_wider(publisher, names_sep = "_")
 
-dataset_provider_data |> purse()
+dataset_provider |> purse()
 
-distribution_provider_data <- dataset_provider_data |> 
+distribution_provider <- dataset_provider |> 
   select(distribution) |> 
   unnest(distribution)
 
-distribution_provider_data |> purse()
+distribution_provider |> purse()
 ```
 
 ## National Downloadable File

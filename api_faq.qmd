@@ -106,11 +106,7 @@ data_json |>
       title)) |> 
   mutate(
     bureauCode = delist(bureauCode),
-    keyword = map_chr(
-      keyword, 
-      \(x) paste0(
-        delist(x), 
-        collapse = ", ")),
+    keyword = flatten_column(keyword),
     language = delist(language),
     programCode = delist(programCode),
     references = delist(references),
@@ -208,14 +204,19 @@ Use the __`distribution`__ with the `"latest"` __`description`__:
 <data_json>
     => <dataset> 
     => <distribution> 
-    -> $(description == "latest")
-    -> $(accessURL)
+    -> ($description == "latest")
+    -> ($accessURL)
 ```
 
-> For example, this URL for Opt Out Affidavits is 
-> `"https://data.cms.gov/data-api/v1/dataset/"`
-> `"9887a515-7552-4693-bf58-735c77af46d7/data"`
->                                        ^^^^
+> For example, this URL for Opt Out Affidavits is:
+
+```r
+https://data.cms.gov/
+   data-api/v1/dataset/
+   9887a515-7552-4693-bf58-735c77af46d7/
+   data
+   ^^^^
+```
 
 
 ```{r}
@@ -229,7 +230,7 @@ distribution |>
 
 ### JSON:API
 
-The **JSON:API** form has a slightly different structure that includes metadata about the dataset. Otherwise it is identical to Method 1. 
+The **JSON:API** form has a slightly different structure that includes metadata about the dataset. Otherwise it is identical to the **Standard JSON** method. 
 
 Use the URL in the `identifier` field. 
 
@@ -237,14 +238,19 @@ Use the URL in the `identifier` field.
 ```r
 <data_json>
     => <dataset> 
-    -> $(title == "Order and Referring")
-    -> $(identifier)
+    -> ($title == "Order and Referring")
+    -> ($identifier)
 ```
 
-> For example, this URL for Opt Out Affidavits: 
-> `"https://data.cms.gov/data-api/v1/dataset/"`
-> `"9887a515-7552-4693-bf58-735c77af46d7/data-viewer"`
->                                        ^^^^^^^^^^^
+> For example, this URL for Opt Out Affidavits is:
+
+```r
+https://data.cms.gov/
+   data-api/v1/dataset/
+   9887a515-7552-4693-bf58-735c77af46d7/
+   data-viewer
+   ^^^^^^^^^^^
+```
 
 ```{r}
 #| label: json_api
@@ -260,11 +266,7 @@ json_api <- data_json |>
 json_api |> 
   mutate(
     bureauCode = delist(bureauCode),
-    keyword = map_chr(
-      keyword, 
-      \(x) paste0(
-        delist(x), 
-        collapse = ", ")),
+    keyword = flatten_column(keyword),
     language = delist(language),
     programCode = delist(programCode),
     references = delist(references),
@@ -336,44 +338,39 @@ Paginates through the [Opt Out Affidavits](https://data.cms.gov/provider-charact
 
 Use the `stats` endpoints i.e., 
 
-   * `data.cms.gov/data-api/v1/dataset/{ID}/data-viewer/stats`
-   * `data.cms.gov/data-api/v1/dataset/{ID}/data/stats`
+   * `/data-viewer/stats`
+   * `/data/stats`
 
 ::: 
 
 
 ```r
-data/
-stats?
-filter[ex][path]=State%20Code&
-filter[ex][value]=GA
+data/stats?
+   filter[f1][path]=State Code&
+   filter[f1][value]=GA
 
 data?
-size=5&
-filter[ex][path]=State%20Code&
-filter[ex][value]=GA
+   size=5&
+   filter[f1][path]=State Code&
+   filter[f1][value]=GA
 ```
 
 ```{r}
 #| label: pagination_optout
-# accessURL |> 
-#   req_perform_iterative(
-#     next_req = iterate_with_offset(start = 1, offset = 5000)) |> 
-#   resp_body_json()
-
-offset_sequence <- \(found, limit = 5000) {
-  
-  if (found <= limit) 
-    return(found)
-  
-  seq.int(
-    from = 0, 
-    to = if ((found %% 5) == 0) found else (limit + found), 
-    by = limit)
-}
+# offset_sequence <- \(found = 47500, limit = 5000) {
+#   
+#   if (found <= limit) return(found)
+#   
+#   if ((found %% 10) == 0) found else (found + (limit - found))
+#   
+#   seq.int(
+#     from = 0, 
+#     to = if ((found %% 5) == 0) found else (limit + found), 
+#     by = limit)
+# }
 
 # Not working
-offset_sequence(found = 47025)
+# offset_sequence(found = 47025)
 
 query <- glue::glue(
   'list(
