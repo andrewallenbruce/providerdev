@@ -1,5 +1,5 @@
 ---
-title: "data_openpayments"
+title: "Open Payments"
 editor_options: 
    chunk_output_type: console
 ---
@@ -9,20 +9,46 @@ editor_options:
 #| message: false
 #| warning: false
 source("_common.R")
+
+
 ```
 
+
+## Dataset
+
 ```{r}
-request("https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids") |>
+dataset_open <- request("https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids") |>
   req_perform() |>
   resp_body_json(simplifyVector = TRUE) |> 
   tibble() |> 
-  mutate(
-    bureauCode = delist(bureauCode),
-    keyword = map_chr(keyword, \(x) paste0(delist(x), collapse = ", ")),
-    programCode = delist(programCode),
-    theme = map_chr(theme, \(x) paste0(delist(x), collapse = ", "))) |>
+  unnest_wider(keyword, names_sep = "_") |>
+  unnest_wider(theme, names_sep = "_") |>
   unnest_wider(contactPoint, names_sep = "_") |>
   unnest_wider(publisher, names_sep = "_") |> 
   unnest_wider(publisher_data, names_sep = "_") |> 
+  mutate(
+    description = clean_open_description(description),
+    bureauCode = delist(bureauCode),
+    programCode = delist(programCode)) |>
+  rename_with(remove_at_symbol) |> 
+  rename(modified_dttm = `%modified`)
+
+dataset_open |> 
+  purse()
+```
+
+
+## Distribution
+
+```{r}
+distribution_open <- dataset_open |> 
+  select(distribution) |> 
+  unnest(distribution) |> 
+  unnest(data) |> 
+  unnest(`%Ref:downloadURL`, names_sep = "_") |> 
+  unnest(`%Ref:downloadURL_data`, names_sep = "_") |> 
+  rename_with(replace_open_columns)
+
+distribution_open |> 
   purse()
 ```
