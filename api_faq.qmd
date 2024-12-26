@@ -113,6 +113,7 @@ data_json |>
     theme = delist(theme)) |> 
   unnest_wider(contactPoint, names_sep = "_") |>
   unnest_wider(publisher, names_sep = "_") |>
+  rename_with(remove_at_symbol) |> 
   purse()
 ```
 
@@ -126,7 +127,8 @@ distribution <- data_json |>
   pull(dataset) |> 
   pluck(1) |> 
   select(distribution) |> 
-  unnest(distribution)
+  unnest(distribution) |> 
+  rename_with(remove_at_symbol)
 
 distribution |> 
   purse()
