@@ -18,18 +18,21 @@ catalog_json <- \() {
   
   m <- arrow::read_json_arrow(
     file = "https://data.cms.gov/data.json", 
-    col_select = c("@context", "@id", "@type", "conformsTo", "describedBy"),
+    col_select = c("@context", 
+                   "@id", 
+                   "@type", 
+                   "conformsTo", 
+                   "describedBy"),
     as_data_frame = FALSE) |> 
-  dplyr::collect() |> 
-  dplyr::rename_with(remove_at_symbol)
+  collect() |> 
+  rename_with(remove_at_symbol)
   
   list(
     context = m$context,
     id = m$id,
     type = m$type,
     conformsTo = m$conformsTo,
-    describedBy = m$describedBy
-    )
+    describedBy = m$describedBy)
 }
 
 catalog_json() |> 
@@ -55,10 +58,10 @@ dataset_json <- data_json |>
   mutate(
     distribution = NULL,
     bureauCode = delist(bureauCode),
-    keyword = map_chr(keyword, \(x) paste0(delist(x), collapse = ", ")),
+    keyword = flatten_column(keyword),
     language = delist(language),
     programCode = delist(programCode),
-    theme = map_chr(theme, \(x) paste0(delist(x), collapse = ", ")),
+    theme = flatten_column(theme),
     references = delist(references)) |>
   rename_with(remove_at_symbol)
 

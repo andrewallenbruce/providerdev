@@ -43,8 +43,6 @@ The **data.CMS.gov/data.json** API:
    * returns JSON & JSON:API responses
    * uses standard HTTP response codes.
 
-## API Integration
-
 To integrate endpoint requests with the **data.cms.gov Public API**, follow these steps:
 
    1. Find Dataset & Identifier: 
@@ -59,7 +57,9 @@ To integrate endpoint requests with the **data.cms.gov Public API**, follow thes
 
 --------------------------------------------------------------------------------
 
-# Data Catalog file
+# Hierarchy
+
+## Catalog
 
 The [`data.json`](https://data.cms.gov/data.json) file is an [**Open Data**](https://resources.data.gov/resources/dcat-us/) catalog containing all available datasets. As new data is added, `data.json` is automatically updated.
 
@@ -91,9 +91,9 @@ c("@context    <chr> https://project-open-data.cio.gov/v1.1/schema/catalog.jsonl
   cat(sep = "\n")
 ```
 
+## Dataset
 
 Within `data.json`, there is an array called `dataset`. One can search through this array using the dataset's `title`, such as `"Payroll Based Journal Daily Nurse Staffing"`:
-
 
 ```{r}
 #| label: dataset_title
@@ -117,9 +117,9 @@ data_json |>
   purse()
 ```
 
+## Distribution
 
 Within `dataset`, there is an array called `distribution` which contains all dataset versions, in all available formats:
-
 
 ```{r}
 #| label: distribution
@@ -134,7 +134,7 @@ distribution |>
   purse()
 ```
 
-## Formats
+### Formats
 
    * __description__ `"latest"` is a URL that always point to the latest data
    * __mediaType__ `"text/csv"` is a downloadable CSV file
@@ -172,7 +172,7 @@ head(staffing, 1) |>
   purse()
 ```
 
-## Temporal Data
+### Temporal Data
 
 Datasets with multiple historical versions available will have a `temporal` field in the `distribution` array of the `data.json`.
 
@@ -194,7 +194,7 @@ distribution |>
 
 There are two methods of accessing the latest data. 
 
-Both result in a URL pointing to the most recent version of the dataset. This URL is canonical, i.e., will not change as new versions are added. 
+Both result in a URL pointing to the most recent version of the dataset. This URL is canonical, i.e., it will not change as new versions are added. 
 
 > For this reason, it is _recommended to **always** start with the **`data.json` object** as opposed to hardcoding any URL_.
 
@@ -210,7 +210,7 @@ Use the __`distribution`__ with the `"latest"` __`description`__:
     -> ($accessURL)
 ```
 
-> For example, this URL for Opt Out Affidavits is:
+For example, this URL for Opt Out Affidavits is:
 
 ```r
 https://data.cms.gov/
@@ -244,7 +244,7 @@ Use the URL in the `identifier` field.
     -> ($identifier)
 ```
 
-> For example, this URL for Opt Out Affidavits is:
+For example, this URL for Opt Out Affidavits is:
 
 ```r
 https://data.cms.gov/
@@ -358,7 +358,7 @@ data?
 ```
 
 ```{r}
-#| label: pagination_optout
+#| label: offset_sequence
 # offset_sequence <- \(found = 47500, limit = 5000) {
 #   
 #   if (found <= limit) return(found)
@@ -373,7 +373,15 @@ data?
 
 # Not working
 # offset_sequence(found = 47025)
+ # if (limit == 500L && count > 500L) {
+ # 
+ #    pgs <- 1:round(count / 500) * 500
+ # }
+```
 
+
+```{r}
+#| label: pagination_optout
 query <- glue::glue(
   'list(
   "filter[id-{FID}][path]" = "{PATH}",
@@ -419,6 +427,7 @@ accessURL |>
 
 ```{r}
 #| label: csv_download
+#| eval: false
 orderrefer_url <- distribution |> 
   filter(
     grepl("Order and Referring", title), 
@@ -455,6 +464,7 @@ Site: [Public Provider Enrollment Reassignment SubFile](https://data.cms.gov/pro
 
 ```{r}
 #| label: add_resources
+#| eval: false
 resp_resources <- distribution |> 
   filter(
   grepl("Medicare Fee-For-Service", title),
@@ -488,7 +498,7 @@ reassign_csv
 ## Schema
 
 ```r
-[data.json]
+[data.json] (catalog)
  |--@context
  |--@id
  |--@type
