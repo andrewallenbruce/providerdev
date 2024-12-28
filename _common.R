@@ -21,7 +21,10 @@ btn_link <- \(href, label) {
   )
 }
 
-purse <- \(x, pre = "- ", wid = 0, sep = " ") {
+purse <- \(x,
+           pre = "- ",
+           wid = 0,
+           sep = " ") {
   terse::terse(
     x = x,
     prefix = pre,
@@ -33,7 +36,7 @@ purse <- \(x, pre = "- ", wid = 0, sep = " ") {
 
 replace_open_columns <- \(x) stringr::str_replace_all(x, c(":" = "_", "%" = "", "@" = ""))
 remove_at_symbol     <- \(x) fuimus::sf_remove(s = x, p = "@", fix = TRUE)
-flatten_column       <- \(column) purrr::map_chr(column, \(x) paste0(fuimus::delist(x), collapse = ", "))
+flatten_column       <- \(i) purrr::map_chr(i, \(x) paste0(fuimus::delist(x), collapse = ", "))
 
 clean_open_description <- \(x) {
   stringr::str_replace_all(
@@ -71,7 +74,7 @@ recode_iso_8601 <- \(x) {
 
 main_catalog <- \() {
 
-  x <- read_json_arrow(
+  x <- arrow::read_json_arrow(
     file = "https://data.cms.gov/data.json",
     col_select = c("@context",
                    "@id",
@@ -79,7 +82,7 @@ main_catalog <- \() {
                    "conformsTo",
                    "describedBy"),
     as_data_frame = FALSE) |>
-    collect()
+    dplyr::collect()
 
   list(
     context     = x$`@context`,
@@ -87,6 +90,26 @@ main_catalog <- \() {
     type        = x$`@type`,
     conformsTo  = x$conformsTo,
     describedBy = x$describedBy)
+}
+
+main_data <- \() {
+
+  x <- arrow::read_json_arrow(
+    file          = "https://data.cms.gov/data.json",
+    col_select    = c("dataset"),
+    as_data_frame = TRUE) |>
+    arrow::to_duckdb() |>
+    dplyr::collect()
+
+  collapse::qTBL(x[["dataset"]][[1]]) |>
+    collapse::fmutate(
+      bureauCode   = delist(bureauCode),
+      language     = delist(language),
+      programCode  = delist(programCode),
+      references   = delist(references),
+      theme        = flatten_column(theme),
+      keyword      = flatten_column(keyword)) |>
+    collapse::frename(remove_at_symbol)
 }
 
 provider_data <- \() {
@@ -112,6 +135,7 @@ provider_data <- \() {
 
 options(scipen = 999, digits = 3)
 
+library(collapse)
 library(tidyverse)
 library(provider)
 library(fuimus)

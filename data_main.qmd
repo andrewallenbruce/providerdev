@@ -15,43 +15,27 @@ source("_common.R")
 
 ```{r}
 #| label: main_catalog
-main_catalog() |> 
-  purse()
+main_catalog() |> purse()
 ```
 
 ## Data
 
 ```{r}
 #| label: main_data
-main_data <- read_json_arrow(
-  file          = "https://data.cms.gov/data.json",
-  col_select    = c("dataset"),
-  as_data_frame = TRUE) |> 
-  to_duckdb() |> 
-  pull(dataset) |> 
-  pluck(1) |> 
-  tibble()
+main_data_dl <- main_data()
 
-main_data |> 
-  glimpse()
+main_data_dl |> glimpse()
 ```
 
 ### Dataset
 
 ```{r}
 #| label: main_dataset
-main_dataset <- main_data |> 
-  unnest_wider(contactPoint, names_sep = "_") |>
-  unnest_wider(publisher, names_sep = "_") |> 
-  mutate(
-    distribution = NULL,
-    bureauCode   = delist(bureauCode),
-    language     = delist(language),
-    programCode  = delist(programCode),
-    references   = delist(references),
-    theme        = flatten_column(theme),
-    keyword      = flatten_column(keyword)) |>
-  rename_with(remove_at_symbol) |> 
+main_dataset <- main_data_dl |> 
+  collapse::fselect(-distribution) |>
+  tidyr::unnest_wider(contactPoint, names_sep = "_") |>
+  tidyr::unnest_wider(publisher, names_sep = "_") |> 
+  collapse::frename(remove_at_symbol) |> 
   remove_all_na()
 
 main_dataset |> 
@@ -62,10 +46,10 @@ main_dataset |>
 
 ```{r}
 #| label: main_distribution
-main_distribution <- main_data |> 
-  select(distribution) |> 
-  unnest(distribution) |> 
-  rename_with(remove_at_symbol)
+main_distribution <- main_data_dl |> 
+  collapse::fselect(distribution) |>
+  tidyr::unnest(distribution) |> 
+  collapse::frename(remove_at_symbol)
 
 main_distribution |> 
   purse()
@@ -76,8 +60,8 @@ main_distribution |>
 ```{r}
 #| label: main_distribution_api
 main_distribution_api <- main_distribution |> 
-  filter(format == "API") |> 
-  remove_all_na()
+  collapse::fsubset(format %==% "API") |> 
+  fuimus::remove_all_na()
 
 main_distribution_api |> 
   purse()
@@ -88,8 +72,8 @@ main_distribution_api |>
 ```{r}
 #| label: main_distribution_api_latest
 main_distribution_api_latest <- main_distribution_api |> 
-  filter(description == "latest") |> 
-  remove_all_na()
+  collapse::fsubset(description %==% "latest") |> 
+  fuimus::remove_all_na()
 
 main_distribution_api_latest |> 
   purse()
@@ -100,8 +84,8 @@ main_distribution_api_latest |>
 ```{r}
 #| label: main_distribution_mediaType
 main_distribution_mediaType <- main_distribution |> 
-  filter(not_na(mediaType)) |> 
-  remove_all_na()
+  collapse::fsubset(fuimus::not_na(mediaType)) |> 
+  fuimus::remove_all_na()
 
 main_distribution_mediaType |> 
   purse()
@@ -115,7 +99,7 @@ main_distribution_mediaType |>
 ```{r}
 #| label: main_distribution_mediaType_csv
 main_distribution_mediaType_csv <- main_distribution_mediaType |> 
-  filter(mediaType == "text/csv")
+  collapse::fsubset(mediaType %==% "text/csv")
 
 main_distribution_mediaType_csv |> 
   purse()
@@ -126,14 +110,14 @@ main_distribution_mediaType_csv |>
 ```{r}
 #| label: main_distribution_mediaType_zip
 main_distribution_mediaType_zip <- main_distribution_mediaType |> 
-  filter(mediaType == "application/zip")
+  collapse::fsubset(mediaType %==% "application/zip")
 
 main_distribution_mediaType_zip |> 
   purse()
 
-main_distribution_mediaType_zip |>
-  pull(title) |>
-  cat(sep = "\n")
+# main_distribution_mediaType_zip |>
+#   pull(title) |>
+#   cat(sep = "\n")
 ```
 
 ##### Excel
@@ -141,12 +125,12 @@ main_distribution_mediaType_zip |>
 ```{r}
 #| label: main_distribution_mediaType_excel
 main_distribution_mediaType_excel <- main_distribution_mediaType |> 
-  filter(mediaType == "application/vnd.ms-excel")
+  collapse::fsubset(mediaType %==% "application/vnd.ms-excel")
 
 main_distribution_mediaType_excel |> 
   purse()
 
-main_distribution_mediaType_excel |>
-  pull(title) |>
-  cat(sep = "\n")
+# main_distribution_mediaType_excel |>
+#   pull(title) |>
+#   cat(sep = "\n")
 ```
