@@ -16,24 +16,6 @@ htmltools::tagList(
            "API FAQ"))
 ```
 
-<style>
-.codeblock-label {
-  color: #000;
-  display: inline-block;
-  border-top-left-radius: .5rem;
-  border-top-right-radius: .5rem;
-  padding: 0.25rem 0.75rem;
-  background-color: #cccccc;
-  margin-bottom: 0;
-  font-size: 0.875em;
-  font-family: var(--bs-font-monospace);
-}
-  
-.codeblock-label + div.sourceCode {
-  margin-top: 0;
-}
-</style>
-
 The **data.CMS.gov/data.json** API:
 
    * offers access to CMS public data
@@ -104,6 +86,8 @@ data_json |>
     grepl(
       "Payroll Based Journal Daily Nurse Staffing", 
       title)) |> 
+  unnest_wider(contactPoint, names_sep = "_") |>
+  unnest_wider(publisher, names_sep = "_") |>
   mutate(
     bureauCode = delist(bureauCode),
     keyword = flatten_column(keyword),
@@ -111,8 +95,6 @@ data_json |>
     programCode = delist(programCode),
     references = delist(references),
     theme = delist(theme)) |> 
-  unnest_wider(contactPoint, names_sep = "_") |>
-  unnest_wider(publisher, names_sep = "_") |>
   rename_with(remove_at_symbol) |> 
   purse()
 ```
@@ -158,17 +140,18 @@ For instance, the following URL will *always* point to the **Q2 2021 Payroll Bas
 #| label: staffing
 # "https://data.cms.gov/data-api/v1/dataset/d10d792e-ea6e-4145-8512-34efbc1be04b/data"
 
-staffing <- distribution |> 
+distribution |> 
   filter(
-    grepl("Payroll Based Journal Daily Nurse Staffing", title),
+    grepl("Payroll Based Journal Daily Nurse Staffing", 
+          title),
     format == "API",
-    grepl("^2021-04", temporal)) |> 
+    grepl("^2021-04", 
+          temporal)) |> 
   pull(accessURL) |> 
   request() |> 
   req_perform() |> 
-  resp_body_json(simplifyVector = TRUE)
-
-head(staffing, 1) |> 
+  resp_body_json(simplifyVector = TRUE) |> 
+  head(1) |> 
   purse()
 ```
 
@@ -184,7 +167,8 @@ The following example returns the [2017 Medicare Inpatient Hospitals - by Provid
 #| label: temporal_data
 distribution |> 
   filter(
-    grepl("Medicare Inpatient Hospitals - by Provider and Service", title), 
+    grepl("Medicare Inpatient Hospitals - by Provider and Service", 
+          title), 
     format == "API",
     temporal == "2017-01-01/2017-12-31") |> 
   purse()
@@ -225,7 +209,8 @@ https://data.cms.gov/
 #| label: json_standard
 distribution |> 
   filter(
-    grepl("Order and Referring", title),
+    grepl("Order and Referring", 
+          title),
     description == "latest") |> 
   purse()
 ```
@@ -256,16 +241,15 @@ https://data.cms.gov/
 
 ```{r}
 #| label: json_api
-json_api <- data_json |> 
+data_json |> 
   pull(dataset) |> 
   pluck(1) |> 
-  tibble() |> 
   filter(
     grepl(
       "Order and Referring", 
-      title))
-
-json_api |> 
+      title)) |> 
+  unnest_wider(contactPoint, names_sep = "_") |>
+  unnest_wider(publisher, names_sep = "_") |>
   mutate(
     bureauCode = delist(bureauCode),
     keyword = flatten_column(keyword),
@@ -273,8 +257,7 @@ json_api |>
     programCode = delist(programCode),
     references = delist(references),
     theme = delist(theme)) |> 
-  unnest_wider(contactPoint, names_sep = "_") |>
-  unnest_wider(publisher, names_sep = "_") |> 
+  rename_with(remove_at_symbol) |> 
   purse()
 ```
 
@@ -301,6 +284,7 @@ stats |> purse()
       
 ```{r}
 #| label: pagination_2
+#| eval: false
 request("https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data?size=5000&offset=0") |>
   req_perform() |> 
   resp_body_json(simplifyVector = TRUE) |> 
@@ -312,6 +296,7 @@ request("https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77
    
 ```{r}
 #| label: pagination_3
+#| eval: false
 request("https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data?size=5000&offset=5000") |>
   req_perform() |> 
   resp_body_json(simplifyVector = TRUE) |> 
@@ -323,6 +308,7 @@ request("https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77
 
 ```{r}
 #| label: pagination_4
+#| eval: false
 request("https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data?size=5000&offset=10000") |>
   req_perform() |> 
   resp_body_json(simplifyVector = TRUE) |> 
@@ -427,12 +413,14 @@ accessURL |>
 
 ```{r}
 #| label: csv_download
-#| eval: false
+#| eval: true
 orderrefer_url <- distribution |> 
   filter(
-    grepl("Order and Referring", title), 
-    mediaType == "text/csv",
-    modified == max(modified)) |> 
+    grepl("Order and Referring", title),
+    mediaType == "text/csv"
+    # modified == max(modified) Unneeded
+    ) |> 
+  slice(1) |> 
   pull(downloadURL)
   
 orderrefer_csv <- read_csv_arrow(
@@ -464,7 +452,7 @@ Site: [Public Provider Enrollment Reassignment SubFile](https://data.cms.gov/pro
 
 ```{r}
 #| label: add_resources
-#| eval: false
+#| eval: true
 resp_resources <- distribution |> 
   filter(
   grepl("Medicare Fee-For-Service", title),
