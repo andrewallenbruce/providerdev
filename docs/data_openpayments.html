@@ -134,7 +134,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./data_json.html">Catalogs</a></li><li class="breadcrumb-item"><a href="./data_openpayments.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Open Payments</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./data_main.html">Catalogs</a></li><li class="breadcrumb-item"><a href="./data_openpayments.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Open Payments</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -198,7 +198,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./data_json.html" class="sidebar-item-text sidebar-link">
+  <a href="./data_main.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Main</span></span></a>
   </div>
 </li>
@@ -250,14 +250,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#dataset" id="toc-dataset" class="nav-link active" data-scroll-target="#dataset"><span class="header-section-number">6.1</span> Dataset</a></li>
-  <li><a href="#distribution" id="toc-distribution" class="nav-link" data-scroll-target="#distribution"><span class="header-section-number">6.2</span> Distribution</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/andrewallenbruce/providerdev/blob/main/data_openpayments.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider repo</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./data_json.html">Catalogs</a></li><li class="breadcrumb-item"><a href="./data_openpayments.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Open Payments</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./data_main.html">Catalogs</a></li><li class="breadcrumb-item"><a href="./data_openpayments.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Open Payments</span></a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Open Payments</span></h1>
 </div>
@@ -279,81 +278,149 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="dataset" class="level2" data-number="6.1">
 <h2 data-number="6.1" class="anchored" data-anchor-id="dataset"><span class="header-section-number">6.1</span> Dataset</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>dataset_open <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(keyword, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(theme, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(contactPoint, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(publisher, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(publisher_data, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">description =</span> <span class="fu">clean_open_description</span>(description),</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">bureauCode =</span> <span class="fu">delist</span>(bureauCode),</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">programCode =</span> <span class="fu">delist</span>(programCode)) <span class="sc">|&gt;</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(remove_at_symbol) <span class="sc">|&gt;</span> </span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">modified_dttm =</span> <span class="st">`</span><span class="at">%modified</span><span class="st">`</span>)</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>dataset_open <span class="sc">|&gt;</span> </span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>open_data <span class="ot">&lt;-</span> <span class="fu">request</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(keyword, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(theme, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(contactPoint, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(publisher, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(publisher_data, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(distribution, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(distribution_data, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(<span class="st">`</span><span class="at">distribution_data_%Ref:downloadURL</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(<span class="st">`</span><span class="at">distribution_data_%Ref:downloadURL_1</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(<span class="st">`</span><span class="at">distribution_data_%Ref:downloadURL_1_data</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">description        =</span> <span class="fu">clean_open_description</span>(description),</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">bureauCode         =</span> <span class="fu">delist</span>(bureauCode),</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">programCode        =</span> <span class="fu">delist</span>(programCode)) <span class="sc">|&gt;</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(remove_at_symbol) <span class="sc">|&gt;</span> </span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">modified_dttm =</span> <span class="st">`</span><span class="at">%modified</span><span class="st">`</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">remove_all_na</span>()</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>open_data <span class="sc">|&gt;</span> </span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>- $bureauCode            c74 009:38                                         ...
-- $programCode           c74 009:000                                        ...
-- $accessLevel           c74 public                                         ...
-- $keyword_identifier    c74 7a69eb60-9b96-52b9-a965-bc355eb14783           ...
-- $keyword_data          c74 2017                                           ...
-- $contactPoint_fn       c74 Open Payments                                  ...
-- $contactPoint_hasEmail c74 mailto:openpayments@cms.hhs.gov                ...
-- $dataQuality           l74 T                                              ...
-- $description           c74 Research Payment Data – Detailed Dataset 2017  ...
-- $distribution          L74 list(structure(list(identifier = "10ec915a-726 ...
-- $identifier            c74 0e3977b9-a5d6-427e-bc02-480481edd6e0           ...
-- $title                 c74 2017 Research Payment Data                     ...
-- $issued                c74 2024-06-28                                     ...
-- $modified              c74 2024-06-28                                     ...
-- $temporal              c74 2017-01-01/2017-12-31                          ...
-- $publisher_identifier  c74 11b41668-9929-5de3-b494-6464ac4f018d           ...
-- $publisher_data_name   c74 openpaymentsdata.cms.gov                       ...
-- $publisher_data_type   c74 NA                                             ...
-- $license               c74 https://www.usa.gov/government-works           ...
-- $theme_identifier      c74 0dbaba68-b7d1-55b3-b5fd-038557918e00           ...
-- $theme_data            c74 Research Payments                              ...
-- $modified_dttm         c74 2024-07-29T20:42:01+0000                       ...
-- $type                  c74 NA                                             ...
-- $accrualPeriodicity    c74 NA                                             ...</code></pre>
+<pre><code>- $bureauCode                                            c74 009:38         ...
+- $programCode                                           c74 009:000        ...
+- $accessLevel                                           c74 public         ...
+- $keyword_identifier                                    c74 7a69eb60-9b96- ...
+- $keyword_data                                          c74 2017           ...
+- $contactPoint_fn                                       c74 Open Payments  ...
+- $contactPoint_hasEmail                                 c74 mailto:openpay ...
+- $dataQuality                                           l74 T              ...
+- $description                                           c74 Research Payme ...
+- $distribution_identifier                               c74 10ec915a-726a- ...
+- $distribution_data_title                               c74 Research Payme ...
+- $distribution_data_mediaType                           c74 text/csv       ...
+- $distribution_data_format                              c74 csv            ...
+- $distribution_data_downloadURL                         c74 https://downlo ...
+- $distribution_data_describedBy                         c74 https://openpa ...
+- $distribution_data_describedByType                     c74 application/vn ...
+- $distribution_data_%Ref:downloadURL_1_identifier       c74 406c2298a6b730 ...
+- $distribution_data_%Ref:downloadURL_1_data_filePath    c74 https://downlo ...
+- $distribution_data_%Ref:downloadURL_1_data_identifier  c74 406c2298a6b730 ...
+- $distribution_data_%Ref:downloadURL_1_data_mimeType    c74 text/csv       ...
+- $distribution_data_%Ref:downloadURL_1_data_perspective c74 source         ...
+- $distribution_data_%Ref:downloadURL_1_data_version     c74 1718422528     ...
+- $distribution_data_type                                c74 NA             ...
+- $identifier                                            c74 0e3977b9-a5d6- ...
+- $title                                                 c74 2017 Research  ...
+- $issued                                                c74 2024-06-28     ...
+- $modified                                              c74 2024-06-28     ...
+- $temporal                                              c74 2017-01-01/201 ...
+- $publisher_identifier                                  c74 11b41668-9929- ...
+- $publisher_data_name                                   c74 openpaymentsda ...
+- $publisher_data_type                                   c74 NA             ...
+- $license                                               c74 https://www.us ...
+- $theme_identifier                                      c74 0dbaba68-b7d1- ...
+- $theme_data                                            c74 Research Payme ...
+- $modified_dttm                                         c74 2024-07-29T20: ...
+- $type                                                  c74 NA             ...
+- $accrualPeriodicity                                    c74 NA             ...</code></pre>
 </div>
-</div>
-</section>
-<section id="distribution" class="level2" data-number="6.2">
-<h2 data-number="6.2" class="anchored" data-anchor-id="distribution"><span class="header-section-number">6.2</span> Distribution</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>distribution_open <span class="ot">&lt;-</span> dataset_open <span class="sc">|&gt;</span> </span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(distribution) <span class="sc">|&gt;</span> </span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(distribution) <span class="sc">|&gt;</span> </span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(data) <span class="sc">|&gt;</span> </span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="st">`</span><span class="at">%Ref:downloadURL</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="st">`</span><span class="at">%Ref:downloadURL_data</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(replace_open_columns)</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>distribution_open <span class="sc">|&gt;</span> </span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>open_data <span class="sc">|&gt;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(title) <span class="sc">|&gt;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="at">sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>- $identifier                       c74 10ec915a-726a-53b1-9eee-546846c90a6 ...
-- $title                            c74 Research Payment Data – Detailed Da ...
-- $mediaType                        c74 text/csv                            ...
-- $format                           c74 csv                                 ...
-- $downloadURL                      c74 https://download.cms.gov/openpaymen ...
-- $describedBy                      c74 https://openpaymentsdata.cms.gov/ap ...
-- $describedByType                  c74 application/vnd.tableschema+json    ...
-- $Ref_downloadURL_identifier       c74 406c2298a6b7301216c629a77526e892__1 ...
-- $Ref_downloadURL_data_filePath    c74 https://download.cms.gov/openpaymen ...
-- $Ref_downloadURL_data_identifier  c74 406c2298a6b7301216c629a77526e892    ...
-- $Ref_downloadURL_data_mimeType    c74 text/csv                            ...
-- $Ref_downloadURL_data_perspective c74 source                              ...
-- $Ref_downloadURL_data_version     c74 1718422528                          ...
-- $Ref_downloadURL_data_checksum    l74 NA                                  ...
-- $type                             c74 NA                                  ...</code></pre>
+<pre><code>2017 Research Payment Data
+2017 Ownership Payment Data
+2017 General Payment Data
+2018 Research Payment Data
+2018 Ownership Payment Data
+2018 General Payment Data
+2019 Research Payment Data
+2019 Ownership Payment Data
+2019 General Payment Data
+2020 Research Payment Data
+2020 Ownership Payment Data
+2020 General Payment Data
+2021 Research Payment Data
+2021 Ownership Payment Data
+2021 General Payment Data
+2022 Research Payment Data
+2022 Ownership Payment Data
+2022 General Payment Data
+2023 Research Payment Data
+2023 Ownership Payment Data
+2023 General Payment Data
+Physician (distinct) profile information
+Covered Recipient Profile Supplement
+2023 payments grouped by reporting entities, covered recipient, and nature of payments
+2017 payments grouped by reporting entities, covered recipient, and nature of payments
+2018 payments grouped by reporting entities, covered recipient, and nature of payments
+2019 payments grouped by reporting entities, covered recipient, and nature of payments
+2020 payments grouped by reporting entities, covered recipient, and nature of payments
+2021 payments grouped by reporting entities, covered recipient, and nature of payments
+2022 payments grouped by reporting entities, covered recipient, and nature of payments
+2023 payments grouped by reporting entities and nature of payments
+2017 payments grouped by reporting entities and nature of payments
+2018 payments grouped by reporting entities and nature of payments
+2019 payments grouped by reporting entities and nature of payments
+2020 payments grouped by reporting entities and nature of payments
+2021 payments grouped by reporting entities and nature of payments
+2022 payments grouped by reporting entities and nature of payments
+Payments grouped by reporting entities and nature of payments for all years
+2023 payments grouped by covered recipient and nature of payments
+2017 payments grouped by covered recipient and nature of payments
+2018 payments grouped by covered recipient and nature of payments
+2019 payments grouped by covered recipient and nature of payments
+2020 payments grouped by covered recipient and nature of payments
+2021 payments grouped by covered recipient and nature of payments
+2022 payments grouped by covered recipient and nature of payments
+Payments grouped by covered recipient and nature of payments for all years
+Summary Dashboard - all years
+National level payment total and averages for all years
+Reporting entity profile information
+Payments grouped by reporting entities
+2023 payments grouped by covered recipient and reporting entities
+2017 payments grouped by covered recipient and reporting entities
+2018 payments grouped by covered recipient and reporting entities
+2019 payments grouped by covered recipient and reporting entities
+2020 payments grouped by covered recipient and reporting entities
+2021 payments grouped by covered recipient and reporting entities
+2022 payments grouped by covered recipient and reporting entities
+National level payment total and averages by provider specialty for all years
+Teaching Hospital profile information
+Payments grouped by Teaching Hospital
+Profile Information
+State level payment total and averages for all years
+State payment totals and averages grouped by Nature of Payment for all years
+2023 state payment totals grouped by Nature of Payment for all years
+2017 state payment totals grouped by Nature of Payment for all years
+2018 state payment totals grouped by Nature of Payment for all years
+2019 state payment totals grouped by Nature of Payment for all years
+2020 state payment totals grouped by Nature of Payment for all years
+2021 state payment totals grouped by Nature of Payment for all years
+2022 state payment totals grouped by Nature of Payment for all years
+Provider profile ID mapping table
+Payments grouped by reporting entities, covered recipient, and nature of payments for all years
+Payments grouped by covered recipient and reporting entities for all years
+Payments grouped by physician (distinct) for all years</code></pre>
 </div>
 </div>
 
