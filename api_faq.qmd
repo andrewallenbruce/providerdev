@@ -11,7 +11,8 @@ editor_options:
 source("_common.R")
 
 htmltools::tagList(
-  btn_link("https://data.cms.gov/api-docs", "CMS API Docs"),
+  btn_link("https://data.cms.gov/api-docs", 
+           "CMS API Docs"),
   btn_link("https://data.cms.gov/sites/default/files/2024-10/7ef65521-65a4-41ed-b600-3a0011f8ec4b/API%20Guide%20Formatted%201_6.pdf", 
            "API FAQ"))
 ```
@@ -28,13 +29,14 @@ The **data.CMS.gov/data.json** API:
 To integrate endpoint requests with the **data.cms.gov Public API**, follow these steps:
 
    1. Find Dataset & Identifier: 
-      * [Search for dataset](https://data.cms.gov/search) and visit its **Overview** page
+      * [Search for a dataset](https://data.cms.gov/search)
+      * Visit its **Overview** page
       * Click **Access API** then **API Docs for the Dataset**
    2. Endpoint structure:
-      * `data.cms.gov/data-api/v1/dataset/{{dataset_id}}/data` 
-   3. Format queries in **JSON:API** syntax:
-      * Key-values: `?filter[field_name]=value&filter[field_other]=value`
-      * Responses are paged and support a max page size of 5000 rows
+      * `data.cms.gov/data-api/v1/dataset/{identifier}/data` 
+   3. Query format (**JSON:API** syntax):
+      * Key-values: `filter[field_name]=value&filter[field_other]=value`
+      * Responses support a maximum size of `5000` rows
       * Use `size` & `offset` query parameters to page through the data
 
 --------------------------------------------------------------------------------
@@ -141,12 +143,12 @@ data_json |>
   unnest_wider(contactPoint, names_sep = "_") |>
   unnest_wider(publisher, names_sep = "_") |>
   mutate(
-    bureauCode = delist(bureauCode),
-    keyword = flatten_column(keyword),
-    language = delist(language),
+    bureauCode  = delist(bureauCode),
+    keyword     = flatten_column(keyword),
+    language    = delist(language),
     programCode = delist(programCode),
-    references = delist(references),
-    theme = delist(theme)) |> 
+    references  = delist(references),
+    theme       = delist(theme)) |> 
   rename_with(remove_at_symbol) |> 
   purse()
 ```
@@ -319,17 +321,34 @@ data_json |>
 
 The default is to provide the first 1,000 rows per request. However, there is an ability to increase the limit to 5,000 rows per request. You can use pagination to retrieve the entire dataset. 
 
-For example, with the Opt Out Affidavits dataset:
+For example, with the **Opt Out Affidavits** dataset:
 
    1. Start with the following request to get the number of rows:
 
 ```{r}
 #| label: pagination_1
-stats <- request("https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data/stats") |>
+base_id <- request("https://data.cms.gov/data-api/v1/dataset") |> 
+  req_url_path_append("9887a515-7552-4693-bf58-735c77af46d7") |> 
+  req_url_path_append("data")
+
+stats <- base_id |> 
+  req_url_path_append("stats") |> 
   req_perform() |> 
   resp_body_json(simplifyVector = TRUE)
 
-stats |> purse()
+stats |> 
+  purse()
+
+offset_sequence(
+  rows = stats$found_rows, 
+  size = 5000)
+
+glue::glue(
+  "{base_id$url}",
+  "?size=5000&",
+  "offset=",
+  "{offset_sequence(rows = stats$found_rows, size = 5000)}"
+)
 ```
       
    2. Make a request for the *first* 5,000 rows:
@@ -396,29 +415,6 @@ data?
 ```
 
 ```{r}
-#| label: offset_sequence
-# offset_sequence <- \(found = 47500, limit = 5000) {
-#   
-#   if (found <= limit) return(found)
-#   
-#   if ((found %% 10) == 0) found else (found + (limit - found))
-#   
-#   seq.int(
-#     from = 0, 
-#     to = if ((found %% 5) == 0) found else (limit + found), 
-#     by = limit)
-# }
-
-# Not working
-# offset_sequence(found = 47025)
- # if (limit == 500L && count > 500L) {
- # 
- #    pgs <- 1:round(count / 500) * 500
- # }
-```
-
-
-```{r}
 #| label: pagination_optout
 query <- glue::glue(
   'list(
@@ -469,9 +465,7 @@ accessURL |>
 orderrefer_url <- distribution |> 
   filter(
     grepl("Order and Referring", title),
-    mediaType == "text/csv"
-    # modified == max(modified) Unneeded
-    ) |> 
+    mediaType == "text/csv") |> 
   slice(1) |> 
   pull(downloadURL)
   
@@ -486,7 +480,7 @@ orderrefer_csv
 
 ::: callout
 
-## ZIP Example
+## ZIP Files
 
 _CMS Summary Statistics/COVID data -> Likely not relevant to package scope_
 
@@ -500,7 +494,7 @@ Resources (supplemental documents to the main dataset) are now available for dow
 
 ## Example: Reassignment SubFile (`csv`)
 
-Site: [Public Provider Enrollment Reassignment SubFile](https://data.cms.gov/provider-characteristics/medicare-provider-supplier-enrollment/medicare-fee-for-service-public-provider-enrollment)
+> Site: [Public Provider Enrollment Reassignment SubFile](https://data.cms.gov/provider-characteristics/medicare-provider-supplier-enrollment/medicare-fee-for-service-public-provider-enrollment)
 
 ```{r}
 #| label: add_resources

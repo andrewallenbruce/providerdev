@@ -66,7 +66,6 @@ recode_iso_8601 <- \(x) {
     "R/PT1S",   "Continuously Updated",
     "R/P1M",    "Monthly",
     "R/P3M",    "Quarterly",
-    # "R/P0.5M",  "Semimonthly",
     "R/P4M",    "Three Times a Year",
     "R/P1W",    "Weekly",
     "R/PT1H",   "Hourly")
@@ -148,6 +147,8 @@ provider_data <- \() {
 
 }
 
+offset_sequence <- \(rows, size = 5000) if (rows <= size) return(rows) else 0:round(rows / size) * size
+
 options(scipen = 999, digits = 3)
 
 library(collapse)
@@ -157,3 +158,4 @@ library(fuimus)
 library(httr2)
 library(arrow)
 library(here)
+library(S7)
