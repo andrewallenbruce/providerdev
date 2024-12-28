@@ -8,7 +8,7 @@
 
 <meta name="description" content="This is a personal, informal guide to rewriting an R package that I wrote from the ground up. It is a work in progress and will be updated as I learn more about the process.">
 
-<title>9&nbsp; Quality Eligibility – Refactoring Provider</title>
+<title>8&nbsp; Providers – Refactoring Provider</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,40 +21,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -64,7 +30,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./fn_providers.html" rel="prev">
+<link href="./fn_quality_eligibility.html" rel="next">
+<link href="./fn_affiliations.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -133,7 +100,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./fn_affiliations.html">Functions</a></li><li class="breadcrumb-item"><a href="./fn_quality_eligibility.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Quality Eligibility</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./fn_affiliations.html">Functions</a></li><li class="breadcrumb-item"><a href="./fn_providers.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Providers</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -232,13 +199,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./fn_providers.html" class="sidebar-item-text sidebar-link">
+  <a href="./fn_providers.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Providers</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./fn_quality_eligibility.html" class="sidebar-item-text sidebar-link active">
+  <a href="./fn_quality_eligibility.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Quality Eligibility</span></span></a>
   </div>
 </li>
@@ -250,23 +217,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
-   
-  <ul>
-  <li><a href="#qpp-cms-endpoint" id="toc-qpp-cms-endpoint" class="nav-link active" data-scroll-target="#qpp-cms-endpoint"><span class="header-section-number">9.1</span> QPP CMS Endpoint</a>
-  <ul class="collapse">
-  <li><a href="#graphql-api" id="toc-graphql-api" class="nav-link" data-scroll-target="#graphql-api"><span class="header-section-number">9.1.1</span> GraphQL API</a></li>
-  </ul></li>
-  </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/andrewallenbruce/providerdev/blob/main/fn_quality_eligibility.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li></ul></div></nav>
-    </div>
+        
+    <div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li></ul></div></div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./fn_affiliations.html">Functions</a></li><li class="breadcrumb-item"><a href="./fn_quality_eligibility.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Quality Eligibility</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./fn_affiliations.html">Functions</a></li><li class="breadcrumb-item"><a href="./fn_providers.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Providers</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Quality Eligibility</span></h1>
+<h1 class="title"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Providers</span></h1>
 </div>
 
 
@@ -283,156 +241,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="qpp-cms-endpoint" class="level2" data-number="9.1">
-<h2 data-number="9.1" class="anchored" data-anchor-id="qpp-cms-endpoint"><span class="header-section-number">9.1</span> QPP CMS Endpoint</h2>
-<ul>
-<li><a href="https://cmsgov.github.io/qpp-eligibility-docs/">QPP Eligibility API Documentation</a></li>
-<li><a href="https://qpp.cms.gov/api/eligibility/docs/">QPP Eligibility REST API Documentation</a></li>
-</ul>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">request</span>(<span class="st">"https://qpp.cms.gov/api/eligibility/stats/?year=2025"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_headers</span>(<span class="at">Accept =</span> <span class="st">"application/vnd.qpp.cms.gov.v6+json"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$data
-$data$individual
-$data$individual$hccRiskScoreAverage
-[1] 2.5
-
-$data$individual$dualEligibilityAverage
-[1] 0.507
-
-
-$data$group
-$data$group$hccRiskScoreAverage
-[1] 2.49
-
-$data$group$dualEligibilityAverage
-[1] 0.499</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">request</span>(<span class="st">"https://qpp.cms.gov/api/eligibility/npis/1043477615/?year=2025"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_headers</span>(<span class="at">Accept =</span> <span class="st">"application/vnd.qpp.cms.gov.v6+json"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_error</span>(<span class="at">body =</span> \(resp) <span class="fu">resp_body_json</span>(resp)<span class="sc">$</span>error<span class="sc">$</span>message) <span class="sc">|&gt;</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(specialty, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(organizations, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(organizations_apms, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(organizations_virtualGroups, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(organizations_individualScenario, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(organizations_groupScenario, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(organizations_individualScenario_extremeHardshipReasons, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(organizations_individualScenario_extremeHardshipSources, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(organizations_individualScenario_lowVolumeStatusReasons, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(organizations_individualScenario_lowVolumeStatusReasons_1, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(organizations_individualScenario_specialty, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(organizations_individualScenario_isEligible, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(organizations_groupScenario_extremeHardshipReasons, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(organizations_groupScenario_extremeHardshipSources, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(organizations_groupScenario_lowVolumeStatusReasons, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(organizations_groupScenario_isEligible, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>- $firstName                                                                ...
-- $middleName                                                               ...
-- $lastName                                                                 ...
-- $npi                                                                      ...
-- $nationalProviderIdentifierType                                           ...
-- $firstApprovedDate                                                        ...
-- $yearsInMedicare                                                          ...
-- $pecosEnrollmentDate                                                      ...
-- $newlyEnrolled                                                            ...
-- $specialty_specialtyDescription                                           ...
-- $specialty_typeDescription                                                ...
-- $specialty_categoryReference                                              ...
-- $isMaqi                                                                   ...
-- $organizations_prvdrOrgName                                               ...
-- $organizations_hospitalVbpName                                            ...
-- $organizations_isFacilityBased                                            ...
-- $organizations_addressLineOne                                             ...
-- $organizations_addressLineTwo                                             ...
-- $organizations_city                                                       ...
-- $organizations_state                                                      ...
-- $organizations_zip                                                        ...
-- $organizations_apms_1                                                     ...
-- $organizations_virtualGroups_1                                            ...
-- $organizations_individualScenario_aciHardship                             ...
-- $organizations_individualScenario_aciReweighting                          ...
-- $organizations_individualScenario_ambulatorySurgicalCenter                ...
-- $organizations_individualScenario_extremeHardship                         ...
-- $organizations_individualScenario_extremeHardshipReasons_quality          ...
-- $organizations_individualScenario_extremeHardshipReasons_improvementActiv ...
-- $organizations_individualScenario_extremeHardshipReasons_aci              ...
-- $organizations_individualScenario_extremeHardshipReasons_cost             ...
-- $organizations_individualScenario_extremeHardshipEventType                ...
-- $organizations_individualScenario_extremeHardshipSources_1                ...
-- $organizations_individualScenario_hospitalBasedClinician                  ...
-- $organizations_individualScenario_hpsaClinician                           ...
-- $organizations_individualScenario_iaStudy                                 ...
-- $organizations_individualScenario_isOptedIn                               ...
-- $organizations_individualScenario_isOptInEligible                         ...
-- $organizations_individualScenario_mipsEligibleSwitch                      ...
-- $organizations_individualScenario_nonPatientFacing                        ...
-- $organizations_individualScenario_optInDecisionDate                       ...
-- $organizations_individualScenario_ruralClinician                          ...
-- $organizations_individualScenario_smallGroupPractitioner                  ...
-- $organizations_individualScenario_lowVolumeSwitch                         ...
-- $organizations_individualScenario_lowVolumeStatusReasons_1_lowVolStusRsnC ...
-- $organizations_individualScenario_lowVolumeStatusReasons_1_lowVolStusRsnD ...
-- $organizations_individualScenario_hasPaymentAdjustmentCCN                 ...
-- $organizations_individualScenario_hasHospitalVbpCCN                       ...
-- $organizations_individualScenario_aggregationLevel                        ...
-- $organizations_individualScenario_hospitalVbpName                         ...
-- $organizations_individualScenario_hospitalVbpScore                        ...
-- $organizations_individualScenario_isFacilityBased                         ...
-- $organizations_individualScenario_specialtyCode                           ...
-- $organizations_individualScenario_specialty_specialtyDescription          ...
-- $organizations_individualScenario_specialty_typeDescription               ...
-- $organizations_individualScenario_specialty_categoryReference             ...
-- $organizations_individualScenario_isEligible_individual                   ...
-- $organizations_individualScenario_isEligible_group                        ...
-- $organizations_individualScenario_isEligible_mipsApm                      ...
-- $organizations_individualScenario_isEligible_virtualGroup                 ...
-- $organizations_individualScenario_eligibilityScenario                     ...
-- $organizations_groupScenario_aciHardship                                  ...
-- $organizations_groupScenario_aciReweighting                               ...
-- $organizations_groupScenario_ambulatorySurgicalCenter                     ...
-- $organizations_groupScenario_extremeHardship                              ...
-- $organizations_groupScenario_extremeHardshipReasons_quality               ...
-- $organizations_groupScenario_extremeHardshipReasons_improvementActivities ...
-- $organizations_groupScenario_extremeHardshipReasons_aci                   ...
-- $organizations_groupScenario_extremeHardshipReasons_cost                  ...
-- $organizations_groupScenario_extremeHardshipEventType                     ...
-- $organizations_groupScenario_extremeHardshipSources_1                     ...
-- $organizations_groupScenario_hospitalBasedClinician                       ...
-- $organizations_groupScenario_hpsaClinician                                ...
-- $organizations_groupScenario_iaStudy                                      ...
-- $organizations_groupScenario_isOptedIn                                    ...
-- $organizations_groupScenario_isOptInEligible                              ...
-- $organizations_groupScenario_mipsEligibleSwitch                           ...
-- $organizations_groupScenario_nonPatientFacing                             ...
-- $organizations_groupScenario_optInDecisionDate                            ...
-- $organizations_groupScenario_ruralClinician                               ...
-- $organizations_groupScenario_smallGroupPractitioner                       ...
-- $organizations_groupScenario_lowVolumeSwitch                              ...
-- $organizations_groupScenario_lowVolumeStatusReasons_1                     ...
-- $organizations_groupScenario_aggregationLevel                             ...
-- $organizations_groupScenario_isEligible_group                             ...</code></pre>
+<div class="cell">
+<div class="cell-output-display">
+<a href="https://andrewallenbruce.github.io/provider/reference/providers.html" class="btn btn-outline-secondary" role="button" target="_blank">
+<i class="bi bi-box-arrow-up-right"></i>
+Documentation
+</a>
+<a href="https://github.com/andrewallenbruce/provider/blob/main/R/providers.R" class="btn btn-outline-secondary" role="button" target="_blank">
+<i class="bi bi-box-arrow-up-right"></i>
+Source
+</a>
 </div>
 </div>
-<section id="graphql-api" class="level3" data-number="9.1.1">
-<h3 data-number="9.1.1" class="anchored" data-anchor-id="graphql-api"><span class="header-section-number">9.1.1</span> GraphQL API</h3>
-<ul>
-<li><a href="https://cmsgov.github.io/qpp-eligibility-docs/clinician">Basic Clinician GraphQL Example</a></li>
-<li><a href="https://qpp.cms.gov/api/eligibility/graphql">QPP Eligibility GraphQL API Documentation</a></li>
-</ul>
 
 
-</section>
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -854,11 +676,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./fn_providers.html" class="pagination-link" aria-label="Providers">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Providers</span></span>
+      <a href="./fn_affiliations.html" class="pagination-link" aria-label="Affiliations">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Affiliations</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="./fn_quality_eligibility.html" class="pagination-link" aria-label="Quality Eligibility">
+        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Quality Eligibility</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->
@@ -866,5 +691,5 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/andrewallenbruce/providerdev/blob/main/fn_quality_eligibility.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/andrewallenbruce/providerdev/blob/main/fn_providers.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div></div></div></footer><script src="site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

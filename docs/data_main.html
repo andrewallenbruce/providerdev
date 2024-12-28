@@ -233,8 +233,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./fn_providers.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Providers</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./fn_quality_eligibility.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Quality Eligibility</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Quality Eligibility</span></span></a>
   </div>
 </li>
       </ul>
@@ -256,7 +262,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#distribution" id="toc-distribution" class="nav-link" data-scroll-target="#distribution"><span class="header-section-number">4.2.2</span> Distribution</a></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/andrewallenbruce/providerdev/blob/main/data_main.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider repo</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/andrewallenbruce/providerdev/blob/main/data_main.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -283,8 +289,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="catalog" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="catalog"><span class="header-section-number">4.1</span> Catalog</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">main_catalog</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">main_catalog</span>() <span class="sc">|&gt;</span> <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>- $context     c1 https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld
 - $id          c1 https://data.cms.gov/data.json
@@ -297,63 +302,48 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="data" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="data"><span class="header-section-number">4.2</span> Data</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>main_data <span class="ot">&lt;-</span> <span class="fu">read_json_arrow</span>(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">file          =</span> <span class="st">"https://data.cms.gov/data.json"</span>,</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_select    =</span> <span class="fu">c</span>(<span class="st">"dataset"</span>),</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">as_data_frame =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">to_duckdb</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(dataset) <span class="sc">|&gt;</span> </span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pluck</span>(<span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>()</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>main_data <span class="sc">|&gt;</span> </span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>main_data_dl <span class="ot">&lt;-</span> <span class="fu">main_data</span>()</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>main_data_dl <span class="sc">|&gt;</span> <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 139
 Columns: 22
-$ `@type`            &lt;chr&gt; "dcat:Dataset", "dcat:Dataset", "dcat:Dataset", "dc…
+$ type               &lt;chr&gt; "dcat:Dataset", "dcat:Dataset", "dcat:Dataset", "dc…
 $ accessLevel        &lt;chr&gt; "public", "public", "public", "public", "public", "…
 $ accrualPeriodicity &lt;chr&gt; "R/P1Y", "R/P1Y", "R/P1Y", "R/P1Y", "R/P1Y", "R/P1Y…
-$ bureauCode         &lt;list&gt; "009:38", "009:38", "009:38", "009:38", "009:38", …
+$ bureauCode         &lt;chr&gt; "009:38", "009:38", "009:38", "009:38", "009:38", "…
 $ contactPoint       &lt;df[,3]&gt; &lt;data.frame[26 x 3]&gt;
 $ describedBy        &lt;chr&gt; "https://data.cms.gov/resources/accountable-care…
 $ dataQuality        &lt;lgl&gt; TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRU…
 $ description        &lt;chr&gt; "The Accountable Care Organization Participants dat…
 $ distribution       &lt;list&gt; [&lt;data.frame[25 x 10]&gt;], [&lt;data.frame[19 x 10]&gt;], […
 $ identifier         &lt;chr&gt; "https://data.cms.gov/data-api/v1/dataset/9767cb68…
-$ keyword            &lt;list&gt; &lt;"Medicare", "Value-Based Care", "Coordinated Care"…
-$ landingPage        &lt;chr&gt; "https://data.cms.gov/medicare-shared-savings-prog…
-$ language           &lt;list&gt; "en-US", "en-US", "en-US", "en-US", "en-US", "en-US…
-$ license            &lt;chr&gt; "https://www.usa.gov/government-works", "https://w…
+$ keyword            &lt;chr&gt; "Medicare, Value-Based Care, Coordinated Care, Paym…
+$ landingPage        &lt;chr&gt; "https://data.cms.gov/medicare-shared-savings-progr…
+$ language           &lt;chr&gt; "en-US", "en-US", "en-US", "en-US", "en-US", "en-US…
+$ license            &lt;chr&gt; "https://www.usa.gov/government-works", "https://ww…
 $ modified           &lt;dttm&gt; 2024-01-29, 2024-04-23, 2024-01-12, 2024-01-12, 202…
-$ programCode        &lt;list&gt; "009:000", "009:000", "009:000", "009:000", "009:0…
+$ programCode        &lt;chr&gt; "009:000", "009:000", "009:000", "009:000", "009:0…
 $ publisher          &lt;df[,2]&gt; &lt;data.frame[26 x 2]&gt;
-$ references         &lt;list&gt; "https://data.cms.gov/resources/acos-aco-participa…
+$ references         &lt;chr&gt; "https://data.cms.gov/resources/acos-aco-participan…
 $ temporal           &lt;chr&gt; "2014-01-01/2024-12-31", "2017-01-01/2024-12-31"…
-$ theme              &lt;list&gt; "Medicare", "Medicare", "Medicare", "Medicare", "M…
+$ theme              &lt;chr&gt; "Medicare", "Medicare", "Medicare", "Medicare", "Me…
 $ title              &lt;chr&gt; "Accountable Care Organization Participants", "Acco…
-$ describedByType    &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…</code></pre>
+$ describedByType    &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…</code></pre>
 </div>
 </div>
 <section id="dataset" class="level3" data-number="4.2.1">
 <h3 data-number="4.2.1" class="anchored" data-anchor-id="dataset"><span class="header-section-number">4.2.1</span> Dataset</h3>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>main_dataset <span class="ot">&lt;-</span> main_data <span class="sc">|&gt;</span> </span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(contactPoint, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(publisher, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">distribution =</span> <span class="cn">NULL</span>,</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">bureauCode   =</span> <span class="fu">delist</span>(bureauCode),</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">language     =</span> <span class="fu">delist</span>(language),</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">programCode  =</span> <span class="fu">delist</span>(programCode),</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">references   =</span> <span class="fu">delist</span>(references),</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">theme        =</span> <span class="fu">flatten_column</span>(theme),</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">keyword      =</span> <span class="fu">flatten_column</span>(keyword)) <span class="sc">|&gt;</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(remove_at_symbol) <span class="sc">|&gt;</span> </span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">remove_all_na</span>()</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>main_dataset <span class="sc">|&gt;</span> </span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>main_dataset <span class="ot">&lt;-</span> main_data_dl <span class="sc">|&gt;</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  collapse<span class="sc">::</span><span class="fu">fselect</span>(<span class="sc">-</span>distribution) <span class="sc">|&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(contactPoint, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(publisher, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  collapse<span class="sc">::</span><span class="fu">frename</span>(remove_at_symbol) <span class="sc">|&gt;</span> </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">remove_all_na</span>()</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>main_dataset <span class="sc">|&gt;</span> </span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>- $type                  c139 dcat:Dataset                                  ...
 - $accessLevel           c139 public                                        ...
@@ -385,10 +375,10 @@ $ describedByType    &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
 <section id="distribution" class="level3" data-number="4.2.2">
 <h3 data-number="4.2.2" class="anchored" data-anchor-id="distribution"><span class="header-section-number">4.2.2</span> Distribution</h3>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>main_distribution <span class="ot">&lt;-</span> main_data <span class="sc">|&gt;</span> </span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(distribution) <span class="sc">|&gt;</span> </span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(distribution) <span class="sc">|&gt;</span> </span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(remove_at_symbol)</span>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>main_distribution <span class="ot">&lt;-</span> main_data_dl <span class="sc">|&gt;</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  collapse<span class="sc">::</span><span class="fu">fselect</span>(distribution) <span class="sc">|&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">unnest</span>(distribution) <span class="sc">|&gt;</span> </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  collapse<span class="sc">::</span><span class="fu">frename</span>(remove_at_symbol)</span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>main_distribution <span class="sc">|&gt;</span> </span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -409,8 +399,8 @@ $ describedByType    &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
 <h4 data-number="4.2.2.1" class="anchored" data-anchor-id="api"><span class="header-section-number">4.2.2.1</span> API</h4>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>main_distribution_api <span class="ot">&lt;-</span> main_distribution <span class="sc">|&gt;</span> </span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(format <span class="sc">==</span> <span class="st">"API"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">remove_all_na</span>()</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  collapse<span class="sc">::</span><span class="fu">fsubset</span>(format <span class="sc">%==%</span> <span class="st">"API"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  fuimus<span class="sc">::</span><span class="fu">remove_all_na</span>()</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>main_distribution_api <span class="sc">|&gt;</span> </span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -429,8 +419,8 @@ $ describedByType    &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
 <h5 data-number="4.2.2.1.1" class="anchored" data-anchor-id="latest"><span class="header-section-number">4.2.2.1.1</span> Latest</h5>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>main_distribution_api_latest <span class="ot">&lt;-</span> main_distribution_api <span class="sc">|&gt;</span> </span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(description <span class="sc">==</span> <span class="st">"latest"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">remove_all_na</span>()</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  collapse<span class="sc">::</span><span class="fu">fsubset</span>(description <span class="sc">%==%</span> <span class="st">"latest"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  fuimus<span class="sc">::</span><span class="fu">remove_all_na</span>()</span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>main_distribution_api_latest <span class="sc">|&gt;</span> </span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -451,8 +441,8 @@ $ describedByType    &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
 <h4 data-number="4.2.2.2" class="anchored" data-anchor-id="mediatype"><span class="header-section-number">4.2.2.2</span> mediaType</h4>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>main_distribution_mediaType <span class="ot">&lt;-</span> main_distribution <span class="sc">|&gt;</span> </span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">not_na</span>(mediaType)) <span class="sc">|&gt;</span> </span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">remove_all_na</span>()</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  collapse<span class="sc">::</span><span class="fu">fsubset</span>(fuimus<span class="sc">::</span><span class="fu">not_na</span>(mediaType)) <span class="sc">|&gt;</span> </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  fuimus<span class="sc">::</span><span class="fu">remove_all_na</span>()</span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>main_distribution_mediaType <span class="sc">|&gt;</span> </span>
 <span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -480,7 +470,7 @@ $ describedByType    &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
 <h5 data-number="4.2.2.2.1" class="anchored" data-anchor-id="csv"><span class="header-section-number">4.2.2.2.1</span> CSV</h5>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>main_distribution_mediaType_csv <span class="ot">&lt;-</span> main_distribution_mediaType <span class="sc">|&gt;</span> </span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(mediaType <span class="sc">==</span> <span class="st">"text/csv"</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  collapse<span class="sc">::</span><span class="fu">fsubset</span>(mediaType <span class="sc">%==%</span> <span class="st">"text/csv"</span>)</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>main_distribution_mediaType_csv <span class="sc">|&gt;</span> </span>
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -499,7 +489,7 @@ $ describedByType    &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
 <h5 data-number="4.2.2.2.2" class="anchored" data-anchor-id="zip"><span class="header-section-number">4.2.2.2.2</span> ZIP</h5>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>main_distribution_mediaType_zip <span class="ot">&lt;-</span> main_distribution_mediaType <span class="sc">|&gt;</span> </span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(mediaType <span class="sc">==</span> <span class="st">"application/zip"</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  collapse<span class="sc">::</span><span class="fu">fsubset</span>(mediaType <span class="sc">%==%</span> <span class="st">"application/zip"</span>)</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>main_distribution_mediaType_zip <span class="sc">|&gt;</span> </span>
 <span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -512,555 +502,19 @@ $ describedByType    &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
 - $downloadURL  c534 https://data.cms.gov/sites/default/files/2024-05/CPS%2 ...
 - $mediaType    c534 application/zip                                        ...</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>main_distribution_mediaType_zip <span class="sc">|&gt;</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(title) <span class="sc">|&gt;</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="at">sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>CMS Program Statistics - Medicare Advantage - Outpatient Facility : 2021-05-06
-CMS Program Statistics - Medicare Advantage - Outpatient Facility : 2020-01-15
-CMS Program Statistics - Medicare Advantage - Outpatient Facility : 2019-01-15
-CMS Program Statistics - Medicare Advantage - Outpatient Facility : 2018-01-15
-CMS Program Statistics - Medicare Advantage - Outpatient Facility : 2017-01-15
-CMS Program Statistics - Medicare Advantage - Outpatient Facility : 2016-01-15
-CMS Program Statistics - Medicare Advantage - Physician, Non-Physician Practitioner &amp; Supplier : 2021-05-06
-CMS Program Statistics - Medicare Advantage - Physician, Non-Physician Practitioner &amp; Supplier : 2020-01-15
-CMS Program Statistics - Medicare Advantage - Physician, Non-Physician Practitioner &amp; Supplier : 2019-01-15
-CMS Program Statistics - Medicare Advantage - Physician, Non-Physician Practitioner &amp; Supplier : 2018-01-15
-CMS Program Statistics - Medicare Advantage - Physician, Non-Physician Practitioner &amp; Supplier : 2017-01-15
-CMS Program Statistics - Medicare Advantage - Physician, Non-Physician Practitioner &amp; Supplier : 2016-01-15
-CMS Program Statistics - Medicare Advantage-Inpatient Hospital : 2021-12-01
-CMS Program Statistics - Medicare Advantage-Inpatient Hospital : 2020-12-01
-CMS Program Statistics - Medicare Advantage-Inpatient Hospital : 2019-12-01
-CMS Program Statistics - Medicare Advantage-Inpatient Hospital : 2018-12-01
-CMS Program Statistics - Medicare Advantage-Inpatient Hospital : 2017-12-01
-CMS Program Statistics - Medicare Advantage-Inpatient Hospital : 2016-12-01
-CMS Program Statistics - Medicare Advantage-Skilled Nursing Facility : 2021-12-01
-CMS Program Statistics - Medicare Advantage-Skilled Nursing Facility : 2020-12-01
-CMS Program Statistics - Medicare Advantage-Skilled Nursing Facility : 2019-12-01
-CMS Program Statistics - Medicare Advantage-Skilled Nursing Facility : 2018-12-01
-CMS Program Statistics - Medicare Advantage-Skilled Nursing Facility : 2017-12-01
-CMS Program Statistics - Medicare Advantage-Skilled Nursing Facility : 2016-12-01
-COVID-19 Nursing Home Data : 2024-12-01
-COVID-19 Nursing Home Data : 2024-11-24
-COVID-19 Nursing Home Data : 2024-11-10
-COVID-19 Nursing Home Data : 2024-11-03
-COVID-19 Nursing Home Data : 2024-10-27
-COVID-19 Nursing Home Data : 2024-10-20
-COVID-19 Nursing Home Data : 2024-10-13
-COVID-19 Nursing Home Data : 2024-10-06
-COVID-19 Nursing Home Data : 2024-09-29
-COVID-19 Nursing Home Data : 2024-09-22
-COVID-19 Nursing Home Data : 2024-09-15
-COVID-19 Nursing Home Data : 2024-09-08
-COVID-19 Nursing Home Data : 2024-09-01
-COVID-19 Nursing Home Data : 2024-08-25
-COVID-19 Nursing Home Data : 2024-08-18
-COVID-19 Nursing Home Data : 2024-08-11
-COVID-19 Nursing Home Data : 2024-08-04
-COVID-19 Nursing Home Data : 2024-07-28
-COVID-19 Nursing Home Data : 2024-07-21
-COVID-19 Nursing Home Data : 2024-07-14
-COVID-19 Nursing Home Data : 2024-07-07
-COVID-19 Nursing Home Data : 2024-06-30
-COVID-19 Nursing Home Data : 2024-06-23
-COVID-19 Nursing Home Data : 2024-06-16
-COVID-19 Nursing Home Data : 2024-06-09
-COVID-19 Nursing Home Data : 2024-06-02
-COVID-19 Nursing Home Data : 2024-05-26
-COVID-19 Nursing Home Data : 2024-05-19
-COVID-19 Nursing Home Data : 2024-05-12
-COVID-19 Nursing Home Data : 2024-05-05
-COVID-19 Nursing Home Data : 2024-04-28
-COVID-19 Nursing Home Data : 2024-04-21
-COVID-19 Nursing Home Data : 2024-04-14
-COVID-19 Nursing Home Data : 2024-04-07
-COVID-19 Nursing Home Data : 2024-03-31
-COVID-19 Nursing Home Data : 2024-03-24
-COVID-19 Nursing Home Data : 2024-03-17
-COVID-19 Nursing Home Data : 2024-03-10
-COVID-19 Nursing Home Data : 2024-03-03
-COVID-19 Nursing Home Data : 2024-02-25
-COVID-19 Nursing Home Data : 2024-02-18
-COVID-19 Nursing Home Data : 2024-02-11
-COVID-19 Nursing Home Data : 2024-02-04
-COVID-19 Nursing Home Data : 2024-01-28
-COVID-19 Nursing Home Data : 2024-01-21
-COVID-19 Nursing Home Data : 2024-01-14
-COVID-19 Nursing Home Data : 2024-01-07
-COVID-19 Nursing Home Data : 2023-12-31
-COVID-19 Nursing Home Data : 2023-12-24
-COVID-19 Nursing Home Data : 2023-12-10
-COVID-19 Nursing Home Data : 2023-12-03
-COVID-19 Nursing Home Data : 2023-11-26
-COVID-19 Nursing Home Data : 2023-11-19
-COVID-19 Nursing Home Data : 2023-11-05
-COVID-19 Nursing Home Data : 2023-10-29
-COVID-19 Nursing Home Data : 2023-10-22
-COVID-19 Nursing Home Data : 2023-10-15
-COVID-19 Nursing Home Data : 2023-10-08
-COVID-19 Nursing Home Data : 2023-10-01
-COVID-19 Nursing Home Data : 2023-09-24
-COVID-19 Nursing Home Data : 2023-09-17
-COVID-19 Nursing Home Data : 2023-09-10
-COVID-19 Nursing Home Data : 2023-09-03
-COVID-19 Nursing Home Data : 2023-08-27
-COVID-19 Nursing Home Data : 2023-08-20
-COVID-19 Nursing Home Data : 2023-08-13
-COVID-19 Nursing Home Data : 2023-08-06
-COVID-19 Nursing Home Data : 2023-07-30
-COVID-19 Nursing Home Data : 2023-07-23
-COVID-19 Nursing Home Data : 2023-07-16
-COVID-19 Nursing Home Data : 2023-07-09
-COVID-19 Nursing Home Data : 2023-07-02
-COVID-19 Nursing Home Data : 2023-06-25
-COVID-19 Nursing Home Data : 2023-06-18
-COVID-19 Nursing Home Data : 2023-06-11
-COVID-19 Nursing Home Data : 2023-06-04
-COVID-19 Nursing Home Data : 2023-05-28
-COVID-19 Nursing Home Data : 2023-05-21
-COVID-19 Nursing Home Data : 2023-05-14
-COVID-19 Nursing Home Data : 2023-05-07
-COVID-19 Nursing Home Data : 2023-04-30
-COVID-19 Nursing Home Data : 2023-04-23
-COVID-19 Nursing Home Data : 2023-04-16
-COVID-19 Nursing Home Data : 2023-04-09
-COVID-19 Nursing Home Data : 2023-04-02
-COVID-19 Nursing Home Data : 2023-03-26
-COVID-19 Nursing Home Data : 2023-03-19
-COVID-19 Nursing Home Data : 2023-03-12
-COVID-19 Nursing Home Data : 2023-03-05
-COVID-19 Nursing Home Data : 2023-02-26
-COVID-19 Nursing Home Data : 2023-02-19
-COVID-19 Nursing Home Data : 2023-02-12
-COVID-19 Nursing Home Data : 2023-02-05
-COVID-19 Nursing Home Data : 2023-01-29
-COVID-19 Nursing Home Data : 2023-01-22
-COVID-19 Nursing Home Data : 2023-01-15
-COVID-19 Nursing Home Data : 2023-01-08
-COVID-19 Nursing Home Data : 2023-01-01
-COVID-19 Nursing Home Data : 2022-12-18
-COVID-19 Nursing Home Data : 2022-12-11
-COVID-19 Nursing Home Data : 2022-12-04
-COVID-19 Nursing Home Data : 2022-11-27
-COVID-19 Nursing Home Data : 2022-11-20
-COVID-19 Nursing Home Data : 2022-11-13
-COVID-19 Nursing Home Data : 2022-11-06
-COVID-19 Nursing Home Data : 2022-10-30
-COVID-19 Nursing Home Data : 2022-10-23
-COVID-19 Nursing Home Data : 2022-10-16
-COVID-19 Nursing Home Data : 2022-10-09
-COVID-19 Nursing Home Data : 2022-10-02
-COVID-19 Nursing Home Data : 2022-09-25
-COVID-19 Nursing Home Data : 2022-09-18
-COVID-19 Nursing Home Data : 2022-09-11
-COVID-19 Nursing Home Data : 2022-09-04
-COVID-19 Nursing Home Data : 2022-08-28
-COVID-19 Nursing Home Data : 2022-08-21
-COVID-19 Nursing Home Data : 2022-08-14
-COVID-19 Nursing Home Data : 2022-08-07
-COVID-19 Nursing Home Data : 2022-07-31
-COVID-19 Nursing Home Data : 2022-07-24
-COVID-19 Nursing Home Data : 2022-07-17
-COVID-19 Nursing Home Data : 2022-07-10
-COVID-19 Nursing Home Data : 2022-07-03
-COVID-19 Nursing Home Data : 2022-06-26
-COVID-19 Nursing Home Data : 2022-06-19
-COVID-19 Nursing Home Data : 2022-06-12
-COVID-19 Nursing Home Data : 2022-06-05
-COVID-19 Nursing Home Data : 2022-05-29
-COVID-19 Nursing Home Data : 2022-05-22
-COVID-19 Nursing Home Data : 2022-05-15
-COVID-19 Nursing Home Data : 2022-05-08
-COVID-19 Nursing Home Data : 2022-05-01
-COVID-19 Nursing Home Data : 2022-04-24
-COVID-19 Nursing Home Data : 2022-04-17
-COVID-19 Nursing Home Data : 2022-04-10
-COVID-19 Nursing Home Data : 2022-04-03
-COVID-19 Nursing Home Data : 2022-03-27
-COVID-19 Nursing Home Data : 2022-03-20
-COVID-19 Nursing Home Data : 2022-03-13
-COVID-19 Nursing Home Data : 2022-03-06
-COVID-19 Nursing Home Data : 2022-02-27
-COVID-19 Nursing Home Data : 2022-02-20
-COVID-19 Nursing Home Data : 2022-02-13
-COVID-19 Nursing Home Data : 2022-02-06
-COVID-19 Nursing Home Data : 2022-01-30
-COVID-19 Nursing Home Data : 2022-01-23
-COVID-19 Nursing Home Data : 2022-01-16
-COVID-19 Nursing Home Data : 2022-01-09
-COVID-19 Nursing Home Data : 2022-01-02
-COVID-19 Nursing Home Data : 2021-12-26
-COVID-19 Nursing Home Data : 2021-12-19
-COVID-19 Nursing Home Data : 2021-12-12
-COVID-19 Nursing Home Data : 2021-12-05
-COVID-19 Nursing Home Data : 2021-11-28
-COVID-19 Nursing Home Data : 2021-11-21
-COVID-19 Nursing Home Data : 2021-11-14
-COVID-19 Nursing Home Data : 2021-11-07
-COVID-19 Nursing Home Data : 2021-10-31
-COVID-19 Nursing Home Data : 2021-10-24
-COVID-19 Nursing Home Data : 2021-10-17
-COVID-19 Nursing Home Data : 2021-10-10
-COVID-19 Nursing Home Data : 2021-10-03
-COVID-19 Nursing Home Data : 2021-09-26
-COVID-19 Nursing Home Data : 2021-09-19
-COVID-19 Nursing Home Data : 2021-09-12
-COVID-19 Nursing Home Data : 2021-09-05
-COVID-19 Nursing Home Data : 2021-08-29
-COVID-19 Nursing Home Data : 2021-08-22
-COVID-19 Nursing Home Data : 2021-08-15
-COVID-19 Nursing Home Data : 2021-08-08
-COVID-19 Nursing Home Data : 2021-08-01
-COVID-19 Nursing Home Data : 2021-07-25
-COVID-19 Nursing Home Data : 2021-07-18
-COVID-19 Nursing Home Data : 2021-07-11
-COVID-19 Nursing Home Data : 2021-07-04
-COVID-19 Nursing Home Data : 2021-06-27
-COVID-19 Nursing Home Data : 2021-06-20
-COVID-19 Nursing Home Data : 2021-06-13
-COVID-19 Nursing Home Data : 2021-06-06
-COVID-19 Nursing Home Data : 2021-05-30
-COVID-19 Nursing Home Data : 2021-05-23
-COVID-19 Nursing Home Data : 2021-05-16
-COVID-19 Nursing Home Data : 2021-05-09
-COVID-19 Nursing Home Data : 2021-05-02
-COVID-19 Nursing Home Data : 2021-04-25
-COVID-19 Nursing Home Data : 2021-04-18
-COVID-19 Nursing Home Data : 2021-04-11
-COVID-19 Nursing Home Data : 2021-04-04
-COVID-19 Nursing Home Data : 2021-03-28
-COVID-19 Nursing Home Data : 2021-03-21
-COVID-19 Nursing Home Data : 2021-03-14
-COVID-19 Nursing Home Data : 2021-03-07
-COVID-19 Nursing Home Data : 2021-02-28
-COVID-19 Nursing Home Data : 2021-02-21
-COVID-19 Nursing Home Data : 2021-02-14
-COVID-19 Nursing Home Data : 2021-02-07
-COVID-19 Nursing Home Data : 2021-01-31
-COVID-19 Nursing Home Data : 2021-01-24
-COVID-19 Nursing Home Data : 2021-01-17
-COVID-19 Nursing Home Data : 2021-01-10
-COVID-19 Nursing Home Data : 2021-01-03
-COVID-19 Nursing Home Data : 2020-12-27
-COVID-19 Nursing Home Data : 2020-12-20
-COVID-19 Nursing Home Data : 2020-12-13
-COVID-19 Nursing Home Data : 2020-12-06
-COVID-19 Nursing Home Data : 2020-11-29
-COVID-19 Nursing Home Data : 2020-11-22
-COVID-19 Nursing Home Data : 2020-11-15
-COVID-19 Nursing Home Data : 2020-11-08
-COVID-19 Nursing Home Data : 2020-11-01
-COVID-19 Nursing Home Data : 2020-10-25
-COVID-19 Nursing Home Data : 2020-10-18
-COVID-19 Nursing Home Data : 2020-10-11
-COVID-19 Nursing Home Data : 2020-10-04
-COVID-19 Nursing Home Data : 2020-09-27
-COVID-19 Nursing Home Data : 2020-09-20
-COVID-19 Nursing Home Data : 2020-09-13
-COVID-19 Nursing Home Data : 2020-09-06
-COVID-19 Nursing Home Data : 2020-08-30
-COVID-19 Nursing Home Data : 2020-08-23
-COVID-19 Nursing Home Data : 2020-08-16
-COVID-19 Nursing Home Data : 2020-08-09
-COVID-19 Nursing Home Data : 2020-08-02
-COVID-19 Nursing Home Data : 2020-07-26
-COVID-19 Nursing Home Data : 2020-07-19
-COVID-19 Nursing Home Data : 2020-07-12
-COVID-19 Nursing Home Data : 2020-07-05
-COVID-19 Nursing Home Data : 2020-06-28
-COVID-19 Nursing Home Data : 2020-06-21
-COVID-19 Nursing Home Data : 2020-06-14
-COVID-19 Nursing Home Data : 2020-06-07
-COVID-19 Nursing Home Data : 2020-05-31
-Medicare Current Beneficiary Survey - Cost Supplement : 2021-02-12
-Medicare Current Beneficiary Survey - Cost Supplement : 2020-04-28
-Medicare Current Beneficiary Survey - Cost Supplement : 2019-12-31
-Medicare Current Beneficiary Survey - Cost Supplement : 2018-12-31
-Medicare Current Beneficiary Survey - COVID-19 Supplement : 2021-01-01
-Medicare Current Beneficiary Survey - COVID-19 Supplement : 2020-07-01
-Medicare Current Beneficiary Survey - COVID-19 Supplement : 2020-04-01
-Medicare Dialysis Facilities : 2019-12-31
-Medicare Dialysis Facilities : 2018-12-31
-Medicare Dialysis Facilities : 2017-12-31
-Medicare Dialysis Facilities : 2016-12-31
-Medicare Dialysis Facilities : 2015-12-31
-Medicare Dialysis Facilities : 2014-12-31
-Medicare Dialysis Facilities : 2013-12-31
-Medicare Dialysis Facilities : 2012-12-31
-Medicare Dialysis Facilities : 2011-12-31
-Medicare Dialysis Facilities : 2010-12-31
-Medicare Dialysis Facilities : 2009-12-31
-Medicare Durable Medical Equipment, Devices &amp; Supplies - by Supplier and Service : 2014-12-30
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2024-12-01
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2024-11-01
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2024-10-01
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2024-09-01
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2024-08-01
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2024-07-01
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2024-06-01
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2024-05-30
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2024-04-01
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2024-03-28
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2024-02-21
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2024-01-31
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2023-12-14
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2023-11-16
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2023-10-18
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2023-09-08
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2023-08-11
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2023-07-01
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2023-06-02
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2023-05-05
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2023-04-07
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2023-03-10
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2023-02-10
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2023-01-01
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2022-12-02
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2022-11-04
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2022-10-01
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2022-09-09
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2022-08-01
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2022-07-01
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2022-06-03
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2022-05-06
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2022-04-08
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2022-03-11
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2022-02-11
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2022-01-01
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2021-12-03
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2021-11-05
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2021-10-01
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2021-09-10
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2021-08-01
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2021-07-02
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2021-06-04
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2021-05-07
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2021-04-09
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2021-03-01
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2021-02-01
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2021-01-01
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2020-12-04
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2020-11-06
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2020-10-01
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2020-09-11
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2020-08-01
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2020-07-03
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2020-06-05
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2020-05-08
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2020-04-10
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2020-03-01
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2020-02-01
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2020-01-03
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2019-12-06
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2019-11-08
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2019-10-01
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2019-09-01
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2019-08-01
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2019-07-03
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2019-06-05
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2019-05-08
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2019-04-01
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2019-03-01
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2019-02-01
-Monthly Prescription Drug Plan Formulary and Pharmacy Network Information : 2019-01-02
-Quarterly Prescription Drug Plan Formulary, Pharmacy Network, and Pricing Information : 2024-09-01
-Quarterly Prescription Drug Plan Formulary, Pharmacy Network, and Pricing Information : 2024-06-01
-Quarterly Prescription Drug Plan Formulary, Pharmacy Network, and Pricing Information : 2024-03-31
-Quarterly Prescription Drug Plan Formulary, Pharmacy Network, and Pricing Information : 2023-12-31
-Quarterly Prescription Drug Plan Formulary, Pharmacy Network, and Pricing Information : 2023-09-30
-Quarterly Prescription Drug Plan Formulary, Pharmacy Network, and Pricing Information : 2023-06-30
-Quarterly Prescription Drug Plan Formulary, Pharmacy Network, and Pricing Information : 2023-03-31
-Quarterly Prescription Drug Plan Formulary, Pharmacy Network, and Pricing Information : 2022-12-31
-Quarterly Prescription Drug Plan Formulary, Pharmacy Network, and Pricing Information : 2022-09-30
-Quarterly Prescription Drug Plan Formulary, Pharmacy Network, and Pricing Information : 2022-06-30
-Quarterly Prescription Drug Plan Formulary, Pharmacy Network, and Pricing Information : 2022-03-31
-Quarterly Prescription Drug Plan Formulary, Pharmacy Network, and Pricing Information : 2021-12-31
-Quarterly Prescription Drug Plan Formulary, Pharmacy Network, and Pricing Information : 2021-09-30
-Quarterly Prescription Drug Plan Formulary, Pharmacy Network, and Pricing Information : 2021-06-30
-Quarterly Prescription Drug Plan Formulary, Pharmacy Network, and Pricing Information : 2021-03-31
-Quarterly Prescription Drug Plan Formulary, Pharmacy Network, and Pricing Information : 2020-12-31
-Quarterly Prescription Drug Plan Formulary, Pharmacy Network, and Pricing Information : 2020-09-30
-Quarterly Prescription Drug Plan Formulary, Pharmacy Network, and Pricing Information : 2020-06-30
-Quarterly Prescription Drug Plan Formulary, Pharmacy Network, and Pricing Information : 2020-03-31
-Quarterly Prescription Drug Plan Formulary, Pharmacy Network, and Pricing Information : 2019-12-31
-Quarterly Prescription Drug Plan Formulary, Pharmacy Network, and Pricing Information : 2019-09-30
-Quarterly Prescription Drug Plan Formulary, Pharmacy Network, and Pricing Information : 2019-06-30
-Quarterly Prescription Drug Plan Formulary, Pharmacy Network, and Pricing Information : 2019-03-31
-CMS Program Statistics - Medicare Part A &amp; Part B - All Types of Service : 2021-01-01
-CMS Program Statistics - Medicare Part A &amp; Part B - All Types of Service : 2020-12-31
-CMS Program Statistics - Medicare Part A &amp; Part B - All Types of Service : 2019-12-31
-CMS Program Statistics - Medicare Part A &amp; Part B - All Types of Service : 2018-12-31
-CMS Program Statistics - Medicare Part A &amp; Part B - All Types of Service : 2017-12-31
-CMS Program Statistics - Medicare Part A &amp; Part B - All Types of Service : 2016-12-31
-CMS Program Statistics - Medicare Part A &amp; Part B - All Types of Service : 2015-12-31
-CMS Program Statistics - Medicare Part A &amp; Part B - All Types of Service : 2014-12-31
-CMS Program Statistics - Medicare Part A &amp; Part B - All Types of Service : 2013-12-31
-CMS Program Statistics - Medicare Inpatient Hospital : 2021-01-01
-CMS Program Statistics - Medicare Inpatient Hospital : 2020-12-31
-CMS Program Statistics - Medicare Inpatient Hospital : 2019-12-31
-CMS Program Statistics - Medicare Inpatient Hospital : 2018-12-31
-CMS Program Statistics - Medicare Inpatient Hospital : 2017-12-31
-CMS Program Statistics - Medicare Inpatient Hospital : 2016-12-31
-CMS Program Statistics - Medicare Inpatient Hospital : 2015-12-31
-CMS Program Statistics - Medicare Inpatient Hospital : 2014-12-31
-CMS Program Statistics - Medicare Inpatient Hospital : 2013-12-31
-CMS Program Statistics - Medicare Skilled Nursing Facility : 2021-01-01
-CMS Program Statistics - Medicare Skilled Nursing Facility : 2020-12-31
-CMS Program Statistics - Medicare Skilled Nursing Facility : 2019-12-31
-CMS Program Statistics - Medicare Skilled Nursing Facility : 2018-12-31
-CMS Program Statistics - Medicare Skilled Nursing Facility : 2017-12-31
-CMS Program Statistics - Medicare Skilled Nursing Facility : 2016-12-31
-CMS Program Statistics - Medicare Skilled Nursing Facility : 2015-12-31
-CMS Program Statistics - Medicare Skilled Nursing Facility : 2014-12-31
-CMS Program Statistics - Medicare Skilled Nursing Facility : 2013-12-31
-CMS Program Statistics - Medicare Hospice : 2021-01-01
-CMS Program Statistics - Medicare Hospice : 2020-12-31
-CMS Program Statistics - Medicare Hospice : 2019-12-31
-CMS Program Statistics - Medicare Hospice : 2018-12-31
-CMS Program Statistics - Medicare Hospice : 2017-12-31
-CMS Program Statistics - Medicare Hospice : 2016-12-31
-CMS Program Statistics - Medicare Hospice : 2015-12-31
-CMS Program Statistics - Medicare Hospice : 2014-12-31
-CMS Program Statistics - Medicare Hospice : 2013-12-31
-CMS Program Statistics - Medicare Home Health Agency : 2021-01-01
-CMS Program Statistics - Medicare Home Health Agency : 2020-02-10
-CMS Program Statistics - Medicare Home Health Agency : 2019-12-31
-CMS Program Statistics - Medicare Home Health Agency : 2018-12-31
-CMS Program Statistics - Medicare Home Health Agency : 2017-12-31
-CMS Program Statistics - Medicare Home Health Agency : 2016-12-31
-CMS Program Statistics - Medicare Home Health Agency : 2015-12-31
-CMS Program Statistics - Medicare Home Health Agency : 2014-12-31
-CMS Program Statistics - Medicare Home Health Agency : 2013-12-31
-CMS Program Statistics - Medicare Outpatient Facility : 2021-01-01
-CMS Program Statistics - Medicare Outpatient Facility : 2020-12-31
-CMS Program Statistics - Medicare Outpatient Facility : 2019-12-31
-CMS Program Statistics - Medicare Outpatient Facility : 2018-12-31
-CMS Program Statistics - Medicare Outpatient Facility : 2017-12-31
-CMS Program Statistics - Medicare Outpatient Facility : 2016-12-31
-CMS Program Statistics - Medicare Outpatient Facility : 2015-12-31
-CMS Program Statistics - Medicare Outpatient Facility : 2014-12-31
-CMS Program Statistics - Medicare Outpatient Facility : 2013-12-31
-CMS Program Statistics - Medicare Physician, Non-Physician Practitioner &amp; Supplier : 2021-01-01
-CMS Program Statistics - Medicare Physician, Non-Physician Practitioner &amp; Supplier : 2020-12-31
-CMS Program Statistics - Medicare Physician, Non-Physician Practitioner &amp; Supplier : 2019-12-31
-CMS Program Statistics - Medicare Physician, Non-Physician Practitioner &amp; Supplier : 2018-12-31
-CMS Program Statistics - Medicare Physician, Non-Physician Practitioner &amp; Supplier : 2017-12-31
-CMS Program Statistics - Medicare Physician, Non-Physician Practitioner &amp; Supplier : 2016-12-31
-CMS Program Statistics - Medicare Physician, Non-Physician Practitioner &amp; Supplier : 2015-12-31
-CMS Program Statistics - Medicare Physician, Non-Physician Practitioner &amp; Supplier : 2014-12-31
-CMS Program Statistics - Medicare Physician, Non-Physician Practitioner &amp; Supplier : 2013-12-31
-CMS Program Statistics - Medicare Part D : 2021-01-01
-CMS Program Statistics - Medicare Part D : 2020-12-31
-CMS Program Statistics - Medicare Part D : 2019-12-31
-CMS Program Statistics - Medicare Part D : 2018-12-31
-CMS Program Statistics - Medicare Part D : 2017-12-31
-CMS Program Statistics - Medicare Part D : 2016-12-31
-CMS Program Statistics - Medicare Part D : 2015-12-31
-CMS Program Statistics - Medicare Part D : 2014-12-31
-CMS Program Statistics - Medicare Part D : 2013-12-31
-CMS Program Statistics - Medicare Premiums : 2021-01-01
-CMS Program Statistics - Medicare Premiums : 2020-12-31
-CMS Program Statistics - Medicare Premiums : 2019-12-31
-CMS Program Statistics - Medicare Premiums : 2018-12-31
-CMS Program Statistics - Medicare Premiums : 2017-12-31
-CMS Program Statistics - Medicare Premiums : 2016-12-31
-CMS Program Statistics - Medicare Premiums : 2015-12-31
-CMS Program Statistics - Medicare Premiums : 2014-12-31
-CMS Program Statistics - Medicare Premiums : 2013-12-31
-Medicare Geographic Variation - by Hospital Referral Region : 2021-12-17
-Medicare Geographic Variation - by Hospital Referral Region : 2013-12-01
-CMS Program Statistics - Medicare Providers : 2021-01-01
-CMS Program Statistics - Medicare Providers : 2020-12-31
-CMS Program Statistics - Medicare Providers : 2019-12-31
-CMS Program Statistics - Medicare Providers : 2018-12-31
-CMS Program Statistics - Medicare Providers : 2017-12-31
-CMS Program Statistics - Medicare Providers : 2016-12-31
-CMS Program Statistics - Medicare Providers : 2015-12-31
-CMS Program Statistics - Medicare Providers : 2014-12-31
-CMS Program Statistics - Medicare Providers : 2013-12-31
-CMS Program Statistics - Medicare Total Enrollment : 2021-01-01
-CMS Program Statistics - Medicare Total Enrollment : 2020-12-31
-CMS Program Statistics - Medicare Total Enrollment : 2019-12-31
-CMS Program Statistics - Medicare Total Enrollment : 2018-12-31
-CMS Program Statistics - Medicare Total Enrollment : 2017-12-31
-CMS Program Statistics - Medicare Total Enrollment : 2016-12-31
-CMS Program Statistics - Medicare Total Enrollment : 2015-12-31
-CMS Program Statistics - Medicare Total Enrollment : 2014-12-31
-CMS Program Statistics - Medicare Total Enrollment : 2013-12-31
-CMS Program Statistics - Original Medicare Enrollment : 2021-01-01
-CMS Program Statistics - Original Medicare Enrollment : 2020-12-31
-CMS Program Statistics - Original Medicare Enrollment : 2019-12-31
-CMS Program Statistics - Original Medicare Enrollment : 2018-12-31
-CMS Program Statistics - Original Medicare Enrollment : 2017-12-31
-CMS Program Statistics - Original Medicare Enrollment : 2016-12-31
-CMS Program Statistics - Original Medicare Enrollment : 2015-12-31
-CMS Program Statistics - Original Medicare Enrollment : 2014-12-31
-CMS Program Statistics - Original Medicare Enrollment : 2013-12-31
-CMS Program Statistics - Medicare Advantage &amp; Other Health Plan Enrollment : 2021-01-01
-CMS Program Statistics - Medicare Advantage &amp; Other Health Plan Enrollment : 2020-12-31
-CMS Program Statistics - Medicare Advantage &amp; Other Health Plan Enrollment : 2019-12-31
-CMS Program Statistics - Medicare Advantage &amp; Other Health Plan Enrollment : 2018-12-31
-CMS Program Statistics - Medicare Advantage &amp; Other Health Plan Enrollment : 2017-12-31
-CMS Program Statistics - Medicare Advantage &amp; Other Health Plan Enrollment : 2016-12-31
-CMS Program Statistics - Medicare Advantage &amp; Other Health Plan Enrollment : 2015-12-31
-CMS Program Statistics - Medicare Advantage &amp; Other Health Plan Enrollment : 2014-12-31
-CMS Program Statistics - Medicare Advantage &amp; Other Health Plan Enrollment : 2013-12-31
-CMS Program Statistics - Medicare Newly Enrolled : 2021-01-01
-CMS Program Statistics - Medicare Newly Enrolled : 2020-12-31
-CMS Program Statistics - Medicare Newly Enrolled : 2019-12-31
-CMS Program Statistics - Medicare Newly Enrolled : 2018-12-31
-CMS Program Statistics - Medicare Newly Enrolled : 2017-12-31
-CMS Program Statistics - Medicare Newly Enrolled : 2016-12-31
-CMS Program Statistics - Medicare Newly Enrolled : 2015-12-31
-CMS Program Statistics - Medicare Newly Enrolled : 2014-12-31
-CMS Program Statistics - Medicare Newly Enrolled : 2013-12-31
-CMS Program Statistics - Medicare Deaths : 2021-01-01
-CMS Program Statistics - Medicare Deaths : 2020-12-31
-CMS Program Statistics - Medicare Deaths : 2019-12-31
-CMS Program Statistics - Medicare Deaths : 2018-12-31
-CMS Program Statistics - Medicare Deaths : 2017-12-31
-CMS Program Statistics - Medicare Deaths : 2016-12-31
-CMS Program Statistics - Medicare Deaths : 2015-12-31
-CMS Program Statistics - Medicare Deaths : 2014-12-31
-CMS Program Statistics - Medicare Deaths : 2013-12-31
-CMS Program Statistics - Medicare Part D Enrollment : 2021-01-01
-CMS Program Statistics - Medicare Part D Enrollment : 2020-12-31
-CMS Program Statistics - Medicare Part D Enrollment : 2019-12-31
-CMS Program Statistics - Medicare Part D Enrollment : 2018-12-31
-CMS Program Statistics - Medicare Part D Enrollment : 2017-12-31
-CMS Program Statistics - Medicare Part D Enrollment : 2016-12-31
-CMS Program Statistics - Medicare Part D Enrollment : 2015-12-31
-CMS Program Statistics - Medicare Part D Enrollment : 2014-12-31
-CMS Program Statistics - Medicare Part D Enrollment : 2013-12-31
-CMS Program Statistics - Medicare-Medicaid Dual Enrollment : 2021-01-01
-CMS Program Statistics - Medicare-Medicaid Dual Enrollment : 2020-12-31
-CMS Program Statistics - Medicare-Medicaid Dual Enrollment : 2019-12-31
-CMS Program Statistics - Medicare-Medicaid Dual Enrollment : 2018-12-31
-CMS Program Statistics - Medicare-Medicaid Dual Enrollment : 2017-12-31
-CMS Program Statistics - Medicare-Medicaid Dual Enrollment : 2016-12-31
-CMS Program Statistics - Medicare-Medicaid Dual Enrollment : 2015-12-31
-CMS Program Statistics - Medicare-Medicaid Dual Enrollment : 2014-12-31
-CMS Program Statistics - Medicare-Medicaid Dual Enrollment : 2013-12-31
-Medicare Current Beneficiary Survey - Survey File : 2022-10-01
-Medicare Current Beneficiary Survey - Survey File : 2021-10-20
-Medicare Current Beneficiary Survey - Survey File : 2020-12-31
-Medicare Current Beneficiary Survey - Survey File : 2019-12-31
-Medicare Current Beneficiary Survey - Survey File : 2018-12-31
-Medicare Current Beneficiary Survey - Survey File : 2017-12-31
-Medicare Current Beneficiary Survey - Survey File : 2016-12-31
-Medicare Current Beneficiary Survey - Survey File : 2015-12-01
-Medicare Current Beneficiary Survey - Survey File : 2013-12-01</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># main_distribution_mediaType_zip |&gt;</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   pull(title) |&gt;</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   cat(sep = "\n")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="excel" class="level5" data-number="4.2.2.2.3">
 <h5 data-number="4.2.2.2.3" class="anchored" data-anchor-id="excel"><span class="header-section-number">4.2.2.2.3</span> Excel</h5>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>main_distribution_mediaType_excel <span class="ot">&lt;-</span> main_distribution_mediaType <span class="sc">|&gt;</span> </span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(mediaType <span class="sc">==</span> <span class="st">"application/vnd.ms-excel"</span>)</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>main_distribution_mediaType_excel <span class="sc">|&gt;</span> </span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>main_distribution_mediaType_excel <span class="ot">&lt;-</span> main_distribution_mediaType <span class="sc">|&gt;</span> </span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  collapse<span class="sc">::</span><span class="fu">fsubset</span>(mediaType <span class="sc">%==%</span> <span class="st">"application/vnd.ms-excel"</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>main_distribution_mediaType_excel <span class="sc">|&gt;</span> </span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>- $type         c21 dcat:Distribution                                       ...
 - $resourcesAPI c21 https://data.cms.gov/data-api/v1/dataset-resources/7b40 ...
@@ -1070,32 +524,9 @@ Medicare Current Beneficiary Survey - Survey File : 2013-12-01</code></pre>
 - $downloadURL  c21 https://data.cms.gov/sites/default/files/2021-11/d3640f ...
 - $mediaType    c21 application/vnd.ms-excel                                ...</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>main_distribution_mediaType_excel <span class="sc">|&gt;</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(title) <span class="sc">|&gt;</span></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="at">sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Accountable Care Organization Participants : 2021-01-11
-Accountable Care Organization Participants : 2020-01-15
-Accountable Care Organization Participants : 2019-07-31oc1
-Accountable Care Organization Participants : 2019-01-01
-Accountable Care Organization Participants : 2018-01-01
-Accountable Care Organization Participants : 2017-01-01
-Accountable Care Organization Participants : 2016-12-31
-Accountable Care Organization Participants : 2015-12-31
-Accountable Care Organization Participants : 2014-12-31
-Accountable Care Organization Skilled Nursing Facility Affiliates : 2021-01-11
-Accountable Care Organization Skilled Nursing Facility Affiliates : 2020-12-31
-Accountable Care Organization Skilled Nursing Facility Affiliates : 2019-07-31oc1
-Accountable Care Organization Skilled Nursing Facility Affiliates : 2019-01-01
-Accountable Care Organization Skilled Nursing Facility Affiliates : 2018-01-15
-Accountable Care Organization Skilled Nursing Facility Affiliates : 2017-01-15
-Number of Accountable Care Organization Assigned Beneficiaries by County : 2020-01-01
-Number of Accountable Care Organization Assigned Beneficiaries by County : 2019-07-01oc1
-Number of Accountable Care Organization Assigned Beneficiaries by County : 2019-01-31
-Number of Accountable Care Organization Assigned Beneficiaries by County : 2018-01-15
-Number of Accountable Care Organization Assigned Beneficiaries by County : 2017-01-15
-Number of Accountable Care Organization Assigned Beneficiaries by County : 2016-01-15</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># main_distribution_mediaType_excel |&gt;</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   pull(title) |&gt;</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   cat(sep = "\n")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
