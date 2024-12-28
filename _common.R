@@ -92,7 +92,7 @@ main_catalog <- \() {
     describedBy = x$describedBy)
 }
 
-main_data <- \() {
+main_data_arrow <- \() {
 
   x <- arrow::read_json_arrow(
     file          = "https://data.cms.gov/data.json",
@@ -102,6 +102,21 @@ main_data <- \() {
     dplyr::collect()
 
   collapse::qTBL(x[["dataset"]][[1]]) |>
+    collapse::fmutate(
+      bureauCode   = delist(bureauCode),
+      language     = delist(language),
+      programCode  = delist(programCode),
+      references   = delist(references),
+      theme        = flatten_column(theme),
+      keyword      = flatten_column(keyword)) |>
+    collapse::frename(remove_at_symbol)
+}
+
+main_data_rcpp <- \() {
+
+  x <- RcppSimdJson::fload("https://data.cms.gov/data.json")
+
+  collapse::qTBL(x[["dataset"]]) |>
     collapse::fmutate(
       bureauCode   = delist(bureauCode),
       language     = delist(language),

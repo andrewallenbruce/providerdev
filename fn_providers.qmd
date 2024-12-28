@@ -21,7 +21,7 @@ htmltools::tagList(
 ## Objects
 
 ```{r}
-main_data_dl <- main_data()
+main_data_dl <- main_data_rcpp()
 
 main_dataset <- main_data_dl |> 
   collapse::fselect(-distribution) |>
@@ -32,6 +32,14 @@ main_distribution <- main_data_dl |>
   collapse::fselect(distribution) |>
   tidyr::unnest(distribution) |> 
   collapse::frename(remove_at_symbol)
+
+main_distribution |> 
+  collapse::fsubset(
+    fuimus::sf_detect(title, "Fee-For-Service") &
+    fuimus::sf_detect(format, "API")) |> 
+  fuimus::remove_all_na() |> 
+  collapse::fselect(title, accessURL, resourcesAPI, modified, temporal) |> 
+  purse()
 ```
 
 ## URLS
