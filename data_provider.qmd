@@ -17,27 +17,10 @@ source("_common.R")
 
 ```{r}
 #| label: provider_data
-provider_data <- request(
-  "https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items"
-  ) |>
-  req_perform() |>
-  resp_body_json(simplifyVector = TRUE) |> 
-  tibble() |> 
-  unnest_wider(contactPoint, names_sep = "_") |>
-  unnest_wider(publisher, names_sep = "_") |> 
-  unnest_wider(distribution, names_sep = "_") |> 
-  mutate(
-    bureauCode  = delist(bureauCode),
-    programCode = delist(programCode),
-    keyword     = flatten_column(keyword),
-    theme       = flatten_column(theme)) |> 
-  rename_with(remove_at_symbol) |> 
-  remove_all_na()
-
-provider_data |> 
+provider_data() |> 
   purse()
 
-provider_data |>
+provider_data() |>
   pull(title) |>
   cat(sep = "\n")
 ```

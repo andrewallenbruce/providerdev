@@ -43,6 +43,73 @@ clean_open_description <- \(x) {
     ))
 }
 
+recode_iso_8601 <- \(x) {
+  kit::nswitch(
+    x,
+    "R/P10Y",   "Decennial",
+    "R/P4Y",    "Quadrennial",
+    "R/P1Y",    "Annual",
+    "R/P0.5M",  "Bimonthly",
+    "R/P2M",    "Bimonthly",
+    "R/P0.5W",  "Biweekly",
+    "R/P2W",    "Biweekly",
+    "R/P3.5D",  "Semiweekly",
+    "R/P1D",    "Daily",
+    "R/P6M",    "Semiannual",
+    "R/P2Y",    "Biennial",
+    "R/P3Y",    "Triennial",
+    "R/P0.33W", "Three Times a Week",
+    "R/P0.33M", "Three Times a Month",
+    "R/PT1S",   "Continuously Updated",
+    "R/P1M",    "Monthly",
+    "R/P3M",    "Quarterly",
+    # "R/P0.5M",  "Semimonthly",
+    "R/P4M",    "Three Times a Year",
+    "R/P1W",    "Weekly",
+    "R/PT1H",   "Hourly")
+}
+
+main_catalog <- \() {
+
+  x <- read_json_arrow(
+    file = "https://data.cms.gov/data.json",
+    col_select = c("@context",
+                   "@id",
+                   "@type",
+                   "conformsTo",
+                   "describedBy"),
+    as_data_frame = FALSE) |>
+    collect()
+
+  list(
+    context     = x$`@context`,
+    id          = x$`@id`,
+    type        = x$`@type`,
+    conformsTo  = x$conformsTo,
+    describedBy = x$describedBy)
+}
+
+provider_data <- \() {
+
+  httr2::request(
+    "https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items"
+  ) |>
+    httr2::req_perform() |>
+    httr2::resp_body_json(simplifyVector = TRUE) |>
+    dplyr::tibble() |>
+    tidyr::unnest_wider(contactPoint, names_sep = "_") |>
+    tidyr::unnest_wider(publisher, names_sep = "_") |>
+    tidyr::unnest_wider(distribution, names_sep = "_") |>
+    dplyr::mutate(
+      bureauCode  = delist(bureauCode),
+      programCode = delist(programCode),
+      keyword     = flatten_column(keyword),
+      theme       = flatten_column(theme)) |>
+    dplyr::rename_with(remove_at_symbol) |>
+    fuimus::remove_all_na()
+
+}
+
 options(scipen = 999, digits = 3)
 
 library(tidyverse)
@@ -50,3 +117,4 @@ library(provider)
 library(fuimus)
 library(httr2)
 library(arrow)
+library(here)

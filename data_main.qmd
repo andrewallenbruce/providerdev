@@ -15,27 +15,6 @@ source("_common.R")
 
 ```{r}
 #| label: main_catalog
-main_catalog <- \() {
-  
-  m <- read_json_arrow(
-    file = "https://data.cms.gov/data.json", 
-    col_select = c("@context", 
-                   "@id", 
-                   "@type", 
-                   "conformsTo", 
-                   "describedBy"),
-    as_data_frame = FALSE) |> 
-  collect() |> 
-  rename_with(remove_at_symbol)
-  
-  list(
-    context     = m$context,
-    id          = m$id,
-    type        = m$type,
-    conformsTo  = m$conformsTo,
-    describedBy = m$describedBy)
-}
-
 main_catalog() |> 
   purse()
 ```

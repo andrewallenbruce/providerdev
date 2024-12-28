@@ -28,24 +28,26 @@ Federal agencies, combined agency and bureau code from [OMB Circular A-11, Appen
 ```{r}
 #| label: bureauCode
 #| echo: false
-bureauCode <- readr::read_csv(
-  here::here("data/omb_bureau_codes.csv"), 
+bureauCode <- read_csv(
+  here("data/omb_bureau_codes.csv"), 
   show_col_types = FALSE,
-  col_types = readr::cols(
-  agency_name = readr::col_character(),
-  bureau_name = readr::col_character(),
-  agency_code = readr::col_character(),
-  bureau_code = readr::col_character(),
-  treasury_code = readr::col_character(),
-  cgac_code = readr::col_character()),
+  col_types = cols(
+  agency_name = col_character(),
+  bureau_name = col_character(),
+  agency_code = col_character(),
+  bureau_code = col_character(),
+  treasury_code = col_character(),
+  cgac_code = col_character()),
   name_repair = janitor::make_clean_names) |> 
-  dplyr::mutate(
-    agency_code = stringr::str_pad(agency_code, width = 3, pad = "0"),
-    bureau_code = stringr::str_pad(bureau_code, width = 2, pad = "0"),
-    treasury_code = stringr::str_pad(treasury_code, width = 2, pad = "0"),
-    cgac_code = stringr::str_pad(cgac_code, width = 3, pad = "0"))
+  mutate(
+    agency_code = str_pad(agency_code, width = 3, pad = "0"),
+    bureau_code = str_pad(bureau_code, width = 2, pad = "0"),
+    treasury_code = str_pad(treasury_code, width = 2, pad = "0"),
+    cgac_code = str_pad(cgac_code, width = 3, pad = "0"))
 
-bureauCode
+bureauCode |> 
+  filter(bureau_code == "38") |> 
+  purse()
 ```
 
 ### `programCode`
@@ -57,55 +59,45 @@ Federal agencies, list the primary program related to this data asset, from the 
 ```{r}
 #| label: programCode
 #| echo: false
-programCode <- readr::read_csv(
-  here::here("data/FederalProgramInventory_FY13_MachineReadable_091613.csv"), 
+programCode <- read_csv(
+  here("data/FederalProgramInventory_FY13_MachineReadable_091613.csv"), 
   show_col_types = FALSE,
-  col_types = readr::cols(
-  agency_name = readr::col_character(),
-  program_name = readr::col_character(),
-  additional_information_optional = readr::col_character(),
-  agency_code = readr::col_character(),
-  program_code = readr::col_character(),
-  program_code_pod_format = readr::col_character()),
+  col_types = cols(
+  agency_name = col_character(),
+  program_name = col_character(),
+  additional_information_optional = col_character(),
+  agency_code = col_character(),
+  program_code = col_character(),
+  program_code_pod_format = col_character()),
   name_repair = janitor::make_clean_names)
 
-programCode
+programCode |> 
+  filter(program_code_pod_format == "009:000") |> 
+  purse()
 ```
 
 ### `accrualPeriodicity`
 
 ```{r}
-iso_8601 <- \(x) {
-  kit::nswitch(
-    x,
-    "R/P10Y",   "Decennial",
-    "R/P4Y",    "Quadrennial",
-    "R/P1Y",    "Annual",
-    "R/P0.5M",  "Bimonthly",
-    "R/P2M",    "Bimonthly",
-    "R/P0.5W",  "Biweekly",
-    "R/P2W",    "Biweekly",
-    "R/P3.5D",  "Semiweekly",
-    "R/P1D",    "Daily",
-    "R/P6M",    "Semiannual",
-    "R/P2Y",    "Biennial",
-    "R/P3Y",    "Triennial",
-    "R/P0.33W", "Three Times a Week",
-    "R/P0.33M", "Three Times a Month",
-    "R/PT1S",   "Continuously Updated",
-    "R/P1M",    "Monthly",
-    "R/P3M",    "Quarterly",
-    "R/P0.5M",  "Semimonthly",
-    "R/P4M",    "Three Times a Year",
-    "R/P1W",    "Weekly",
-    "R/PT1H",   "Hourly")
-}
+#| label: accrualPeriodicity
+tibble(
+  accrualPeriodicity = c("R/P1M", 
+                         "R/P1W", 
+                         "R/P1Y", 
+                         "R/P2W", 
+                         "R/P3.5D", 
+                         "R/P3M", 
+                         "R/P6M"),
+  meaning = recode_iso_8601(accrualPeriodicity))
 ```
 
+### DCAT Schemas
+
+#### Catalog
 
 ```{r}
-arrow::read_json_arrow(
-  here::here("data/dcat-us_v1.1_schema_catalog.json")) |> 
+read_json_arrow(
+  here("data/dcat-us_v1.1_schema_catalog.json")) |> 
   unnest(properties) |> 
   unnest(`@context`, names_sep = "_") |> 
   unnest(`@id`, names_sep = "_") |> 
@@ -121,19 +113,19 @@ arrow::read_json_arrow(
   purse()
 ```
 
+#### Dataset
 
 ```{r}
-schema_dataset <- arrow::read_json_arrow(here::here("data/dcat-us_v1.1_schema_dataset.json"))
-
-schema_dataset |> 
+read_json_arrow(
+  here("data/dcat-us_v1.1_schema_dataset.json")) |> 
   glimpse()
 ```
 
+#### Distribution
 
 ```{r}
-schema_distribution <- arrow::read_json_arrow(here::here("data/dcat-us_v1.1_schema_distribution.json"))
-
-schema_distribution |> 
+read_json_arrow(
+  here("data/dcat-us_v1.1_schema_distribution.json")) |> 
   glimpse()
 ```
 
