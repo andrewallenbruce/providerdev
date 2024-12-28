@@ -14,3 +14,122 @@ htmltools::tagList(
   btn_link("https://andrewallenbruce.github.io/provider/reference/providers.html", "Documentation"),
   btn_link("https://github.com/andrewallenbruce/provider/blob/main/R/providers.R", "Source"))
 ```
+
+   * Base URL: `https://data.cms.gov/data-api/v1/`
+   * Identifier: `2457ea29-fc82-48b0-86ec-3b0755de7515`
+
+## Objects
+
+```{r}
+main_data_dl <- main_data()
+
+main_dataset <- main_data_dl |> 
+  collapse::fselect(-distribution) |>
+  collapse::frename(remove_at_symbol) |> 
+  remove_all_na()
+
+main_distribution <- main_data_dl |> 
+  collapse::fselect(distribution) |>
+  tidyr::unnest(distribution) |> 
+  collapse::frename(remove_at_symbol)
+```
+
+## URLS
+
+```{r}
+urls <- list(
+  base = "https://data.cms.gov/data-api/v1/dataset",
+  identifier = filter(
+    main_dataset, 
+    fuimus::sf_detect(title, "Fee-For-Service")) |> 
+    pull(identifier) |> 
+    fuimus::sf_remove("https://data.cms.gov/data-api/v1/dataset/"),
+  accessURL = filter(
+    main_distribution, 
+    fuimus::sf_detect(title, "Fee-For-Service"), 
+    description == "latest") |> 
+    pull(accessURL) |> 
+    fuimus::sf_remove("https://data.cms.gov/data-api/v1/dataset/"),
+  resourcesAPI = filter(
+    main_distribution, 
+    fuimus::sf_detect(title, "Fee-For-Service"), 
+    description == "latest") |> 
+    pull(resourcesAPI) |> 
+    fuimus::sf_remove("https://data.cms.gov/data-api/v1/dataset")
+  )
+
+urls |> purse()
+```
+
+
+## No. of Results
+
+```{r}
+request(urls$base) |> 
+  req_url_path_append(urls$identifier) |> 
+  req_url_path_append("stats") |> 
+  req_perform() |> 
+  resp_body_json(simplifyVector = TRUE)
+```
+
+```{r}
+query_syntax <- c(
+  "filter[STATE_CD]" = "GA",
+  "filter[LAST_NAME]" = "SMITH"
+  )
+
+request(urls$base) |> 
+  req_url_path_append(urls$identifier) |> 
+  req_url_path_append("stats") |> 
+  req_url_query(!!!query_syntax) |> 
+  req_perform() |> 
+  resp_body_json(simplifyVector = TRUE)
+```
+
+```{r}
+resp <- request(urls$base) |> 
+  req_url_path_append(urls$identifier) |> 
+  req_url_query(!!!query_syntax, size = 5000) |> 
+  req_perform() |> 
+  resp_body_json(simplifyVector = TRUE)
+
+resp$data |> 
+  as.data.frame() |> 
+  tibble() |> 
+  setNames(
+    c(
+      "NPI", 
+      "PECOS_ASCT_CNTL_ID", 
+      "ENRLMT_ID", 
+      "PROVIDER_TYPE_CD",
+      "PROVIDER_TYPE_DESC",
+      "STATE_CD",
+      "FIRST_NAME",
+      "MDL_NAME",
+      "LAST_NAME",
+      "ORG_NAME",
+      "GNDR_SW"
+      ))
+```
+
+
+```{r}
+#| echo: false
+#| eval: false
+format_syntax <- \(name, value) {
+  setNames(
+    value, 
+    paste0(
+      name, 
+      "[id-", 
+      seq_along(value), 
+      "][condition][value]"))
+}
+
+format_syntax("filter", c("GA", "NY"))
+```
+
+
+
+
+
