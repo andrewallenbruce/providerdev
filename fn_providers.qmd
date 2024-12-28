@@ -81,15 +81,27 @@ request(urls$base) |>
 ```
 
 ```{r}
-query_syntax <- c(
-  "filter[STATE_CD]" = "GA",
-  "filter[LAST_NAME]" = "SMITH"
-  )
+query <- glue::glue(
+  '
+  "filter[fID{fID}][path]" = "{PATH}",
+  "filter[fID{fID}][operator]" = "{OPERATOR}",
+  "filter[fID{fID}][value]" = "{VALUE}"
+  ', 
+  fID = 1:2, 
+  PATH = c("STATE_CD", "LAST_NAME"), 
+  OPERATOR = "=",
+  VALUE = c("GA", "SMITH")
+  ) |> 
+  glue::glue_collapse(sep = ",\n")
+
+query <- glue::glue('c({query})') |> 
+  rlang::parse_expr() |> 
+  rlang::eval_bare()
 
 request(urls$base) |> 
   req_url_path_append(urls$identifier) |> 
   req_url_path_append("stats") |> 
-  req_url_query(!!!query_syntax) |> 
+  req_url_query(!!!query) |> 
   req_perform() |> 
   resp_body_json(simplifyVector = TRUE)
 ```
@@ -97,27 +109,16 @@ request(urls$base) |>
 ```{r}
 resp <- request(urls$base) |> 
   req_url_path_append(urls$identifier) |> 
-  req_url_query(!!!query_syntax, size = 5000) |> 
-  req_perform() |> 
-  resp_body_json(simplifyVector = TRUE)
+  req_url_query(!!!query, size = 5000) |> 
+  req_perform()
 
-resp$data |> 
-  as.data.frame() |> 
-  tibble() |> 
-  setNames(
-    c(
-      "NPI", 
-      "PECOS_ASCT_CNTL_ID", 
-      "ENRLMT_ID", 
-      "PROVIDER_TYPE_CD",
-      "PROVIDER_TYPE_DESC",
-      "STATE_CD",
-      "FIRST_NAME",
-      "MDL_NAME",
-      "LAST_NAME",
-      "ORG_NAME",
-      "GNDR_SW"
-      ))
+resp <- RcppSimdJson::fparse(httr2::resp_body_string(resp))
+
+collapse::qTBL(resp[["data"]]) |>
+  setNames(c("NPI", "PECOS_ASCT_CNTL_ID", "ENRLMT_ID", 
+             "PROVIDER_TYPE_CD", "PROVIDER_TYPE_DESC", 
+             "STATE_CD", "FIRST_NAME", "MDL_NAME", 
+             "LAST_NAME", "ORG_NAME", "GNDR_SW"))
 ```
 
 
@@ -135,6 +136,12 @@ format_syntax <- \(name, value) {
 }
 
 format_syntax("filter", c("GA", "NY"))
+
+
+# query_syntax <- c(
+#   "filter[STATE_CD]" = "GA",
+#   "filter[LAST_NAME]" = "SMITH"
+#   )
 ```
 
 
