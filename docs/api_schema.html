@@ -254,6 +254,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#bureaucode" id="toc-bureaucode" class="nav-link" data-scroll-target="#bureaucode"><span class="header-section-number">2.1.1</span> <code>bureauCode</code></a></li>
   <li><a href="#programcode" id="toc-programcode" class="nav-link" data-scroll-target="#programcode"><span class="header-section-number">2.1.2</span> <code>programCode</code></a></li>
   <li><a href="#accrualperiodicity" id="toc-accrualperiodicity" class="nav-link" data-scroll-target="#accrualperiodicity"><span class="header-section-number">2.1.3</span> <code>accrualPeriodicity</code></a></li>
+  <li><a href="#dcat-schemas" id="toc-dcat-schemas" class="nav-link" data-scroll-target="#dcat-schemas"><span class="header-section-number">2.1.4</span> DCAT Schemas</a></li>
   </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/andrewallenbruce/providerdev/blob/main/api_schema.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider repo</a></li></ul></div></nav>
@@ -305,20 +306,12 @@ ISO8601
 </blockquote>
 <div class="cell" data-layout-align="center">
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 368 × 6
-   agency_name       bureau_name agency_code bureau_code treasury_code cgac_code
-   &lt;chr&gt;             &lt;chr&gt;       &lt;chr&gt;       &lt;chr&gt;       &lt;chr&gt;         &lt;chr&gt;    
- 1 Legislative Bran… Senate      001         05          00            000      
- 2 Legislative Bran… House of R… 001         10          00            000      
- 3 Legislative Bran… Joint Items 001         11          00            000      
- 4 Legislative Bran… Capitol Po… 001         13          02            002      
- 5 Legislative Bran… Office of … 001         12          09            009      
- 6 Legislative Bran… Congressio… 001         14          08            008      
- 7 Legislative Bran… Architect … 001         15          01            001      
- 8 Legislative Bran… Botanic Ga… 001         18          09            009      
- 9 Legislative Bran… Library of… 001         25          03            003      
-10 Legislative Bran… Government… 001         30          04            004      
-# ℹ 358 more rows</code></pre>
+<pre><code>- $agency_name   c1 Department of Health and Human Services   
+- $bureau_name   c1 Centers for Medicare and Medicaid Services
+- $agency_code   c1 009                                       
+- $bureau_code   c1 38                                        
+- $treasury_code c1 75                                        
+- $cgac_code     c1 075                                       </code></pre>
 </div>
 </div>
 </section>
@@ -330,70 +323,61 @@ ISO8601
 </blockquote>
 <div class="cell" data-layout-align="center">
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1,554 × 6
-   agency_name      program_name additional_informati…¹ agency_code program_code
-   &lt;chr&gt;            &lt;chr&gt;        &lt;chr&gt;                  &lt;chr&gt;       &lt;chr&gt;       
- 1 Department of A… Rural Busin… &lt;NA&gt;                   005         005-001     
- 2 Department of A… Rural Busin… &lt;NA&gt;                   005         005-002     
- 3 Department of A… Energy Assi… &lt;NA&gt;                   005         005-003     
- 4 Department of A… Distance Le… &lt;NA&gt;                   005         005-004     
- 5 Department of A… Rural Elect… &lt;NA&gt;                   005         005-005     
- 6 Department of A… Rural Water… &lt;NA&gt;                   005         005-006     
- 7 Department of A… Single Fami… &lt;NA&gt;                   005         005-007     
- 8 Department of A… Multi-Famil… &lt;NA&gt;                   005         005-008     
- 9 Department of A… Farm labor … &lt;NA&gt;                   005         005-009     
-10 Department of A… Rental Assi… &lt;NA&gt;                   005         005-010     
-# ℹ 1,544 more rows
-# ℹ abbreviated name: ¹​additional_information_optional
-# ℹ 1 more variable: program_code_pod_format &lt;chr&gt;</code></pre>
+<pre><code>- $agency_name                     c1 Department of Health and Human Services
+- $program_name                    c1 (Primary Program Not Available)        
+- $additional_information_optional c1 NA                                     
+- $agency_code                     c1 009                                    
+- $program_code                    c1 009-000                                
+- $program_code_pod_format         c1 009:000                                </code></pre>
 </div>
 </div>
 </section>
 <section id="accrualperiodicity" class="level3" data-number="2.1.3">
 <h3 data-number="2.1.3" class="anchored" data-anchor-id="accrualperiodicity"><span class="header-section-number">2.1.3</span> <code>accrualPeriodicity</code></h3>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>iso_8601 <span class="ot">&lt;-</span> \(x) {</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  kit<span class="sc">::</span><span class="fu">nswitch</span>(</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    x,</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P10Y"</span>,   <span class="st">"Decennial"</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P4Y"</span>,    <span class="st">"Quadrennial"</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P1Y"</span>,    <span class="st">"Annual"</span>,</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P0.5M"</span>,  <span class="st">"Bimonthly"</span>,</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P2M"</span>,    <span class="st">"Bimonthly"</span>,</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P0.5W"</span>,  <span class="st">"Biweekly"</span>,</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P2W"</span>,    <span class="st">"Biweekly"</span>,</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P3.5D"</span>,  <span class="st">"Semiweekly"</span>,</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P1D"</span>,    <span class="st">"Daily"</span>,</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P6M"</span>,    <span class="st">"Semiannual"</span>,</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P2Y"</span>,    <span class="st">"Biennial"</span>,</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P3Y"</span>,    <span class="st">"Triennial"</span>,</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P0.33W"</span>, <span class="st">"Three Times a Week"</span>,</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P0.33M"</span>, <span class="st">"Three Times a Month"</span>,</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/PT1S"</span>,   <span class="st">"Continuously Updated"</span>,</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P1M"</span>,    <span class="st">"Monthly"</span>,</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P3M"</span>,    <span class="st">"Quarterly"</span>,</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P0.5M"</span>,  <span class="st">"Semimonthly"</span>,</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P4M"</span>,    <span class="st">"Three Times a Year"</span>,</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P1W"</span>,    <span class="st">"Weekly"</span>,</span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/PT1H"</span>,   <span class="st">"Hourly"</span>)</span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">accrualPeriodicity =</span> <span class="fu">c</span>(<span class="st">"R/P1M"</span>, </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                         <span class="st">"R/P1W"</span>, </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                         <span class="st">"R/P1Y"</span>, </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                         <span class="st">"R/P2W"</span>, </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>                         <span class="st">"R/P3.5D"</span>, </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                         <span class="st">"R/P3M"</span>, </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                         <span class="st">"R/P6M"</span>),</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">meaning =</span> <span class="fu">recode_iso_8601</span>(accrualPeriodicity))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 7 × 2
+  accrualPeriodicity meaning   
+  &lt;chr&gt;              &lt;chr&gt;     
+1 R/P1M              Monthly   
+2 R/P1W              Weekly    
+3 R/P1Y              Annual    
+4 R/P2W              Biweekly  
+5 R/P3.5D            Semiweekly
+6 R/P3M              Quarterly 
+7 R/P6M              Semiannual</code></pre>
 </div>
+</div>
+</section>
+<section id="dcat-schemas" class="level3" data-number="2.1.4">
+<h3 data-number="2.1.4" class="anchored" data-anchor-id="dcat-schemas"><span class="header-section-number">2.1.4</span> DCAT Schemas</h3>
+<section id="catalog" class="level4" data-number="2.1.4.1">
+<h4 data-number="2.1.4.1" class="anchored" data-anchor-id="catalog"><span class="header-section-number">2.1.4.1</span> Catalog</h4>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>arrow<span class="sc">::</span><span class="fu">read_json_arrow</span>(</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data/dcat-us_v1.1_schema_catalog.json"</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(properties) <span class="sc">|&gt;</span> </span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="st">`</span><span class="at">@context</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="st">`</span><span class="at">@id</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="st">`</span><span class="at">@type</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="st">`</span><span class="at">@type_enum</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(conformsTo, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(conformsTo_enum, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(describedBy, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(dataset, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(dataset_items, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">dependencies =</span> <span class="fu">delist</span>(dependencies),</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>         <span class="at">required =</span> <span class="fu">flatten_column</span>(required)) <span class="sc">|&gt;</span> </span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_json_arrow</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"data/dcat-us_v1.1_schema_catalog.json"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(properties) <span class="sc">|&gt;</span> </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="st">`</span><span class="at">@context</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="st">`</span><span class="at">@id</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="st">`</span><span class="at">@type</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="st">`</span><span class="at">@type_enum</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(conformsTo, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(conformsTo_enum, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(describedBy, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(dataset, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(dataset_items, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">dependencies =</span> <span class="fu">delist</span>(dependencies),</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>         <span class="at">required =</span> <span class="fu">flatten_column</span>(required)) <span class="sc">|&gt;</span> </span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>- $$schema                   c1 http://json-schema.org/draft-04/schema#     ...
 - $id                        c1 https://project-open-data.cio.gov/v1.1/sche ...
@@ -426,11 +410,13 @@ ISO8601
 - $dataset_items_uniqueItems l1 T                                           ...</code></pre>
 </div>
 </div>
+</section>
+<section id="dataset" class="level4" data-number="2.1.4.2">
+<h4 data-number="2.1.4.2" class="anchored" data-anchor-id="dataset"><span class="header-section-number">2.1.4.2</span> Dataset</h4>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>schema_dataset <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">read_json_arrow</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data/dcat-us_v1.1_schema_dataset.json"</span>))</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>schema_dataset <span class="sc">|&gt;</span> </span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_json_arrow</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"data/dcat-us_v1.1_schema_dataset.json"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 1
 Columns: 7
@@ -443,11 +429,13 @@ $ required    &lt;list&lt;character&gt;&gt; &lt;"bureauCode", "programCode", "ti
 $ properties  &lt;tibble[,29]&gt; &lt;tbl_df[1 x 29]&gt;</code></pre>
 </div>
 </div>
+</section>
+<section id="distribution" class="level4" data-number="2.1.4.3">
+<h4 data-number="2.1.4.3" class="anchored" data-anchor-id="distribution"><span class="header-section-number">2.1.4.3</span> Distribution</h4>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>schema_distribution <span class="ot">&lt;-</span> arrow<span class="sc">::</span><span class="fu">read_json_arrow</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data/dcat-us_v1.1_schema_distribution.json"</span>))</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>schema_distribution <span class="sc">|&gt;</span> </span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_json_arrow</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"data/dcat-us_v1.1_schema_distribution.json"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 1
 Columns: 7
@@ -462,6 +450,7 @@ $ properties   &lt;tibble[,10]&gt; &lt;tbl_df[1 x 10]&gt;</code></pre>
 </div>
 
 
+</section>
 </section>
 </section>
 
