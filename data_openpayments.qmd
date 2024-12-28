@@ -9,15 +9,15 @@ editor_options:
 #| message: false
 #| warning: false
 source("_common.R")
-
-
 ```
-
 
 ## Dataset
 
 ```{r}
-dataset_open <- request("https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids") |>
+#| label: open_data
+open_data <- request(
+  "https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids"
+  ) |>
   req_perform() |>
   resp_body_json(simplifyVector = TRUE) |> 
   tibble() |> 
@@ -26,29 +26,23 @@ dataset_open <- request("https://openpaymentsdata.cms.gov/api/1/metastore/schema
   unnest_wider(contactPoint, names_sep = "_") |>
   unnest_wider(publisher, names_sep = "_") |> 
   unnest_wider(publisher_data, names_sep = "_") |> 
+  unnest_wider(distribution, names_sep = "_") |> 
+  unnest_wider(distribution_data, names_sep = "_") |> 
+  unnest_wider(`distribution_data_%Ref:downloadURL`, names_sep = "_") |> 
+  unnest_wider(`distribution_data_%Ref:downloadURL_1`, names_sep = "_") |> 
+  unnest_wider(`distribution_data_%Ref:downloadURL_1_data`, names_sep = "_") |> 
   mutate(
-    description = clean_open_description(description),
-    bureauCode = delist(bureauCode),
-    programCode = delist(programCode)) |>
+    description        = clean_open_description(description),
+    bureauCode         = delist(bureauCode),
+    programCode        = delist(programCode)) |>
   rename_with(remove_at_symbol) |> 
-  rename(modified_dttm = `%modified`)
+  rename(modified_dttm = `%modified`) |> 
+  remove_all_na()
 
-dataset_open |> 
+open_data |> 
   purse()
-```
 
-
-## Distribution
-
-```{r}
-distribution_open <- dataset_open |> 
-  select(distribution) |> 
-  unnest(distribution) |> 
-  unnest(data) |> 
-  unnest(`%Ref:downloadURL`, names_sep = "_") |> 
-  unnest(`%Ref:downloadURL_data`, names_sep = "_") |> 
-  rename_with(replace_open_columns)
-
-distribution_open |> 
-  purse()
+open_data |>
+  pull(title) |>
+  cat(sep = "\n")
 ```

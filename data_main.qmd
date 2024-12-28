@@ -1,0 +1,173 @@
+---
+title: "Main"
+editor_options: 
+   chunk_output_type: console
+---
+
+```{r setup}
+#| echo: false
+#| message: false
+#| warning: false
+source("_common.R")
+```
+
+## Catalog
+
+```{r}
+#| label: main_catalog
+main_catalog <- \() {
+  
+  m <- read_json_arrow(
+    file = "https://data.cms.gov/data.json", 
+    col_select = c("@context", 
+                   "@id", 
+                   "@type", 
+                   "conformsTo", 
+                   "describedBy"),
+    as_data_frame = FALSE) |> 
+  collect() |> 
+  rename_with(remove_at_symbol)
+  
+  list(
+    context     = m$context,
+    id          = m$id,
+    type        = m$type,
+    conformsTo  = m$conformsTo,
+    describedBy = m$describedBy)
+}
+
+main_catalog() |> 
+  purse()
+```
+
+## Data
+
+```{r}
+#| label: main_data
+main_data <- read_json_arrow(
+  file          = "https://data.cms.gov/data.json",
+  col_select    = c("dataset"),
+  as_data_frame = TRUE) |> 
+  to_duckdb() |> 
+  pull(dataset) |> 
+  pluck(1) |> 
+  tibble()
+
+main_data |> 
+  glimpse()
+```
+
+### Dataset
+
+```{r}
+#| label: main_dataset
+main_dataset <- main_data |> 
+  unnest_wider(contactPoint, names_sep = "_") |>
+  unnest_wider(publisher, names_sep = "_") |> 
+  mutate(
+    distribution = NULL,
+    bureauCode   = delist(bureauCode),
+    language     = delist(language),
+    programCode  = delist(programCode),
+    references   = delist(references),
+    theme        = flatten_column(theme),
+    keyword      = flatten_column(keyword)) |>
+  rename_with(remove_at_symbol) |> 
+  remove_all_na()
+
+main_dataset |> 
+  purse()
+```
+
+### Distribution
+
+```{r}
+#| label: main_distribution
+main_distribution <- main_data |> 
+  select(distribution) |> 
+  unnest(distribution) |> 
+  rename_with(remove_at_symbol)
+
+main_distribution |> 
+  purse()
+```
+
+#### API
+
+```{r}
+#| label: main_distribution_api
+main_distribution_api <- main_distribution |> 
+  filter(format == "API") |> 
+  remove_all_na()
+
+main_distribution_api |> 
+  purse()
+```
+
+##### Latest
+
+```{r}
+#| label: main_distribution_api_latest
+main_distribution_api_latest <- main_distribution_api |> 
+  filter(description == "latest") |> 
+  remove_all_na()
+
+main_distribution_api_latest |> 
+  purse()
+```
+
+#### mediaType
+
+```{r}
+#| label: main_distribution_mediaType
+main_distribution_mediaType <- main_distribution |> 
+  filter(not_na(mediaType)) |> 
+  remove_all_na()
+
+main_distribution_mediaType |> 
+  purse()
+
+main_distribution_mediaType |> 
+  count(mediaType)
+```
+
+##### CSV
+
+```{r}
+#| label: main_distribution_mediaType_csv
+main_distribution_mediaType_csv <- main_distribution_mediaType |> 
+  filter(mediaType == "text/csv")
+
+main_distribution_mediaType_csv |> 
+  purse()
+```
+
+##### ZIP
+
+```{r}
+#| label: main_distribution_mediaType_zip
+main_distribution_mediaType_zip <- main_distribution_mediaType |> 
+  filter(mediaType == "application/zip")
+
+main_distribution_mediaType_zip |> 
+  purse()
+
+main_distribution_mediaType_zip |>
+  pull(title) |>
+  cat(sep = "\n")
+```
+
+##### Excel
+
+```{r}
+#| label: main_distribution_mediaType_excel
+main_distribution_mediaType_excel <- main_distribution_mediaType |> 
+  filter(mediaType == "application/vnd.ms-excel")
+
+main_distribution_mediaType_excel |> 
+  purse()
+
+main_distribution_mediaType_excel |>
+  pull(title) |>
+  cat(sep = "\n")
+```

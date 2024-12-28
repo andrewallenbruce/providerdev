@@ -11,31 +11,35 @@ editor_options:
 source("_common.R")
 ```
 
-
    * [Provider-Data API Documentation](https://data.cms.gov/provider-data/docs)
 
-## Dataset
+## Data
 
 ```{r}
-dataset_provider <- request("https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items") |>
+#| label: provider_data
+provider_data <- request(
+  "https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items"
+  ) |>
   req_perform() |>
   resp_body_json(simplifyVector = TRUE) |> 
   tibble() |> 
-  mutate(
-    bureauCode = delist(bureauCode),
-    keyword = flatten_column(keyword),
-    programCode = delist(programCode),
-    theme = flatten_column(theme)) |>
   unnest_wider(contactPoint, names_sep = "_") |>
-  unnest_wider(publisher, names_sep = "_")
+  unnest_wider(publisher, names_sep = "_") |> 
+  unnest_wider(distribution, names_sep = "_") |> 
+  mutate(
+    bureauCode  = delist(bureauCode),
+    programCode = delist(programCode),
+    keyword     = flatten_column(keyword),
+    theme       = flatten_column(theme)) |> 
+  rename_with(remove_at_symbol) |> 
+  remove_all_na()
 
-dataset_provider |> purse()
+provider_data |> 
+  purse()
 
-distribution_provider <- dataset_provider |> 
-  select(distribution) |> 
-  unnest(distribution)
-
-distribution_provider |> purse()
+provider_data |>
+  pull(title) |>
+  cat(sep = "\n")
 ```
 
 ## National Downloadable File
