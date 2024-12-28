@@ -11,20 +11,29 @@ editor_options:
 source("_common.R")
 
 htmltools::tagList(
-  btn_link("https://www.drupal.org/docs/core-modules-and-themes/core-modules/jsonapi-module/filtering", "Drupal JSONAPI"))
+  btn_link("https://www.drupal.org/docs/core-modules-and-themes/core-modules/jsonapi-module/filtering", 
+           "Drupal JSON:API"))
 ```
 
 ## Query Generation
 
 ```{r}
 format_syntax <- \(name, value) {
-  setNames(value, paste0(name, "[id-", seq_along(value), "][condition][value]"))
+  setNames(
+    value, 
+    paste0(
+      name, 
+      "[id-", 
+      seq_along(value), 
+      "][condition][value]"))
 }
 
 format_syntax("filter", c("GA", "NY"))
 
 request("https://example.com") |>
-  req_url_query(!!!format_syntax("ID", 5:7))
+  req_url_query(
+    !!!format_syntax("ID", 5:7)
+    )
 ```
 
 
@@ -44,11 +53,11 @@ The simplest, most common filter is a **key-value filter**:
 
 ```r
 /data?
-   filter[field_1]=value&
-   filter[field_2]=value
+   filter[field_1]=value_1&
+   filter[field_2]=value_2
 ```
 
-This matches all resources with `field_name` equal to `"value"` and `field_other` equal to `"value"`.
+This matches all resources with `field_1` equal to `"value_1"` and `field_2` equal to `"value_2"`.
 
 ### Building Filters
 
@@ -202,7 +211,7 @@ When the operator is `=`, you don't have to include it:
    filter[a-label][condition][operator]=%3D&
    filter[a-label][condition][value]=Janis
 ```
-becomes
+_becomes_
 ```r
 /data?
    filter[janis-filter][condition][path]=first_name&
@@ -215,126 +224,91 @@ When the operator is `=` and you don't need to filter by the same field twice, t
    filter[janis-filter][condition][path]=first_name&
    filter[janis-filter][condition][value]=Janis
 ```
-becomes
+_becomes_
 ```r
 /data?
    filter[first_name][value]=Janis
 ```
-You can reduce the simplest equality checks down to a key-value form:
+Reduce the simplest equality checks down to a _key-value_ form:
 
 ```r
-?filter[first_name]=Janis
+/data?
+   filter[first_name]=Janis
 ```
 
 ### Filters and Access Control
 
 First, a warning: don't make the mistake of confusing filters for access control. Just because you've written a filter to remove something that a user shouldn't be able to see, doesn't mean it's not accessible. **Always perform access checks on the backend.**
 
-With that big caveat, let's talk about using filters to complement access control. To improve performance, you should filter out what your users will not be able to see. The most frequent support request in the JSON:API issue queues can be solved by this one simple trick!
-
-If you know your users cannot see unpublished content, add the following filter:
+With that big caveat, let's talk about using filters to complement access control. To improve performance, you should filter out what your users will not be able to see. The most frequent support request in the JSON:API issue queues can be solved by this one simple trick! If you know your users cannot see unpublished content, add the following filter:
 
 ```r
-?filter[status][value]=1
+/data?
+   filter[status][value]=1
 ```
 
-Using this method, you'll lower the number of unnecessary requests that you need to make. **That's because JSON:API doesn't return data for resources to which a user doesn't have access.** You can see which resources may have been affected by inspecting the meta.errors section of JSON:API document.
-
-So, do your best to filter out inaccessible resources ahead of time.
+Using this method, you'll lower the number of unnecessary requests that you need to make. **That's because JSON:API doesn't return data for resources to which a user doesn't have access.** You can see which resources may have been affected by inspecting the meta.errors section of JSON:API document. So, do your best to filter out inaccessible resources ahead of time.
 
 --------------------------------------------------------------------------------
 
 ## Examples
 
-### Exact Match Search on Column
+### Exact Match on Column
 
 ```r
-- dataset   Medicare Fee-For-Service Public Provider Enrollment
-  column    PROVIDER_TYPE_DESC 
-  equals    PRACTITIONER - GENERAL PRACTICE
-
-call:     /data?
-          filter[PROVIDER_TYPE_DESC]=PRACTITIONER - GENERAL PRACTICE
+/data?
+   filter[PROVIDER_TYPE_DESC]=PRACTITIONER - GENERAL PRACTICE
 ```
 
-```yaml
-catalog:        data.json
-  format:       API
-  description:  latest
-  title:        Medicare Fee-For-Service Public Provider Enrollment
-  accessURL:    ""
+### CONTAINS 
 
-url: 
-  scheme: "https://"
-  hostname: "data.cms.gov/"
-  api: "data-api/v1/dataset/"
-  identifier: "d10d792e-ea6e-4145-8512-34efbc1be04b"
-  path: "/data?"
-  query: 
-    - filter: 1
-      path: "PROVIDER_TYPE_DESC"
-      operator: "EQUALS"
-      value: "PRACTITIONER - GENERAL PRACTICE"
-```
-
-### CONTAINS Search on One Column
+Search on One Column
 
 ```r
-- dataset  Medicare Fee-For-Service Public Provider Enrollment
-  column   PROVIDER_TYPE_DESC
-  contains SUPPLIER
-
-call:    /data?
-          filter[example][condition][path]=PROVIDER_TYPE_DESC
-         &filter[example][condition][operator]=CONTAINS
-         &filter[example][condition][value]=SUPPLIER
+/data?
+   filter[example][condition][path]=PROVIDER_TYPE_DESC&
+   filter[example][condition][operator]=CONTAINS&
+   filter[example][condition][value]=SUPPLIER
 ```
 
-### Combination Search on Two Columns
+### CONTAINS & EQUALS 
+
+Combination Search on Two Columns
 
 ```r
-- dataset  Medicare Fee-For-Service Public Provider Enrollment
-  column   PROVIDER_TYPE_DESC
-  contains PRACTITIONER
-  column   STATE_CD
-  equals   MD
-
-call:    /data?
-          filter[filter-1][condition][path]=PROVIDER_TYPE_DESC
-         &filter[filter-1][condition][operator]=CONTAINS
-         &filter[filter-1][condition][value]=PRACTITIONER
-         &filter[filter-2][condition][path]=STATE_CD
-         &filter[filter-2][condition][operator]==
-         &filter[filter-2][condition][value]=MD
+/data?
+   filter[FID-1][condition][path]=PROVIDER_TYPE_DESC&
+   filter[FID-1][condition][operator]=CONTAINS&
+   filter[FID-1][condition][value]=PRACTITIONER&
+   filter[FID-2][condition][path]=STATE_CD&
+   filter[FID-2][condition][operator]=%3D&
+   filter[FID-2][condition][value]=MD
 ```
 
-### Equals
+### EQUALS Simplified
 
 This example is an equals filter searching the Accountable Care Organizations 2021 dataset for a single ID.
 
 ```r
-https://data.cms.gov/data-api/v1/dataset/
-0ece71c6-1112-47b3-8f7a-5385087e7041/data?
-filter[filter-0-0][condition][path]=aco_id&
-filter[filter-0-0][condition][operator]=%3D&
-filter[filter-0-0][condition][value]=A4807
+/data?
+   filter[FID-1][condition][path]=aco_id&
+   filter[FID-1][condition][operator]=%3D&
+   filter[FID-1][condition][value]=A4807
 ```
 
 An equals filter can be simplified like this.
 
 ```r
-https://data.cms.gov/data-api/v1/dataset/
-0ece71c6-1112-47b3-8f7a-5385087e7041/data?
-filter[aco_id]=A4807
+/data?
+   filter[aco_id]=A4807
 ```
 ### Keyword
 
 The keyword search will look for matching words in every column. This example will check for "Alex" in the Order and Referring dataset. Notice that it finds matches on both the first and last name fields.
 
 ```r
-https://data.cms.gov/data-api/v1/dataset/
-c99b5865-1119-4436-bb80-c5af2773ea1f/data?
-keyword=alex
+/data?
+   keyword=Alex
 ```
 
 ### Multiple Conditions at Once
@@ -342,19 +316,18 @@ keyword=alex
 This search returns results from the Medicare Fee-For-Service Public Provider Enrollment dataset where the provider specialty is "PRACTITIONER - OPTOMETRY" and the location is Virginia.
 
 ```r
-https://data.cms.gov/data-api/v1/dataset/
-2457ea29-fc82-48b0-86ec-3b0755de7515/data?&
-filter[root-group][group][conjunction]=AND&
-filter[group-0][group][conjunction]=AND&
-filter[group-0][group][memberOf]=root-group&
-filter[filter-0-0][condition][path]=PROVIDER_TYPE_DESC&
-filter[filter-0-0][condition][operator]=%3D&
-filter[filter-0-0][condition][value]=PRACTITIONER%20-%20OPTOMETRY&
-filter[filter-0-0][condition][memberOf]=group-0&
-filter[filter-0-1][condition][path]=STATE_CD&
-filter[filter-0-1][condition][operator]=%3D&
-filter[filter-0-1][condition][value]=VA&
-filter[filter-0-1][condition][memberOf]=group-0
+/data?&
+   filter[ROOT][group][conjunction]=AND&
+   filter[GID-1][group][conjunction]=AND&
+   filter[GID-1][group][memberOf]=ROOT&
+   filter[FID-1][condition][path]=PROVIDER_TYPE_DESC&
+   filter[FID-1][condition][operator]=%3D&
+   filter[FID-1][condition][value]=PRACTITIONER - OPTOMETRY&
+   filter[FID-1][condition][memberOf]=GID-1&
+   filter[FID-2][condition][path]=STATE_CD&
+   filter[FID-2][condition][operator]=%3D&
+   filter[FID-2][condition][value]=VA&
+   filter[FID-2][condition][memberOf]=GID-1
 ```
 
 ### IN
@@ -362,48 +335,85 @@ filter[filter-0-1][condition][memberOf]=group-0
 This search returns results from the Opioid Treatment Program Providers dataset where the provider is located from MD, MI, or VA with the results sorted by NPI.
 
 ```r
-https://data.cms.gov/data-api/v1/dataset/
-f1a8c197-b53d-4c24-9770-aea5d5a97dfb/data?
-filter[condition][path]=STATE&
-filter[condition][operator]=IN&
-filter[condition][value][]=MI&
-filter[condition][value][]=VA&
-filter[condition][value][]=MD&
-sort=NPI
+/data?
+   filter[condition][path]=STATE&
+   filter[condition][operator]=IN&
+   filter[condition][value][]=MI&
+   filter[condition][value][]=VA&
+   filter[condition][value][]=MD&
+   sort=NPI
 ```
 
-### Sorting Results
+**Note About Empty Brackets:**
 
-You can use the sort query parameter to specify which column the results should be sorted by. This example shows how to sort the Opt Out Affidavits dataset by NPI.
+When utilizing square brackets for multiple values filters, *do not just use empty square brackets for a new value.*
+While these work when typed into the URL, Guzzle and other HTTP clients will only create one value, as the array key will be seen to be the same and override the previous value. **It is better to use an index to create unique array elements.**
 
-Lowest first: 
+Note the two square brackets added behind the value to make it into an array:
 
 ```r
-https://data.cms.gov/data-api/v1/dataset/
-9887a515-7552-4693-bf58-735c77af46d7/data?
-sort=NPI
+/data?
+   filter[FID-1][condition][path]=STATE&
+   filter[FID-1][condition][operator]=IN&
+   filter[FID-1][condition][value][1]=MI&
+   filter[FID-1][condition][value][2]=VA&
+   filter[FID-1][condition][value][3]=MA
 ```
 
-Highest first: 
+
+### Sort Results
+
+Use the `sort` query parameter to specify which column the results should be sorted by:
 
 ```r
-https://data.cms.gov/data-api/v1/dataset/
-9887a515-7552-4693-bf58-735c77af46d7/data?
-sort=-NPI
+Lowest first:
+
+/data?
+   sort=NPI
+   
+Highest first:
+
+/data?
+   sort=-NPI
 ```
 
-### Select Subset of Columns
+### Subset Columns
 
-You can use the column query parameter to limit the columns that are returned to you by providing a comma separated list of the columns to include.
-
-This example will return just the NPI, First Name, and Last Name from the Order and Referring dataset:
+Add a comma-separated string of column names to the `column` query parameter to limit the columns returned:
 
 ```r
-https://data.cms.gov/data-api/v1/dataset/
-c99b5865-1119-4436-bb80-c5af2773ea1f/data?
-column=NPI,FIRST_NAME,LAST_NAME
+/data?
+   column=NPI,FIRST_NAME,LAST_NAME
 ```
 
-### Specify Number of Results
+## Building Queries
 
-Use the size and offset parameters to accomplish this.
+   1. Select Dataset/Method
+   1. Build JSON Query
+   1. Retrieve Number of Results
+   1. Build Offset Sequence
+   1. Build Request
+
+```r
+catalog:        main_catalog
+  format:       API
+  description:  latest
+  title:        Medicare Fee-For-Service Public Provider Enrollment
+  accessURL:    ""
+```
+
+```r
+scheme:   https://
+hostname: data.cms.gov/
+path:
+          head:       data-api/v1/dataset/
+          identifier: 9887a515-7552-4693-bf58-735c77af46d7/
+          tail:       data?
+          nobs:       data/stats?
+query:
+          filter:     1
+          path:       PROVIDER_TYPE_DESC
+          operator:   =
+          value:      PRACTITIONER - GENERAL PRACTICE
+          call:       filter[PROVIDER_TYPE_DESC]=PRACTITIONER - GENERAL PRACTICE
+```
