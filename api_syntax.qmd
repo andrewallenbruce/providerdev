@@ -21,23 +21,14 @@ htmltools::tagList(
 
 ```{r}
 format_syntax <- \(name, value) {
-  setNames(
-    value, 
-    paste0(
-      name, 
-      "[id-", 
-      seq_along(value), 
-      "][condition][value]"))
+  setNames(value, paste0(name, "[id-", seq_along(value), "][condition][value]"))
 }
 
 format_syntax("filter", c("GA", "NY"))
 
 request("https://example.com") |>
-  req_url_query(
-    !!!format_syntax("filter", c("GA", "NY"))
-    )
+  req_url_query(!!!format_syntax("filter", c("GA", "NY")))
 ```
-
 
 ## JSON:API
 
@@ -61,9 +52,9 @@ The simplest, most common filter is a **key-value filter**:
 
 This matches all resources with `field_1` equal to `"value_1"` and `field_2` equal to `"value_2"`.
 
-### Building Filters
+### Conditions
 
-The fundamental building blocks of JSON:API's filters are **Conditions** and **Groups**. 
+The fundamental building blocks of JSON:API filters are **Conditions** and **Groups**. 
 
    * __Conditions__ assert that something is `TRUE`
    * __Groups__ compose sets of conditions
@@ -72,8 +63,20 @@ Those sets can be nested to make super fine queries. You can think of a nested s
 
 _Conventional representation:_
 
-```r
-is_A(is_B(x) & is_C(is_D(x) | is_E(x), x), x)
+```{r}
+is_A <- \(x) any(x == "A")
+is_B <- \(x) any(x == "B")
+is_C <- \(x) any(x == "C")
+is_D <- \(x) any(x == "D")
+is_E <- \(x) any(x == "E")
+
+x <- c("A", "B", "C", "D", "E")
+
+is_A(x[is_B(x) & is_C(x[is_D(x) | is_E(x)])])
+
+x <- c("A", "B", "C", "F", "G")
+
+is_A(x[is_B(x) & is_C(x[is_D(x) | is_E(x)])])
 ```
 
 _Tree representation:_
@@ -91,38 +94,40 @@ In both representations:
    * `D` & `E` are members of `C` in an `OR` group
    * `B` & `C` are members of `A` in an `AND` group
 
-A condition has 3 primary parts: a `[path]`, an `[operator]` and a `[value]`.
+A **condition** has 3 primary parts: 
 
-   1. `[path]`: Column of a dataset
+   1. `[path]`: Dataset **Field**
    1. `[operator]`: Logical comparison
-   1. `[value]`: Row of a dataset
+   1. `[value]`: Dataset **Row**
 
-In JSON:API syntax, it is formatted as a key/value pair to work inside a URL query string. If we were filtering on a user's first name, a condition might look like this:
+In **JSON:API** syntax, these are formatted as a `key=value` pair to work inside a URL query string:
+
+```r
+/data?
+   filter[fID-1][condition][path]=FIRST_NAME&
+   filter[fID-1][condition][operator]=%3D&
+   filter[fID-1][condition][value]=Janis
+```
 
 > __Note__: `%3D` is the URL-encoded `=` symbol. All operators must be URL-encoded.
 
-```r
-/data?
-   filter[id1][condition][path]=first_name&
-   filter[id1][condition][operator]=%3D&
-   filter[id1][condition][value]=Janis
-```
+Notice the `ID` inside the first set of square brackets. _Every condition or group should have a unique identifier._
 
-Notice that we put an `id` inside the first set of square brackets. Every condition or group should have a unique identifier. 
-
-But what if we have lots of Janises in the system? Let's add another filter so we only get Janises with a last name that starts with `"J"`:
+Let's add another filter so we only get Janises with a last name that starts with `"J"`:
 
 ```r
 /data?
-   filter[id1][condition][path]=first_name&
-   filter[id1][condition][operator]=%3D&
-   filter[id1][condition][value]=Janis&
-   filter[id2][condition][path]=last_name&
-   filter[id2][condition][operator]=STARTS_WITH&
-   filter[id2][condition][value]=J
+   filter[fID-1][condition][path]=FIRST_NAME&
+   filter[fID-1][condition][operator]=%3D&
+   filter[fID-1][condition][value]=Janis&
+   filter[fID-2][condition][path]=LAST_NAME&
+   filter[fID-2][condition][operator]=STARTS_WITH&
+   filter[fID-2][condition][value]=J
 ```
 
-JSON:API Allowed Operators:
+::: callout
+
+## JSON:API Allowed Operators
 
 ```r
 = 
@@ -142,34 +147,36 @@ IS NULL
 IS NOT NULL
 ```
 
-### Condition Groups
+::: 
+
+### Groups
 
 A **group** is a set of conditions joined by a **conjunction**, either `AND` or `OR`. Let's say we want to find all users with a last name that starts with "J" and have either the first name "Janis" or "Joan". To do that, we add a group:
 
 ```r
 /data?
-   filter[grp1][group][conjunction]=OR
+   filter[gID-1][group][conjunction]=OR
 ```
 
 Then, we need assign filters to that new group. To do that, we add a `memberOf` key. Every condition and group can have a `memberOf` key. 
 
 ```r
 /data?
-   filter[g1][group][conjunction]=OR&
-   filter[f1][condition][path]=first_name&
-   filter[f1][condition][operator]=%3D&
-   filter[f1][condition][value]=Janis&
-   filter[f1][condition][memberOf]=g1&
-   filter[f2][condition][path]=first_name&
-   filter[f2][condition][operator]=%3D&
-   filter[f2][condition][value]=Joan&
-   filter[f2][condition][memberOf]=g1&
-   filter[f3][condition][path]=last_name&
-   filter[f3][condition][operator]=STARTS_WITH&
-   filter[f3][condition][value]=J
+   filter[gID-1][group][conjunction]=OR&
+   filter[fID-1][condition][path]=first_name&
+   filter[fID-1][condition][operator]=%3D&
+   filter[fID-1][condition][value]=Janis&
+   filter[fID-1][condition][memberOf]=gID-1&
+   filter[fID-2][condition][path]=first_name&
+   filter[fID-2][condition][operator]=%3D&
+   filter[fID-2][condition][value]=Joan&
+   filter[fID-2][condition][memberOf]=gID-1&
+   filter[fID-3][condition][path]=last_name&
+   filter[fID-3][condition][operator]=STARTS_WITH&
+   filter[fID-3][condition][value]=J
 ```
 
-> __Note__: Groups can have a `memberOf` key just like conditions, which means you can have groups of groups. Every filter without a `memberOf` key is assumed to be part of a "root" group with a conjunction of `AND`.
+> __Note__: Groups can have a `memberOf` key just like conditions, which means you can have groups of groups. Every filter without a `memberOf` key is assumed to be part of a `root` group with a conjunction of `AND`.
 
 Does that look familiar? It should, we saw it above as a tree:
 
@@ -202,40 +209,43 @@ You can filter on a specific index of a relationship by putting a non-negative i
 
 When filtering against configuration properties, you can use an asterisk (`*`) to stand-in for any portion of a path. 
 
-For example, `/jsonapi/field_config/field_config?filter[dependencies.config.*]=comment.type.comment` would match all field configs in which `["attributes"]["dependencies"]["config"]` (an indexed array) contains the value `"comment.type.comment"`.
+For example, 
+
+```r
+/api
+/field_config
+/field_config?
+   filter[dependencies.config.*]=comment.type.comment
+```
+
+would match all field configs in which `[attributes][dependencies][config]` (an indexed array) contains the value `"comment.type.comment"`.
 
 ### Shortcuts
 
 When the operator is `=`, you don't have to include it:
 ```r
 /data?
-   filter[a-label][condition][path]=first_name&
-   filter[a-label][condition][operator]=%3D&
-   filter[a-label][condition][value]=Janis
+   filter[fID-1][condition][path]=FIRST_NAME&
+   filter[fID-1][condition][operator]=%3D&
+   filter[fID-1][condition][value]=Janis
 ```
 _becomes_
 ```r
 /data?
-   filter[janis-filter][condition][path]=first_name&
-   filter[janis-filter][condition][value]=Janis
+   filter[fID-1][condition][path]=FIRST_NAME&
+   filter[fID-1][condition][value]=Janis
 ```
 When the operator is `=` and you don't need to filter by the same field twice, the path can be the identifier:
 
 ```r
 /data?
-   filter[janis-filter][condition][path]=first_name&
-   filter[janis-filter][condition][value]=Janis
-```
-_becomes_
-```r
-/data?
-   filter[first_name][value]=Janis
+   filter[FIRST_NAME][value]=Janis
 ```
 Reduce the simplest equality checks down to a _key-value_ form:
 
 ```r
 /data?
-   filter[first_name]=Janis
+   filter[FIRST_NAME]=Janis
 ```
 
 ### Filters and Access Control
@@ -268,9 +278,9 @@ Search on One Column
 
 ```r
 /data?
-   filter[example][condition][path]=PROVIDER_TYPE_DESC&
-   filter[example][condition][operator]=CONTAINS&
-   filter[example][condition][value]=SUPPLIER
+   filter[fID-1][condition][path]=PROVIDER_TYPE_DESC&
+   filter[fID-1][condition][operator]=CONTAINS&
+   filter[fID-1][condition][value]=SUPPLIER
 ```
 
 ### CONTAINS & EQUALS 
@@ -279,12 +289,12 @@ Combination Search on Two Columns
 
 ```r
 /data?
-   filter[FID-1][condition][path]=PROVIDER_TYPE_DESC&
-   filter[FID-1][condition][operator]=CONTAINS&
-   filter[FID-1][condition][value]=PRACTITIONER&
-   filter[FID-2][condition][path]=STATE_CD&
-   filter[FID-2][condition][operator]=%3D&
-   filter[FID-2][condition][value]=MD
+   filter[fID-1][condition][path]=PROVIDER_TYPE_DESC&
+   filter[fID-1][condition][operator]=CONTAINS&
+   filter[fID-1][condition][value]=PRACTITIONER&
+   filter[fID-2][condition][path]=STATE_CD&
+   filter[fID-2][condition][operator]=%3D&
+   filter[fID-2][condition][value]=MD
 ```
 
 ### EQUALS Simplified
@@ -293,9 +303,9 @@ This example is an equals filter searching the Accountable Care Organizations 20
 
 ```r
 /data?
-   filter[FID-1][condition][path]=aco_id&
-   filter[FID-1][condition][operator]=%3D&
-   filter[FID-1][condition][value]=A4807
+   filter[fID-1][condition][path]=aco_id&
+   filter[fID-1][condition][operator]=%3D&
+   filter[fID-1][condition][value]=A4807
 ```
 
 An equals filter can be simplified like this.
@@ -355,11 +365,11 @@ Note the two square brackets added behind the value to make it into an array:
 
 ```r
 /data?
-   filter[FID-1][condition][path]=STATE&
-   filter[FID-1][condition][operator]=IN&
-   filter[FID-1][condition][value][1]=MI&
-   filter[FID-1][condition][value][2]=VA&
-   filter[FID-1][condition][value][3]=MA
+   filter[fID-1][condition][path]=STATE&
+   filter[fID-1][condition][operator]=IN&
+   filter[fID-1][condition][value][1]=MI&
+   filter[fID-1][condition][value][2]=VA&
+   filter[fID-1][condition][value][3]=MA
 ```
 
 
