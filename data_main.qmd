@@ -11,34 +11,24 @@ editor_options:
 source("_common.R")
 ```
 
-## Catalog
-
-```{r}
-#| label: main_catalog
-main_catalog() |> purse()
-```
-
 ## Data
 
 ```{r}
 #| label: main_data
 main_data_dl <- main_data_rcpp()
 
-main_data_dl |> glimpse()
+main_data_dl
 ```
 
 ### Dataset
 
 ```{r}
 #| label: main_dataset
-main_dataset <- main_data_dl |> 
-  collapse::fselect(-distribution) |>
+main_data_dl$dataset |> 
   tidyr::unnest_wider(contactPoint, names_sep = "_") |>
   tidyr::unnest_wider(publisher, names_sep = "_") |> 
   collapse::frename(remove_at_symbol) |> 
-  remove_all_na()
-
-main_dataset |> 
+  remove_all_na() |> 
   purse()
 ```
 
@@ -46,91 +36,18 @@ main_dataset |>
 
 ```{r}
 #| label: main_distribution
-main_distribution <- main_data_dl |> 
-  collapse::fselect(distribution) |>
-  tidyr::unnest(distribution) |> 
-  collapse::frename(remove_at_symbol)
+main_data_dl$distribution_api |> 
+  collapse::fsubset(na(description)) |> 
+  remove_all_na()
 
-main_distribution |> 
-  purse()
+main_data_dl$distribution_api |> 
+  collapse::fsubset(description %==% "latest")
 ```
 
-#### API
+#### CSV
 
 ```{r}
-#| label: main_distribution_api
-main_distribution_api <- main_distribution |> 
-  collapse::fsubset(format %==% "API") |> 
-  fuimus::remove_all_na()
-
-main_distribution_api |> 
-  purse()
+#| label: main_distribution_csv
+main_data_dl$distribution_csv
 ```
 
-##### Latest
-
-```{r}
-#| label: main_distribution_api_latest
-main_distribution_api_latest <- main_distribution_api |> 
-  collapse::fsubset(description %==% "latest") |> 
-  fuimus::remove_all_na()
-
-main_distribution_api_latest |> 
-  purse()
-```
-
-#### mediaType
-
-```{r}
-#| label: main_distribution_mediaType
-main_distribution_mediaType <- main_distribution |> 
-  collapse::fsubset(fuimus::not_na(mediaType)) |> 
-  fuimus::remove_all_na()
-
-main_distribution_mediaType |> 
-  purse()
-
-main_distribution_mediaType |> 
-  count(mediaType)
-```
-
-##### CSV
-
-```{r}
-#| label: main_distribution_mediaType_csv
-main_distribution_mediaType_csv <- main_distribution_mediaType |> 
-  collapse::fsubset(mediaType %==% "text/csv")
-
-main_distribution_mediaType_csv |> 
-  purse()
-```
-
-##### ZIP
-
-```{r}
-#| label: main_distribution_mediaType_zip
-main_distribution_mediaType_zip <- main_distribution_mediaType |> 
-  collapse::fsubset(mediaType %==% "application/zip")
-
-main_distribution_mediaType_zip |> 
-  purse()
-
-# main_distribution_mediaType_zip |>
-#   pull(title) |>
-#   cat(sep = "\n")
-```
-
-##### Excel
-
-```{r}
-#| label: main_distribution_mediaType_excel
-main_distribution_mediaType_excel <- main_distribution_mediaType |> 
-  collapse::fsubset(mediaType %==% "application/vnd.ms-excel")
-
-main_distribution_mediaType_excel |> 
-  purse()
-
-# main_distribution_mediaType_excel |>
-#   pull(title) |>
-#   cat(sep = "\n")
-```

@@ -115,7 +115,7 @@ main_data_rcpp <- \() {
 
   x <- RcppSimdJson::fload("https://data.cms.gov/data.json")
 
-  collapse::qTBL(x[["dataset"]]) |>
+  dataset <- collapse::qTBL(x[["dataset"]]) |>
     collapse::fmutate(
       bureauCode   = delist(bureauCode),
       language     = delist(language),
@@ -124,6 +124,21 @@ main_data_rcpp <- \() {
       theme        = flatten_column(theme),
       keyword      = flatten_column(keyword)) |>
     collapse::frename(remove_at_symbol)
+
+  distro <- collapse::fselect(dataset, distribution) |>
+    tidyr::unnest(distribution) |>
+    collapse::frename(remove_at_symbol)
+
+  list(
+    context          = x[["@context"]],
+    id               = x[["@id"]],
+    type             = x[["@type"]],
+    conformsTo       = x[["conformsTo"]],
+    describedBy      = x[["describedBy"]],
+    dataset          = collapse::fselect(dataset, -distribution) |> remove_all_na(),
+    distribution_api = collapse::fsubset(distro, not_na(format)) |> remove_all_na(),
+    distribution_csv = collapse::fsubset(distro, mediaType %==% "text/csv") |> remove_all_na()
+  )
 }
 
 provider_data <- \() {

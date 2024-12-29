@@ -23,21 +23,8 @@ htmltools::tagList(
 ```{r}
 main_data_dl <- main_data_rcpp()
 
-main_dataset <- main_data_dl |> 
-  collapse::fselect(-distribution) |>
-  collapse::frename(remove_at_symbol) |> 
-  remove_all_na()
-
-main_distribution <- main_data_dl |> 
-  collapse::fselect(distribution) |>
-  tidyr::unnest(distribution) |> 
-  collapse::frename(remove_at_symbol)
-
-main_distribution |> 
-  collapse::fsubset(
-    fuimus::sf_detect(title, "Fee-For-Service") &
-    fuimus::sf_detect(format, "API")) |> 
-  fuimus::remove_all_na() |> 
+main_data_dl$distribution_api |> 
+  collapse::fsubset(fuimus::sf_detect(title, "Fee-For-Service")) |> 
   collapse::fselect(title, accessURL, resourcesAPI, modified, temporal) |> 
   purse()
 ```
@@ -45,6 +32,7 @@ main_distribution |>
 ## URLS
 
 ```{r}
+#| eval: false
 urls <- list(
   base = "https://data.cms.gov/data-api/v1/dataset",
   identifier = filter(
@@ -73,6 +61,7 @@ urls |> purse()
 ## No. of Results
 
 ```{r}
+#| eval: false
 request(urls$base) |> 
   req_url_path_append(urls$identifier) |> 
   req_url_path_append("stats") |> 
@@ -81,6 +70,7 @@ request(urls$base) |>
 ```
 
 ```{r}
+#| eval: false
 query <- glue::glue(
   '
   "filter[fID{fID}][path]" = "{PATH}",
@@ -107,6 +97,7 @@ request(urls$base) |>
 ```
 
 ```{r}
+#| eval: false
 resp <- request(urls$base) |> 
   req_url_path_append(urls$identifier) |> 
   req_url_query(!!!query, size = 5000) |> 
@@ -123,7 +114,6 @@ collapse::qTBL(resp[["data"]]) |>
 
 
 ```{r}
-#| echo: false
 #| eval: false
 format_syntax <- \(name, value) {
   setNames(

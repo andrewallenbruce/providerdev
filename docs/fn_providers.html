@@ -304,23 +304,10 @@ Source
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>main_data_dl <span class="ot">&lt;-</span> <span class="fu">main_data_rcpp</span>()</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>main_dataset <span class="ot">&lt;-</span> main_data_dl <span class="sc">|&gt;</span> </span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  collapse<span class="sc">::</span><span class="fu">fselect</span>(<span class="sc">-</span>distribution) <span class="sc">|&gt;</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  collapse<span class="sc">::</span><span class="fu">frename</span>(remove_at_symbol) <span class="sc">|&gt;</span> </span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">remove_all_na</span>()</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>main_distribution <span class="ot">&lt;-</span> main_data_dl <span class="sc">|&gt;</span> </span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  collapse<span class="sc">::</span><span class="fu">fselect</span>(distribution) <span class="sc">|&gt;</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">unnest</span>(distribution) <span class="sc">|&gt;</span> </span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  collapse<span class="sc">::</span><span class="fu">frename</span>(remove_at_symbol)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>main_distribution <span class="sc">|&gt;</span> </span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  collapse<span class="sc">::</span><span class="fu">fsubset</span>(</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    fuimus<span class="sc">::</span><span class="fu">sf_detect</span>(title, <span class="st">"Fee-For-Service"</span>) <span class="sc">&amp;</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    fuimus<span class="sc">::</span><span class="fu">sf_detect</span>(format, <span class="st">"API"</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  fuimus<span class="sc">::</span><span class="fu">remove_all_na</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  collapse<span class="sc">::</span><span class="fu">fselect</span>(title, accessURL, resourcesAPI, modified, temporal) <span class="sc">|&gt;</span> </span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>main_data_dl<span class="sc">$</span>distribution_api <span class="sc">|&gt;</span> </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  collapse<span class="sc">::</span><span class="fu">fsubset</span>(fuimus<span class="sc">::</span><span class="fu">sf_detect</span>(title, <span class="st">"Fee-For-Service"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  collapse<span class="sc">::</span><span class="fu">fselect</span>(title, accessURL, resourcesAPI, modified, temporal) <span class="sc">|&gt;</span> </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>- $title        c8 Medicare Fee-For-Service Public Provider Enrollment : 20 ...
 - $accessURL    c8 https://data.cms.gov/data-api/v1/dataset/2457ea29-fc82-4 ...
@@ -355,123 +342,74 @@ Source
 <span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>urls <span class="sc">|&gt;</span> <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>- $base         c1 https://data.cms.gov/data-api/v1/dataset
-- $identifier   c1 2457ea29-fc82-48b0-86ec-3b0755de7515/data-viewer
-- $accessURL    c1 2457ea29-fc82-48b0-86ec-3b0755de7515/data
-- $resourcesAPI c1 -resources/2457ea29-fc82-48b0-86ec-3b0755de7515</code></pre>
-</div>
 </div>
 </section>
 <section id="no.-of-results" class="level2" data-number="8.3">
 <h2 data-number="8.3" class="anchored" data-anchor-id="no.-of-results"><span class="header-section-number">8.3</span> No.&nbsp;of Results</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">request</span>(urls<span class="sc">$</span>base) <span class="sc">|&gt;</span> </span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_path_append</span>(urls<span class="sc">$</span>identifier) <span class="sc">|&gt;</span> </span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_path_append</span>(<span class="st">"stats"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$meta
-$meta$success
-[1] TRUE
-
-$meta$datset_uuid
-[1] "2457ea29-fc82-48b0-86ec-3b0755de7515"
-
-
-$data
-$data$found_rows
-[1] 2907050
-
-$data$total_rows
-[1] 2907050
-
-
-$links
-$links$self
-$links$self$href
-[1] "https://data.cms.gov/data-api/v1/dataset/2457ea29-fc82-48b0-86ec-3b0755de7515/data-viewer/stats"</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">request</span>(urls<span class="sc">$</span>base) <span class="sc">|&gt;</span> </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_path_append</span>(urls<span class="sc">$</span>identifier) <span class="sc">|&gt;</span> </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_path_append</span>(<span class="st">"stats"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>query <span class="ot">&lt;-</span> glue<span class="sc">::</span><span class="fu">glue</span>(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">'</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="st">  "filter[fID{fID}][path]" = "{PATH}",</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="st">  "filter[fID{fID}][operator]" = "{OPERATOR}",</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="st">  "filter[fID{fID}][value]" = "{VALUE}"</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="st">  '</span>, </span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">fID =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, </span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">PATH =</span> <span class="fu">c</span>(<span class="st">"STATE_CD"</span>, <span class="st">"LAST_NAME"</span>), </span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">OPERATOR =</span> <span class="st">"="</span>,</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">VALUE =</span> <span class="fu">c</span>(<span class="st">"GA"</span>, <span class="st">"SMITH"</span>)</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  glue<span class="sc">::</span><span class="fu">glue_collapse</span>(<span class="at">sep =</span> <span class="st">",</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>query <span class="ot">&lt;-</span> glue<span class="sc">::</span><span class="fu">glue</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">'</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="st">  "filter[fID{fID}][path]" = "{PATH}",</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="st">  "filter[fID{fID}][operator]" = "{OPERATOR}",</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="st">  "filter[fID{fID}][value]" = "{VALUE}"</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="st">  '</span>, </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">fID =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">PATH =</span> <span class="fu">c</span>(<span class="st">"STATE_CD"</span>, <span class="st">"LAST_NAME"</span>), </span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">OPERATOR =</span> <span class="st">"="</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">VALUE =</span> <span class="fu">c</span>(<span class="st">"GA"</span>, <span class="st">"SMITH"</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  glue<span class="sc">::</span><span class="fu">glue_collapse</span>(<span class="at">sep =</span> <span class="st">",</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>query <span class="ot">&lt;-</span> glue<span class="sc">::</span><span class="fu">glue</span>(<span class="st">'c({query})'</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  rlang<span class="sc">::</span><span class="fu">parse_expr</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  rlang<span class="sc">::</span><span class="fu">eval_bare</span>()</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="fu">request</span>(urls<span class="sc">$</span>base) <span class="sc">|&gt;</span> </span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_path_append</span>(urls<span class="sc">$</span>identifier) <span class="sc">|&gt;</span> </span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_path_append</span>(<span class="st">"stats"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_query</span>(<span class="sc">!!!</span>query) <span class="sc">|&gt;</span> </span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>resp <span class="ot">&lt;-</span> <span class="fu">request</span>(urls<span class="sc">$</span>base) <span class="sc">|&gt;</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_path_append</span>(urls<span class="sc">$</span>identifier) <span class="sc">|&gt;</span> </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_query</span>(<span class="sc">!!!</span>query, <span class="at">size =</span> <span class="dv">5000</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>()</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>resp <span class="ot">&lt;-</span> RcppSimdJson<span class="sc">::</span><span class="fu">fparse</span>(httr2<span class="sc">::</span><span class="fu">resp_body_string</span>(resp))</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>collapse<span class="sc">::</span><span class="fu">qTBL</span>(resp[[<span class="st">"data"</span>]]) <span class="sc">|&gt;</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setNames</span>(<span class="fu">c</span>(<span class="st">"NPI"</span>, <span class="st">"PECOS_ASCT_CNTL_ID"</span>, <span class="st">"ENRLMT_ID"</span>, </span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>             <span class="st">"PROVIDER_TYPE_CD"</span>, <span class="st">"PROVIDER_TYPE_DESC"</span>, </span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>             <span class="st">"STATE_CD"</span>, <span class="st">"FIRST_NAME"</span>, <span class="st">"MDL_NAME"</span>, </span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>             <span class="st">"LAST_NAME"</span>, <span class="st">"ORG_NAME"</span>, <span class="st">"GNDR_SW"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>format_syntax <span class="ot">&lt;-</span> \(name, value) {</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setNames</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    value, </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste0</span>(</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>      name, </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>      <span class="st">"[id-"</span>, </span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">seq_along</span>(value), </span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>      <span class="st">"][condition][value]"</span>))</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="fu">format_syntax</span>(<span class="st">"filter"</span>, <span class="fu">c</span>(<span class="st">"GA"</span>, <span class="st">"NY"</span>))</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>query <span class="ot">&lt;-</span> glue<span class="sc">::</span><span class="fu">glue</span>(<span class="st">'c({query})'</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  rlang<span class="sc">::</span><span class="fu">parse_expr</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  rlang<span class="sc">::</span><span class="fu">eval_bare</span>()</span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="fu">request</span>(urls<span class="sc">$</span>base) <span class="sc">|&gt;</span> </span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_path_append</span>(urls<span class="sc">$</span>identifier) <span class="sc">|&gt;</span> </span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_path_append</span>(<span class="st">"stats"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_query</span>(<span class="sc">!!!</span>query) <span class="sc">|&gt;</span> </span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$meta
-$meta$success
-[1] TRUE
-
-$meta$datset_uuid
-[1] "2457ea29-fc82-48b0-86ec-3b0755de7515"
-
-
-$data
-$data$found_rows
-[1] 548
-
-$data$total_rows
-[1] 2907050
-
-
-$links
-$links$self
-$links$self$href
-[1] "https://data.cms.gov/data-api/v1/dataset/2457ea29-fc82-48b0-86ec-3b0755de7515/data-viewer/stats?filter%5BfID1%5D%5Bpath%5D=STATE_CD&amp;filter%5BfID1%5D%5Boperator%5D=%3D&amp;filter%5BfID1%5D%5Bvalue%5D=GA&amp;filter%5BfID2%5D%5Bpath%5D=LAST_NAME&amp;filter%5BfID2%5D%5Boperator%5D=%3D&amp;filter%5BfID2%5D%5Bvalue%5D=SMITH"</code></pre>
-</div>
-</div>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>resp <span class="ot">&lt;-</span> <span class="fu">request</span>(urls<span class="sc">$</span>base) <span class="sc">|&gt;</span> </span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_path_append</span>(urls<span class="sc">$</span>identifier) <span class="sc">|&gt;</span> </span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_query</span>(<span class="sc">!!!</span>query, <span class="at">size =</span> <span class="dv">5000</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>()</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>resp <span class="ot">&lt;-</span> RcppSimdJson<span class="sc">::</span><span class="fu">fparse</span>(httr2<span class="sc">::</span><span class="fu">resp_body_string</span>(resp))</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>collapse<span class="sc">::</span><span class="fu">qTBL</span>(resp[[<span class="st">"data"</span>]]) <span class="sc">|&gt;</span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setNames</span>(<span class="fu">c</span>(<span class="st">"NPI"</span>, <span class="st">"PECOS_ASCT_CNTL_ID"</span>, <span class="st">"ENRLMT_ID"</span>, </span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>             <span class="st">"PROVIDER_TYPE_CD"</span>, <span class="st">"PROVIDER_TYPE_DESC"</span>, </span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>             <span class="st">"STATE_CD"</span>, <span class="st">"FIRST_NAME"</span>, <span class="st">"MDL_NAME"</span>, </span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>             <span class="st">"LAST_NAME"</span>, <span class="st">"ORG_NAME"</span>, <span class="st">"GNDR_SW"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 548 × 11
-   NPI        PECOS_ASCT_CNTL_ID ENRLMT_ID   PROVIDER_TYPE_CD PROVIDER_TYPE_DESC
-   &lt;chr&gt;      &lt;chr&gt;              &lt;chr&gt;       &lt;chr&gt;            &lt;chr&gt;             
- 1 1497796718 2961314075         I200311050… 14-93            PRACTITIONER - EM…
- 2 1215028253 0244136562         I200312090… 14-11            PRACTITIONER - IN…
- 3 1013924828 2264333723         I200401160… 14-21            PRACTITIONER - CA…
- 4 1073572657 8325949506         I200401200… 14-05            PRACTITIONER - AN…
- 5 1700886058 2163317660         I200402190… 14-41            PRACTITIONER - OP…
- 6 1174597439 4880589621         I200402200… 14-93            PRACTITIONER - EM…
- 7 1265491294 5092601682         I200402260… 14-50            PRACTITIONER - NU…
- 8 1063447951 0345138228         I200403100… 14-05            PRACTITIONER - AN…
- 9 1588698880 7214921766         I200404080… 14-50            PRACTITIONER - NU…
-10 1831122506 9335135821         I200404210… 14-97            PRACTITIONER - PH…
-# ℹ 538 more rows
-# ℹ 6 more variables: STATE_CD &lt;chr&gt;, FIRST_NAME &lt;chr&gt;, MDL_NAME &lt;chr&gt;,
-#   LAST_NAME &lt;chr&gt;, ORG_NAME &lt;chr&gt;, GNDR_SW &lt;chr&gt;</code></pre>
-</div>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co"># query_syntax &lt;- c(</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co">#   "filter[STATE_CD]" = "GA",</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co">#   "filter[LAST_NAME]" = "SMITH"</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co">#   )</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
