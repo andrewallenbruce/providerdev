@@ -11,20 +11,38 @@ editor_options:
 source("_common.R")
 ```
 
-## Data
+## Catalog
 
 ```{r}
-#| label: main_data
+#| label: catalog
 main <- main_data_rcpp()
 
 main
 ```
 
+### S7 Class
+
+```{r}
+Catalog <- new_class(
+  name = "Catalog",
+  properties = list(
+    context = new_property(class_character, default = "https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld"),
+    id = new_property(class_character, default = "https://data.cms.gov/data.json"),
+    type = new_property(class_character, default = "dcat:Catalog"),
+    conformsTo = new_property(class_character, default = "https://project-open-data.cio.gov/v1.1/schema"),
+    describedBy = new_property(class_character, default = "https://project-open-data.cio.gov/v1.1/schema/catalog.json"),
+    dataset = class_data.frame
+  )
+)
+
+Catalog()
+```
+
 ### Dataset
 
 ```{r}
-#| label: main_dataset
-main$dataset |> 
+#| label: dataset
+main[["dataset"]] |> 
   tidyr::unnest_wider(contactPoint, names_sep = "_") |>
   tidyr::unnest_wider(publisher, names_sep = "_") |> 
   collapse::frename(remove_at_symbol) |> 
@@ -32,19 +50,24 @@ main$dataset |>
   purse()
 ```
 
-### Distribution
+### Distribution: Latest
 
 ```{r}
-#| label: main_distribution
-main$distribution_api
-
-main$distribution_latest
+#| label: distribution_latest
+main[["distribution_latest"]]
 ```
 
-#### CSV
+### Distribution: API
 
 ```{r}
-#| label: main_distribution_csv
-main$distribution_csv
+#| label: distribution_api
+main[["distribution_api"]]
+```
+
+### Distribution: CSV
+
+```{r}
+#| label: distribution_csv
+main[["distribution_csv"]]
 ```
 

@@ -22,7 +22,7 @@ htmltools::tagList(
    * Base URL: `https://data.cms.gov/data-api/v1/`
    * Identifier: `2457ea29-fc82-48b0-86ec-3b0755de7515`
 
-## Objects
+## Catalog
 
 ```{r}
 #| label: main_catalog
@@ -31,71 +31,105 @@ main <- main_data_rcpp()
 main
 ```
 
+## Dataset
 
 ```{r}
-#| label: main_dataset
-main$dataset |> 
-  collapse::fsubset(
-    fuimus::sf_detect(title, "Fee-For-Service")
-    ) |> 
+#| label: provider_dataset
+provider_dataset <- collapse::fsubset(
+  main[["dataset"]], 
+  fuimus::sf_detect(
+    title, 
+    "Fee-For-Service"
+    ))
+
+provider_dataset |> 
   purse()
+```
+
+### S7 Class
+
+```{r}
+#| label: provider_dataset_class
+ProviderDataset <- new_class(
+  "ProviderDataset",
+  properties = list(
+    type               = class_character,
+    accessLevel        = class_character,
+    accrualPeriodicity = class_character,
+    bureauCode         = class_character,
+    contactPoint       = class_list,
+    describedBy        = class_character,
+    dataQuality        = class_logical,
+    description        = class_character,
+    identifier         = class_character,
+    keyword            = class_character,
+    landingPage        = class_character,
+    language           = class_character,
+    license            = class_character,
+    modified           = class_Date,
+    programCode        = class_character,
+    publisher          = class_list,
+    references         = class_character,
+    temporal           = class_character,
+    theme              = class_character,
+    title              = class_character,
+    describedByType    = class_character
+  )
+)
+
+ProviderDataset()
+```
+
+## Distribution
+
+```{r}
+#| label: provider_latest
+provider_latest <- collapse::fsubset(
+    main[["distribution_latest"]],
+    fuimus::sf_detect(
+      title, 
+      "Fee-For-Service"
+      ))
+
+provider_latest |> purse()
 ```
 
 
 ```{r}
-#| label: main_distribution_latest
-main$distribution_latest |> 
-  collapse::fsubset(
-    fuimus::sf_detect(title, "Fee-For-Service")
-    ) |> 
-  purse()
+#| label: provider_api
+provider_api <- collapse::fsubset(
+    main[["distribution_api"]],
+    fuimus::sf_detect(
+      title, 
+      "Fee-For-Service"
+      ))
+
+provider_api |> purse()
 ```
 
 
 ```{r}
-#| label: main_distribution_api
-main$distribution_api |> 
-  collapse::fsubset(
-    fuimus::sf_detect(title, "Fee-For-Service"),
-    title, accessURL, resourcesAPI, modified, temporal
-    ) |> 
-  purse()
-```
+#| label: provider_csv
+provider_csv <- collapse::fsubset(
+    main[["distribution_csv"]],
+    fuimus::sf_detect(
+      title, 
+      "Fee-For-Service"
+      ))
 
-
-```{r}
-#| label: main_distribution_csv
-main$distribution_csv |> 
-  collapse::fsubset(fuimus::sf_detect(title, "Fee-For-Service")) |> 
-  purse()
+provider_csv |> purse()
 ```
 
 ## URLS
 
 ```{r}
-#| eval: false
-urls <- list(
-  base = "https://data.cms.gov/data-api/v1/dataset",
-  identifier = filter(
-    main_dataset, 
-    fuimus::sf_detect(title, "Fee-For-Service")) |> 
-    pull(identifier) |> 
-    fuimus::sf_remove("https://data.cms.gov/data-api/v1/dataset/"),
-  accessURL = filter(
-    main_distribution, 
-    fuimus::sf_detect(title, "Fee-For-Service"), 
-    description == "latest") |> 
-    pull(accessURL) |> 
-    fuimus::sf_remove("https://data.cms.gov/data-api/v1/dataset/"),
-  resourcesAPI = filter(
-    main_distribution, 
-    fuimus::sf_detect(title, "Fee-For-Service"), 
-    description == "latest") |> 
-    pull(resourcesAPI) |> 
-    fuimus::sf_remove("https://data.cms.gov/data-api/v1/dataset")
+#| label: urls
+list(
+  dataset = provider_dataset, 
+  latest = provider_latest,
+  api = provider_api,
+  csv = provider_csv
   )
-
-urls |> purse()
 ```
 
 
@@ -175,7 +209,4 @@ format_syntax("filter", c("GA", "NY"))
 #   )
 ```
 
-
-
-
-
+--------------------------------------------------------------------------------
