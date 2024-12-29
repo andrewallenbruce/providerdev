@@ -15,16 +15,16 @@ source("_common.R")
 
 ```{r}
 #| label: main_data
-main_data_dl <- main_data_rcpp()
+main <- main_data_rcpp()
 
-main_data_dl
+main
 ```
 
 ### Dataset
 
 ```{r}
 #| label: main_dataset
-main_data_dl$dataset |> 
+main$dataset |> 
   tidyr::unnest_wider(contactPoint, names_sep = "_") |>
   tidyr::unnest_wider(publisher, names_sep = "_") |> 
   collapse::frename(remove_at_symbol) |> 
@@ -36,18 +36,15 @@ main_data_dl$dataset |>
 
 ```{r}
 #| label: main_distribution
-main_data_dl$distribution_api |> 
-  collapse::fsubset(na(description)) |> 
-  remove_all_na()
+main$distribution_api
 
-main_data_dl$distribution_api |> 
-  collapse::fsubset(description %==% "latest")
+main$distribution_latest
 ```
 
 #### CSV
 
 ```{r}
 #| label: main_distribution_csv
-main_data_dl$distribution_csv
+main$distribution_csv
 ```
 

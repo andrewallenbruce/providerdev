@@ -130,14 +130,15 @@ main_data_rcpp <- \() {
     collapse::frename(remove_at_symbol)
 
   list(
-    context          = x[["@context"]],
-    id               = x[["@id"]],
-    type             = x[["@type"]],
-    conformsTo       = x[["conformsTo"]],
-    describedBy      = x[["describedBy"]],
-    dataset          = collapse::fselect(dataset, -distribution) |> remove_all_na(),
-    distribution_api = collapse::fsubset(distro, not_na(format)) |> remove_all_na(),
-    distribution_csv = collapse::fsubset(distro, mediaType %==% "text/csv") |> remove_all_na()
+    context             = x[["@context"]],
+    id                  = x[["@id"]],
+    type                = x[["@type"]],
+    conformsTo          = x[["conformsTo"]],
+    describedBy         = x[["describedBy"]],
+    dataset             = collapse::fselect(dataset, -distribution) |> remove_all_na(),
+    distribution_latest = collapse::fsubset(distro, description %==% "latest") |> remove_all_na(),
+    distribution_api    = collapse::fsubset(distro, not_na(format) & na(description)) |> remove_all_na(),
+    distribution_csv    = collapse::fsubset(distro, mediaType %==% "text/csv") |> remove_all_na()
   )
 }
 

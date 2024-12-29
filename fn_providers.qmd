@@ -11,8 +11,12 @@ editor_options:
 source("_common.R")
 
 htmltools::tagList(
-  btn_link("https://andrewallenbruce.github.io/provider/reference/providers.html", "Documentation"),
-  btn_link("https://github.com/andrewallenbruce/provider/blob/main/R/providers.R", "Source"))
+  btn_link(
+    "https://andrewallenbruce.github.io/provider/reference/providers.html",
+    "Documentation"),
+  btn_link(
+    "https://github.com/andrewallenbruce/provider/blob/main/R/providers.R", 
+    "Source"))
 ```
 
    * Base URL: `https://data.cms.gov/data-api/v1/`
@@ -21,11 +25,48 @@ htmltools::tagList(
 ## Objects
 
 ```{r}
-main_data_dl <- main_data_rcpp()
+#| label: main_catalog
+main <- main_data_rcpp()
 
-main_data_dl$distribution_api |> 
+main
+```
+
+
+```{r}
+#| label: main_dataset
+main$dataset |> 
+  collapse::fsubset(
+    fuimus::sf_detect(title, "Fee-For-Service")
+    ) |> 
+  purse()
+```
+
+
+```{r}
+#| label: main_distribution_latest
+main$distribution_latest |> 
+  collapse::fsubset(
+    fuimus::sf_detect(title, "Fee-For-Service")
+    ) |> 
+  purse()
+```
+
+
+```{r}
+#| label: main_distribution_api
+main$distribution_api |> 
+  collapse::fsubset(
+    fuimus::sf_detect(title, "Fee-For-Service"),
+    title, accessURL, resourcesAPI, modified, temporal
+    ) |> 
+  purse()
+```
+
+
+```{r}
+#| label: main_distribution_csv
+main$distribution_csv |> 
   collapse::fsubset(fuimus::sf_detect(title, "Fee-For-Service")) |> 
-  collapse::fselect(title, accessURL, resourcesAPI, modified, temporal) |> 
   purse()
 ```
 
