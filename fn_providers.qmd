@@ -64,17 +64,23 @@ main
 
 ```{r}
 #| label: provider_dataset
-select_dataset <- \(x, set) {
-  list(
-    context             = x[["context"]],
-    id                  = x[["id"]],
-    type                = x[["type"]],
-    conformsTo          = x[["conformsTo"]],
-    describedBy         = x[["describedBy"]],
-    dataset             = collapse::fsubset(
-      x[["dataset"]], 
-      fuimus::sf_detect(title, set))
-  )
+Dataset <- \() {
+  
+  x <- RcppSimdJson::fload("https://data.cms.gov/data.json")
+  x <- collapse::qTBL(x[["dataset"]]) |>
+    collapse::fmutate(
+      bureauCode   = delist(bureauCode),
+      language     = delist(language),
+      programCode  = delist(programCode),
+      references   = delist(references),
+      theme        = flatten_column(theme),
+      keyword      = flatten_column(keyword)) |>
+    collapse::frename(remove_at_symbol)
+  
+  tibble::lst(
+    dataset = collapse::fsubset(x[["dataset"]], fuimus::sf_detect(title, set)) |> collapse::frename(remove_at_symbol),
+    distribution = collapse::qTBL(dataset$distribution[[1]]) |> collapse::frename(remove_at_symbol)
+    )
 }
 
 x <- select_dataset(main, "Fee-For-Service")
