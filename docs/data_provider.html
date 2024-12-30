@@ -255,10 +255,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#data" id="toc-data" class="nav-link active" data-scroll-target="#data"><span class="header-section-number">5.1</span> Data</a></li>
-  <li><a href="#national-downloadable-file" id="toc-national-downloadable-file" class="nav-link" data-scroll-target="#national-downloadable-file"><span class="header-section-number">5.2</span> National Downloadable File</a>
+  <li><a href="#provider-data-catalog" id="toc-provider-data-catalog" class="nav-link active" data-scroll-target="#provider-data-catalog"><span class="header-section-number">5.1</span> Provider Data Catalog</a></li>
+  <li><a href="#rate-limit" id="toc-rate-limit" class="nav-link" data-scroll-target="#rate-limit"><span class="header-section-number">5.2</span> Rate Limit</a></li>
+  <li><a href="#star-ratings-overall-care-ratings" id="toc-star-ratings-overall-care-ratings" class="nav-link" data-scroll-target="#star-ratings-overall-care-ratings"><span class="header-section-number">5.3</span> Star Ratings &amp; Overall Care Ratings</a></li>
+  <li><a href="#querying-for-specific-conditions" id="toc-querying-for-specific-conditions" class="nav-link" data-scroll-target="#querying-for-specific-conditions"><span class="header-section-number">5.4</span> Querying for Specific Conditions</a></li>
+  <li><a href="#retrieve-list-of-all-dataset-ids" id="toc-retrieve-list-of-all-dataset-ids" class="nav-link" data-scroll-target="#retrieve-list-of-all-dataset-ids"><span class="header-section-number">5.5</span> Retrieve List of All Dataset IDs</a></li>
+  <li><a href="#filter-list-of-dataset-ids" id="toc-filter-list-of-dataset-ids" class="nav-link" data-scroll-target="#filter-list-of-dataset-ids"><span class="header-section-number">5.6</span> Filter List of Dataset IDs</a></li>
+  <li><a href="#difference-between-metastore-datastore" id="toc-difference-between-metastore-datastore" class="nav-link" data-scroll-target="#difference-between-metastore-datastore"><span class="header-section-number">5.7</span> Difference Between Metastore &amp; Datastore</a></li>
+  <li><a href="#distribution-dataset-ids" id="toc-distribution-dataset-ids" class="nav-link" data-scroll-target="#distribution-dataset-ids"><span class="header-section-number">5.8</span> Distribution &amp; Dataset IDs</a></li>
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data"><span class="header-section-number">5.9</span> Data</a></li>
+  <li><a href="#national-downloadable-file" id="toc-national-downloadable-file" class="nav-link" data-scroll-target="#national-downloadable-file"><span class="header-section-number">5.10</span> National Downloadable File</a>
   <ul class="collapse">
-  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples"><span class="header-section-number">5.2.1</span> Examples</a></li>
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples"><span class="header-section-number">5.10.1</span> Examples</a></li>
   </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/andrewallenbruce/providerdev/blob/main/data_provider.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li></ul></div></nav>
@@ -285,14 +293,137 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
+<section id="provider-data-catalog" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="provider-data-catalog"><span class="header-section-number">5.1</span> Provider Data Catalog</h2>
 <ul>
-<li><a href="https://data.cms.gov/provider-data/docs">Provider-Data API Documentation</a></li>
+<li><a href="https://data.cms.gov/provider-data/">Home</a></li>
+<li><a href="https://data.cms.gov/provider-data/search">Datasets</a></li>
+<li><a href="https://data.cms.gov/provider-data/about">About</a></li>
+<li><a href="https://data.cms.gov/provider-data/docs">API Documentation</a></li>
 </ul>
-<section id="data" class="level2" data-number="5.1">
-<h2 data-number="5.1" class="anchored" data-anchor-id="data"><span class="header-section-number">5.1</span> Data</h2>
+<p>This site provides access to the Centers for Medicare &amp; Medicaid Services official data that are used on the <strong>Medicare Care Compare</strong> website and directories.</p>
+</section>
+<section id="rate-limit" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="rate-limit"><span class="header-section-number">5.2</span> Rate Limit</h2>
+<p>The <strong>Provider Data Catalog API</strong> currently limits each batch of results to a maximum of <strong>2,000</strong> entries. To retrieve datasets larger than this threshold, you must execute multiple requests, incrementing the offset each time to paginate through results:</p>
+<ol type="1">
+<li>Fetch the first 2000 results:</li>
+</ol>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>data.cms.gov<span class="sc">/</span>provider<span class="sc">-</span>data<span class="sc">/</span>api<span class="sc">/</span><span class="dv">1</span><span class="sc">/</span>datastore<span class="sc">/</span>query<span class="sc">/</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>   <span class="dv">7</span>t8x<span class="sc">-</span>u3ir<span class="sc">/</span><span class="dv">0</span>?</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>   offset<span class="ot">=</span><span class="dv">0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<ol start="2" type="1">
+<li>Fetch the next 2000 results (2001-4000):</li>
+</ol>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>data.cms.gov<span class="sc">/</span>provider<span class="sc">-</span>data<span class="sc">/</span>api<span class="sc">/</span><span class="dv">1</span><span class="sc">/</span>datastore<span class="sc">/</span>query<span class="sc">/</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>   <span class="dv">7</span>t8x<span class="sc">-</span>u3ir<span class="sc">/</span><span class="dv">0</span>?</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>   offset<span class="ot">=</span><span class="dv">2000</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Continue this pattern, incrementing the offset by 2,000 for each subsequent batch.</p>
+<p>While retrieving large datasets, consider pacing your requests to avoid overwhelming your system with data and to allow for graceful error handling. Depending on the volume of data and your application’s capabilities, consider implementing a back-off strategy if errors occur.</p>
+</section>
+<section id="star-ratings-overall-care-ratings" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="star-ratings-overall-care-ratings"><span class="header-section-number">5.3</span> Star Ratings &amp; Overall Care Ratings</h2>
+<p>CMS’s <strong>Five-Star Quality Rating System</strong> is designed to help users compare the overall quality of care across different healthcare providers. Access these ratings by referring to the associated column names:</p>
+<ul>
+<li>Nursing Homes: <code>overall_rating</code></li>
+<li>Hospitals: <code>hospital_overall_rating</code></li>
+<li>Dialysis Facilities: <code>five_star</code></li>
+<li>Hospice: <code>star_rating</code></li>
+<li>Home Health: <code>quality_of_patient_care_star_rating</code></li>
+</ul>
+<p>For example, the query for the <a href="https://data.cms.gov/provider-data/dataset/4pq5-n9py"><strong>Nursing Homes</strong></a> dataset for facilities with a 5-star overall rating:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>data.cms.gov<span class="sc">/</span>provider<span class="sc">-</span>data<span class="sc">/</span>api<span class="sc">/</span><span class="dv">1</span><span class="sc">/</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>   datastore<span class="sc">/</span>query<span class="sc">/</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>   <span class="dv">4</span>pq5<span class="sc">-</span>n9py<span class="sc">/</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>   <span class="dv">0</span>?</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>   conditions[<span class="dv">0</span>][property]<span class="ot">=</span>overall_rating<span class="sc">&amp;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>   conditions[<span class="dv">0</span>][value]<span class="ot">=</span><span class="dv">5</span><span class="sc">&amp;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>   conditions[<span class="dv">0</span>][operator]<span class="sc">==</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="querying-for-specific-conditions" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="querying-for-specific-conditions"><span class="header-section-number">5.4</span> Querying for Specific Conditions</h2>
+<p>The recommended method is to use the datastore query endpoint: <code>datastore/query/{datasetID}/{index}</code></p>
+<p>The datastore query endpoint takes two arguments: the <code>datasetID</code>, which can be obtained from the URL of the dataset and does not change between data refreshes, and the index of the distribution. Currently on PDC, the index will always be zero.</p>
+<p>As an example, if you want to pull the first 500 results for a specific dataset that has a rating column called <code>overall_rating</code>, you would first identify the dataset that has the specific column such as this:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>data.cms.gov<span class="sc">/</span>provider<span class="sc">-</span>data<span class="sc">/</span>dataset<span class="sc">/</span><span class="dv">4</span>pq5<span class="sc">-</span>n9py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>and then you would use</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>data.cms.gov<span class="sc">/</span>provider<span class="sc">-</span>data<span class="sc">/</span>api<span class="sc">/</span><span class="dv">1</span><span class="sc">/</span>datastore<span class="sc">/</span>query<span class="sc">/</span><span class="dv">4</span>pq5<span class="sc">-</span>n9py<span class="sc">/</span><span class="dv">0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The results can be filtered further. For example, to return the first 500 results with an overall rating of 5, you would use the following:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>data.cms.gov<span class="sc">/</span>provider<span class="sc">-</span>data<span class="sc">/</span>api<span class="sc">/</span><span class="dv">1</span><span class="sc">/</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>   datastore<span class="sc">/</span>query<span class="sc">/</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>   <span class="dv">4</span>pq5<span class="sc">-</span>n9py<span class="sc">/</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>   <span class="dv">0</span>?</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>   conditions[<span class="dv">0</span>][property]<span class="ot">=</span>overall_rating<span class="sc">&amp;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>   conditions[<span class="dv">0</span>][value]<span class="ot">=</span><span class="dv">5</span><span class="sc">&amp;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>   conditions[<span class="dv">0</span>][operator]<span class="sc">==</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>More complex queries can be created in JSON and converted to an HTTP query string by using <a href="https://www.convertonline.io/convert/json-to-query-string">JSON Query to String</a>.</p>
+<p>For example, to return just the CMS certification number and overall rating columns that have an overall rating greater than 3, you could use the following JSON:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"properties"</span><span class="sc">:</span> [</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"cms_certification_number_ccn"</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"overall_rating"</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"conditions"</span><span class="sc">:</span> [</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        {</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">"property"</span><span class="sc">:</span><span class="st">"overall_rating"</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>            <span class="st">"value"</span><span class="sc">:</span> <span class="st">"3"</span>,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>            <span class="st">"operator"</span><span class="sc">:</span> <span class="st">"&gt;"</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Which converts to a query string of:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>data.cms.gov<span class="sc">/</span>provider<span class="sc">-</span>data<span class="sc">/</span>api<span class="sc">/</span><span class="dv">1</span><span class="sc">/</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>   datastore<span class="sc">/</span>query<span class="sc">/</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>   <span class="dv">4</span>pq5<span class="sc">-</span>n9py<span class="sc">/</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>   <span class="dv">0</span>?</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>   properties[]<span class="ot">=</span>cms_certification_number_ccn<span class="sc">&amp;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>   properties[]<span class="ot">=</span>overall_rating<span class="sc">&amp;</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>   conditions[<span class="dv">0</span>][property]<span class="ot">=</span>overall_rating<span class="sc">&amp;</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>   conditions[<span class="dv">0</span>][value]<span class="ot">=</span><span class="dv">3</span><span class="sc">&amp;</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>   conditions[<span class="dv">0</span>][operator]<span class="sc">=&gt;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="retrieve-list-of-all-dataset-ids" class="level2" data-number="5.5">
+<h2 data-number="5.5" class="anchored" data-anchor-id="retrieve-list-of-all-dataset-ids"><span class="header-section-number">5.5</span> Retrieve List of All Dataset IDs</h2>
+<p>Yes, you can retrieve a comprehensive list of all datasets available on the PDC site by leveraging the metastore schema endpoint:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>https<span class="sc">:</span><span class="er">//</span>data.cms.gov<span class="sc">/</span>provider<span class="sc">-</span>data<span class="sc">/</span>api<span class="sc">/</span><span class="dv">1</span><span class="sc">/</span>metastore<span class="sc">/</span>schemas<span class="sc">/</span>dataset<span class="sc">/</span>items</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>For developers looking to work with multiple datasets programmatically, consider utilizing JSON parsing tools or custom scripts to extract and manage these IDs efficiently. For example, using a <code>curl</code> command in the terminal followed by a tool like <code>jq</code> can streamline the process:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>curl https<span class="sc">:</span><span class="er">//</span>data.cms.gov<span class="sc">/</span>provider<span class="sc">-</span>data<span class="sc">/</span>api<span class="sc">/</span><span class="dv">1</span><span class="sc">/</span>metastore<span class="sc">/</span>schemas<span class="sc">/</span>dataset<span class="sc">/</span>items <span class="sc">|</span> jq <span class="st">'.[] | {id: .identifier, name: .title}'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This command fetches the list of datasets and uses <code>jq</code> to parse the JSON response, extracting the identifier and title of each dataset.</p>
+</section>
+<section id="filter-list-of-dataset-ids" class="level2" data-number="5.6">
+<h2 data-number="5.6" class="anchored" data-anchor-id="filter-list-of-dataset-ids"><span class="header-section-number">5.6</span> Filter List of Dataset IDs</h2>
+<p>You can get a list of all public datasets for a Topic area via the /api/1/search endpoint. For example, to get a list of all datasets in the Home health services Topic, you could use:</p>
+<p>https://data.cms.gov/provider-data/api/1/search?page-size=100&amp;theme=Home%20health%20services</p>
+<p>(Note that “%20” is inserted for the spaces between words in a Topic name.)</p>
+<p>If the page size is not provided, the default result limit is 10.</p>
+<p>One of the easiest ways to use this feature is to set up your search parameters on the Provider Data Catalog search page (https://data.cms.gov/provider-data/search) and then copy the query string to the end of the search endpoint.</p>
+<p>For example, if you filter by “Dialysis facilities” tagged with “Linking Quality to Payment” and select 25 results per page, the query string produced is: ?keyword=Linking%20Quality%20to%20Payment&amp;page-size=25&amp;theme=Dialysis%20facilities</p>
+<p>You can append this query string to the search endpoint to get a list of all datasets that meet that criteria, like this:</p>
+<p>https://data.cms.gov/provider-data/api/1/search?keyword=Linking%20Quality%20to%20Payment&amp;page-size=25&amp;theme=Dialysis%20facilities.</p>
+<p>You can also use the same method to return a list of datasets that contain a keyword like “ratings” in their title and/or description:</p>
+<p>https://data.cms.gov/provider-data/api/1/search?fulltext=ratings</p>
+</section>
+<section id="difference-between-metastore-datastore" class="level2" data-number="5.7">
+<h2 data-number="5.7" class="anchored" data-anchor-id="difference-between-metastore-datastore"><span class="header-section-number">5.7</span> Difference Between Metastore &amp; Datastore</h2>
+<p>Datastore: data from the data files (CSVs) and Metastore: metadata properties about the dataset from the data.json file (e.g.&nbsp;dataset title, last updated date, release date, keywords, etc.)</p>
+<p>Think of the Metastore as the library index that helps you find the right book (dataset), and the Datastore as the book itself, containing all the detailed information (data entries) you need.</p>
+</section>
+<section id="distribution-dataset-ids" class="level2" data-number="5.8">
+<h2 data-number="5.8" class="anchored" data-anchor-id="distribution-dataset-ids"><span class="header-section-number">5.8</span> Distribution &amp; Dataset IDs</h2>
+<p>Distribution ID - the unique identifier of the datastore. The distribution ID is specific to a particular CSV data import, so it changes with every data refresh.</p>
+<p>Dataset ID - the unique identifier of the dataset The Dataset ID comes from the data.json file and appears as part of the URL in the PDC site and it does not change between refreshes.</p>
+<p>The Distribution ID changes with every data refresh.</p>
+<p>If you have been using the datastore/sql or datastore/query/{distributionId} endpoints to pull data, you might consider switching to use the datastore/query/{datasetID}/{index} endpoint instead. The datasetID does not change between refreshes, and currently all datasets in the Provider Data Catalog have only a single resource, so the index will always be zero.</p>
+<p>As an example, to pull the data for the long term care hospital dataset at https://data.cms.gov/provider-data/dataset/5zdx-ny2x you could use</p>
+<p>https://data.cms.gov/provider-data/api/1/datastore/query/5zdx-ny2x/0</p>
+<p>Since Distribution IDs change with every dataset update, if you are creating an automated script, it is better to use APIs with the Dataset ID and the index of the distribution. (Please see “Do the Distribution IDs change?” for more information.)</p>
+<p>If you still need the current distribution ID, you can find it by viewing the dataset metadata API. /api/1/metastore/schemas/dataset/items/[datasetID]?show-reference-ids under distribution -&gt; identifier</p>
+</section>
+<section id="data" class="level2" data-number="5.9">
+<h2 data-number="5.9" class="anchored" data-anchor-id="data"><span class="header-section-number">5.9</span> Data</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">provider_data</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">provider_data</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>- $accessLevel              c234 public                                     ...
 - $landingPage              c234 https://data.cms.gov/provider-data/dataset ...
@@ -319,9 +450,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 - $theme                    c234 Dialysis facilities                        ...
 - $archiveExclude           l234 NA                                         ...</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">provider_data</span>() <span class="sc">|&gt;</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(title) <span class="sc">|&gt;</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="at">sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">provider_data</span>() <span class="sc">|&gt;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(title) <span class="sc">|&gt;</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="at">sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Dialysis Facility - Listing by Facility
 Dialysis Facility - State Averages
@@ -560,68 +691,68 @@ Health Equity - National</code></pre>
 </div>
 </div>
 </section>
-<section id="national-downloadable-file" class="level2" data-number="5.2">
-<h2 data-number="5.2" class="anchored" data-anchor-id="national-downloadable-file"><span class="header-section-number">5.2</span> National Downloadable File</h2>
+<section id="national-downloadable-file" class="level2" data-number="5.10">
+<h2 data-number="5.10" class="anchored" data-anchor-id="national-downloadable-file"><span class="header-section-number">5.10</span> National Downloadable File</h2>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>meta_ndf <span class="ot">&lt;-</span> \(fname) {</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(curl<span class="sc">::</span><span class="fu">has_internet</span>())</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">request</span>(</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste0</span>(</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>      <span class="st">"https://data.cms.gov/"</span>,</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>      <span class="st">"provider-data/api/1/"</span>,</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>      <span class="st">"metastore/schemas/"</span>,</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>      <span class="st">"dataset/items/"</span>,</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>      <span class="cf">switch</span>(fname, </span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>             <span class="at">affiliations =</span> <span class="st">"27ea-46a8"</span>, </span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>             <span class="at">clinicians   =</span> <span class="st">"mj5m-pzi6"</span>, </span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>             <span class="fu">stop</span>(<span class="st">"Invalid argument"</span>)),</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"?show-reference-ids=true"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>       <span class="fu">req_perform</span>() <span class="sc">|&gt;</span></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>       <span class="fu">resp_body_json</span>(</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>         <span class="at">check_type     =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>         <span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  distro <span class="ot">&lt;-</span> <span class="fu">gelm</span>(<span class="fu">gelm</span>(x, <span class="st">"distribution"</span>), <span class="st">"identifier"</span>)</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">request</span>(</span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste0</span>(</span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://data.cms.gov/"</span>, </span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">"provider-data/api/1/"</span>,</span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">"datastore/query/"</span>, </span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>    distro, </span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>    <span class="st">"?limit=1&amp;offset=100&amp;"</span>,</span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>    <span class="st">"count=true&amp;results=true&amp;"</span>, </span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>    <span class="st">"schema=true&amp;keys=true&amp;"</span>,</span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>    <span class="st">"format=json&amp;rowIds=true"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>       <span class="fu">req_perform</span>() <span class="sc">|&gt;</span></span>
-<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>       <span class="fu">resp_body_json</span>(</span>
-<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>         <span class="at">check_type =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>         <span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>  z <span class="ot">&lt;-</span> <span class="fu">gelm</span>(<span class="fu">gelm</span>(<span class="fu">gelm</span>(y, <span class="st">"schema"</span>), distro), <span class="st">"fields"</span>)</span>
-<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">title        =</span> <span class="fu">gelm</span>(x, <span class="st">"title"</span>),</span>
-<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">description  =</span> <span class="fu">gelm</span>(x, <span class="st">"description"</span>),</span>
-<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">identifier   =</span> <span class="fu">gelm</span>(<span class="fu">gelm</span>(x, <span class="st">"identifier"</span>), <span class="st">"identifier"</span>),</span>
-<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">distribution =</span> distro,</span>
-<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">issued       =</span> <span class="fu">gelm</span>(x, <span class="st">"issued"</span>), </span>
-<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">modified     =</span> <span class="fu">gelm</span>(x, <span class="st">"modified"</span>)[[<span class="dv">1</span>]], </span>
-<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">released     =</span> <span class="fu">gelm</span>(x, <span class="st">"released"</span>),</span>
-<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">dimensions   =</span> <span class="fu">paste0</span>(<span class="fu">gelm</span>(<span class="fu">gelm</span>(y, <span class="st">"count"</span>), is.numeric), <span class="st">" x "</span>, <span class="fu">gelm</span>(<span class="fu">gelm</span>(z, <span class="st">"record_number"</span>), <span class="st">"length"</span>)), </span>
-<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">fields       =</span> <span class="fu">names</span>(z),</span>
-<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">site         =</span> <span class="fu">gelm</span>(x, <span class="st">"landingPage"</span>),</span>
-<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">csv          =</span> <span class="fu">gelm</span>(<span class="fu">gelm</span>(<span class="fu">gelm</span>(x, <span class="st">"distribution"</span>), <span class="st">"data"</span>), <span class="st">"downloadURL"</span>, <span class="at">m =</span> <span class="st">"df"</span>),</span>
-<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">dictionary   =</span> <span class="fu">paste0</span>(<span class="st">"https://data.cms.gov/provider-data/sites/default/files/data_dictionaries/physician/DOC_Data_Dictionary.pdf"</span>))</span>
-<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>meta_ndf <span class="ot">&lt;-</span> \(fname) {</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(curl<span class="sc">::</span><span class="fu">has_internet</span>())</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">request</span>(</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste0</span>(</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>      <span class="st">"https://data.cms.gov/"</span>,</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>      <span class="st">"provider-data/api/1/"</span>,</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>      <span class="st">"metastore/schemas/"</span>,</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>      <span class="st">"dataset/items/"</span>,</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>      <span class="cf">switch</span>(fname, </span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>             <span class="at">affiliations =</span> <span class="st">"27ea-46a8"</span>, </span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>             <span class="at">clinicians   =</span> <span class="st">"mj5m-pzi6"</span>, </span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>             <span class="fu">stop</span>(<span class="st">"Invalid argument"</span>)),</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"?show-reference-ids=true"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>       <span class="fu">req_perform</span>() <span class="sc">|&gt;</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>       <span class="fu">resp_body_json</span>(</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>         <span class="at">check_type     =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>         <span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>  distro <span class="ot">&lt;-</span> <span class="fu">gelm</span>(<span class="fu">gelm</span>(x, <span class="st">"distribution"</span>), <span class="st">"identifier"</span>)</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">request</span>(</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste0</span>(</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://data.cms.gov/"</span>, </span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">"provider-data/api/1/"</span>,</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">"datastore/query/"</span>, </span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>    distro, </span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>    <span class="st">"?limit=1&amp;offset=100&amp;"</span>,</span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>    <span class="st">"count=true&amp;results=true&amp;"</span>, </span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>    <span class="st">"schema=true&amp;keys=true&amp;"</span>,</span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>    <span class="st">"format=json&amp;rowIds=true"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>       <span class="fu">req_perform</span>() <span class="sc">|&gt;</span></span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>       <span class="fu">resp_body_json</span>(</span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a>         <span class="at">check_type =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>         <span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a>  z <span class="ot">&lt;-</span> <span class="fu">gelm</span>(<span class="fu">gelm</span>(<span class="fu">gelm</span>(y, <span class="st">"schema"</span>), distro), <span class="st">"fields"</span>)</span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">title        =</span> <span class="fu">gelm</span>(x, <span class="st">"title"</span>),</span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">description  =</span> <span class="fu">gelm</span>(x, <span class="st">"description"</span>),</span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">identifier   =</span> <span class="fu">gelm</span>(<span class="fu">gelm</span>(x, <span class="st">"identifier"</span>), <span class="st">"identifier"</span>),</span>
+<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">distribution =</span> distro,</span>
+<span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">issued       =</span> <span class="fu">gelm</span>(x, <span class="st">"issued"</span>), </span>
+<span id="cb15-46"><a href="#cb15-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">modified     =</span> <span class="fu">gelm</span>(x, <span class="st">"modified"</span>)[[<span class="dv">1</span>]], </span>
+<span id="cb15-47"><a href="#cb15-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">released     =</span> <span class="fu">gelm</span>(x, <span class="st">"released"</span>),</span>
+<span id="cb15-48"><a href="#cb15-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">dimensions   =</span> <span class="fu">paste0</span>(<span class="fu">gelm</span>(<span class="fu">gelm</span>(y, <span class="st">"count"</span>), is.numeric), <span class="st">" x "</span>, <span class="fu">gelm</span>(<span class="fu">gelm</span>(z, <span class="st">"record_number"</span>), <span class="st">"length"</span>)), </span>
+<span id="cb15-49"><a href="#cb15-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">fields       =</span> <span class="fu">names</span>(z),</span>
+<span id="cb15-50"><a href="#cb15-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">site         =</span> <span class="fu">gelm</span>(x, <span class="st">"landingPage"</span>),</span>
+<span id="cb15-51"><a href="#cb15-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">csv          =</span> <span class="fu">gelm</span>(<span class="fu">gelm</span>(<span class="fu">gelm</span>(x, <span class="st">"distribution"</span>), <span class="st">"data"</span>), <span class="st">"downloadURL"</span>, <span class="at">m =</span> <span class="st">"df"</span>),</span>
+<span id="cb15-52"><a href="#cb15-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">dictionary   =</span> <span class="fu">paste0</span>(<span class="st">"https://data.cms.gov/provider-data/sites/default/files/data_dictionaries/physician/DOC_Data_Dictionary.pdf"</span>))</span>
+<span id="cb15-53"><a href="#cb15-53" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb15-54"><a href="#cb15-54" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="examples" class="level3" data-number="5.2.1">
-<h3 data-number="5.2.1" class="anchored" data-anchor-id="examples"><span class="header-section-number">5.2.1</span> Examples</h3>
+<section id="examples" class="level3" data-number="5.10.1">
+<h3 data-number="5.10.1" class="anchored" data-anchor-id="examples"><span class="header-section-number">5.10.1</span> Examples</h3>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">meta_ndf</span>(<span class="st">"affiliations"</span>) <span class="sc">|&gt;</span> <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">meta_ndf</span>(<span class="st">"affiliations"</span>) <span class="sc">|&gt;</span> <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>- $title        c1  Facility Affiliation Data
 - $description  c1  This is the facility affiliations data publicly reporte ...
@@ -638,7 +769,7 @@ Health Equity - National</code></pre>
 </div>
 </div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">meta_ndf</span>(<span class="st">"clinicians"</span>) <span class="sc">|&gt;</span> <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">meta_ndf</span>(<span class="st">"clinicians"</span>) <span class="sc">|&gt;</span> <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>- $title        c1  National Downloadable File
 - $description  c1  The Doctors and Clinicians national downloadable file i ...
