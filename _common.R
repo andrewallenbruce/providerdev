@@ -25,7 +25,7 @@ purse <- \(x, pre = "- ", wid = 0, max = 20, sep = " ") {
   terse::terse(x = x, prefix = pre, width = wid, max_vec_len = max, config = list(gsep = sep, ansi = FALSE))
 }
 
-replace_open_columns <- \(x) stringr::str_replace_all(x, c(":" = "_", "%" = "", "@" = ""))
+replace_open_columns <- \(x) stringr::str_replace_all(x, c(":" = "_", "%" = "", "@" = "", "$" = "", "properties_" = "pr_"))
 remove_at_symbol     <- \(x) fuimus::sf_remove(s = x, p = "@", fix = TRUE)
 flatten_column       <- \(i) purrr::map_chr(i, \(x) paste0(fuimus::delist(x), collapse = ", "))
 
@@ -40,18 +40,18 @@ clean_open_description <- \(x) {
 recode_iso_8601 <- \(x) {
   kit::nswitch(
     x,
-    "R/P10Y",   "Decennial",
-    "R/P4Y",    "Quadrennial",
-    "R/P1Y",    "Annual",
-    "R/P0.5M",  "Bimonthly",
+    "R/P10Y",   "Decennially",
+    "R/P4Y",    "Quadrennially",
+    "R/P1Y",    "Annually",
+    "R/P0.5M",  "Twice a Month",
     "R/P2M",    "Bimonthly",
-    "R/P0.5W",  "Biweekly",
+    "R/P0.5W",  "Twice a Week",
     "R/P2W",    "Biweekly",
     "R/P3.5D",  "Semiweekly",
     "R/P1D",    "Daily",
-    "R/P6M",    "Semiannual",
-    "R/P2Y",    "Biennial",
-    "R/P3Y",    "Triennial",
+    "R/P6M",    "Semiannually",
+    "R/P2Y",    "Biennially",
+    "R/P3Y",    "Triennially",
     "R/P0.33W", "Three Times a Week",
     "R/P0.33M", "Three Times a Month",
     "R/PT1S",   "Continuously Updated",

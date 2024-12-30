@@ -11,8 +11,12 @@ editor_options:
 source("_common.R")
 
 htmltools::tagList(
-  btn_link("https://resources.data.gov/resources/dcat-us/", "DCAT Schema"),
-  btn_link("https://resources.data.gov/schemas/dcat-us/v1.1/iso8601_guidance/#accrualperiodicity", "ISO8601"))
+  btn_link(
+    "https://resources.data.gov/resources/dcat-us/", 
+    "DCAT Schema"),
+  btn_link(
+    "https://resources.data.gov/schemas/dcat-us/v1.1/iso8601_guidance/#accrualperiodicity", 
+    "ISO8601"))
 ```
 
 ## `dataset` Fields
@@ -26,27 +30,33 @@ Federal agencies, combined agency and bureau code from [OMB Circular A-11, Appen
 > __Format__: `015:11`
 
 ```{r}
-#| label: bureauCode
-#| echo: false
-bureauCode <- read_csv(
+#| label: bureauCodes_csv
+bureauCodes <- read_csv(
   here("data/omb_bureau_codes.csv"), 
-  show_col_types = FALSE,
-  col_types = cols(
-  agency_name = col_character(),
-  bureau_name = col_character(),
-  agency_code = col_character(),
-  bureau_code = col_character(),
-  treasury_code = col_character(),
-  cgac_code = col_character()),
-  name_repair = janitor::make_clean_names) |> 
+  show_col_types  = FALSE,
+  col_types       = cols(
+  `Agency Name`   = col_character(),
+  `Bureau Name`   = col_character(),
+  `Agency Code`   = col_character(),
+  `Bureau Code`   = col_character(),
+  `Treasury Code` = col_character(),
+  `CGAC Code`     = col_character())) |> 
+  setNames(c("agencyName", 
+             "bureauName", 
+             "agencyCode", 
+             "bureauCode", 
+             "treasuryCode", 
+             "cgacCode")) |> 
   mutate(
-    agency_code = str_pad(agency_code, width = 3, pad = "0"),
-    bureau_code = str_pad(bureau_code, width = 2, pad = "0"),
-    treasury_code = str_pad(treasury_code, width = 2, pad = "0"),
-    cgac_code = str_pad(cgac_code, width = 3, pad = "0"))
+    agencyCode   = str_pad(agencyCode, width = 3, pad = "0"),
+    bureauCode   = str_pad(bureauCode, width = 2, pad = "0"),
+    treasuryCode = str_pad(treasuryCode, width = 2, pad = "0"),
+    cgacCode     = str_pad(cgacCode, width = 3, pad = "0"))
 
-bureauCode |> 
-  filter(bureau_code == "38") |> 
+bureauCodes
+
+bureauCodes |> 
+  filter(bureauCode == "38") |> 
   purse()
 ```
 
@@ -57,22 +67,28 @@ Federal agencies, list the primary program related to this data asset, from the 
 > __Format__: `015:001`
 
 ```{r}
-#| label: programCode
-#| echo: false
-programCode <- read_csv(
+#| label: programCodes_csv
+programCodes <- read_csv(
   here("data/FederalProgramInventory_FY13_MachineReadable_091613.csv"), 
-  show_col_types = FALSE,
-  col_types = cols(
-  agency_name = col_character(),
-  program_name = col_character(),
-  additional_information_optional = col_character(),
-  agency_code = col_character(),
-  program_code = col_character(),
-  program_code_pod_format = col_character()),
-  name_repair = janitor::make_clean_names)
+  show_col_types                      = FALSE,
+  col_types                           = cols(
+  `Agency Name`                       = col_character(),
+  `Program Name`                      = col_character(),
+  `Additional Information (optional)` = col_character(),
+  `Agency Code`                       = col_character(),
+  ProgramCode                         = col_character(),
+  ProgramCodePODFormat                = col_character())) |> 
+  setNames(c("agencyName", 
+             "programName", 
+             "AdditionalInformation", 
+             "agencyCode", 
+             "programCode", 
+             "programCodePODFormat"))
 
-programCode |> 
-  filter(program_code_pod_format == "009:000") |> 
+programCodes
+
+programCodes |> 
+  filter(programCodePODFormat == "009:000") |> 
   purse()
 ```
 
@@ -81,14 +97,13 @@ programCode |>
 ```{r}
 #| label: accrualPeriodicity
 tibble(
-  accrualPeriodicity = c("R/P1M", 
-                         "R/P1W", 
-                         "R/P1Y", 
-                         "R/P2W", 
-                         "R/P3.5D", 
-                         "R/P3M", 
-                         "R/P6M"),
-  meaning = recode_iso_8601(accrualPeriodicity))
+  accrualPeriodicity = c(
+  "R/PT1S",   "R/PT1H",  "R/P1D", "R/P3.5D", 
+  "R/P0.33W", "R/P0.5W", "R/P1W", "R/P2W", 
+  "R/P0.33M", "R/P0.5M", "R/P1M", "R/P2M",
+  "R/P3M",    "R/P4M",   "R/P6M", "R/P1Y",
+  "R/P2Y",    "R/P3Y",   "R/P4Y", "R/P10Y"),
+  accrualDescription = recode_iso_8601(accrualPeriodicity))
 ```
 
 ### DCAT Schemas
@@ -98,6 +113,7 @@ tibble(
 ```{r}
 read_json_arrow(
   here("data/dcat-us_v1.1_schema_catalog.json")) |> 
+  collect() |> 
   unnest(properties) |> 
   unnest(`@context`, names_sep = "_") |> 
   unnest(`@id`, names_sep = "_") |> 
@@ -110,6 +126,9 @@ read_json_arrow(
   unnest(dataset_items, names_sep = "_") |> 
   mutate(dependencies = delist(dependencies),
          required = flatten_column(required)) |> 
+  rename_with(replace_open_columns) |> 
+  rename(schema = `$schema`,
+         dataset_items_ref = `dataset_items_$ref`) |> 
   purse()
 ```
 
@@ -118,6 +137,26 @@ read_json_arrow(
 ```{r}
 read_json_arrow(
   here("data/dcat-us_v1.1_schema_dataset.json")) |> 
+  collect() |> 
+  unnest(properties, names_sep = "_") |> 
+  # unnest(`properties_@type`, names_sep = "_") |> 
+  # unnest(properties_accessLevel, names_sep = "_") |> 
+  # unnest(properties_rights, names_sep = "_") |> 
+  # unnest(properties_accrualPeriodicity, names_sep = "_") |> 
+  # unnest(properties_bureauCode, names_sep = "_") |> 
+  # unnest(properties_contactPoint, names_sep = "_") |> 
+  # unnest(properties_describedBy, names_sep = "_") |> 
+  # unnest(properties_describedByType, names_sep = "_") |> 
+  # unnest(properties_conformsTo, names_sep = "_") |> 
+  # unnest(properties_rights_anyOf, names_sep = "_") |> 
+  # unnest(properties_accrualPeriodicity_anyOf, names_sep = "_") |> 
+  mutate(
+    required = flatten_column(required)) |> 
+    # `properties_@type_enum` = delist(`properties_@type_enum`),
+    # properties_accessLevel_enum = flatten_column(properties_accessLevel_enum),
+    # properties_accrualPeriodicity_anyOf_enum = flatten_column(properties_accrualPeriodicity_anyOf_enum)) |> 
+  rename_with(replace_open_columns) |> 
+  rename(schema = `$schema`) |> 
   glimpse()
 ```
 
@@ -126,6 +165,11 @@ read_json_arrow(
 ```{r}
 read_json_arrow(
   here("data/dcat-us_v1.1_schema_distribution.json")) |> 
+  collect() |> 
+  unnest(properties, names_sep = "_") |> 
+  mutate(dependencies = flatten_column(dependencies)) |> 
+  rename_with(replace_open_columns) |> 
+  rename(schema = `$schema`) |> 
   glimpse()
 ```
 
