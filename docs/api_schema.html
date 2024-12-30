@@ -311,13 +311,55 @@ ISO8601
 <p><strong>Format</strong>: <code>015:11</code></p>
 </blockquote>
 <div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>bureauCodes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"data/omb_bureau_codes.csv"</span>), </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types  =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_types       =</span> <span class="fu">cols</span>(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Agency Name</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">col_character</span>(),</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Bureau Name</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">col_character</span>(),</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Agency Code</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">col_character</span>(),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Bureau Code</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">col_character</span>(),</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Treasury Code</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">col_character</span>(),</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">CGAC Code</span><span class="st">`</span>     <span class="ot">=</span> <span class="fu">col_character</span>())) <span class="sc">|&gt;</span> </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setNames</span>(<span class="fu">c</span>(<span class="st">"agencyName"</span>, </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>             <span class="st">"bureauName"</span>, </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>             <span class="st">"agencyCode"</span>, </span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>             <span class="st">"bureauCode"</span>, </span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>             <span class="st">"treasuryCode"</span>, </span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>             <span class="st">"cgacCode"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">agencyCode   =</span> <span class="fu">str_pad</span>(agencyCode, <span class="at">width =</span> <span class="dv">3</span>, <span class="at">pad =</span> <span class="st">"0"</span>),</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">bureauCode   =</span> <span class="fu">str_pad</span>(bureauCode, <span class="at">width =</span> <span class="dv">2</span>, <span class="at">pad =</span> <span class="st">"0"</span>),</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">treasuryCode =</span> <span class="fu">str_pad</span>(treasuryCode, <span class="at">width =</span> <span class="dv">2</span>, <span class="at">pad =</span> <span class="st">"0"</span>),</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">cgacCode     =</span> <span class="fu">str_pad</span>(cgacCode, <span class="at">width =</span> <span class="dv">3</span>, <span class="at">pad =</span> <span class="st">"0"</span>))</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>bureauCodes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>- $agency_name   c1 Department of Health and Human Services   
-- $bureau_name   c1 Centers for Medicare and Medicaid Services
-- $agency_code   c1 009                                       
-- $bureau_code   c1 38                                        
-- $treasury_code c1 75                                        
-- $cgac_code     c1 075                                       </code></pre>
+<pre><code># A tibble: 368 × 6
+   agencyName         bureauName     agencyCode bureauCode treasuryCode cgacCode
+   &lt;chr&gt;              &lt;chr&gt;          &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;        &lt;chr&gt;   
+ 1 Legislative Branch Senate         001        05         00           000     
+ 2 Legislative Branch House of Repr… 001        10         00           000     
+ 3 Legislative Branch Joint Items    001        11         00           000     
+ 4 Legislative Branch Capitol Police 001        13         02           002     
+ 5 Legislative Branch Office of Com… 001        12         09           009     
+ 6 Legislative Branch Congressional… 001        14         08           008     
+ 7 Legislative Branch Architect of … 001        15         01           001     
+ 8 Legislative Branch Botanic Garden 001        18         09           009     
+ 9 Legislative Branch Library of Co… 001        25         03           003     
+10 Legislative Branch Government Pr… 001        30         04           004     
+# ℹ 358 more rows</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>bureauCodes <span class="sc">|&gt;</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(bureauCode <span class="sc">==</span> <span class="st">"38"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>- $agencyName   c1  Department of Health and Human Services   
+- $bureauName   c1  Centers for Medicare and Medicaid Services
+- $agencyCode   c1  009                                       
+- $bureauCode   c1  38                                        
+- $treasuryCode c1  75                                        
+- $cgacCode     c1  075                                       </code></pre>
 </div>
 </div>
 </section>
@@ -328,39 +370,91 @@ ISO8601
 <p><strong>Format</strong>: <code>015:001</code></p>
 </blockquote>
 <div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>programCodes <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"data/FederalProgramInventory_FY13_MachineReadable_091613.csv"</span>), </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types                      =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_types                           =</span> <span class="fu">cols</span>(</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Agency Name</span><span class="st">`</span>                       <span class="ot">=</span> <span class="fu">col_character</span>(),</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Program Name</span><span class="st">`</span>                      <span class="ot">=</span> <span class="fu">col_character</span>(),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Additional Information (optional)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">col_character</span>(),</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">Agency Code</span><span class="st">`</span>                       <span class="ot">=</span> <span class="fu">col_character</span>(),</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">ProgramCode                         =</span> <span class="fu">col_character</span>(),</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">ProgramCodePODFormat                =</span> <span class="fu">col_character</span>())) <span class="sc">|&gt;</span> </span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setNames</span>(<span class="fu">c</span>(<span class="st">"agencyName"</span>, </span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>             <span class="st">"programName"</span>, </span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>             <span class="st">"AdditionalInformation"</span>, </span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>             <span class="st">"agencyCode"</span>, </span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>             <span class="st">"programCode"</span>, </span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>             <span class="st">"programCodePODFormat"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: The following named parsers don't match the column names: Agency Code</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>programCodes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>- $agency_name                     c1 Department of Health and Human Services
-- $program_name                    c1 (Primary Program Not Available)        
-- $additional_information_optional c1 NA                                     
-- $agency_code                     c1 009                                    
-- $program_code                    c1 009-000                                
-- $program_code_pod_format         c1 009:000                                </code></pre>
+<pre><code># A tibble: 1,554 × 6
+   agencyName           programName AdditionalInformation agencyCode programCode
+   &lt;chr&gt;                &lt;chr&gt;       &lt;chr&gt;                 &lt;chr&gt;      &lt;chr&gt;      
+ 1 Department of Agric… Rural Busi… &lt;NA&gt;                  005        005-001    
+ 2 Department of Agric… Rural Busi… &lt;NA&gt;                  005        005-002    
+ 3 Department of Agric… Energy Ass… &lt;NA&gt;                  005        005-003    
+ 4 Department of Agric… Distance L… &lt;NA&gt;                  005        005-004    
+ 5 Department of Agric… Rural Elec… &lt;NA&gt;                  005        005-005    
+ 6 Department of Agric… Rural Wate… &lt;NA&gt;                  005        005-006    
+ 7 Department of Agric… Single Fam… &lt;NA&gt;                  005        005-007    
+ 8 Department of Agric… Multi-Fami… &lt;NA&gt;                  005        005-008    
+ 9 Department of Agric… Farm labor… &lt;NA&gt;                  005        005-009    
+10 Department of Agric… Rental Ass… &lt;NA&gt;                  005        005-010    
+# ℹ 1,544 more rows
+# ℹ 1 more variable: programCodePODFormat &lt;chr&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>programCodes <span class="sc">|&gt;</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(programCodePODFormat <span class="sc">==</span> <span class="st">"009:000"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>- $agencyName            c1  Department of Health and Human Services
+- $programName           c1  (Primary Program Not Available)        
+- $AdditionalInformation c1  NA                                     
+- $agencyCode            c1  009                                    
+- $programCode           c1  009-000                                
+- $programCodePODFormat  c1  009:000                                </code></pre>
 </div>
 </div>
 </section>
 <section id="accrualperiodicity" class="level3" data-number="2.1.3">
 <h3 data-number="2.1.3" class="anchored" data-anchor-id="accrualperiodicity"><span class="header-section-number">2.1.3</span> <code>accrualPeriodicity</code></h3>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">accrualPeriodicity =</span> <span class="fu">c</span>(<span class="st">"R/P1M"</span>, </span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                         <span class="st">"R/P1W"</span>, </span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                         <span class="st">"R/P1Y"</span>, </span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                         <span class="st">"R/P2W"</span>, </span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>                         <span class="st">"R/P3.5D"</span>, </span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                         <span class="st">"R/P3M"</span>, </span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                         <span class="st">"R/P6M"</span>),</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">meaning =</span> <span class="fu">recode_iso_8601</span>(accrualPeriodicity))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">accrualPeriodicity =</span> <span class="fu">c</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"R/PT1S"</span>,   <span class="st">"R/PT1H"</span>,  <span class="st">"R/P1D"</span>, <span class="st">"R/P3.5D"</span>, </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"R/P0.33W"</span>, <span class="st">"R/P0.5W"</span>, <span class="st">"R/P1W"</span>, <span class="st">"R/P2W"</span>, </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"R/P0.33M"</span>, <span class="st">"R/P0.5M"</span>, <span class="st">"R/P1M"</span>, <span class="st">"R/P2M"</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"R/P3M"</span>,    <span class="st">"R/P4M"</span>,   <span class="st">"R/P6M"</span>, <span class="st">"R/P1Y"</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"R/P2Y"</span>,    <span class="st">"R/P3Y"</span>,   <span class="st">"R/P4Y"</span>, <span class="st">"R/P10Y"</span>),</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">accrualDescription =</span> <span class="fu">recode_iso_8601</span>(accrualPeriodicity))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 7 × 2
-  accrualPeriodicity meaning   
-  &lt;chr&gt;              &lt;chr&gt;     
-1 R/P1M              Monthly   
-2 R/P1W              Weekly    
-3 R/P1Y              Annual    
-4 R/P2W              Biweekly  
-5 R/P3.5D            Semiweekly
-6 R/P3M              Quarterly 
-7 R/P6M              Semiannual</code></pre>
+<pre><code># A tibble: 20 × 2
+   accrualPeriodicity accrualDescription  
+   &lt;chr&gt;              &lt;chr&gt;               
+ 1 R/PT1S             Continuously Updated
+ 2 R/PT1H             Hourly              
+ 3 R/P1D              Daily               
+ 4 R/P3.5D            Semiweekly          
+ 5 R/P0.33W           Three Times a Week  
+ 6 R/P0.5W            Twice a Week        
+ 7 R/P1W              Weekly              
+ 8 R/P2W              Biweekly            
+ 9 R/P0.33M           Three Times a Month 
+10 R/P0.5M            Twice a Month       
+11 R/P1M              Monthly             
+12 R/P2M              Bimonthly           
+13 R/P3M              Quarterly           
+14 R/P4M              Three Times a Year  
+15 R/P6M              Semiannually        
+16 R/P1Y              Annually            
+17 R/P2Y              Biennially          
+18 R/P3Y              Triennially         
+19 R/P4Y              Quadrennially       
+20 R/P10Y             Decennially         </code></pre>
 </div>
 </div>
 </section>
@@ -369,89 +463,155 @@ ISO8601
 <section id="catalog" class="level4" data-number="2.1.4.1">
 <h4 data-number="2.1.4.1" class="anchored" data-anchor-id="catalog"><span class="header-section-number">2.1.4.1</span> Catalog</h4>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_json_arrow</span>(</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"data/dcat-us_v1.1_schema_catalog.json"</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(properties) <span class="sc">|&gt;</span> </span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="st">`</span><span class="at">@context</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="st">`</span><span class="at">@id</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="st">`</span><span class="at">@type</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="st">`</span><span class="at">@type_enum</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(conformsTo, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(conformsTo_enum, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(describedBy, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(dataset, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(dataset_items, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">dependencies =</span> <span class="fu">delist</span>(dependencies),</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>         <span class="at">required =</span> <span class="fu">flatten_column</span>(required)) <span class="sc">|&gt;</span> </span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_json_arrow</span>(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"data/dcat-us_v1.1_schema_catalog.json"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(properties) <span class="sc">|&gt;</span> </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="st">`</span><span class="at">@context</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="st">`</span><span class="at">@id</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="st">`</span><span class="at">@type</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="st">`</span><span class="at">@type_enum</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(conformsTo, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(conformsTo_enum, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(describedBy, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(dataset, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(dataset_items, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">dependencies =</span> <span class="fu">delist</span>(dependencies),</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>         <span class="at">required =</span> <span class="fu">flatten_column</span>(required)) <span class="sc">|&gt;</span> </span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(replace_open_columns) <span class="sc">|&gt;</span> </span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">schema =</span> <span class="st">`</span><span class="at">$schema</span><span class="st">`</span>,</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>         <span class="at">dataset_items_ref =</span> <span class="st">`</span><span class="at">dataset_items_$ref</span><span class="st">`</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>- $$schema                   c1 http://json-schema.org/draft-04/schema#     ...
-- $id                        c1 https://project-open-data.cio.gov/v1.1/sche ...
-- $title                     c1 Project Open Data Catalog                   ...
-- $description               c1 Validates an entire collection of Project O ...
-- $type                      c1 object                                      ...
-- $dependencies              c1 @context                                    ...
-- $required                  c1 conformsTo, dataset                         ...
-- $@context_title            c1 Metadata Context                            ...
-- $@context_description      c1 URL or JSON object for the JSON-LD Context  ...
-- $@context_type             c1 string                                      ...
-- $@context_format           c1 uri                                         ...
-- $@id_title                 c1 Metadata Catalog ID                         ...
-- $@id_description           c1 IRI for the JSON-LD Node Identifier of the  ...
-- $@id_type                  c1 string                                      ...
-- $@id_format                c1 uri                                         ...
-- $@type_title               c1 Metadata Context                            ...
-- $@type_description         c1 IRI for the JSON-LD data type. This should  ...
-- $@type_enum                c1 dcat:Catalog                                ...
-- $conformsTo_description    c1 Version of Schema                           ...
-- $conformsTo_title          c1 Version of Schema                           ...
-- $conformsTo_enum           c1 https://project-open-data.cio.gov/v1.1/sche ...
-- $describedBy_description   c1 URL for the JSON Schema file that defines t ...
-- $describedBy_title         c1 Data Dictionary                             ...
-- $describedBy_type          c1 string                                      ...
-- $describedBy_format        c1 uri                                         ...
-- $dataset_type              c1 array                                       ...
-- $dataset_items_$ref        c1 dataset.json                                ...
-- $dataset_items_minItems    i1 1                                           ...
-- $dataset_items_uniqueItems l1 T                                           ...</code></pre>
+<pre><code>- $schema                    c1  http://json-schema.org/draft-04/schema#    ...
+- $id                        c1  https://project-open-data.cio.gov/v1.1/sch ...
+- $title                     c1  Project Open Data Catalog                  ...
+- $description               c1  Validates an entire collection of Project  ...
+- $type                      c1  object                                     ...
+- $dependencies              c1  @context                                   ...
+- $required                  c1  conformsTo, dataset                        ...
+- $context_title             c1  Metadata Context                           ...
+- $context_description       c1  URL or JSON object for the JSON-LD Context ...
+- $context_type              c1  string                                     ...
+- $context_format            c1  uri                                        ...
+- $id_title                  c1  Metadata Catalog ID                        ...
+- $id_description            c1  IRI for the JSON-LD Node Identifier of the ...
+- $id_type                   c1  string                                     ...
+- $id_format                 c1  uri                                        ...
+- $type_title                c1  Metadata Context                           ...
+- $type_description          c1  IRI for the JSON-LD data type. This should ...
+- $type_enum                 c1  dcat:Catalog                               ...
+- $conformsTo_description    c1  Version of Schema                          ...
+- $conformsTo_title          c1  Version of Schema                          ...
+- $conformsTo_enum           c1  https://project-open-data.cio.gov/v1.1/sch ...
+- $describedBy_description   c1  URL for the JSON Schema file that defines  ...
+- $describedBy_title         c1  Data Dictionary                            ...
+- $describedBy_type          c1  string                                     ...
+- $describedBy_format        c1  uri                                        ...
+- $dataset_type              c1  array                                      ...
+- $dataset_items_ref         c1  dataset.json                               ...
+- $dataset_items_minItems    i1  1                                          ...
+- $dataset_items_uniqueItems l1  T                                          ...</code></pre>
 </div>
 </div>
 </section>
 <section id="dataset" class="level4" data-number="2.1.4.2">
 <h4 data-number="2.1.4.2" class="anchored" data-anchor-id="dataset"><span class="header-section-number">2.1.4.2</span> Dataset</h4>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_json_arrow</span>(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"data/dcat-us_v1.1_schema_dataset.json"</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_json_arrow</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"data/dcat-us_v1.1_schema_dataset.json"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(properties, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># unnest(`properties_@type`, names_sep = "_") |&gt; </span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># unnest(properties_accessLevel, names_sep = "_") |&gt; </span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># unnest(properties_rights, names_sep = "_") |&gt; </span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># unnest(properties_accrualPeriodicity, names_sep = "_") |&gt; </span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># unnest(properties_bureauCode, names_sep = "_") |&gt; </span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># unnest(properties_contactPoint, names_sep = "_") |&gt; </span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># unnest(properties_describedBy, names_sep = "_") |&gt; </span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># unnest(properties_describedByType, names_sep = "_") |&gt; </span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># unnest(properties_conformsTo, names_sep = "_") |&gt; </span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># unnest(properties_rights_anyOf, names_sep = "_") |&gt; </span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># unnest(properties_accrualPeriodicity_anyOf, names_sep = "_") |&gt; </span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">required =</span> <span class="fu">flatten_column</span>(required)) <span class="sc">|&gt;</span> </span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># `properties_@type_enum` = delist(`properties_@type_enum`),</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># properties_accessLevel_enum = flatten_column(properties_accessLevel_enum),</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># properties_accrualPeriodicity_anyOf_enum = flatten_column(properties_accrualPeriodicity_anyOf_enum)) |&gt; </span></span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(replace_open_columns) <span class="sc">|&gt;</span> </span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">schema =</span> <span class="st">`</span><span class="at">$schema</span><span class="st">`</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 1
-Columns: 7
-$ `$schema`   &lt;chr&gt; "http://json-schema.org/draft-04/schema#"
-$ id          &lt;chr&gt; "https://project-open-data.cio.gov/v1.1/schema/dataset.jso…
-$ title       &lt;chr&gt; "Project Open Data Dataset"
-$ description &lt;chr&gt; "The metadata format for all federal open data. Validates …
-$ type        &lt;chr&gt; "object"
-$ required    &lt;list&lt;character&gt;&gt; &lt;"bureauCode", "programCode", "title", "description", "key…
-$ properties  &lt;tibble[,29]&gt; &lt;tbl_df[1 x 29]&gt;</code></pre>
+Columns: 35
+$ schema                    &lt;chr&gt; "http://json-schema.org/draft-04/schema#"
+$ id                        &lt;chr&gt; "https://project-open-data.cio.gov/v1.1/sche…
+$ title                     &lt;chr&gt; "Project Open Data Dataset"
+$ description               &lt;chr&gt; "The metadata format for all federal open da…
+$ type                      &lt;chr&gt; "object"
+$ required                  &lt;chr&gt; "bureauCode, programCode, title, description…
+$ pr_type                   &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
+$ pr_accessLevel            &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
+$ pr_rights                 &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
+$ pr_accrualPeriodicity     &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
+$ pr_bureauCode             &lt;tibble[,6]&gt; &lt;tbl_df[1 x 6]&gt;
+$ pr_contactPoint           &lt;tibble[,1]&gt; &lt;tbl_df[1 x 1]&gt;
+$ pr_describedBy            &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
+$ pr_describedByType        &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
+$ pr_conformsTo             &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
+$ pr_dataQuality            &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
+$ pr_description            &lt;tibble[,4]&gt; &lt;tbl_df[1 x 4]&gt;
+$ pr_distribution           &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
+$ pr_identifier             &lt;tibble[,4]&gt; &lt;tbl_df[1 x 4]&gt;
+$ pr_issued                 &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
+$ pr_keyword                &lt;tibble[,5]&gt; &lt;tbl_df[1 x 5]&gt;
+$ pr_landingPage            &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
+$ pr_language               &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
+$ pr_license                &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
+$ pr_modified               &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
+$ pr_primaryITInvestmentUII &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
+$ pr_programCode            &lt;tibble[,6]&gt; &lt;tbl_df[1 x 6]&gt;
+$ pr_publisher              &lt;tibble[,1]&gt; &lt;tbl_df[1 x 1]&gt;
+$ pr_references             &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
+$ pr_spatial                &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
+$ pr_systemOfRecords        &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
+$ pr_temporal               &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
+$ pr_isPartOf               &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
+$ pr_theme                  &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
+$ pr_title                  &lt;tibble[,4]&gt; &lt;tbl_df[1 x 4]&gt;</code></pre>
 </div>
 </div>
 </section>
 <section id="distribution" class="level4" data-number="2.1.4.3">
 <h4 data-number="2.1.4.3" class="anchored" data-anchor-id="distribution"><span class="header-section-number">2.1.4.3</span> Distribution</h4>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_json_arrow</span>(</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"data/dcat-us_v1.1_schema_distribution.json"</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_json_arrow</span>(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"data/dcat-us_v1.1_schema_distribution.json"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(properties, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">dependencies =</span> <span class="fu">flatten_column</span>(dependencies)) <span class="sc">|&gt;</span> </span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(replace_open_columns) <span class="sc">|&gt;</span> </span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">schema =</span> <span class="st">`</span><span class="at">$schema</span><span class="st">`</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 1
-Columns: 7
-$ `$schema`    &lt;chr&gt; "http://json-schema.org/draft-04/schema#"
-$ id           &lt;chr&gt; "https://project-open-data.cio.gov/v1.1/schema/distributi…
-$ title        &lt;chr&gt; "Project Open Data Distribution"
-$ description  &lt;chr&gt; "Validates an entire collection of common core metadata J…
-$ type         &lt;chr&gt; "object"
-$ dependencies &lt;tibble[,1]&gt; &lt;tbl_df[1 x 1]&gt;
-$ properties   &lt;tibble[,10]&gt; &lt;tbl_df[1 x 10]&gt;</code></pre>
+Columns: 16
+$ schema             &lt;chr&gt; "http://json-schema.org/draft-04/schema#"
+$ id                 &lt;chr&gt; "https://project-open-data.cio.gov/v1.1/schema/dist…
+$ title              &lt;chr&gt; "Project Open Data Distribution"
+$ description        &lt;chr&gt; "Validates an entire collection of common core meta…
+$ type               &lt;chr&gt; "object"
+$ dependencies       &lt;chr&gt; "string, ^[-\\w]+/[-\\w]+(\\.[-\\w]+)*([+][-\\w]+)?…
+$ pr_type            &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
+$ pr_downloadURL     &lt;tibble[,4]&gt; &lt;tbl_df[1 x 4]&gt;
+$ pr_mediaType       &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
+$ pr_format          &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
+$ pr_accessURL       &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
+$ pr_description     &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
+$ pr_title           &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
+$ pr_conformsTo      &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
+$ pr_describedBy     &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
+$ pr_describedByType &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;</code></pre>
 </div>
 </div>
 
