@@ -21,17 +21,8 @@ btn_link <- \(href, label) {
   )
 }
 
-purse <- \(x,
-           pre = "- ",
-           wid = 0,
-           sep = " ") {
-  terse::terse(
-    x = x,
-    prefix = pre,
-    width = wid,
-    config = list(
-      gsep = sep,
-      ansi = FALSE))
+purse <- \(x, pre = "- ", wid = 0, max = 20, sep = " ") {
+  terse::terse(x = x, prefix = pre, width = wid, max_vec_len = max, config = list(gsep = sep, ansi = FALSE))
 }
 
 replace_open_columns <- \(x) stringr::str_replace_all(x, c(":" = "_", "%" = "", "@" = ""))

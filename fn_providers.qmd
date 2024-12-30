@@ -22,11 +22,40 @@ htmltools::tagList(
    * Base URL: `https://data.cms.gov/data-api/v1/`
    * Identifier: `2457ea29-fc82-48b0-86ec-3b0755de7515`
 
+
+```{r}
+# distro <- collapse::fselect(dataset, distribution) |>
+#     tidyr::unnest(distribution) |>
+#     collapse::frename(remove_at_symbol)
+```
+
 ## Catalog
 
 ```{r}
 #| label: main_catalog
-main <- main_data_rcpp()
+main_data_raw <- \() {
+
+  x <- RcppSimdJson::fload("https://data.cms.gov/data.json")
+
+  list(
+    context             = x[["@context"]],
+    id                  = x[["@id"]],
+    type                = x[["@type"]],
+    conformsTo          = x[["conformsTo"]],
+    describedBy         = x[["describedBy"]],
+    dataset             = collapse::qTBL(x[["dataset"]]) |>
+    collapse::fmutate(
+      bureauCode   = delist(bureauCode),
+      language     = delist(language),
+      programCode  = delist(programCode),
+      references   = delist(references),
+      theme        = flatten_column(theme),
+      keyword      = flatten_column(keyword)) |>
+    collapse::frename(remove_at_symbol)
+  )
+}
+
+main <- main_data_raw()
 
 main
 ```
@@ -35,55 +64,37 @@ main
 
 ```{r}
 #| label: provider_dataset
-provider_dataset <- collapse::fsubset(
-  main[["dataset"]], 
-  fuimus::sf_detect(
-    title, 
-    "Fee-For-Service"
-    ))
-
-provider_dataset |> 
-  purse()
-```
-
-### S7 Class
-
-```{r}
-#| label: provider_dataset_class
-ProviderDataset <- new_class(
-  "ProviderDataset",
-  properties = list(
-    type               = class_character,
-    accessLevel        = class_character,
-    accrualPeriodicity = class_character,
-    bureauCode         = class_character,
-    contactPoint       = class_list,
-    describedBy        = class_character,
-    dataQuality        = class_logical,
-    description        = class_character,
-    identifier         = class_character,
-    keyword            = class_character,
-    landingPage        = class_character,
-    language           = class_character,
-    license            = class_character,
-    modified           = class_Date,
-    programCode        = class_character,
-    publisher          = class_list,
-    references         = class_character,
-    temporal           = class_character,
-    theme              = class_character,
-    title              = class_character,
-    describedByType    = class_character
+select_dataset <- \(x, set) {
+  list(
+    context             = x[["context"]],
+    id                  = x[["id"]],
+    type                = x[["type"]],
+    conformsTo          = x[["conformsTo"]],
+    describedBy         = x[["describedBy"]],
+    dataset             = collapse::fsubset(
+      x[["dataset"]], 
+      fuimus::sf_detect(title, set))
   )
-)
+}
 
-ProviderDataset()
+x <- select_dataset(main, "Fee-For-Service")
+
+x |> purse()
 ```
+
 
 ## Distribution
 
 ```{r}
+collapse::qTBL(x$dataset$distribution[[1]]) |> 
+  collapse::frename(remove_at_symbol) |> 
+  purse()
+```
+
+
+```{r}
 #| label: provider_latest
+#| eval: false
 provider_latest <- collapse::fsubset(
     main[["distribution_latest"]],
     fuimus::sf_detect(
@@ -97,6 +108,7 @@ provider_latest |> purse()
 
 ```{r}
 #| label: provider_api
+#| eval: false
 provider_api <- collapse::fsubset(
     main[["distribution_api"]],
     fuimus::sf_detect(
@@ -110,6 +122,7 @@ provider_api |> purse()
 
 ```{r}
 #| label: provider_csv
+#| eval: false
 provider_csv <- collapse::fsubset(
     main[["distribution_csv"]],
     fuimus::sf_detect(
@@ -120,10 +133,102 @@ provider_csv <- collapse::fsubset(
 provider_csv |> purse()
 ```
 
+### S7 Classes
+
+#### Distribution Class
+
+```{r}
+#| label: Distribution_class
+# Distribution <- new_class(
+#   name = "Distribution",
+#   properties = list(
+#     
+#   )
+# )
+```
+
+#### Dataset Class
+
+```{r}
+#| label: contactPoint_class
+contactPoint <- new_class(
+  name = "contactPoint",
+  properties = list(
+    type = new_property(class_character, default = "vcard:Contact"),
+    fn = class_character,
+    hasEmail = class_character
+  )
+)
+```
+
+
+```{r}
+#| label: publisher_class
+publisher <- new_class(
+  name = "publisher",
+  properties = list(
+    type = new_property(class_character, default = "org:Organization"),
+    name = new_property(class_character, default = "Centers for Medicare & Medicaid Services")
+  )
+)
+```
+
+
+```{r}
+#| label: Dataset_class
+Dataset <- new_class(
+  name = "Dataset",
+  properties = list(
+    type               = new_property(class_character, default = "dcat:Dataset"),
+    accessLevel        = new_property(class_character, default = "public"),
+    accrualPeriodicity = class_character,
+    bureauCode         = new_property(class_character, default = "009:38"),
+    contactPoint       = new_property(contactPoint, default = contactPoint()),
+    describedBy        = class_character,
+    dataQuality        = new_property(class_logical, default = TRUE),
+    description        = class_character,
+    distribution       = class_data.frame,
+    identifier         = class_character,
+    keyword            = class_character,
+    landingPage        = class_character,
+    language           = class_character,
+    license            = class_character,
+    modified           = class_Date,
+    programCode        = new_property(class_character, default = "009:000"),
+    publisher          = new_property(publisher, default = publisher()),
+    references         = class_character,
+    temporal           = class_character,
+    theme              = class_character,
+    title              = class_character,
+    describedByType    = class_character
+  ))
+
+Dataset()
+```
+
+
+```{r}
+#| label: Catalog_class
+Catalog <- new_class(
+  name = "Catalog",
+  properties = list(
+    type        = new_property(class_character, default = "dcat:Catalog"),
+    context     = new_property(class_character, default = "https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld"),
+    id          = class_character,
+    conformsTo  = new_property(class_character, default = "https://project-open-data.cio.gov/v1.1/schema"),
+    describedBy = new_property(class_character, default = "https://project-open-data.cio.gov/v1.1/schema/catalog.json"),
+    dataset = new_property(Dataset, default = Dataset())
+  )
+)
+
+Catalog()
+```
+
 ## URLS
 
 ```{r}
 #| label: urls
+#| eval: false
 list(
   dataset = provider_dataset, 
   latest = provider_latest,
