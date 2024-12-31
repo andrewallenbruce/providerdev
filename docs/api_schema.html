@@ -170,7 +170,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./api_faq.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">API FAQ</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Public API FAQ</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -205,7 +205,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./data_provider.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Provider</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Provider Catalog</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -430,7 +430,7 @@ ISO8601
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"R/P0.33M"</span>, <span class="st">"R/P0.5M"</span>, <span class="st">"R/P1M"</span>, <span class="st">"R/P2M"</span>,</span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"R/P3M"</span>,    <span class="st">"R/P4M"</span>,   <span class="st">"R/P6M"</span>, <span class="st">"R/P1Y"</span>,</span>
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"R/P2Y"</span>,    <span class="st">"R/P3Y"</span>,   <span class="st">"R/P4Y"</span>, <span class="st">"R/P10Y"</span>),</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">accrualDescription =</span> <span class="fu">recode_iso_8601</span>(accrualPeriodicity))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">accrualDescription =</span> <span class="fu">recode_iso8601</span>(accrualPeriodicity))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 20 × 2
    accrualPeriodicity accrualDescription  
@@ -479,9 +479,7 @@ ISO8601
 <span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">dependencies =</span> <span class="fu">delist</span>(dependencies),</span>
 <span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>         <span class="at">required =</span> <span class="fu">flatten_column</span>(required)) <span class="sc">|&gt;</span> </span>
 <span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(replace_open_columns) <span class="sc">|&gt;</span> </span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">schema =</span> <span class="st">`</span><span class="at">$schema</span><span class="st">`</span>,</span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>         <span class="at">dataset_items_ref =</span> <span class="st">`</span><span class="at">dataset_items_$ref</span><span class="st">`</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>- $schema                    c1  http://json-schema.org/draft-04/schema#    ...
 - $id                        c1  https://project-open-data.cio.gov/v1.1/sch ...
@@ -539,8 +537,7 @@ ISO8601
 <span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># properties_accessLevel_enum = flatten_column(properties_accessLevel_enum),</span></span>
 <span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># properties_accrualPeriodicity_anyOf_enum = flatten_column(properties_accrualPeriodicity_anyOf_enum)) |&gt; </span></span>
 <span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(replace_open_columns) <span class="sc">|&gt;</span> </span>
-<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">schema =</span> <span class="st">`</span><span class="at">$schema</span><span class="st">`</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 1
 Columns: 35
@@ -591,8 +588,7 @@ $ pr_title                  &lt;tibble[,4]&gt; &lt;tbl_df[1 x 4]&gt;</code></pre
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(properties, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">dependencies =</span> <span class="fu">flatten_column</span>(dependencies)) <span class="sc">|&gt;</span> </span>
 <span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(replace_open_columns) <span class="sc">|&gt;</span> </span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">schema =</span> <span class="st">`</span><span class="at">$schema</span><span class="st">`</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 1
 Columns: 16
@@ -1040,8 +1036,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./api_faq.html" class="pagination-link" aria-label="API FAQ">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">API FAQ</span></span>
+      <a href="./api_faq.html" class="pagination-link" aria-label="Public API FAQ">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Public API FAQ</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

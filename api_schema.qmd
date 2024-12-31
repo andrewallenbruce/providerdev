@@ -127,8 +127,6 @@ read_json_arrow(
   mutate(dependencies = delist(dependencies),
          required = flatten_column(required)) |> 
   rename_with(replace_open_columns) |> 
-  rename(schema = `$schema`,
-         dataset_items_ref = `dataset_items_$ref`) |> 
   purse()
 ```
 
@@ -156,7 +154,6 @@ read_json_arrow(
     # properties_accessLevel_enum = flatten_column(properties_accessLevel_enum),
     # properties_accrualPeriodicity_anyOf_enum = flatten_column(properties_accrualPeriodicity_anyOf_enum)) |> 
   rename_with(replace_open_columns) |> 
-  rename(schema = `$schema`) |> 
   glimpse()
 ```
 
@@ -169,7 +166,6 @@ read_json_arrow(
   unnest(properties, names_sep = "_") |> 
   mutate(dependencies = flatten_column(dependencies)) |> 
   rename_with(replace_open_columns) |> 
-  rename(schema = `$schema`) |> 
   glimpse()
 ```
 
