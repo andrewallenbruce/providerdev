@@ -1,14 +1,3 @@
-knitr::opts_chunk$set(
-  dev        = "ragg_png",
-  dpi        = 320,
-  out.width  = "100%",
-  fig.width  = 8,
-  fig.asp    = 0.818,
-  fig.retina = 2,
-  fig.align  = "center",
-  fig.show   = "hold"
-)
-
 options(scipen = 999, digits = 3)
 
 btn_link <- \(href, label) {
