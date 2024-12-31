@@ -26,18 +26,20 @@ The **Provider Data Catalog API** currently limits each batch of results to a ma
 
    1. Fetch the first 2000 results:
 
-```r
-https://data.cms.gov/provider-data/api/1/datastore/query/
-   7t8x-u3ir/0?
-   offset=0
+```{r}
+weburl::url_parse("https://data.cms.gov/provider-data/api/1/datastore/query/7t8x-u3ir/0?offset=0") |> 
+  mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
+  remove_all_na() |> 
+  purse()
 ```
 
    2. Fetch the next 2000 results (2001-4000):
 
-```r
-https://data.cms.gov/provider-data/api/1/datastore/query/
-   7t8x-u3ir/0?
-   offset=2000
+```{r}
+weburl::url_parse("https://data.cms.gov/provider-data/api/1/datastore/query/7t8x-u3ir/0?offset=2000") |> 
+  mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
+  remove_all_na() |> 
+  purse()
 ```
 
 Continue this pattern, incrementing the offset by 2,000 for each subsequent batch.
@@ -54,17 +56,27 @@ CMS's **Five-Star Quality Rating System** is designed to help users compare the 
    * Hospice: `star_rating`
    * Home Health: `quality_of_patient_care_star_rating`
 
-For example, the query for the [**Nursing Homes**](https://data.cms.gov/provider-data/dataset/4pq5-n9py) dataset for facilities with a 5-star overall rating:
+For example, the query for the [**Nursing Homes**](https://data.cms.gov/provider-data/dataset/4pq5-n9py) dataset for facilities with less than a 5-star overall rating:
 
-```r
-https://data.cms.gov/provider-data/api/1/
-   datastore/query/
-   4pq5-n9py/
-   0?
-   conditions[0][property]=overall_rating&
-   conditions[0][value]=5&
-   conditions[0][operator]==
+```{r}
+weburl::url_parse(
+"https://data.cms.gov/provider-data/api/1/datastore/query/4pq5-n9py/0?conditions[0][property]=overall_rating&conditions[0][value]=5&conditions[0][operator]=<") |> 
+  mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
+  remove_all_na() |> 
+  purse()
 ```
+
+```{r}
+nh <- request("https://data.cms.gov/provider-data/api/1/datastore/query/4pq5-n9py/0?limit=2000&conditions[0][property]=overall_rating&conditions[0][value]=5&conditions[0][operator]=<") |> 
+  req_perform() |> 
+  resp_body_json(simplifyVector = TRUE)
+
+nh$results |> 
+  mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
+  remove_all_na() |> 
+  count(overall_rating, sort = TRUE)
+```
+
 
 ## Querying for Specific Conditions
 
@@ -74,25 +86,44 @@ The datastore query endpoint takes two arguments: the `datasetID`, which can be 
 
 As an example, if you want to pull the first 500 results for a specific dataset that has a rating column called `overall_rating`, you would first identify the dataset that has the specific column such as this:
 
-```r
-https://data.cms.gov/provider-data/dataset/4pq5-n9py
+```{r}
+weburl::url_parse(
+"https://data.cms.gov/provider-data/api/1/datastore/query/4pq5-n9py/0") |> 
+  mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
+  remove_all_na() |> 
+  purse()
 ```
 
-and then you would use 
+```{r}
+ex <- request("https://data.cms.gov/provider-data/api/1/datastore/query/4pq5-n9py/0") |> 
+  req_perform() |> 
+  resp_body_json(simplifyVector = TRUE)
 
-```r
-https://data.cms.gov/provider-data/api/1/datastore/query/4pq5-n9py/0
+ex$results |> 
+  mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
+  remove_all_na() |> 
+  count(overall_rating, sort = TRUE)
 ```
+
 The results can be filtered further. For example, to return the first 500 results with an overall rating of 5, you would use the following:
 
-```r
-https://data.cms.gov/provider-data/api/1/
-   datastore/query/
-   4pq5-n9py/
-   0?
-   conditions[0][property]=overall_rating&
-   conditions[0][value]=5&
-   conditions[0][operator]==
+```{r}
+weburl::url_parse(
+"https://data.cms.gov/provider-data/api/1/datastore/query/4pq5-n9py/0?conditions[0][property]=overall_rating&conditions[0][value]=5&conditions[0][operator]==") |> 
+  mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
+  remove_all_na() |> 
+  purse()
+```
+
+```{r}
+ex <- request("https://data.cms.gov/provider-data/api/1/datastore/query/4pq5-n9py/0?conditions[0][property]=overall_rating&conditions[0][value]=5&conditions[0][operator]==") |> 
+  req_perform() |> 
+  resp_body_json(simplifyVector = TRUE)
+
+ex$results |> 
+  mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
+  remove_all_na() |> 
+  count(state, sort = TRUE)
 ```
 
 More complex queries can be created in JSON and converted to an HTTP query string by using [JSON Query to String](https://www.convertonline.io/convert/json-to-query-string).
@@ -117,24 +148,50 @@ For example, to return just the CMS certification number and overall rating colu
 
 Which converts to a query string of:
 
-```r
-https://data.cms.gov/provider-data/api/1/
-   datastore/query/
-   4pq5-n9py/
-   0?
-   properties[]=cms_certification_number_ccn&
-   properties[]=overall_rating&
-   conditions[0][property]=overall_rating&
-   conditions[0][value]=3&
-   conditions[0][operator]=>
+```{r}
+weburl::url_parse(
+  paste0(
+  "https://data.cms.gov/provider-data/api/1/datastore/query/4pq5-n9py/0?",
+  "properties[]=state&",   
+  "properties[]=overall_rating&",
+  "conditions[0][property]=overall_rating&",   
+  "conditions[0][value]=3&",
+  "conditions[0][operator]=>")) |>
+  mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
+  remove_all_na() |> 
+  purse()
 ```
 
-## Retrieve List of All Dataset IDs
+```{r}
+ex <- request(paste0(
+  "https://data.cms.gov/provider-data/api/1/datastore/query/4pq5-n9py/0?",
+  "properties[]=state&",   
+  "properties[]=overall_rating&",
+  "conditions[0][property]=overall_rating&",   
+  "conditions[0][value]=3&",
+  "conditions[0][operator]=>")) |> 
+  req_perform() |> 
+  resp_body_json(simplifyVector = TRUE)
+
+ex$results |> 
+  mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
+  remove_all_na() |> 
+  count(overall_rating, sort = TRUE)
+```
+
+## Retrieve All Dataset IDs
 
 Yes, you can retrieve a comprehensive list of all datasets available on the PDC site by leveraging the metastore schema endpoint:
 
-```r
-https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items
+```{r}
+ex <- request("https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items") |> 
+  req_perform() |> 
+  resp_body_json(simplifyVector = TRUE)
+
+ex |> 
+  tibble() |> 
+  mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
+  remove_all_na()
 ```
 
 For developers looking to work with multiple datasets programmatically, consider utilizing JSON parsing tools or custom scripts to extract and manage these IDs efficiently. For example, using a `curl` command in the terminal followed by a tool like `jq` can streamline the process:
@@ -147,21 +204,50 @@ This command fetches the list of datasets and uses `jq` to parse the JSON respon
 
 ## Filter List of Dataset IDs
 
-You can get a list of all public datasets for a Topic area via the /api/1/search endpoint. For example, to get a list of all datasets in the Home health services Topic, you could use:
+You can get a list of all public datasets for a Topic area via the /api/1/search endpoint. For example, to get a list of all datasets in the `Home health services` Topic, you could use:
 
-https://data.cms.gov/provider-data/api/1/search?page-size=100&theme=Home%20health%20services
+```{r}
+#| warning: false
+#| error: false
+ex <- request(
+  "https://data.cms.gov/provider-data/api/1/search?page-size=100&theme=Home%20health%20services") |> 
+  req_perform() |> 
+  resp_body_json(simplifyVector = TRUE)
 
-(Note that “%20” is inserted for the spaces between words in a Topic name.)
+ex$facets |> 
+  tibble() |> 
+  mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
+  remove_all_na()
+
+ex$results |> 
+  glimpse()
+```
+
 
 If the page size is not provided, the default result limit is 10.
 
-One of the easiest ways to use this feature is to set up your search parameters on the Provider Data Catalog  search page (https://data.cms.gov/provider-data/search) and then copy the query string to the end of the search endpoint.
+One of the easiest ways to use this feature is to set up your search parameters on the Provider Data Catalog  [search page](https://data.cms.gov/provider-data/search) and then copy the query string to the end of the search endpoint.
 
 For example, if you filter by “Dialysis facilities” tagged with “Linking Quality to Payment” and select 25 results per page, the query string produced is: ?keyword=Linking%20Quality%20to%20Payment&page-size=25&theme=Dialysis%20facilities
 
 You can append this query string to the search endpoint to get a list of all datasets that meet that criteria, like this:
 
-https://data.cms.gov/provider-data/api/1/search?keyword=Linking%20Quality%20to%20Payment&page-size=25&theme=Dialysis%20facilities.
+```{r}
+#| warning: false
+#| error: false
+ex <- request(
+  "https://data.cms.gov/provider-data/api/1/search?keyword=Linking%20Quality%20to%20Payment&page-size=25&theme=Dialysis%20facilities") |> 
+  req_perform() |> 
+  resp_body_json(simplifyVector = TRUE)
+
+ex$facets |> 
+  tibble() |> 
+  mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
+  remove_all_na()
+
+ex$results |> 
+  glimpse()
+```
 
 You can also use the same method to return a list of datasets that contain a keyword like “ratings” in their title and/or description:
 
