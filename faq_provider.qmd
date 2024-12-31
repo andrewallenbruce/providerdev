@@ -1,5 +1,5 @@
 ---
-title: "Provider Catalog"
+title: "Provider API"
 editor_options: 
    chunk_output_type: console
 ---
@@ -9,16 +9,19 @@ editor_options:
 #| message: false
 #| warning: false
 source("_common.R")
+
+htmltools::tagList(
+  btn_link("https://data.cms.gov/provider-data/docs", 
+           "Provider API Docs"),
+  btn_link("https://data.cms.gov/provider-data/search", 
+           "Dataset Search"))
 ```
 
-   * [Home](https://data.cms.gov/provider-data/)
-   * [Datasets](https://data.cms.gov/provider-data/search)
-   * [About](https://data.cms.gov/provider-data/about)
-   * [API Documentation](https://data.cms.gov/provider-data/docs)
-
-## PDC FAQ
 
 This site provides access to the Centers for Medicare & Medicaid Services official data that are used on the **Medicare Care Compare** website and directories.
+
+   * [Home](https://data.cms.gov/provider-data/)
+   * [About](https://data.cms.gov/provider-data/about)
 
 ### Rate Limit
 
@@ -382,132 +385,3 @@ Distribution IDs change with every dataset update, so it is better to use APIs w
 ::: 
 
 --------------------------------------------------------------------------------
-
-## Dataset Object
-
-```{r}
-#| label: provider_data
-provider_data() |> 
-  purse()
-
-provider_data() |>
-  pull(title) |>
-  cat(sep = "\n")
-```
-
-### National Downloadable File
-
-```{r}
-#| label: url_building
-#| eval: false
-httr2::url_parse("https://data.cms.gov/provider-data/api/1/datastore/query/")
-    
-# distro 
-
-unclass(
-  httr2::url_parse(
-    "?limit=1&offset=100&count=true&results=true&schema=true&keys=true&format=json&rowIds=true"
-    )
-  )
-
-ndf_identifier <- \(x) {
-  kit::nswitch(x,
-    "affiliations", "27ea-46a8",
-    "clinicians", "mj5m-pzi6",
-    default = NA_character_,
-    nThread = 4L)
-}
-
-url_ndf <- httr2::url_parse(
-  "https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/"
-  )
-
-url_tmp <- url_ndf |> 
-  httr2::url_build() |> 
-  httr2::request()
-
-httr2::req_template(
-  url_tmp, 
-  "/{fname}?show-reference-ids=true", 
-  fname = ndf_identifier("affiliations"))
-
-url_ndf |> 
-  httr2::url_build() |> 
-  httr2::request() |> 
-  httr2::req_url_path_append(
-    ndf_identifier(fname)) |> 
-  httr2::req_url_path_append("?show-reference-ids=true") |>
-  httr2::req_perform() |>
-  httr2::resp_body_json(check_type = FALSE, simplifyVector = TRUE)
-```
-
-```{r}
-#| label: meta_ndf
-meta_ndf <- \(fname) {
-  
-  stopifnot(curl::has_internet())
-  
-  x <- request(
-    paste0(
-      "https://data.cms.gov/",
-      "provider-data/api/1/",
-      "metastore/schemas/",
-      "dataset/items/",
-      switch(fname, 
-             affiliations = "27ea-46a8", 
-             clinicians   = "mj5m-pzi6", 
-             stop("Invalid argument")),
-    "?show-reference-ids=true")) |>
-       req_perform() |>
-       resp_body_json(
-         check_type     = FALSE,
-         simplifyVector = TRUE)
-  
-  distro <- gelm(gelm(x, "distribution"), "identifier")
-  
-  y <- request(
-    paste0(
-    "https://data.cms.gov/", 
-    "provider-data/api/1/",
-    "datastore/query/", 
-    distro, 
-    "?limit=1&offset=100&",
-    "count=true&results=true&", 
-    "schema=true&keys=true&",
-    "format=json&rowIds=true")) |>
-       req_perform() |>
-       resp_body_json(
-         check_type = FALSE,
-         simplifyVector = TRUE)
-  
-  z <- gelm(gelm(gelm(y, "schema"), distro), "fields")
-  
-  list(
-    title        = gelm(x, "title"),
-    description  = gelm(x, "description"),
-    identifier   = gelm(gelm(x, "identifier"), "identifier"),
-    distribution = distro,
-    issued       = gelm(x, "issued"), 
-    modified     = gelm(x, "modified")[[1]], 
-    released     = gelm(x, "released"),
-    dimensions   = paste0(gelm(gelm(y, "count"), is.numeric), " x ", gelm(gelm(z, "record_number"), "length")), 
-    fields       = names(z),
-    site         = gelm(x, "landingPage"),
-    csv          = gelm(gelm(gelm(x, "distribution"), "data"), "downloadURL", m = "df"),
-    dictionary   = paste0("https://data.cms.gov/provider-data/sites/default/files/data_dictionaries/physician/DOC_Data_Dictionary.pdf"))
-  
-}
-```
-
-### Examples
-
-```{r}
-#| label: meta_affiliations
-meta_ndf("affiliations") |> purse()
-```
-
-
-```{r}
-#| label: meta_clinicians
-meta_ndf("clinicians") |> purse()
-```

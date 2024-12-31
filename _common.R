@@ -3,10 +3,10 @@ options(scipen = 999, digits = 3)
 btn_link <- \(href, label) {
 
   htmltools::tags$a(
-    href = href,
-    class = "btn btn-outline-secondary",
-    role = "button",
-    target = "_blank",
+    href                    = href,
+    class                   = "btn btn-outline-secondary",
+    role                    = "button",
+    target                  = "_blank",
     htmltools::tags$i(class = "bi bi-box-arrow-up-right"),
     label
   )
