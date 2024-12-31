@@ -1,5 +1,5 @@
 ---
-title: "Provider"
+title: "Provider Catalog"
 editor_options: 
    chunk_output_type: console
 ---
@@ -11,42 +11,54 @@ editor_options:
 source("_common.R")
 ```
 
-## Provider Data Catalog
-
    * [Home](https://data.cms.gov/provider-data/)
    * [Datasets](https://data.cms.gov/provider-data/search)
    * [About](https://data.cms.gov/provider-data/about)
    * [API Documentation](https://data.cms.gov/provider-data/docs)
 
+## PDC FAQ
+
 This site provides access to the Centers for Medicare & Medicaid Services official data that are used on the **Medicare Care Compare** website and directories.
 
-## Rate Limit
+### Rate Limit
 
 The **Provider Data Catalog API** currently limits each batch of results to a maximum of **2,000** entries. To retrieve datasets larger than this threshold, you must execute multiple requests, incrementing the offset each time to paginate through results:
 
    1. Fetch the first 2000 results:
 
 ```{r}
-weburl::url_parse("https://data.cms.gov/provider-data/api/1/datastore/query/7t8x-u3ir/0?offset=0") |> 
+weburl::url_parse(
+  paste0(
+    "https://data.cms.gov/",
+    "provider-data/api/1/",
+    "datastore/query/7t8x-u3ir/0?",
+    "offset=0"
+    )
+  ) |> 
   mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
-  remove_all_na() |> 
+  remove_all_na() |>
   purse()
 ```
 
    2. Fetch the next 2000 results (2001-4000):
 
 ```{r}
-weburl::url_parse("https://data.cms.gov/provider-data/api/1/datastore/query/7t8x-u3ir/0?offset=2000") |> 
+weburl::url_parse(
+  paste0(
+    "https://data.cms.gov/",
+    "provider-data/api/1/",
+    "datastore/query/7t8x-u3ir/0?",
+    "offset=2000"
+    )
+  ) |> 
   mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
   remove_all_na() |> 
   purse()
 ```
 
-Continue this pattern, incrementing the offset by 2,000 for each subsequent batch.
+Continue incrementing the offset by 2,000 for each subsequent batch. When retrieving large datasets, consider pacing your requests to avoid overwhelming your system with data and to allow for graceful error handling. Depending on the volume of data and your application's capabilities, consider implementing a back-off strategy if errors occur.
 
-While retrieving large datasets, consider pacing your requests to avoid overwhelming your system with data and to allow for graceful error handling. Depending on the volume of data and your application's capabilities, consider implementing a back-off strategy if errors occur.
-
-## Star Ratings & Overall Care Ratings
+### Stars/Ratings
 
 CMS's **Five-Star Quality Rating System** is designed to help users compare the overall quality of care across different healthcare providers. Access these ratings by referring to the associated column names:
 
@@ -59,76 +71,113 @@ CMS's **Five-Star Quality Rating System** is designed to help users compare the 
 For example, the query for the [**Nursing Homes**](https://data.cms.gov/provider-data/dataset/4pq5-n9py) dataset for facilities with less than a 5-star overall rating:
 
 ```{r}
+#| label: nursing_homes
 weburl::url_parse(
-"https://data.cms.gov/provider-data/api/1/datastore/query/4pq5-n9py/0?conditions[0][property]=overall_rating&conditions[0][value]=5&conditions[0][operator]=<") |> 
+  paste0(
+    "https://data.cms.gov/",
+    "provider-data/api/1/",
+    "datastore/query/4pq5-n9py/0?",
+    "conditions[0][property]=overall_rating&",
+    "conditions[0][value]=5&",
+    "conditions[0][operator]=<"
+    )
+  ) |> 
   mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
   remove_all_na() |> 
   purse()
-```
 
-```{r}
-nh <- request("https://data.cms.gov/provider-data/api/1/datastore/query/4pq5-n9py/0?limit=2000&conditions[0][property]=overall_rating&conditions[0][value]=5&conditions[0][operator]=<") |> 
+x <- request(
+  paste0(
+    "https://data.cms.gov/",
+    "provider-data/api/1/",
+    "datastore/query/4pq5-n9py/0?",
+    "conditions[0][property]=overall_rating&",
+    "conditions[0][value]=5&",
+    "conditions[0][operator]=<"
+    )
+  ) |> 
   req_perform() |> 
   resp_body_json(simplifyVector = TRUE)
 
-nh$results |> 
+x$results |> 
   mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
   remove_all_na() |> 
   count(overall_rating, sort = TRUE)
 ```
 
+### Specific Conditions
 
-## Querying for Specific Conditions
+Recommended method: Use the __Datastore Query Endpoint__ (`datastore/query/{datasetID}/{index}`); takes two arguments: the `datasetID`, which can be obtained from the URL of the dataset and does not change between data refreshes, and the index of the distribution. Currently on the PDC, the index will _always_ be `0`.
 
-The recommended method is to use the datastore query endpoint: `datastore/query/{datasetID}/{index}`
-
-The datastore query endpoint takes two arguments: the `datasetID`, which can be obtained from the URL of the dataset and does not change between data refreshes, and the index of the distribution. Currently on PDC, the index will always be zero.
-
-As an example, if you want to pull the first 500 results for a specific dataset that has a rating column called `overall_rating`, you would first identify the dataset that has the specific column such as this:
+To return the first 500 results of a dataset with a column named `overall_rating`, first identify the dataset with that column:
 
 ```{r}
+#| label: first_500
 weburl::url_parse(
-"https://data.cms.gov/provider-data/api/1/datastore/query/4pq5-n9py/0") |> 
+  paste0(
+    "https://data.cms.gov/",
+    "provider-data/api/1/",
+    "datastore/query/4pq5-n9py/0"
+    )
+  ) |> 
   mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
   remove_all_na() |> 
   purse()
-```
 
-```{r}
-ex <- request("https://data.cms.gov/provider-data/api/1/datastore/query/4pq5-n9py/0") |> 
+x <- request(
+  paste0(
+    "https://data.cms.gov/",
+    "provider-data/api/1/",
+    "datastore/query/4pq5-n9py/0"
+    )
+  ) |> 
   req_perform() |> 
   resp_body_json(simplifyVector = TRUE)
 
-ex$results |> 
+x$results |> 
   mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
   remove_all_na() |> 
   count(overall_rating, sort = TRUE)
 ```
 
-The results can be filtered further. For example, to return the first 500 results with an overall rating of 5, you would use the following:
+To return the first 500 results with an overall rating of 5:
 
 ```{r}
+#| label: rating_five
 weburl::url_parse(
-"https://data.cms.gov/provider-data/api/1/datastore/query/4pq5-n9py/0?conditions[0][property]=overall_rating&conditions[0][value]=5&conditions[0][operator]==") |> 
+  paste0(
+    "https://data.cms.gov/",
+    "provider-data/api/1/",
+    "datastore/query/4pq5-n9py/0?",
+    "conditions[0][property]=overall_rating&",
+    "conditions[0][value]=5&",
+    "conditions[0][operator]=="
+    )
+  ) |> 
   mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
   remove_all_na() |> 
   purse()
-```
 
-```{r}
-ex <- request("https://data.cms.gov/provider-data/api/1/datastore/query/4pq5-n9py/0?conditions[0][property]=overall_rating&conditions[0][value]=5&conditions[0][operator]==") |> 
+x <- request(
+  paste0(
+    "https://data.cms.gov/",
+    "provider-data/api/1/",
+    "datastore/query/4pq5-n9py/0?",
+    "conditions[0][property]=overall_rating&",
+    "conditions[0][value]=5&",
+    "conditions[0][operator]=="
+    )
+  ) |> 
   req_perform() |> 
   resp_body_json(simplifyVector = TRUE)
 
-ex$results |> 
+x$results |> 
   mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
   remove_all_na() |> 
   count(state, sort = TRUE)
 ```
 
-More complex queries can be created in JSON and converted to an HTTP query string by using [JSON Query to String](https://www.convertonline.io/convert/json-to-query-string).
-
-For example, to return just the CMS certification number and overall rating columns that have an overall rating greater than 3, you could use the following JSON:
+More complex queries can be created in JSON and converted to an HTTP query string using the [JSON Query to String](https://www.convertonline.io/convert/json-to-query-string) tool. For example, to return the `cms_certification_number_ccn` and `overall_rating` columns with a rating greater than 3, use the following JSON:
 
 ```r
 {
@@ -145,139 +194,196 @@ For example, to return just the CMS certification number and overall rating colu
     ]
 }
 ```
-
-Which converts to a query string of:
+This converts to a query string of:
 
 ```{r}
+#| label: ccn_rating
 weburl::url_parse(
   paste0(
-  "https://data.cms.gov/provider-data/api/1/datastore/query/4pq5-n9py/0?",
-  "properties[]=state&",   
-  "properties[]=overall_rating&",
-  "conditions[0][property]=overall_rating&",   
-  "conditions[0][value]=3&",
-  "conditions[0][operator]=>")) |>
+    "https://data.cms.gov/",
+    "provider-data/api/1/",
+    "datastore/query/4pq5-n9py/0?",
+    "properties[]=cms_certification_number_ccn&",   
+    "properties[]=overall_rating&",
+    "conditions[0][property]=overall_rating&",   
+    "conditions[0][value]=3&",
+    "conditions[0][operator]=>"
+    )
+  ) |>
   mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
   remove_all_na() |> 
   purse()
-```
 
-```{r}
-ex <- request(paste0(
-  "https://data.cms.gov/provider-data/api/1/datastore/query/4pq5-n9py/0?",
-  "properties[]=state&",   
-  "properties[]=overall_rating&",
-  "conditions[0][property]=overall_rating&",   
-  "conditions[0][value]=3&",
-  "conditions[0][operator]=>")) |> 
+x <- request(
+  paste0(
+    "https://data.cms.gov/",
+    "provider-data/api/1/",
+    "datastore/query/4pq5-n9py/0?",
+    "properties[]=state&",   
+    "properties[]=overall_rating&",
+    "conditions[0][property]=overall_rating&",   
+    "conditions[0][value]=3&",
+    "conditions[0][operator]=>"
+    )
+  ) |> 
   req_perform() |> 
   resp_body_json(simplifyVector = TRUE)
 
-ex$results |> 
+x$results |> 
   mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
   remove_all_na() |> 
   count(overall_rating, sort = TRUE)
 ```
 
-## Retrieve All Dataset IDs
+### All Dataset IDs
 
-Yes, you can retrieve a comprehensive list of all datasets available on the PDC site by leveraging the metastore schema endpoint:
+Retrieve a comprehensive list of all datasets available by leveraging the `metastore/schemas` endpoint:
 
 ```{r}
-ex <- request("https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items") |> 
+#| label: data_ids
+x <- request(
+  paste0(
+    "https://data.cms.gov/",
+    "provider-data/api/1/",
+    "metastore/schemas/dataset/items"
+    )
+  ) |> 
   req_perform() |> 
   resp_body_json(simplifyVector = TRUE)
 
-ex |> 
+x |> 
   tibble() |> 
   mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
   remove_all_na()
 ```
 
-For developers looking to work with multiple datasets programmatically, consider utilizing JSON parsing tools or custom scripts to extract and manage these IDs efficiently. For example, using a `curl` command in the terminal followed by a tool like `jq` can streamline the process:
+### Search `theme`
 
-```r
-curl https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items | jq '.[] | {id: .identifier, name: .title}'
-```
-
-This command fetches the list of datasets and uses `jq` to parse the JSON response, extracting the identifier and title of each dataset.
-
-## Filter List of Dataset IDs
-
-You can get a list of all public datasets for a Topic area via the /api/1/search endpoint. For example, to get a list of all datasets in the `Home health services` Topic, you could use:
+Return a list of all public datasets for a particular __Topic__ area via the `/api/1/search` endpoint. For example, to get a list of all datasets in the `Home health services` Topic, you could use:
 
 ```{r}
-#| warning: false
-#| error: false
-ex <- request(
-  "https://data.cms.gov/provider-data/api/1/search?page-size=100&theme=Home%20health%20services") |> 
+#| label: search_theme
+x <- request(
+  paste0(
+    "https://data.cms.gov/",
+    "provider-data/api/1/",
+    "search?",
+    "page-size=100&",
+    "theme=Home%20health%20services"
+    )
+  ) |> 
   req_perform() |> 
   resp_body_json(simplifyVector = TRUE)
 
-ex$facets |> 
+x$facets |> 
   tibble() |> 
   mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
   remove_all_na()
 
-ex$results |> 
+x$results |> 
+  glimpse()
+```
+
+> __Note__: If the `page-size` is not provided, the default result limit is 10.
+
+### Search `keyword`
+
+One of the easiest ways to generate your search parameters is to use the Provider Data Catalog [search page](https://data.cms.gov/provider-data/search) and then copy the query string to the end of the search endpoint. For example, if you filter by _"Dialysis facilities"_ tagged with _"Linking Quality to Payment"_ and select 25 results per page, the query string produced is:
+
+```{r}
+#| label: search_keyword
+x <- request(
+  paste0(
+    "https://data.cms.gov/",
+    "provider-data/api/1/",
+    "search?",
+    "keyword=Linking%20Quality%20to%20Payment&",
+    "page-size=25&",
+    "theme=Dialysis%20facilities"
+    )
+  ) |> 
+  req_perform() |> 
+  resp_body_json(simplifyVector = TRUE)
+
+x$facets |> 
+  tibble() |> 
+  mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
+  remove_all_na()
+
+x$results |> 
+  glimpse()
+```
+
+### Search `fulltext`
+
+Use the same method to return a list of datasets that contain a keyword (like "ratings") in their title and/or description:
+
+```{r}
+#| label: search_fulltext
+x <- request(
+  paste0(
+    "https://data.cms.gov/",
+    "provider-data/api/1/",
+    "search?",
+    "fulltext=ratings"
+    )
+  ) |> 
+  req_perform() |> 
+  resp_body_json(simplifyVector = TRUE)
+
+x$facets |> 
+  tibble() |> 
+  mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
+  remove_all_na()
+
+x$results |> 
   glimpse()
 ```
 
 
-If the page size is not provided, the default result limit is 10.
+::: callout
 
-One of the easiest ways to use this feature is to set up your search parameters on the Provider Data Catalog  [search page](https://data.cms.gov/provider-data/search) and then copy the query string to the end of the search endpoint.
+## Metastore/Datastore
 
-For example, if you filter by “Dialysis facilities” tagged with “Linking Quality to Payment” and select 25 results per page, the query string produced is: ?keyword=Linking%20Quality%20to%20Payment&page-size=25&theme=Dialysis%20facilities
+   * __Datastore__: Data from the data files (CSVs)
+   * __Metastore__: Metadata from the data.json file (`title`, `last_updated`, `release_date`, `keywords`, etc.)
 
-You can append this query string to the search endpoint to get a list of all datasets that meet that criteria, like this:
+Think of the __Metastore__ as the library index that helps you find the right book (dataset), and the __Datastore__ as the book itself.
+
+::: 
+
+
+::: callout
+
+## IDs: Dataset/Distribution
+
+   * __Distribution__: Unique identifier of the _Datastore_ 
+      * Specific to a particular CSV data import
+      * Changes with every data refresh
+   * __Dataset__: Unique identifier of the _Dataset_ 
+      * Comes from the data.json file
+      * Appears as part of the URL in the PDC site
+      * Does not change between data refreshes
+
+If you have been using the `datastore/sql` or `datastore/query/{distributionId}` endpoints, consider switching to the `datastore/query/{datasetID}/{index}` endpoint instead. The `datasetID` does not change between refreshes, and, currently, all **Provider Data Catalog** datasets only have a single resource, so the index will always be zero.
+
+For example, search the [Long Term Care Hospital dataset](https://data.cms.gov/provider-data/dataset/5zdx-ny2x) with:
 
 ```{r}
-#| warning: false
-#| error: false
-ex <- request(
-  "https://data.cms.gov/provider-data/api/1/search?keyword=Linking%20Quality%20to%20Payment&page-size=25&theme=Dialysis%20facilities") |> 
-  req_perform() |> 
-  resp_body_json(simplifyVector = TRUE)
-
-ex$facets |> 
-  tibble() |> 
-  mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
-  remove_all_na()
-
-ex$results |> 
-  glimpse()
+"https://data.cms.gov/provider-data/api/1/datastore/query/5zdx-ny2x/0"
 ```
 
-You can also use the same method to return a list of datasets that contain a keyword like “ratings” in their title and/or description:
+Distribution IDs change with every dataset update, so it is better to use APIs with the Dataset ID and the index of the distribution. If you still need the current distribution ID, you can access it through the metadata API, under `distribution -> identifier`:
 
-https://data.cms.gov/provider-data/api/1/search?fulltext=ratings
+```{r}
+"https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/[datasetID]?show-reference-ids"
+```
 
-## Difference Between Metastore & Datastore
+::: 
 
-Datastore: data from the data files (CSVs) and Metastore: metadata properties about the dataset  from the data.json file (e.g. dataset title, last updated date, release date, keywords, etc.)
+--------------------------------------------------------------------------------
 
-Think of the Metastore as the library index that helps you find the right book (dataset), and the Datastore as the book itself, containing all the detailed information (data entries) you need.
-
-## Distribution & Dataset IDs
-
-Distribution ID - the unique identifier of the datastore. The distribution ID is specific to a particular CSV data import, so it changes with every data refresh.
-
-Dataset ID -  the unique identifier of the dataset  The Dataset ID comes from the data.json file and appears as part of the URL in the PDC site and it does not change between refreshes.
-
-The Distribution ID changes with every data refresh.
-
-If you have been using the datastore/sql or datastore/query/{distributionId} endpoints to pull data, you might consider switching to use the datastore/query/{datasetID}/{index} endpoint instead. The datasetID does not change between refreshes, and currently all datasets in the Provider Data Catalog have only a single resource, so the index will always be zero.
-
-As an example, to pull the data for the long term care hospital dataset at https://data.cms.gov/provider-data/dataset/5zdx-ny2x you could use
-
-https://data.cms.gov/provider-data/api/1/datastore/query/5zdx-ny2x/0
-
-Since Distribution IDs change with every dataset update, if you are creating an automated script, it is better to use APIs with the Dataset ID and the index of the distribution. (Please see “Do the Distribution IDs change?” for more information.)
-
-If you still need the current distribution ID, you can find it by viewing the dataset metadata API.  /api/1/metastore/schemas/dataset/items/[datasetID]?show-reference-ids under distribution -> identifier
-
-## Data
+## Dataset Object
 
 ```{r}
 #| label: provider_data
@@ -289,11 +395,10 @@ provider_data() |>
   cat(sep = "\n")
 ```
 
-## National Downloadable File
+### National Downloadable File
 
 ```{r}
 #| label: url_building
-#| echo: false
 #| eval: false
 httr2::url_parse("https://data.cms.gov/provider-data/api/1/datastore/query/")
     
