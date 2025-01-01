@@ -147,6 +147,36 @@ IS NULL
 IS NOT NULL
 ```
 
+```{r}
+GT <- \(arg, value) {
+  glue::glue(
+  "
+  [condition][path]={arg}&
+  [condition][operator]=>&
+  [condition][value]={value}&
+  ")
+}
+
+GT("overall_rating", 3)
+
+GTE <- \(arg, value) {
+  glue::glue(
+  "filter[fID-1][condition][path]={arg}&\\
+  filter[fID-1][condition][operator]=>=&\\
+  filter[fID-1][condition][value]={value}"
+  )
+}
+
+GTE("overall_rating", 3)
+
+test_url <- glue::as_glue("https://data.cms.gov/data-api/v1/dataset/datad10d792e-ea6e-4145-8512-34efbc1be04b/data?size=10&offset=0&")
+
+test_url <- test_url + GTE("overall_rating", 3)
+
+curl::curl_parse_url(test_url)
+```
+
+
 ::: 
 
 ### Groups

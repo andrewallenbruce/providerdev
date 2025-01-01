@@ -30,34 +30,8 @@ Federal agencies, combined agency and bureau code from [OMB Circular A-11, Appen
 > __Format__: `015:11`
 
 ```{r}
-#| label: bureauCodes_csv
-bureauCodes <- read_csv(
-  here("data/omb_bureau_codes.csv"), 
-  show_col_types  = FALSE,
-  col_types       = cols(
-  `Agency Name`   = col_character(),
-  `Bureau Name`   = col_character(),
-  `Agency Code`   = col_character(),
-  `Bureau Code`   = col_character(),
-  `Treasury Code` = col_character(),
-  `CGAC Code`     = col_character())) |> 
-  setNames(c("agencyName", 
-             "bureauName", 
-             "agencyCode", 
-             "bureauCode", 
-             "treasuryCode", 
-             "cgacCode")) |> 
-  mutate(
-    agencyCode   = str_pad(agencyCode, width = 3, pad = "0"),
-    bureauCode   = str_pad(bureauCode, width = 2, pad = "0"),
-    treasuryCode = str_pad(treasuryCode, width = 2, pad = "0"),
-    cgacCode     = str_pad(cgacCode, width = 3, pad = "0"))
-
-bureauCodes
-
-bureauCodes |> 
-  filter(bureauCode == "38") |> 
-  purse()
+#| label: bureauCodes
+bureau_code()
 ```
 
 ### `programCode`
@@ -67,32 +41,8 @@ Federal agencies, list the primary program related to this data asset, from the 
 > __Format__: `015:001`
 
 ```{r}
-#| label: programCodes_csv
-programCodes <- read_csv(
-  here(
-    "data/FederalProgramInventory_FY13_MachineReadable_091613.csv"
-    ), 
-  show_col_types                      = FALSE,
-  col_types                           = cols(
-  `Agency Name`                       = col_character(),
-  `Program Name`                      = col_character(),
-  `Additional Information (optional)` = col_character(),
-  agencyCode                          = col_character(),
-  ProgramCode                         = col_character(),
-  ProgramCodePODFormat                = col_character()
-  )) |> 
-  setNames(c("agencyName", 
-             "programName", 
-             "additionalInfo", 
-             "agencyCode", 
-             "programCode", 
-             "programCodePODfmt"))
-
-programCodes
-
-programCodes |> 
-  filter(programCodePODfmt == "009:000") |> 
-  purse()
+#| label: programCodes
+program_code()
 ```
 
 ### `accrualPeriodicity`
@@ -106,7 +56,8 @@ tibble(
   "R/P0.33M", "R/P0.5M", "R/P1M", "R/P2M",
   "R/P3M",    "R/P4M",   "R/P6M", "R/P1Y",
   "R/P2Y",    "R/P3Y",   "R/P4Y", "R/P10Y"),
-  accrualDescription = recode_iso8601(accrualPeriodicity))
+  accrualDescription = providertwo::recode_iso8601(accrualPeriodicity))
+
 ```
 
 ### DCAT JSON Schemas
