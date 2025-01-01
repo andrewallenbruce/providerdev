@@ -69,26 +69,29 @@ Federal agencies, list the primary program related to this data asset, from the 
 ```{r}
 #| label: programCodes_csv
 programCodes <- read_csv(
-  here("data/FederalProgramInventory_FY13_MachineReadable_091613.csv"), 
+  here(
+    "data/FederalProgramInventory_FY13_MachineReadable_091613.csv"
+    ), 
   show_col_types                      = FALSE,
   col_types                           = cols(
   `Agency Name`                       = col_character(),
   `Program Name`                      = col_character(),
   `Additional Information (optional)` = col_character(),
-  `Agency Code`                       = col_character(),
+  agencyCode                          = col_character(),
   ProgramCode                         = col_character(),
-  ProgramCodePODFormat                = col_character())) |> 
+  ProgramCodePODFormat                = col_character()
+  )) |> 
   setNames(c("agencyName", 
              "programName", 
-             "AdditionalInformation", 
+             "additionalInfo", 
              "agencyCode", 
              "programCode", 
-             "programCodePODFormat"))
+             "programCodePODfmt"))
 
 programCodes
 
 programCodes |> 
-  filter(programCodePODFormat == "009:000") |> 
+  filter(programCodePODfmt == "009:000") |> 
   purse()
 ```
 
