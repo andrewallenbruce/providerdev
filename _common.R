@@ -1,5 +1,21 @@
 options(scipen = 999, digits = 3)
 
+library(collapse)
+library(tidyverse)
+library(here)
+
+library(provider)
+library(providertwo)
+
+library(httr2)
+library(curl)
+library(weburl)
+
+library(arrow)
+library(RcppSimdJson)
+
+library(S7)
+
 btn_link <- \(href, label) {
 
   htmltools::tags$a(
@@ -12,41 +28,11 @@ btn_link <- \(href, label) {
   )
 }
 
-offset_sequence       <- \(rows, size = 5000) if (rows <= size) return(rows) else 0:round(rows / size) * size
-replace_fix           <- \(x, p, r, v = FALSE) stringi::stri_replace_all_fixed(str = x, pattern = p, replacement = r, vectorize_all = v)
-replace_open_columns  <- \(x) replace_fix(x, c(":", "%", "@", "$", "properties_"), c("_", "", "", "", "pr_"))
-replace_open_desc     <- \(x) replace_fix(x, c("\n", "<p><strong>NOTE: </strong>This is a very large file and, depending on your network characteristics and software, may take a long time to download or fail to download. Additionally, the number of rows in the file may be larger than the maximum rows your version of <a href=\"https://support.microsoft.com/en-us/office/excel-specifications-and-limits-1672b34d-7043-467e-8e27-269d656771c3\">Microsoft Excel</a> supports. If you can't download the file, we recommend engaging your IT support staff. If you are able to download the file but are unable to open it in MS Excel or get a message that the data has been truncated, we recommend trying alternative programs such as MS Access, Universal Viewer, Editpad or any other software your organization has available for large datasets.</p>"), c(". ", ""))
-remove_at_symbol      <- \(x) fuimus::sf_remove(s = x, p = "@", fix = TRUE)
-flatten_column        <- \(i) purrr::map_chr(i, \(x) paste0(fuimus::delist(x), collapse = ", "))
+replace_open_columns  <- \(x) providertwo::replace_fix(x, c(":", "%", "@", "$", "properties_"), c("_", "", "", "", "pr_"))
+replace_open_desc     <- \(x) providertwo::replace_fix(x, c("\n", "<p><strong>NOTE: </strong>This is a very large file and, depending on your network characteristics and software, may take a long time to download or fail to download. Additionally, the number of rows in the file may be larger than the maximum rows your version of <a href=\"https://support.microsoft.com/en-us/office/excel-specifications-and-limits-1672b34d-7043-467e-8e27-269d656771c3\">Microsoft Excel</a> supports. If you can't download the file, we recommend engaging your IT support staff. If you are able to download the file but are unable to open it in MS Excel or get a message that the data has been truncated, we recommend trying alternative programs such as MS Access, Universal Viewer, Editpad or any other software your organization has available for large datasets.</p>"), c(". ", ""))
+remove_at_symbol      <- \(x) providertwo::sf_remove(s = x, p = "@", fix = TRUE)
+flatten_column        <- \(i) purrr::map_chr(i, \(x) paste0(providertwo::delist(x), collapse = ", "))
 purse                 <- \(x, pre = "- ", wid = 0, max = 20, sep = " ") terse::terse(x = x, prefix = pre, width = wid, max_vec_len = max, config = list(gsep = sep, ansi = FALSE))
-
-recode_iso8601 <- \(x) {
-  kit::nswitch(
-    x,
-    "R/P10Y",   "Decennially",
-    "R/P4Y",    "Quadrennially",
-    "R/P1Y",    "Annually",
-    "R/P0.5M",  "Twice a Month",
-    "R/P2M",    "Bimonthly",
-    "R/P0.5W",  "Twice a Week",
-    "R/P2W",    "Biweekly",
-    "R/P3.5D",  "Semiweekly",
-    "R/P1D",    "Daily",
-    "R/P6M",    "Semiannually",
-    "R/P2Y",    "Biennially",
-    "R/P3Y",    "Triennially",
-    "R/P0.33W", "Three Times a Week",
-    "R/P0.33M", "Three Times a Month",
-    "R/PT1S",   "Continuously Updated",
-    "R/P1M",    "Monthly",
-    "R/P3M",    "Quarterly",
-    "R/P4M",    "Three Times a Year",
-    "R/P1W",    "Weekly",
-    "R/PT1H",   "Hourly",
-    default = NA_character_,
-    nThread = 4L
-    )
-}
 
 main_data_arrow <- \() {
 
@@ -119,14 +105,3 @@ provider_data <- \() {
     fuimus::remove_all_na()
 
 }
-
-library(collapse)
-library(tidyverse)
-library(provider)
-library(fuimus)
-library(arrow)
-library(here)
-library(httr2)
-library(curl)
-library(weburl)
-library(S7)

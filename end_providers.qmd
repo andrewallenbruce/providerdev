@@ -22,27 +22,15 @@ htmltools::tagList(
    * Base URL: `https://data.cms.gov/data-api/v1/`
    * Identifier: `2457ea29-fc82-48b0-86ec-3b0755de7515`
 
-```{r}
-# distro <- collapse::fselect(dataset, distribution) |>
-#     tidyr::unnest(distribution) |>
-#     collapse::frename(remove_at_symbol)
-```
-
 ## Catalog
 
 ```{r}
-#| label: main_catalog
-main_data_raw <- \() {
-
+#| label: public_catalog
+public_catalog <- \() {
+  
   x <- RcppSimdJson::fload("https://data.cms.gov/data.json")
-
-  list(
-    context             = x[["@context"]],
-    id                  = x[["@id"]],
-    type                = x[["@type"]],
-    conformsTo          = x[["conformsTo"]],
-    describedBy         = x[["describedBy"]],
-    dataset             = collapse::qTBL(x[["dataset"]]) |>
+  
+  collapse::qTBL(x[["dataset"]]) |>
     collapse::fmutate(
       bureauCode   = delist(bureauCode),
       language     = delist(language),
@@ -51,93 +39,74 @@ main_data_raw <- \() {
       theme        = flatten_column(theme),
       keyword      = flatten_column(keyword)) |>
     collapse::frename(remove_at_symbol)
-  )
 }
 
-main <- main_data_raw()
+public <- public_catalog()
 
-main
+public
 ```
 
 ## Dataset
 
 ```{r}
 #| label: provider_dataset
-#| eval: false
-Dataset <- \() {
-  
-  x <- RcppSimdJson::fload("https://data.cms.gov/data.json")
-  x <- collapse::qTBL(x[["dataset"]]) |>
-    collapse::fmutate(
-      bureauCode   = delist(bureauCode),
-      language     = delist(language),
-      programCode  = delist(programCode),
-      references   = delist(references),
-      theme        = flatten_column(theme),
-      keyword      = flatten_column(keyword)) |>
-    collapse::frename(remove_at_symbol)
-  
-  tibble::lst(
-    dataset = collapse::fsubset(x[["dataset"]], fuimus::sf_detect(title, set)) |> collapse::frename(remove_at_symbol),
-    distribution = collapse::qTBL(dataset$distribution[[1]]) |> collapse::frename(remove_at_symbol)
+dataset <- \(catalog, search) {
+  collapse::fsubset(
+    catalog, 
+    providertwo::sf_detect(
+      title, 
+      search
+      )
     )
 }
 
-x <- select_dataset(main, "Fee-For-Service")
+ffs <- dataset(public, "Fee-For-Service")
 
-x |> purse()
+ffs |> purse()
 ```
 
 
 ## Distribution
 
 ```{r}
-#| eval: false
-collapse::qTBL(x$dataset$distribution[[1]]) |> 
-  collapse::frename(remove_at_symbol) |> 
-  purse()
+#| label: provider_distribution
+distribution <- \(dataset, search) {
+  
+  x <- collapse::fsubset(
+    dataset[c("title", "distribution")], 
+    providertwo::sf_detect(title, search))
+  
+  collapse::qTBL(x[["distribution"]][[1]])
+}
+
+distribution(ffs, "Fee-For-Service")
 ```
 
 
 ```{r}
 #| label: provider_latest
-#| eval: false
-provider_latest <- collapse::fsubset(
-    main[["distribution_latest"]],
-    fuimus::sf_detect(
-      title, 
-      "Fee-For-Service"
-      ))
-
-provider_latest |> purse()
+collapse::fsubset(
+    distribution(ffs, "Fee-For-Service"), 
+    description %==% "latest") |> 
+  purse()
 ```
 
 
 ```{r}
 #| label: provider_api
-#| eval: false
-provider_api <- collapse::fsubset(
-    main[["distribution_api"]],
-    fuimus::sf_detect(
-      title, 
-      "Fee-For-Service"
-      ))
-
-provider_api |> purse()
+collapse::fsubset(
+    distribution(ffs, "Fee-For-Service"), 
+    format %==% "API") |> 
+  purse()
 ```
 
 
 ```{r}
 #| label: provider_csv
-#| eval: false
-provider_csv <- collapse::fsubset(
-    main[["distribution_csv"]],
-    fuimus::sf_detect(
-      title, 
-      "Fee-For-Service"
-      ))
-
-provider_csv |> purse()
+collapse::fsubset(
+    distribution(ffs, "Fee-For-Service"), 
+    mediaType %==% "text/csv") |> 
+  purse()
 ```
 
 ## URLS
