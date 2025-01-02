@@ -363,17 +363,18 @@ stats <- base |>
 
 stats
 
-stats |> 
+stats <- stats |> 
   req_perform() |> 
   resp_body_json(simplifyVector = TRUE)
-  purse()
+
+stats |> purse()
 
 offset_sequence(
   rows = stats$found_rows, 
   size = 5000)
 
 glue::glue(
-  "{base_id$url}",
+  "{base$url}",
   "?size=5000&",
   "offset=",
   "{offset_sequence(rows = stats$found_rows, size = 5000)}"
