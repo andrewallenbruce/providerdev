@@ -283,8 +283,7 @@ x$facets |>
   mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
   remove_all_na()
 
-x$results |> 
-  glimpse()
+x$results
 ```
 
 > __Note__: If the `page-size` is not provided, the default result limit is 10.
@@ -313,8 +312,7 @@ x$facets |>
   mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
   remove_all_na()
 
-x$results |> 
-  glimpse()
+x$results
 ```
 
 ### Search `fulltext`
@@ -339,36 +337,40 @@ x$facets |>
   mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
   remove_all_na()
 
-x$results |> 
-  glimpse()
+x$results
 ```
 
 
 ::: callout
 
-## Metastore/Datastore
+## Differences
 
-   * __Datastore__: Data from the data files (CSVs)
-   * __Metastore__: Metadata from the data.json file (`title`, `last_updated`, `release_date`, `keywords`, etc.)
+### __Metastore__ vs. __Datastore__
 
-Think of the __Metastore__ as the library index that helps you find the right book (dataset), and the __Datastore__ as the book itself.
+   * __Datastore__
+      * Data from the data files (CSVs)
+   * __Metastore__
+      * Metadata from the `data.json` file 
+      * `title`, `last_updated`, `release_date`, `keywords`, etc.
 
-::: 
+Think of the __Metastore__ as the library index that helps you find the right book (`dataset`), and the __Datastore__ as the book itself.
 
 
-::: callout
+### __Dataset__ vs. __Distribution__
 
-## IDs: Dataset/Distribution
-
-   * __Distribution__: Unique identifier of the _Datastore_ 
+   * __Distribution__
+      * Unique identifier of the _Datastore_ 
       * Specific to a particular CSV data import
       * Changes with every data refresh
-   * __Dataset__: Unique identifier of the _Dataset_ 
+   * __Dataset__
+      * Unique identifier of the _Dataset_ 
       * Comes from the data.json file
       * Appears as part of the URL in the PDC site
       * Does not change between data refreshes
 
-If you have been using the `datastore/sql` or `datastore/query/{distributionId}` endpoints, consider switching to the `datastore/query/{datasetID}/{index}` endpoint instead. The `datasetID` does not change between refreshes, and, currently, all **Provider Data Catalog** datasets only have a single resource, so the index will always be zero.
+If you have been using the `datastore/sql` or `datastore/query/{distributionId}` endpoints, consider switching to the `datastore/query/{datasetID}/{index}` endpoint instead. 
+
+The `datasetID` does not change between refreshes, and, currently, all **Provider Data Catalog** datasets only have a single resource, so the `index` will _always_ be `0`.
 
 For example, search the [Long Term Care Hospital dataset](https://data.cms.gov/provider-data/dataset/5zdx-ny2x) with:
 

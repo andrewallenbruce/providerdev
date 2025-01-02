@@ -19,6 +19,36 @@ htmltools::tagList(
     "ISO8601"))
 ```
 
+## DCAT Schemas
+
+::: {.panel-tabset}
+
+## Catalog
+
+```{r}
+#| label: schema_catalog
+#| echo: false
+listview(fload(here("data/dcat-us_v1.1_schema_catalog.json")))
+```
+
+## Dataset
+
+```{r}
+#| label: schema_dataset
+#| echo: false
+listview(fload(here("data/dcat-us_v1.1_schema_dataset.json")))
+```
+
+## Distribution
+
+```{r}
+#| label: schema_distribution
+#| echo: false
+listview(fload(here("data/dcat-us_v1.1_schema_distribution.json")))
+```
+
+::: 
+
 ## `dataset` Fields
 
    * [Data Catalog Vocabulary (DCAT) - Version 3](https://www.w3.org/TR/vocab-dcat/)
@@ -58,89 +88,3 @@ tibble(
   "R/P2Y",    "R/P3Y",   "R/P4Y", "R/P10Y"),
   accrualDescription = recode_iso8601(accrualPeriodicity))
 ```
-
-### DCAT JSON Schemas
-
-#### Catalog
-
-```{r}
-#| label: schema_catalog
-listview(fload(here("data/dcat-us_v1.1_schema_catalog.json")))
-```
-
-
-```{r}
-#| echo: false
-#| eval: false
-read_json_arrow(
-  here("data/dcat-us_v1.1_schema_catalog.json")) |> 
-  collect() |> 
-  unnest(properties) |> 
-  unnest(`@context`, names_sep = "_") |> 
-  unnest(`@id`, names_sep = "_") |> 
-  unnest(`@type`, names_sep = "_") |> 
-  unnest(`@type_enum`, names_sep = "_") |> 
-  unnest(conformsTo, names_sep = "_") |> 
-  unnest(conformsTo_enum, names_sep = "_") |> 
-  unnest(describedBy, names_sep = "_") |> 
-  unnest(dataset, names_sep = "_") |> 
-  unnest(dataset_items, names_sep = "_") |> 
-  mutate(dependencies = delist(dependencies),
-         required = flatten_column(required)) |> 
-  rename_with(replace_open_columns) |> 
-  purse()
-```
-
-#### Dataset
-
-```{r}
-#| label: schema_dataset
-listview(fload(here("data/dcat-us_v1.1_schema_dataset.json")))
-```
-
-```{r}
-#| echo: false
-#| eval: false
-read_json_arrow(
-  here("data/dcat-us_v1.1_schema_dataset.json")) |> 
-  collect() |> 
-  unnest(properties, names_sep = "_") |> 
-  # unnest(`properties_@type`, names_sep = "_") |> 
-  # unnest(properties_accessLevel, names_sep = "_") |> 
-  # unnest(properties_rights, names_sep = "_") |> 
-  # unnest(properties_accrualPeriodicity, names_sep = "_") |> 
-  # unnest(properties_bureauCode, names_sep = "_") |> 
-  # unnest(properties_contactPoint, names_sep = "_") |> 
-  # unnest(properties_describedBy, names_sep = "_") |> 
-  # unnest(properties_describedByType, names_sep = "_") |> 
-  # unnest(properties_conformsTo, names_sep = "_") |> 
-  # unnest(properties_rights_anyOf, names_sep = "_") |> 
-  # unnest(properties_accrualPeriodicity_anyOf, names_sep = "_") |> 
-  mutate(
-    required = flatten_column(required)) |> 
-    # `properties_@type_enum` = delist(`properties_@type_enum`),
-    # properties_accessLevel_enum = flatten_column(properties_accessLevel_enum),
-    # properties_accrualPeriodicity_anyOf_enum = flatten_column(properties_accrualPeriodicity_anyOf_enum)) |> 
-  rename_with(replace_open_columns) |> 
-  glimpse()
-```
-
-#### Distribution
-
-```{r}
-#| label: schema_distribution
-listview(fload(here("data/dcat-us_v1.1_schema_distribution.json")))
-```
-
-```{r}
-#| echo: false
-#| eval: false
-read_json_arrow(
-  here("data/dcat-us_v1.1_schema_distribution.json")) |> 
-  collect() |> 
-  unnest(properties, names_sep = "_") |> 
-  mutate(dependencies = flatten_column(dependencies)) |> 
-  rename_with(replace_open_columns) |> 
-  glimpse()
-```
-

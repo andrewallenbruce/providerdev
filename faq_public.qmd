@@ -46,7 +46,9 @@ To integrate endpoint requests with the **data.cms.gov Public API**, follow thes
 
 --------------------------------------------------------------------------------
 
-# Hierarchy
+::: {#nte-hierarchy .callout-note collapse="true"}
+
+## Hierarchy
 
 ```r
 <catalog>
@@ -99,6 +101,8 @@ To integrate endpoint requests with the **data.cms.gov Public API**, follow thes
                   |-> title
                   |-> temporal
 ```
+
+::: 
 
 ## Catalog
 
@@ -185,13 +189,15 @@ distribution |>
 
 ### Formats
 
-   * __description__ `"latest"` is a URL that always point to the latest data
-   * __mediaType__ `"text/csv"` is a downloadable CSV file
-   * __mediaType__ `"application/zip"` is a downloadable ZIP file
-   * __format__ `"API"` is an API endpoint
-   * Remaining entries provide references to data at fixed points in time
+   * __description__: `"latest"` == URL always pointing to latest data
+   * __mediaType__: `"text/csv"` == downloadable CSV file
+   * __mediaType__: `"application/zip"` == downloadable ZIP file
+   * __format__: `"API"` == API endpoint
+   * __temporal__: Data at fixed points in time
 
 ```{r}
+#| label: emphatic
+#| echo: false
 distribution |> 
   count(description, 
         format, 
@@ -205,15 +211,16 @@ For instance, the following URL will *always* point to the **Q2 2021 Payroll Bas
 
 ```{r}
 #| label: staffing
-# "https://data.cms.gov/data-api/v1/dataset/d10d792e-ea6e-4145-8512-34efbc1be04b/data"
-
-distribution |> 
+staffing <- distribution |> 
   filter(
-    grepl("Payroll Based Journal Daily Nurse Staffing", 
-          title),
-    format == "API",
-    grepl("^2021-04", 
-          temporal)) |> 
+    grepl("Payroll Based Journal Daily Nurse Staffing", title),
+    format == "API", 
+    grepl("^2021-04", temporal))
+
+staffing |> 
+  purse()
+
+staffing |> 
   pull(accessURL) |> 
   request() |> 
   req_perform() |> 
@@ -228,16 +235,20 @@ Datasets with multiple historical versions available will have a `temporal` fiel
 
 > **Format**: `YYYY-mm-dd/YYYY-mm-dd`
 
-The following example returns the [2017 Medicare Inpatient Hospitals - by Provider and Service Data](https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatienthospitals/medicare-inpatient-hospitals-by-provider-and-service):
+The following example returns the [2017 Medicare Inpatient Hospitals - by Provider and Service](https://data.cms.gov/provider-summary-by-type-of-service/medicare-inpatienthospitals/medicare-inpatient-hospitals-by-provider-and-service):
 
 ```{r}
 #| label: temporal_data
-distribution |> 
+temporal <- distribution |> 
   filter(
-    grepl("Medicare Inpatient Hospitals - by Provider and Service", 
-          title), 
+    grepl(
+      "Medicare Inpatient Hospitals - by Provider and Service", 
+      title
+      ), 
     format == "API",
-    temporal == "2017-01-01/2017-12-31") |> 
+    temporal == "2017-01-01/2017-12-31")
+
+temporal |> 
   purse()
 ```
 
@@ -261,7 +272,7 @@ Use the __`distribution`__ with the `"latest"` __`description`__:
     -> ($accessURL)
 ```
 
-For example, this URL for Opt Out Affidavits is:
+For example, this URL for **Opt Out Affidavits** is:
 
 ```r
 https://data.cms.gov/
@@ -276,8 +287,10 @@ https://data.cms.gov/
 #| label: json_standard
 distribution |> 
   filter(
-    grepl("Order and Referring", 
-          title),
+    grepl(
+      "Order and Referring", 
+      title
+      ),
     description == "latest") |> 
   purse()
 ```
@@ -287,7 +300,6 @@ distribution |>
 The **JSON:API** form has a slightly different structure that includes metadata about the dataset. Otherwise it is identical to the **Standard JSON** method. 
 
 Use the URL in the `identifier` field. 
-
 
 ```r
 <data_json>
@@ -312,7 +324,9 @@ dataset |>
   filter(
     grepl(
       "Order and Referring", 
-      title)) |> 
+      title
+      )
+    ) |> 
   unnest_wider(contactPoint, names_sep = "_") |>
   unnest_wider(publisher, names_sep = "_") |>
   mutate(
@@ -330,24 +344,28 @@ dataset |>
 
 # Pagination
 
-The default is to provide the first 1,000 rows per request. However, there is an ability to increase the limit to 5,000 rows per request. You can use pagination to retrieve the entire dataset. 
+The default is to provide the first **1,000 rows per request**. 
 
-For example, with the **Opt Out Affidavits** dataset:
+However, there is an ability to increase the limit to **5,000 rows per request**. You can use pagination to retrieve the entire dataset. 
 
-   1. Start with the following request to get the number of rows:
+For example, with the **Opt Out Affidavits** dataset, start with the following request to get the number of rows:
 
 ```{r}
 #| label: pagination_1
-base_id <- request("https://data.cms.gov/data-api/v1/dataset") |> 
+base <- request("https://data.cms.gov/data-api/v1/dataset") |> 
   req_url_path_append("9887a515-7552-4693-bf58-735c77af46d7") |> 
   req_url_path_append("data")
 
-stats <- base_id |> 
-  req_url_path_append("stats") |> 
-  req_perform() |> 
-  resp_body_json(simplifyVector = TRUE)
+base
+
+stats <- base |> 
+  req_url_path_append("stats")
+
+stats
 
 stats |> 
+  req_perform() |> 
+  resp_body_json(simplifyVector = TRUE)
   purse()
 
 offset_sequence(
@@ -360,42 +378,6 @@ glue::glue(
   "offset=",
   "{offset_sequence(rows = stats$found_rows, size = 5000)}"
 )
-```
-      
-   2. Make a request for the *first* 5,000 rows:
-      
-```{r}
-#| label: pagination_2
-#| eval: false
-request("https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data?size=5000&offset=0") |>
-  req_perform() |> 
-  resp_body_json(simplifyVector = TRUE) |> 
-  tibble() |> 
-  purse()
-```
-      
-   3. Make a request for the *next* 5,000 rows:
-   
-```{r}
-#| label: pagination_3
-#| eval: false
-request("https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data?size=5000&offset=5000") |>
-  req_perform() |> 
-  resp_body_json(simplifyVector = TRUE) |> 
-  tibble() |> 
-  purse()
-```
-
-   4. Continue increasing the offset until you reach the count from step 1
-
-```{r}
-#| label: pagination_4
-#| eval: false
-request("https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data?size=5000&offset=10000") |>
-  req_perform() |> 
-  resp_body_json(simplifyVector = TRUE) |> 
-  tibble() |> 
-  purse()
 ```
 
 ## Pagination Example
@@ -461,7 +443,7 @@ accessURL |>
 ```
 
 
-# CSVs
+# CSV Downloads
 
    1. Start with a request to the `data.json`. 
    2. Match the dataset `title` with its name.
