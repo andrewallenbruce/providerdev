@@ -50,54 +50,54 @@ To integrate endpoint requests with the **data.cms.gov Public API**, follow thes
 
 ```r
 <catalog>
-    -> conformsTo
-    -> context
-    -> describedBy
-    -> id
-    -> type == dcat:Catalog
-    => <dataset>
-           -> type == dcat:Dataset
-           -> accessLevel
+    - conformsTo
+    - context
+    - describedBy
+    - id
+    - type == dcat:Catalog
+    |=> <dataset>
+           - type == dcat:Dataset
+           - accessLevel
            -> accrualPeriodicity
-           -> bureauCode
-           => [contactPoint]
-                  -> type
-                  -> fn
-                  -> hasEmail
-           -> dataQuality
-           -> describedBy
-           -> describedByType
-           -> ($description)
-           -> ($identifier)
+           - bureauCode
+           - [contactPoint]
+                  - type
+                  - fn
+                  - hasEmail
+           - dataQuality
+           - describedBy
+           - describedByType
+           |-> ($description)
+           |-> ($identifier)
            -> keyword
            -> landingPage
-           -> language
-           -> license
+           - language
+           - license
            -> modified
-           -> [publisher]
-                  -> type
-                  -> name
-           -> programCode
+           - [publisher]
+                  - type
+                  - name
+           - programCode
            -> references
-           -> temporal
-           -> theme
-           -> title
-           -> <distribution>
-                  -> type == dcat:Distribution
-                  -> accessURL
-                  -> ($description)
-                         -> latest
-                  -> downloadURL
-                  -> ($format)
-                         -> API
-                  -> ($mediaType)
-                         -> application/vnd.ms-excel
-                         -> application/zip
-                         -> text/csv
-                  -> modified
-                  -> resourcesAPI
-                  -> title
-                  -> temporal
+           |-> temporal
+           - theme
+           |-> title
+           |=> <distribution>
+                  - type == dcat:Distribution
+                  |-> accessURL
+                  |-> ($description)
+                         |-> latest
+                  |-> downloadURL
+                  |-> ($format)
+                         |-> API
+                  |-> ($mediaType)
+                         - application/vnd.ms-excel
+                         - application/zip
+                         |-> text/csv
+                  |-> modified
+                  |-> resourcesAPI
+                  |-> title
+                  |-> temporal
 ```
 
 ## Catalog
@@ -123,9 +123,9 @@ data_json |> glimpse()
 ```{r}
 #| label: col_select_remove
 #| echo: false
-c("@context    <chr> https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld", 
-  "@id         <chr> https://data.cms.gov/data.json", 
-  "@type       <chr> dcat:Catalog", 
+c("context     <chr> https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld", 
+  "id          <chr> https://data.cms.gov/data.json", 
+  "type        <chr> dcat:Catalog", 
   "conformsTo  <chr> https://project-open-data.cio.gov/v1.1/schema", 
   "describedBy <chr> https://project-open-data.cio.gov/v1.1/schema/catalog.json", 
   "dataset     <list> [<data.frame[138 x 22]>]") |> 
@@ -134,13 +134,23 @@ c("@context    <chr> https://project-open-data.cio.gov/v1.1/schema/catalog.jsonl
 
 ## Dataset
 
-Within `data.json`, there is an array called `dataset`. One can search through this array using the dataset's `title`, such as `"Payroll Based Journal Daily Nurse Staffing"`:
+Within `data.json`, there is an array called `dataset`:
+
+```{r}
+#| label: catalog_dataset
+dataset <- data_json |> 
+  pull(dataset) |> 
+  pluck(1) |> 
+  as_tibble()
+
+dataset
+```
+
+One can search through this array using the dataset's `title`, such as `"Payroll Based Journal Daily Nurse Staffing"`:
 
 ```{r}
 #| label: dataset_title
-data_json |> 
-  pull(dataset) |> 
-  pluck(1) |> 
+dataset |> 
   filter(
     grepl(
       "Payroll Based Journal Daily Nurse Staffing", 
@@ -164,9 +174,7 @@ Within `dataset`, there is an array called `distribution` which contains all dat
 
 ```{r}
 #| label: distribution
-distribution <- data_json |> 
-  pull(dataset) |> 
-  pluck(1) |> 
+distribution <- dataset |> 
   select(distribution) |> 
   unnest(distribution) |> 
   rename_with(remove_at_symbol)
@@ -300,9 +308,7 @@ https://data.cms.gov/
 
 ```{r}
 #| label: json_api
-data_json |> 
-  pull(dataset) |> 
-  pluck(1) |> 
+dataset |> 
   filter(
     grepl(
       "Order and Referring", 
