@@ -104,6 +104,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
+<link href="site_libs/tree-views-0.1.0/tree-views.css" rel="stylesheet">
+
 
 
 </head>
@@ -374,7 +376,7 @@ ISO8601
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"R/P0.33M"</span>, <span class="st">"R/P0.5M"</span>, <span class="st">"R/P1M"</span>, <span class="st">"R/P2M"</span>,</span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"R/P3M"</span>,    <span class="st">"R/P4M"</span>,   <span class="st">"R/P6M"</span>, <span class="st">"R/P1Y"</span>,</span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"R/P2Y"</span>,    <span class="st">"R/P3Y"</span>,   <span class="st">"R/P4Y"</span>, <span class="st">"R/P10Y"</span>),</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">accrualDescription =</span> providertwo<span class="sc">::</span><span class="fu">recode_iso8601</span>(accrualPeriodicity))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">accrualDescription =</span> <span class="fu">recode_iso8601</span>(accrualPeriodicity))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 20 × 2
    accrualPeriodicity accrualDescription  
@@ -407,151 +409,2666 @@ ISO8601
 <section id="catalog" class="level4" data-number="3.1.4.1">
 <h4 data-number="3.1.4.1" class="anchored" data-anchor-id="catalog"><span class="header-section-number">3.1.4.1</span> Catalog</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_json_arrow</span>(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"data/dcat-us_v1.1_schema_catalog.json"</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(properties) <span class="sc">|&gt;</span> </span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="st">`</span><span class="at">@context</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="st">`</span><span class="at">@id</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="st">`</span><span class="at">@type</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(<span class="st">`</span><span class="at">@type_enum</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(conformsTo, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(conformsTo_enum, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(describedBy, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(dataset, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(dataset_items, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">dependencies =</span> <span class="fu">delist</span>(dependencies),</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>         <span class="at">required =</span> <span class="fu">flatten_column</span>(required)) <span class="sc">|&gt;</span> </span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(replace_open_columns) <span class="sc">|&gt;</span> </span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>- $schema                    c1  http://json-schema.org/draft-04/schema#    ...
-- $id                        c1  https://project-open-data.cio.gov/v1.1/sch ...
-- $title                     c1  Project Open Data Catalog                  ...
-- $description               c1  Validates an entire collection of Project  ...
-- $type                      c1  object                                     ...
-- $dependencies              c1  @context                                   ...
-- $required                  c1  conformsTo, dataset                        ...
-- $context_title             c1  Metadata Context                           ...
-- $context_description       c1  URL or JSON object for the JSON-LD Context ...
-- $context_type              c1  string                                     ...
-- $context_format            c1  uri                                        ...
-- $id_title                  c1  Metadata Catalog ID                        ...
-- $id_description            c1  IRI for the JSON-LD Node Identifier of the ...
-- $id_type                   c1  string                                     ...
-- $id_format                 c1  uri                                        ...
-- $type_title                c1  Metadata Context                           ...
-- $type_description          c1  IRI for the JSON-LD data type. This should ...
-- $type_enum                 c1  dcat:Catalog                               ...
-- $conformsTo_description    c1  Version of Schema                          ...
-- $conformsTo_title          c1  Version of Schema                          ...
-- $conformsTo_enum           c1  https://project-open-data.cio.gov/v1.1/sch ...
-- $describedBy_description   c1  URL for the JSON Schema file that defines  ...
-- $describedBy_title         c1  Data Dictionary                            ...
-- $describedBy_type          c1  string                                     ...
-- $describedBy_format        c1  uri                                        ...
-- $dataset_type              c1  array                                      ...
-- $dataset_items_ref         c1  dataset.json                               ...
-- $dataset_items_minItems    i1  1                                          ...
-- $dataset_items_uniqueItems l1  T                                          ...</code></pre>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">listview</span>(<span class="fu">fload</span>(<span class="fu">here</span>(<span class="st">"data/dcat-us_v1.1_schema_catalog.json"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<ul class="tree">
+<li>
+<details open="true">
+<summary>
+<span>
+<code class="vec-header">&lt;named list [1:8]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+$schema
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"http://json-schema.org/draft-04/schema#"</span>
+</li>
+<li>
+<span>
+id
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"https://project-open-data.cio.gov/v1.1/schema/catalog.json#"</span>
+</li>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Project Open Data Catalog"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Validates an entire collection of Project Open Data metadata JS…"</span>
+</li>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"object"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+dependencies
+<code class="vec-header">&lt;named list [1]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+@type
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"@context"</span>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<span>
+required
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"conformsTo", "dataset"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+properties
+<code class="vec-header">&lt;named list [1:6]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<details>
+<summary>
+<span>
+@context
+<code class="vec-header">&lt;named list [1:4]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Metadata Context"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"URL or JSON object for the JSON-LD Context that defines the sch…"</span>
+</li>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"string"</span>
+</li>
+<li>
+<span>
+format
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"uri"</span>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+@id
+<code class="vec-header">&lt;named list [1:4]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Metadata Catalog ID"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"IRI for the JSON-LD Node Identifier of the Catalog. This should…"</span>
+</li>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"string"</span>
+</li>
+<li>
+<span>
+format
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"uri"</span>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+@type
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Metadata Context"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"IRI for the JSON-LD data type. This should be dcat:Catalog for…"</span>
+</li>
+<li>
+<span>
+enum
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"dcat:Catalog"</span>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+conformsTo
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Version of Schema"</span>
+</li>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Version of Schema"</span>
+</li>
+<li>
+<span>
+enum
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"https://project-open-data.cio.gov/v1.1/schema"</span>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+describedBy
+<code class="vec-header">&lt;named list [1:4]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"URL for the JSON Schema file that defines the schema used"</span>
+</li>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Data Dictionary"</span>
+</li>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"string"</span>
+</li>
+<li>
+<span>
+format
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"uri"</span>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+dataset
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"array"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+items
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+$ref
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"dataset.json"</span>
+</li>
+<li>
+<span>
+minItems
+<code class="vec-header">&lt;integer [1]&gt;</code>
+</span>
+<span class="vec-data">1</span>
+</li>
+<li>
+<span>
+uniqueItems
+<code class="vec-header">&lt;logical [1]&gt;</code>
+</span>
+<span class="vec-data">TRUE</span>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+</ul>
 </div>
 </div>
 </section>
 <section id="dataset" class="level4" data-number="3.1.4.2">
 <h4 data-number="3.1.4.2" class="anchored" data-anchor-id="dataset"><span class="header-section-number">3.1.4.2</span> Dataset</h4>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_json_arrow</span>(</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"data/dcat-us_v1.1_schema_dataset.json"</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(properties, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># unnest(`properties_@type`, names_sep = "_") |&gt; </span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># unnest(properties_accessLevel, names_sep = "_") |&gt; </span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># unnest(properties_rights, names_sep = "_") |&gt; </span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># unnest(properties_accrualPeriodicity, names_sep = "_") |&gt; </span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># unnest(properties_bureauCode, names_sep = "_") |&gt; </span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># unnest(properties_contactPoint, names_sep = "_") |&gt; </span></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># unnest(properties_describedBy, names_sep = "_") |&gt; </span></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># unnest(properties_describedByType, names_sep = "_") |&gt; </span></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># unnest(properties_conformsTo, names_sep = "_") |&gt; </span></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># unnest(properties_rights_anyOf, names_sep = "_") |&gt; </span></span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># unnest(properties_accrualPeriodicity_anyOf, names_sep = "_") |&gt; </span></span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">required =</span> <span class="fu">flatten_column</span>(required)) <span class="sc">|&gt;</span> </span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># `properties_@type_enum` = delist(`properties_@type_enum`),</span></span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># properties_accessLevel_enum = flatten_column(properties_accessLevel_enum),</span></span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># properties_accrualPeriodicity_anyOf_enum = flatten_column(properties_accrualPeriodicity_anyOf_enum)) |&gt; </span></span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(replace_open_columns) <span class="sc">|&gt;</span> </span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Rows: 1
-Columns: 35
-$ schema                    &lt;chr&gt; "http://json-schema.org/draft-04/schema#"
-$ id                        &lt;chr&gt; "https://project-open-data.cio.gov/v1.1/sche…
-$ title                     &lt;chr&gt; "Project Open Data Dataset"
-$ description               &lt;chr&gt; "The metadata format for all federal open da…
-$ type                      &lt;chr&gt; "object"
-$ required                  &lt;chr&gt; "bureauCode, programCode, title, description…
-$ pr_type                   &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
-$ pr_accessLevel            &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
-$ pr_rights                 &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
-$ pr_accrualPeriodicity     &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
-$ pr_bureauCode             &lt;tibble[,6]&gt; &lt;tbl_df[1 x 6]&gt;
-$ pr_contactPoint           &lt;tibble[,1]&gt; &lt;tbl_df[1 x 1]&gt;
-$ pr_describedBy            &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
-$ pr_describedByType        &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
-$ pr_conformsTo             &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
-$ pr_dataQuality            &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
-$ pr_description            &lt;tibble[,4]&gt; &lt;tbl_df[1 x 4]&gt;
-$ pr_distribution           &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
-$ pr_identifier             &lt;tibble[,4]&gt; &lt;tbl_df[1 x 4]&gt;
-$ pr_issued                 &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
-$ pr_keyword                &lt;tibble[,5]&gt; &lt;tbl_df[1 x 5]&gt;
-$ pr_landingPage            &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
-$ pr_language               &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
-$ pr_license                &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
-$ pr_modified               &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
-$ pr_primaryITInvestmentUII &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
-$ pr_programCode            &lt;tibble[,6]&gt; &lt;tbl_df[1 x 6]&gt;
-$ pr_publisher              &lt;tibble[,1]&gt; &lt;tbl_df[1 x 1]&gt;
-$ pr_references             &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
-$ pr_spatial                &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
-$ pr_systemOfRecords        &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
-$ pr_temporal               &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
-$ pr_isPartOf               &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
-$ pr_theme                  &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
-$ pr_title                  &lt;tibble[,4]&gt; &lt;tbl_df[1 x 4]&gt;</code></pre>
-</div>
-</div>
-</section>
-<section id="distribution" class="level4" data-number="3.1.4.3">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">listview</span>(<span class="fu">fload</span>(<span class="fu">here</span>(<span class="st">"data/dcat-us_v1.1_schema_dataset.json"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<ul class="tree">
+<li>
+<details open="true">
+<summary>
+<span>
+<code class="vec-header">&lt;named list [1:7]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+$schema
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"http://json-schema.org/draft-04/schema#"</span>
+</li>
+<li>
+<span>
+id
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"https://project-open-data.cio.gov/v1.1/schema/dataset.json#"</span>
+</li>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Project Open Data Dataset"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"The metadata format for all federal open data. Validates a sing…"</span>
+</li>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"object"</span>
+</li>
+<li>
+<span>
+required
+<code class="vec-header">&lt;character [1:10]&gt;</code>
+</span>
+<span class="vec-data">"bureauCode", "programCode", "title", "description", "keyword", "modified", "publisher", "contactPoint", …</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+properties
+<code class="vec-header">&lt;named list [1:29]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<details>
+<summary>
+<span>
+@type
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Metadata Context"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"IRI for the JSON-LD data type. This should be dcat:Dataset for…"</span>
+</li>
+<li>
+<span>
+enum
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"dcat:Dataset"</span>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+accessLevel
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"The degree to which this dataset could be made publicly-availab…"</span>
+</li>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Public Access Level"</span>
+</li>
+<li>
+<span>
+enum
+<code class="vec-header">&lt;character [1:3]&gt;</code>
+</span>
+<span class="vec-data">"public", "restricted publ…", "non-public"</span>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+rights
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Rights"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"This may include information regarding access or restrictions b…"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+anyOf
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"string", "null"</span>
+</li>
+<li>
+<span>
+minLength
+<code class="vec-header">&lt;integer [1:2]&gt;</code>
+</span>
+<span class="vec-data">1, <em>NA</em></span>
+</li>
+<li>
+<span>
+maxLength
+<code class="vec-header">&lt;integer [1:2]&gt;</code>
+</span>
+<span class="vec-data">255, <em>NA</em></span>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+accrualPeriodicity
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Frequency"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Frequency with which dataset is published."</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+anyOf
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<details>
+<summary>
+<span>
+enum
+<code class="vec-header">&lt;list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"irregular"</span>
+</li>
+<li>
+<span>
+<code class="vec-header">&lt;integer [1]&gt;</code>
+</span>
+<span class="vec-data"><em>NA</em></span>
+</li>
+<li>
+<span>
+<code class="vec-header">&lt;integer [1]&gt;</code>
+</span>
+<span class="vec-data"><em>NA</em></span>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1:3]&gt;</code>
+</span>
+<span class="vec-data"><em>NA</em>, "string", "null"</span>
+</li>
+<li>
+<span>
+pattern
+<code class="vec-header">&lt;character [1:3]&gt;</code>
+</span>
+<span class="vec-data"><em>NA</em>, "^R\/P(?:\d+(?:\…", <em>NA</em></span>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+bureauCode
+<code class="vec-header">&lt;named list [1:6]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Bureau Code"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Federal agencies, combined agency and bureau code from <a href="…&quot;</span">
+</a></span></li><a href="…&quot;</span">
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"array"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+items
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"string"</span>
+</li>
+<li>
+<span>
+pattern
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"[0-9]{3}:[0-9]{2}"</span>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<span>
+minItems
+<code class="vec-header">&lt;integer [1]&gt;</code>
+</span>
+<span class="vec-data">1</span>
+</li>
+<li>
+<span>
+uniqueItems
+<code class="vec-header">&lt;logical [1]&gt;</code>
+</span>
+<span class="vec-data">TRUE</span>
+</li>
+</a></ul><a href="…&quot;</span">
+</a></details><a href="…&quot;</span">
+</a></li><a href="…&quot;</span">
+<li>
+<details>
+<summary>
+<span>
+contactPoint
+<code class="vec-header">&lt;named list [1]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+$ref
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"vcard.json"</span>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+describedBy
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Data Dictionary"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"URL to the data dictionary for the dataset or API. Note that do…"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+anyOf
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"string", "null"</span>
+</li>
+<li>
+<span>
+format
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"uri", <em>NA</em></span>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+describedByType
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Data Dictionary Type"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"The machine-readable file format (IANA Media Type or MIME Type)…"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+anyOf
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+pattern
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"^[-\w]+/[-\w]+(…", <em>NA</em></span>
+</li>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"string", "null"</span>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+conformsTo
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Data Standard"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"URI used to identify a standardized specification the dataset c…"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+anyOf
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"string", "null"</span>
+</li>
+<li>
+<span>
+format
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"uri", <em>NA</em></span>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+dataQuality
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Data Quality"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Whether the dataset meets the agency’s Information Quality Guid…"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+anyOf
+<code class="vec-header">&lt;named list [1]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"boolean", "null"</span>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+description
+<code class="vec-header">&lt;named list [1:4]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Description"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Human-readable description (e.g., an abstract) with sufficient…"</span>
+</li>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"string"</span>
+</li>
+<li>
+<span>
+minLength
+<code class="vec-header">&lt;integer [1]&gt;</code>
+</span>
+<span class="vec-data">1</span>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+distribution
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Distribution"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"A container for the array of Distribution objects"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+anyOf
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"array", "null"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+items
+<code class="vec-header">&lt;list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<details>
+<summary>
+<span>
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+$ref
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"distribution.json"</span>
+</li>
+<li>
+<span>
+minItems
+<code class="vec-header">&lt;integer [1]&gt;</code>
+</span>
+<span class="vec-data">1</span>
+</li>
+<li>
+<span>
+uniqueItems
+<code class="vec-header">&lt;logical [1]&gt;</code>
+</span>
+<span class="vec-data">TRUE</span>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<span>
+<code class="vec-header">&lt;integer [1]&gt;</code>
+</span>
+<span class="vec-data"><em>NA</em></span>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+identifier
+<code class="vec-header">&lt;named list [1:4]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Unique Identifier"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"A unique identifier for the dataset or API as maintained within…"</span>
+</li>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"string"</span>
+</li>
+<li>
+<span>
+minLength
+<code class="vec-header">&lt;integer [1]&gt;</code>
+</span>
+<span class="vec-data">1</span>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+issued
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Release Date"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Date of formal issuance."</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+anyOf
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"string", "null"</span>
+</li>
+<li>
+<span>
+pattern
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"^([\+-]?\d{4}(?…", <em>NA</em></span>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+keyword
+<code class="vec-header">&lt;named list [1:5]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Tags"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Tags (or keywords) help users discover your dataset; please inc…"</span>
+</li>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"array"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+items
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"string"</span>
+</li>
+<li>
+<span>
+minLength
+<code class="vec-header">&lt;integer [1]&gt;</code>
+</span>
+<span class="vec-data">1</span>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<span>
+minItems
+<code class="vec-header">&lt;integer [1]&gt;</code>
+</span>
+<span class="vec-data">1</span>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+landingPage
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Homepage URL"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Alternative landing page used to redirect user to a contextual,…"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+anyOf
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"string", "null"</span>
+</li>
+<li>
+<span>
+format
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"uri", <em>NA</em></span>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+language
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Language"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"The language of the dataset."</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+anyOf
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"array", "null"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+items
+<code class="vec-header">&lt;list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<details>
+<summary>
+<span>
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"string"</span>
+</li>
+<li>
+<span>
+pattern
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"^(((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z…"</span>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<span>
+<code class="vec-header">&lt;integer [1]&gt;</code>
+</span>
+<span class="vec-data"><em>NA</em></span>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+</a><li><a href="…&quot;</span">
+</a><details><a href="…&quot;</span">
+<summary>
+<span>
+license
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+</a><ul><a href="…&quot;</span">
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"License"</span>
+</li>
+</a><li><a href="…&quot;</span">
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"The license dataset or API is published with. See </span></a><a href="http…" <="" span="">
+</a></li><a href="http…" <="" span="">
+<li>
+<details>
+<summary>
+<span>
+anyOf
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"string", "null"</span>
+</li>
+<li>
+<span>
+format
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"uri", <em>NA</em></span>
+</li>
+</ul>
+</details>
+</li>
+</a></ul><a href="http…" <="" span="">
+</a></details><a href="http…" <="" span="">
+</a></li><a href="http…" <="" span="">
+<li>
+<details>
+<summary>
+<span>
+modified
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Last Update"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Most recent date on which the dataset was changed, updated or m…"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+anyOf
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1:3]&gt;</code>
+</span>
+<span class="vec-data">"string", "string", "string"</span>
+</li>
+<li>
+<span>
+pattern
+<code class="vec-header">&lt;character [1:3]&gt;</code>
+</span>
+<span class="vec-data">"^([\+-]?\d{4}(?…", "^(R\d*\/)?P(?:\…", "^(R\d*\/)?([\+-…"</span>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+primaryITInvestmentUII
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Primary IT Investment UII"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"For linking a dataset with an IT Unique Investment Identifier (…"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+anyOf
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"string", "null"</span>
+</li>
+<li>
+<span>
+pattern
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"[0-9]{3}-[0-9]{…", <em>NA</em></span>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+programCode
+<code class="vec-header">&lt;named list [1:6]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Program Code"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Federal agencies, list the primary program related to this data…"</span>
+</li>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"array"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+items
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"string"</span>
+</li>
+<li>
+<span>
+pattern
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"[0-9]{3}:[0-9]{3}"</span>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<span>
+minItems
+<code class="vec-header">&lt;integer [1]&gt;</code>
+</span>
+<span class="vec-data">1</span>
+</li>
+<li>
+<span>
+uniqueItems
+<code class="vec-header">&lt;logical [1]&gt;</code>
+</span>
+<span class="vec-data">TRUE</span>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+publisher
+<code class="vec-header">&lt;named list [1]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+$ref
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"organization.json"</span>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+references
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Related Documents"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Related documents such as technical information about a dataset…"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+anyOf
+<code class="vec-header">&lt;named list [1:4]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"array", "null"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+items
+<code class="vec-header">&lt;list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<details>
+<summary>
+<span>
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"string"</span>
+</li>
+<li>
+<span>
+format
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"uri"</span>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<span>
+<code class="vec-header">&lt;integer [1]&gt;</code>
+</span>
+<span class="vec-data"><em>NA</em></span>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<span>
+minItems
+<code class="vec-header">&lt;integer [1:2]&gt;</code>
+</span>
+<span class="vec-data">1, <em>NA</em></span>
+</li>
+<li>
+<span>
+uniqueItems
+<code class="vec-header">&lt;logical [1:2]&gt;</code>
+</span>
+<span class="vec-data">TRUE, <em>NA</em></span>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+spatial
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Spatial"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"The range of spatial applicability of a dataset. Could include…"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+anyOf
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"string", "null"</span>
+</li>
+<li>
+<span>
+minLength
+<code class="vec-header">&lt;integer [1:2]&gt;</code>
+</span>
+<span class="vec-data">1, <em>NA</em></span>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+systemOfRecords
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"System of Records"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"If the systems is designated as a system of records under the P…"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+anyOf
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"string", "null"</span>
+</li>
+<li>
+<span>
+minLength
+<code class="vec-header">&lt;integer [1:2]&gt;</code>
+</span>
+<span class="vec-data">1, <em>NA</em></span>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+temporal
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Temporal"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"The range of temporal applicability of a dataset (i.e., a start…"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+anyOf
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1:4]&gt;</code>
+</span>
+<span class="vec-data">"string", "string", "string", "null"</span>
+</li>
+<li>
+<span>
+pattern
+<code class="vec-header">&lt;character [1:4]&gt;</code>
+</span>
+<span class="vec-data">"^([\+-]?\d{4}(?…", "^(R\d*\/)?([\+-…", "^(R\d*\/)?P(?:\…", <em>NA</em></span>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+isPartOf
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Collection"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"The collection of which the dataset is a subset"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+anyOf
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"string"</span>
+</li>
+<li>
+<span>
+minLength
+<code class="vec-header">&lt;integer [1]&gt;</code>
+</span>
+<span class="vec-data">1</span>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+theme
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Category"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Main thematic category of the dataset."</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+anyOf
+<code class="vec-header">&lt;named list [1:4]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"array", "null"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+items
+<code class="vec-header">&lt;list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<details>
+<summary>
+<span>
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"string"</span>
+</li>
+<li>
+<span>
+minLength
+<code class="vec-header">&lt;integer [1]&gt;</code>
+</span>
+<span class="vec-data">1</span>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<span>
+<code class="vec-header">&lt;integer [1]&gt;</code>
+</span>
+<span class="vec-data"><em>NA</em></span>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<span>
+minItems
+<code class="vec-header">&lt;integer [1:2]&gt;</code>
+</span>
+<span class="vec-data">1, <em>NA</em></span>
+</li>
+<li>
+<span>
+uniqueItems
+<code class="vec-header">&lt;logical [1:2]&gt;</code>
+</span>
+<span class="vec-data">TRUE, <em>NA</em></span>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+title
+<code class="vec-header">&lt;named list [1:4]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Title"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Human-readable name of the asset. Should be in plain English an…"</span>
+</li>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"string"</span>
+</li>
+<li>
+<span>
+minLength
+<code class="vec-header">&lt;integer [1]&gt;</code>
+</span>
+<span class="vec-data">1</span>
+</li>
+</ul>
+</details>
+</li>
+</a></ul><a href="http…" <="" span="">
+</a></details><a href="http…" <="" span="">
+</a></li><a href="http…" <="" span="">
+</a></ul><a href="http…" <="" span="">
+</a></details><a href="http…" <="" span="">
+</a></li><a href="http…" <="" span="">
+</a></ul><a href="http…" <="" span="">
+</a></div><a href="http…" <="" span="">
+</a></div><a href="http…" <="" span="">
+</a></section><a href="http…" <="" span="">
+</a><section id="distribution" class="level4" data-number="3.1.4.3"><a href="http…" <="" span="">
 <h4 data-number="3.1.4.3" class="anchored" data-anchor-id="distribution"><span class="header-section-number">3.1.4.3</span> Distribution</h4>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_json_arrow</span>(</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"data/dcat-us_v1.1_schema_distribution.json"</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(properties, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">dependencies =</span> <span class="fu">flatten_column</span>(dependencies)) <span class="sc">|&gt;</span> </span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(replace_open_columns) <span class="sc">|&gt;</span> </span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Rows: 1
-Columns: 16
-$ schema             &lt;chr&gt; "http://json-schema.org/draft-04/schema#"
-$ id                 &lt;chr&gt; "https://project-open-data.cio.gov/v1.1/schema/dist…
-$ title              &lt;chr&gt; "Project Open Data Distribution"
-$ description        &lt;chr&gt; "Validates an entire collection of common core meta…
-$ type               &lt;chr&gt; "object"
-$ dependencies       &lt;chr&gt; "string, ^[-\\w]+/[-\\w]+(\\.[-\\w]+)*([+][-\\w]+)?…
-$ pr_type            &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
-$ pr_downloadURL     &lt;tibble[,4]&gt; &lt;tbl_df[1 x 4]&gt;
-$ pr_mediaType       &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
-$ pr_format          &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
-$ pr_accessURL       &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
-$ pr_description     &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
-$ pr_title           &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
-$ pr_conformsTo      &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
-$ pr_describedBy     &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;
-$ pr_describedByType &lt;tibble[,3]&gt; &lt;tbl_df[1 x 3]&gt;</code></pre>
+</a><div class="cell"><a href="http…" <="" span="">
+</a><div class="sourceCode cell-code" id="cb9"><a href="http…" <="" span=""></a><pre class="sourceCode r code-with-copy"><a href="http…" <="" span=""><code class="sourceCode r"><span id="cb9-1"></span></code></a><code class="sourceCode r"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">listview</span>(<span class="fu">fload</span>(<span class="fu">here</span>(<span class="st">"data/dcat-us_v1.1_schema_distribution.json"</span>)))</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<ul class="tree">
+<li>
+<details open="true">
+<summary>
+<span>
+<code class="vec-header">&lt;named list [1:7]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+$schema
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"http://json-schema.org/draft-04/schema#"</span>
+</li>
+<li>
+<span>
+id
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"https://project-open-data.cio.gov/v1.1/schema/distribution.json#"</span>
+</li>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Project Open Data Distribution"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Validates an entire collection of common core metadata JSON obj…"</span>
+</li>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"object"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+dependencies
+<code class="vec-header">&lt;named list [1]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<details>
+<summary>
+<span>
+downloadURL
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<details>
+<summary>
+<span>
+properties
+<code class="vec-header">&lt;named list [1]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<details>
+<summary>
+<span>
+mediaType
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"string"</span>
+</li>
+<li>
+<span>
+pattern
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"^[-\w]+/[-\w]+(\.[-\w]+)*([+][-\w]+)?$"</span>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<span>
+required
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"mediaType"</span>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+properties
+<code class="vec-header">&lt;named list [1:10]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<details>
+<summary>
+<span>
+@type
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Metadata Context"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"IRI for the JSON-LD data type. This should be dcat:Distribution…"</span>
+</li>
+<li>
+<span>
+enum
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"dcat:Distribution"</span>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+downloadURL
+<code class="vec-header">&lt;named list [1:4]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Download URL"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"URL providing direct access to a downloadable file of a dataset"</span>
+</li>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"string"</span>
+</li>
+<li>
+<span>
+format
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"uri"</span>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+mediaType
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Media Type"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"The machine-readable file format (IANA Media Type or MIME Type)…"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+anyOf
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+pattern
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"^[-\w]+/[-\w]+(…", <em>NA</em></span>
+</li>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"string", "null"</span>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+format
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Format"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"A human-readable description of the file format of a distributi…"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+anyOf
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"string", "null"</span>
+</li>
+<li>
+<span>
+minLength
+<code class="vec-header">&lt;integer [1:2]&gt;</code>
+</span>
+<span class="vec-data">1, <em>NA</em></span>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+accessURL
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Access URL"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"URL providing indirect access to a dataset"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+anyOf
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"string", "null"</span>
+</li>
+<li>
+<span>
+format
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"uri", <em>NA</em></span>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+description
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Description"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Human-readable description of the distribution"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+anyOf
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"string", "null"</span>
+</li>
+<li>
+<span>
+minLength
+<code class="vec-header">&lt;integer [1:2]&gt;</code>
+</span>
+<span class="vec-data">1, <em>NA</em></span>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+title
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Title"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Human-readable name of the distribution"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+anyOf
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"string", "null"</span>
+</li>
+<li>
+<span>
+minLength
+<code class="vec-header">&lt;integer [1:2]&gt;</code>
+</span>
+<span class="vec-data">1, <em>NA</em></span>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+conformsTo
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Data Standard"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"URL providing indirect access to a dataset"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+anyOf
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"string", "null"</span>
+</li>
+<li>
+<span>
+format
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"uri", <em>NA</em></span>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+describedBy
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Data Dictionary"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"URL to the data dictionary for the distribution found at the do…"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+anyOf
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"string", "null"</span>
+</li>
+<li>
+<span>
+format
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"uri", <em>NA</em></span>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+<li>
+<details>
+<summary>
+<span>
+describedByType
+<code class="vec-header">&lt;named list [1:3]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+title
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"Data Dictionary Type"</span>
+</li>
+<li>
+<span>
+description
+<code class="vec-header">&lt;character [1]&gt;</code>
+</span>
+<span class="vec-data">"The machine-readable file format (IANA Media Type or MIME Type)…"</span>
+</li>
+<li>
+<details>
+<summary>
+<span>
+anyOf
+<code class="vec-header">&lt;named list [1:2]&gt;</code>
+</span>
+</summary>
+<ul>
+<li>
+<span>
+pattern
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"^[-\w]+/[-\w]+(…", <em>NA</em></span>
+</li>
+<li>
+<span>
+type
+<code class="vec-header">&lt;character [1:2]&gt;</code>
+</span>
+<span class="vec-data">"string", "null"</span>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+</ul>
+</details>
+</li>
+</ul>
 </div>
 </div>
 
