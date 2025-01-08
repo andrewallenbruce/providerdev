@@ -303,58 +303,58 @@
     ]
   },
   {
-    "objectID": "end_providers.html",
-    "href": "end_providers.html",
-    "title": "9  providers()",
+    "objectID": "end_enrollees.html",
+    "href": "end_enrollees.html",
+    "title": "9  enrollees()",
     "section": "",
     "text": "9.1 Catalog\npublic_catalog &lt;- \\() {\n  \n  x &lt;- RcppSimdJson::fload(\"https://data.cms.gov/data.json\")\n  \n  collapse::qTBL(x[[\"dataset\"]]) |&gt;\n    collapse::fmutate(\n      bureauCode   = delist(bureauCode),\n      language     = delist(language),\n      programCode  = delist(programCode),\n      references   = delist(references),\n      theme        = flatten_column(theme),\n      keyword      = flatten_column(keyword)) |&gt;\n    collapse::frename(remove_at_symbol)\n}\n\npublic &lt;- public_catalog()\n\npublic\n\n# A tibble: 139 × 22\n   type       accessLevel accrualPeriodicity bureauCode contactPoint describedBy\n   &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;              &lt;chr&gt;      &lt;list&gt;       &lt;chr&gt;      \n 1 dcat:Data… public      R/P1Y              009:38     &lt;named list&gt; https://da…\n 2 dcat:Data… public      R/P1Y              009:38     &lt;named list&gt; https://da…\n 3 dcat:Data… public      R/P1Y              009:38     &lt;named list&gt; https://da…\n 4 dcat:Data… public      R/P1Y              009:38     &lt;named list&gt; https://da…\n 5 dcat:Data… public      R/P1Y              009:38     &lt;named list&gt; https://da…\n 6 dcat:Data… public      R/P1Y              009:38     &lt;named list&gt; https://da…\n 7 dcat:Data… public      R/P1Y              009:38     &lt;named list&gt; https://da…\n 8 dcat:Data… public      R/P1Y              009:38     &lt;named list&gt; https://da…\n 9 dcat:Data… public      R/P1Y              009:38     &lt;named list&gt; https://da…\n10 dcat:Data… public      R/P1Y              009:38     &lt;named list&gt; https://da…\n# ℹ 129 more rows\n# ℹ 16 more variables: dataQuality &lt;lgl&gt;, description &lt;chr&gt;,\n#   distribution &lt;list&gt;, identifier &lt;chr&gt;, keyword &lt;chr&gt;, landingPage &lt;chr&gt;,\n#   language &lt;chr&gt;, license &lt;chr&gt;, modified &lt;chr&gt;, programCode &lt;chr&gt;,\n#   publisher &lt;list&gt;, references &lt;chr&gt;, temporal &lt;chr&gt;, theme &lt;chr&gt;,\n#   title &lt;chr&gt;, describedByType &lt;chr&gt;",
     "crumbs": [
       "Endpoints",
-      "<span class='chapter-number'>9</span>  <span class='chapter-title'>`providers()`</span>"
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>`enrollees()`</span>"
     ]
   },
   {
-    "objectID": "end_providers.html#dataset",
-    "href": "end_providers.html#dataset",
-    "title": "9  providers()",
+    "objectID": "end_enrollees.html#dataset",
+    "href": "end_enrollees.html#dataset",
+    "title": "9  enrollees()",
     "section": "9.2 Dataset",
     "text": "9.2 Dataset\n\ndataset &lt;- \\(catalog, search) {\n  collapse::fsubset(\n    catalog, \n    providertwo::sf_detect(\n      title, \n      search\n      )\n    )\n}\n\nffs &lt;- dataset(public, \"Fee-For-Service\")\n\nffs |&gt; purse()\n\n- $type               c1  dcat:Dataset                                      ...\n- $accessLevel        c1  public                                            ...\n- $accrualPeriodicity c1  R/P3M                                             ...\n- $bureauCode         c1  009:38                                            ...\n- $contactPoint       L1  list(list(\"@type\" = \"vcard:Contact\", fn = \"Provid ...\n- $describedBy        c1  https://data.cms.gov/resources/medicare-fee-for-s ...\n- $dataQuality        l1  T                                                 ...\n- $description        c1  The Medicare Fee-For-Service Public Provider Enro ...\n- $distribution       L1  list(structure(list(\"@type\" = c(\"dcat:Distributio ...\n- $identifier         c1  https://data.cms.gov/data-api/v1/dataset/2457ea29 ...\n- $keyword            c1  Medicare, Original Medicare, Provider Enrollment  ...\n- $landingPage        c1  https://data.cms.gov/provider-characteristics/med ...\n- $language           c1  en-US                                             ...\n- $license            c1  https://www.usa.gov/government-works              ...\n- $modified           c1  2024-10-16                                        ...\n- $programCode        c1  009:000                                           ...\n- $publisher          L1  list(list(\"@type\" = \"org:Organization\", name = \"C ...\n- $references         c1  https://data.cms.gov/resources/fee-for-service-pu ...\n- $temporal           c1  2023-01-01/2024-09-30                             ...\n- $theme              c1  Medicare                                          ...\n- $title              c1  Medicare Fee-For-Service  Public Provider Enrollm ...\n- $describedByType    c1  NA                                                ...",
     "crumbs": [
       "Endpoints",
-      "<span class='chapter-number'>9</span>  <span class='chapter-title'>`providers()`</span>"
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>`enrollees()`</span>"
     ]
   },
   {
-    "objectID": "end_providers.html#distribution",
-    "href": "end_providers.html#distribution",
-    "title": "9  providers()",
+    "objectID": "end_enrollees.html#distribution",
+    "href": "end_enrollees.html#distribution",
+    "title": "9  enrollees()",
     "section": "9.3 Distribution",
     "text": "9.3 Distribution\n\ndistribution &lt;- \\(dataset, search) {\n  \n  x &lt;- collapse::fsubset(\n    dataset[c(\"title\", \"distribution\")], \n    providertwo::sf_detect(title, search))\n  \n  collapse::qTBL(x[[\"distribution\"]][[1]])\n}\n\ndistribution(ffs, \"Fee-For-Service\")\n\n# A tibble: 15 × 10\n   `@type`     format accessURL resourcesAPI description title modified temporal\n   &lt;chr&gt;       &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;   \n 1 dcat:Distr… API    https://… https://dat… latest      Medi… 2024-10… 2024-07…\n 2 dcat:Distr… &lt;NA&gt;   &lt;NA&gt;      https://dat… &lt;NA&gt;        Medi… 2024-10… 2024-07…\n 3 dcat:Distr… API    https://… https://dat… &lt;NA&gt;        Medi… 2024-10… 2024-07…\n 4 dcat:Distr… &lt;NA&gt;   &lt;NA&gt;      https://dat… &lt;NA&gt;        Medi… 2024-07… 2024-04…\n 5 dcat:Distr… API    https://… https://dat… &lt;NA&gt;        Medi… 2024-07… 2024-04…\n 6 dcat:Distr… &lt;NA&gt;   &lt;NA&gt;      https://dat… &lt;NA&gt;        Medi… 2024-04… 2024-01…\n 7 dcat:Distr… API    https://… https://dat… &lt;NA&gt;        Medi… 2024-04… 2024-01…\n 8 dcat:Distr… &lt;NA&gt;   &lt;NA&gt;      https://dat… &lt;NA&gt;        Medi… 2024-01… 2023-10…\n 9 dcat:Distr… API    https://… https://dat… &lt;NA&gt;        Medi… 2024-01… 2023-10…\n10 dcat:Distr… &lt;NA&gt;   &lt;NA&gt;      https://dat… &lt;NA&gt;        Medi… 2023-10… 2023-07…\n11 dcat:Distr… API    https://… https://dat… &lt;NA&gt;        Medi… 2023-10… 2023-07…\n12 dcat:Distr… &lt;NA&gt;   &lt;NA&gt;      https://dat… &lt;NA&gt;        Medi… 2023-09… 2023-04…\n13 dcat:Distr… API    https://… https://dat… &lt;NA&gt;        Medi… 2023-09… 2023-04…\n14 dcat:Distr… &lt;NA&gt;   &lt;NA&gt;      https://dat… &lt;NA&gt;        Medi… 2023-04… 2023-01…\n15 dcat:Distr… API    https://… https://dat… &lt;NA&gt;        Medi… 2023-04… 2023-01…\n# ℹ 2 more variables: downloadURL &lt;chr&gt;, mediaType &lt;chr&gt;\n\n\n\ncollapse::fsubset(\n    distribution(ffs, \"Fee-For-Service\"), \n    description %==% \"latest\") |&gt; \n  purse()\n\n- $@type        c1  dcat:Distribution                                       ...\n- $format       c1  API                                                     ...\n- $accessURL    c1  https://data.cms.gov/data-api/v1/dataset/2457ea29-fc82- ...\n- $resourcesAPI c1  https://data.cms.gov/data-api/v1/dataset-resources/2457 ...\n- $description  c1  latest                                                  ...\n- $title        c1  Medicare Fee-For-Service Public Provider Enrollment : 2 ...\n- $modified     c1  2024-10-16                                              ...\n- $temporal     c1  2024-07-01/2024-09-30                                   ...\n- $downloadURL  c1  NA                                                      ...\n- $mediaType    c1  NA                                                      ...\n\n\n\ncollapse::fsubset(\n    distribution(ffs, \"Fee-For-Service\"), \n    format %==% \"API\") |&gt; \n  purse()\n\n- $@type        c8  dcat:Distribution                                       ...\n- $format       c8  API                                                     ...\n- $accessURL    c8  https://data.cms.gov/data-api/v1/dataset/2457ea29-fc82- ...\n- $resourcesAPI c8  https://data.cms.gov/data-api/v1/dataset-resources/2457 ...\n- $description  c8  latest                                                  ...\n- $title        c8  Medicare Fee-For-Service Public Provider Enrollment : 2 ...\n- $modified     c8  2024-10-16                                              ...\n- $temporal     c8  2024-07-01/2024-09-30                                   ...\n- $downloadURL  c8  NA                                                      ...\n- $mediaType    c8  NA                                                      ...\n\n\n\ncollapse::fsubset(\n    distribution(ffs, \"Fee-For-Service\"), \n    mediaType %==% \"text/csv\") |&gt; \n  purse()\n\n- $@type        c7  dcat:Distribution                                       ...\n- $format       c7  NA                                                      ...\n- $accessURL    c7  NA                                                      ...\n- $resourcesAPI c7  https://data.cms.gov/data-api/v1/dataset-resources/5731 ...\n- $description  c7  NA                                                      ...\n- $title        c7  Medicare Fee-For-Service Public Provider Enrollment : 2 ...\n- $modified     c7  2024-10-16                                              ...\n- $temporal     c7  2024-07-01/2024-09-30                                   ...\n- $downloadURL  c7  https://data.cms.gov/sites/default/files/2024-10/8e1bba ...\n- $mediaType    c7  text/csv                                                ...",
     "crumbs": [
       "Endpoints",
-      "<span class='chapter-number'>9</span>  <span class='chapter-title'>`providers()`</span>"
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>`enrollees()`</span>"
     ]
   },
   {
-    "objectID": "end_providers.html#urls",
-    "href": "end_providers.html#urls",
-    "title": "9  providers()",
+    "objectID": "end_enrollees.html#urls",
+    "href": "end_enrollees.html#urls",
+    "title": "9  enrollees()",
     "section": "9.4 URLS",
     "text": "9.4 URLS\n\nlist(\n  dataset = provider_dataset, \n  latest = provider_latest,\n  api = provider_api,\n  csv = provider_csv\n  )",
     "crumbs": [
       "Endpoints",
-      "<span class='chapter-number'>9</span>  <span class='chapter-title'>`providers()`</span>"
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>`enrollees()`</span>"
     ]
   },
   {
-    "objectID": "end_providers.html#no.-of-results",
-    "href": "end_providers.html#no.-of-results",
-    "title": "9  providers()",
+    "objectID": "end_enrollees.html#no.-of-results",
+    "href": "end_enrollees.html#no.-of-results",
+    "title": "9  enrollees()",
     "section": "9.5 No. of Results",
     "text": "9.5 No. of Results\n\nrequest(urls$base) |&gt; \n  req_url_path_append(urls$identifier) |&gt; \n  req_url_path_append(\"stats\") |&gt; \n  req_perform() |&gt; \n  resp_body_json(simplifyVector = TRUE)\n\n\nquery &lt;- glue::glue(\n  '\n  \"filter[fID{fID}][path]\" = \"{PATH}\",\n  \"filter[fID{fID}][operator]\" = \"{OPERATOR}\",\n  \"filter[fID{fID}][value]\" = \"{VALUE}\"\n  ', \n  fID = 1:2, \n  PATH = c(\"STATE_CD\", \"LAST_NAME\"), \n  OPERATOR = \"=\",\n  VALUE = c(\"GA\", \"SMITH\")\n  ) |&gt; \n  glue::glue_collapse(sep = \",\\n\")\n\nquery &lt;- glue::glue('c({query})') |&gt; \n  rlang::parse_expr() |&gt; \n  rlang::eval_bare()\n\nrequest(urls$base) |&gt; \n  req_url_path_append(urls$identifier) |&gt; \n  req_url_path_append(\"stats\") |&gt; \n  req_url_query(!!!query) |&gt; \n  req_perform() |&gt; \n  resp_body_json(simplifyVector = TRUE)\n\n\nresp &lt;- request(urls$base) |&gt; \n  req_url_path_append(urls$identifier) |&gt; \n  req_url_query(!!!query, size = 5000) |&gt; \n  req_perform()\n\nresp &lt;- RcppSimdJson::fparse(httr2::resp_body_string(resp))\n\ncollapse::qTBL(resp[[\"data\"]]) |&gt;\n  setNames(c(\"NPI\", \"PECOS_ASCT_CNTL_ID\", \"ENRLMT_ID\", \n             \"PROVIDER_TYPE_CD\", \"PROVIDER_TYPE_DESC\", \n             \"STATE_CD\", \"FIRST_NAME\", \"MDL_NAME\", \n             \"LAST_NAME\", \"ORG_NAME\", \"GNDR_SW\"))\n\n\nformat_syntax &lt;- \\(name, value) {\n  setNames(\n    value, \n    paste0(\n      name, \n      \"[id-\", \n      seq_along(value), \n      \"][condition][value]\"))\n}\n\nformat_syntax(\"filter\", c(\"GA\", \"NY\"))\n\n\n# query_syntax &lt;- c(\n#   \"filter[STATE_CD]\" = \"GA\",\n#   \"filter[LAST_NAME]\" = \"SMITH\"\n#   )",
     "crumbs": [
       "Endpoints",
-      "<span class='chapter-number'>9</span>  <span class='chapter-title'>`providers()`</span>"
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>`enrollees()`</span>"
     ]
   },
   {
