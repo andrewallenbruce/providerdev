@@ -9,7 +9,7 @@ library(providertwo)
 
 library(httr2)
 library(curl)
-library(weburl)
+# library(weburl)
 
 library(arrow)
 library(RcppSimdJson)

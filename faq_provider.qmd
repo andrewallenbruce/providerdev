@@ -30,16 +30,16 @@ The **Provider Data Catalog API** currently limits each batch of results to a ma
    1. Fetch the first 2000 results:
 
 ```{r}
-ownership0 <- httr2::url_parse(
+ownership0 <- url_parse(
   base_url = "https://data.cms.gov/provider-data/", 
   url      = "api/1/datastore/query/7t8x-u3ir/0") |> 
-  httr2::url_modify_query(
+  url_modify_query(
     offset = 0, 
-    size   = 2000) |> 
-  httr2::url_build() |> 
-  httr2::request() |> 
-  httr2::req_perform() |> 
-  httr2::resp_body_json(simplifyVector = TRUE)
+    limit  = 2000) |> 
+  url_build() |> 
+  request() |> 
+  req_perform() |> 
+  resp_body_json(simplifyVector = TRUE)
 
 ownership0$query
 
@@ -70,16 +70,16 @@ weburl::url_parse(
    2. Fetch the next 2000 results (2001-4000):
 
 ```{r}
-ownership1 <- httr2::url_parse(
+ownership1 <- url_parse(
   base_url = "https://data.cms.gov/provider-data/api/1/datastore/query/", 
   url      = "7t8x-u3ir/0") |> 
-  httr2::url_modify_query(
+  url_modify_query(
     offset = 2001, 
-    size   = 4000) |> 
-  httr2::url_build() |> 
-  httr2::request() |> 
-  httr2::req_perform() |> 
-  httr2::resp_body_json(simplifyVector = TRUE)
+    limit  = 2000) |> 
+  url_build() |> 
+  request() |> 
+  req_perform() |> 
+  resp_body_json(simplifyVector = TRUE)
 
 ownership1$query
 
@@ -106,19 +106,19 @@ For example, the query for [**Nursing Home**](https://data.cms.gov/provider-data
 
 ```{r}
 #| label: nhome0
-nhome0 <- httr2::url_parse(
+nhome0 <- url_parse(
   base_url = "https://data.cms.gov/provider-data/api/1/datastore/query/", 
   url      = "4pq5-n9py/0") |> 
-  httr2::url_modify_query(
+  url_modify_query(
     `conditions[0][property]` = "overall_rating",
     `conditions[0][value]`    = 5,
     `conditions[0][operator]` = "<",
     offset                    = 0, 
     limit                     = 2000) |> 
-  httr2::url_build() |> 
-  httr2::request() |> 
-  httr2::req_perform() |> 
-  httr2::resp_body_json(simplifyVector = TRUE)
+  url_build() |> 
+  request() |> 
+  req_perform() |> 
+  resp_body_json(simplifyVector = TRUE)
 
 nhome0$query
 
@@ -135,19 +135,19 @@ nhome0$results |>
 
 ```{r}
 #| label: nhome1
-nhome1 <- httr2::url_parse(
+nhome1 <- url_parse(
   base_url = "https://data.cms.gov/provider-data/api/1/datastore/query/", 
   url      = "4pq5-n9py/0") |> 
-  httr2::url_modify_query(
+  url_modify_query(
     `conditions[0][property]` = "overall_rating",
     `conditions[0][value]`    = 5,
     `conditions[0][operator]` = "<",
     offset                    = 2001, 
     limit                     = 2000) |> 
-  httr2::url_build() |> 
-  httr2::request() |> 
-  httr2::req_perform() |> 
-  httr2::resp_body_json(simplifyVector = TRUE)
+  url_build() |> 
+  request() |> 
+  req_perform() |> 
+  resp_body_json(simplifyVector = TRUE)
 
 nhome1$query
 
@@ -170,10 +170,10 @@ For example, to return the first 500 results (the default) of a dataset with an 
 
 ```{r}
 #| label: first_500
-httr2::url_parse(
+url_parse(
   base_url = "https://data.cms.gov/provider-data/api/1/datastore/query/", 
   url      = "4pq5-n9py/0") |> 
-  httr2::url_modify_query(
+  url_modify_query(
     `conditions[0][property]` = "overall_rating",
     `conditions[0][value]`    = 5,
     `conditions[0][operator]` = "=",
@@ -205,10 +205,10 @@ This converts to a query string of:
 
 ```{r}
 #| label: ccn_rating
-nhomegt3 <- httr2::url_parse(
+nhomegt3 <- url_parse(
   base_url = "https://data.cms.gov/provider-data/api/1/datastore/query/", 
   url      = "4pq5-n9py/0") |> 
-  httr2::url_modify_query(
+  url_modify_query(
     `properties[]`            = "state",
     `properties[]`            = "overall_rating",
     `conditions[0][property]` = "overall_rating",
@@ -216,10 +216,10 @@ nhomegt3 <- httr2::url_parse(
     `conditions[0][operator]` = ">",
     offset                    = 0, 
     limit                     = 2000) |> 
-  httr2::url_build() |> 
-  httr2::request() |> 
-  httr2::req_perform() |> 
-  httr2::resp_body_json(simplifyVector = TRUE)
+  url_build() |> 
+  request() |> 
+  req_perform() |> 
+  resp_body_json(simplifyVector = TRUE)
 
 nhomegt3$query
 
@@ -261,6 +261,7 @@ Return a list of all public datasets for a particular __Topic__ area via the `/a
 
 ```{r}
 #| label: search_theme
+#| eval: false
 x <- request(
   paste0(
     "https://data.cms.gov/",
@@ -278,7 +279,7 @@ x$facets |>
   mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
   remove_all_na()
 
-x$results
+x
 ```
 
 > __Note__: If the `page-size` is not provided, the default result limit is 10.
@@ -289,6 +290,7 @@ One of the easiest ways to generate your search parameters is to use the Provide
 
 ```{r}
 #| label: search_keyword
+#| eval: false
 x <- request(
   paste0(
     "https://data.cms.gov/",
@@ -316,6 +318,7 @@ Use the same method to return a list of datasets that contain a keyword (like "r
 
 ```{r}
 #| label: search_fulltext
+#| eval: false
 x <- request(
   paste0(
     "https://data.cms.gov/",
@@ -336,11 +339,11 @@ x$results
 ```
 
 
-::: callout
-
 ## Differences
 
-### __Metastore__ vs. __Datastore__
+::: callout
+
+#### __Datastore__ vs. __Metastore__
 
    * __Datastore__
       * Data from the data files (CSVs)
@@ -351,31 +354,33 @@ x$results
 Think of the __Metastore__ as the library index that helps you find the right book (`dataset`), and the __Datastore__ as the book itself.
 
 
-### __Dataset__ vs. __Distribution__
+#### __Distribution__ vs. __Dataset__
 
    * __Distribution__
-      * Unique identifier of the _Datastore_ 
+      * Unique identifier of the __Datastore__ 
       * Specific to a particular CSV data import
       * Changes with every data refresh
    * __Dataset__
-      * Unique identifier of the _Dataset_ 
+      * Unique identifier of the __Dataset__ 
       * Comes from the data.json file
       * Appears as part of the URL in the PDC site
       * Does not change between data refreshes
 
-If you have been using the `datastore/sql` or `datastore/query/{distributionId}` endpoints, consider switching to the `datastore/query/{datasetID}/{index}` endpoint instead. 
+--------------------------------------------------------------------------------
+
+> If you have been using the `datastore/sql` or `datastore/query/{distributionId}` endpoints, consider switching to the __`datastore/query/{datasetID}/{index}`__ endpoint instead. 
 
 The `datasetID` does not change between refreshes, and, currently, all **Provider Data Catalog** datasets only have a single resource, so the `index` will _always_ be `0`.
 
 For example, search the [Long Term Care Hospital dataset](https://data.cms.gov/provider-data/dataset/5zdx-ny2x) with:
 
-```{r}
+```r
 "https://data.cms.gov/provider-data/api/1/datastore/query/5zdx-ny2x/0"
 ```
 
 Distribution IDs change with every dataset update, so it is better to use APIs with the Dataset ID and the index of the distribution. If you still need the current distribution ID, you can access it through the metadata API, under `distribution -> identifier`:
 
-```{r}
+```r
 "https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/[datasetID]?show-reference-ids"
 ```
 
