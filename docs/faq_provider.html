@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.5">
+<meta name="generator" content="quarto-1.7.8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -67,12 +67,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="./">
 <link href="./faq_schema.html" rel="next">
 <link href="./faq_public.html" rel="prev">
-<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-1b73d27e55c73277398f79acb0ed0396.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-6c52e5897ba897b0cb80756eeac0fc46.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap-d8bb085b9265994618eca33a7d923795.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
@@ -318,44 +319,149 @@ Dataset Search
 <li>Fetch the first 2000 results:</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>weburl<span class="sc">::</span><span class="fu">url_parse</span>(</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://data.cms.gov/"</span>,</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"provider-data/api/1/"</span>,</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"datastore/query/7t8x-u3ir/0?"</span>,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"offset=0"</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character),  <span class="sc">~</span> <span class="fu">na_if</span>(.x, <span class="st">""</span>))) <span class="sc">|&gt;</span> </span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">remove_all_na</span>() <span class="sc">|&gt;</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>ownership0 <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">url_parse</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">base_url =</span> <span class="st">"https://data.cms.gov/provider-data/"</span>, </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">url      =</span> <span class="st">"api/1/datastore/query/7t8x-u3ir/0"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">url_modify_query</span>(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">offset =</span> <span class="dv">0</span>, </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">size   =</span> <span class="dv">2000</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">url_build</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">request</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>ownership0<span class="sc">$</span>query</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>- $scheme c1  https                                           
-- $host   c1  data.cms.gov                                    
-- $path   c1  /provider-data/api/1/datastore/query/7t8x-u3ir/0
-- $query  c1  offset=0                                        </code></pre>
+<pre><code>$offset
+[1] 0
+
+$size
+[1] "2000"
+
+$resources
+                                    id alias
+1 e7fce918-0873-519f-80ae-818e386299d1     t
+
+$limit
+[1] 2000
+
+$count
+[1] TRUE
+
+$results
+[1] TRUE
+
+$schema
+[1] TRUE
+
+$keys
+[1] TRUE
+
+$format
+[1] "json"
+
+$rowIds
+[1] FALSE
+
+$properties
+ [1] "cms_certification_number_ccn" "provider_name"               
+ [3] "address_line_1"               "address_line_2"              
+ [5] "citytown"                     "state"                       
+ [7] "zip_code"                     "countyparish"                
+ [9] "telephone_number"             "cms_region"                  
+[11] "ownership_type"               "certification_date"          </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ownership0<span class="sc">$</span>count</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1229</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>ownership0<span class="sc">$</span>results <span class="sc">|&gt;</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 1,229
+Columns: 12
+$ cms_certification_number_ccn &lt;chr&gt; "013025", "013028", "013029", "013030", "…
+$ provider_name                &lt;chr&gt; "ENCOMPASS HEALTH LAKESHORE REHABILITATIO…
+$ address_line_1               &lt;chr&gt; "3800 RIDGEWAY DRIVE", "4465 NARROW LANE …
+$ address_line_2               &lt;chr&gt; "-", "-", "-", "-", "-", "-", "-", "-", "…
+$ citytown                     &lt;chr&gt; "BIRMINGHAM", "MONTGOMERY", "HUNTSVILLE",…
+$ state                        &lt;chr&gt; "AL", "AL", "AL", "AL", "AL", "AL", "AL",…
+$ zip_code                     &lt;chr&gt; "35209", "36116", "35811", "36301", "3512…
+$ countyparish                 &lt;chr&gt; "Jefferson", "Montgomery", "Madison", "Ho…
+$ telephone_number             &lt;chr&gt; "(205) 868-2000", "(334) 284-7821", "(205…
+$ cms_region                   &lt;chr&gt; "4", "4", "4", "4", "4", "4", "4", "4", "…
+$ ownership_type               &lt;chr&gt; "For profit", "For profit", "For profit",…
+$ certification_date           &lt;chr&gt; "10/01/1983", "05/11/1987", "06/04/1987",…</code></pre>
 </div>
 </div>
 <ol start="2" type="1">
 <li>Fetch the next 2000 results (2001-4000):</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>weburl<span class="sc">::</span><span class="fu">url_parse</span>(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://data.cms.gov/"</span>,</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"provider-data/api/1/"</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"datastore/query/7t8x-u3ir/0?"</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"offset=2000"</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character),  <span class="sc">~</span> <span class="fu">na_if</span>(.x, <span class="st">""</span>))) <span class="sc">|&gt;</span> </span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">remove_all_na</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ownership1 <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">url_parse</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">base_url =</span> <span class="st">"https://data.cms.gov/provider-data/api/1/datastore/query/"</span>, </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">url      =</span> <span class="st">"7t8x-u3ir/0"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">url_modify_query</span>(</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">offset =</span> <span class="dv">2001</span>, </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">size   =</span> <span class="dv">4000</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">url_build</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">request</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>ownership1<span class="sc">$</span>query</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>- $scheme c1  https                                           
-- $host   c1  data.cms.gov                                    
-- $path   c1  /provider-data/api/1/datastore/query/7t8x-u3ir/0
-- $query  c1  offset=2000                                     </code></pre>
+<pre><code>$offset
+[1] 2001
+
+$size
+[1] "4000"
+
+$resources
+                                    id alias
+1 e7fce918-0873-519f-80ae-818e386299d1     t
+
+$limit
+[1] 2000
+
+$count
+[1] TRUE
+
+$results
+[1] TRUE
+
+$schema
+[1] TRUE
+
+$keys
+[1] TRUE
+
+$format
+[1] "json"
+
+$rowIds
+[1] FALSE
+
+$properties
+ [1] "cms_certification_number_ccn" "provider_name"               
+ [3] "address_line_1"               "address_line_2"              
+ [5] "citytown"                     "state"                       
+ [7] "zip_code"                     "countyparish"                
+ [9] "telephone_number"             "cms_region"                  
+[11] "ownership_type"               "certification_date"          </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>ownership1<span class="sc">$</span>count</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1229</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>ownership1<span class="sc">$</span>results <span class="sc">|&gt;</span> </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 0
+Columns: 1
+$ `ownership1$results` &lt;list&gt; list()</code></pre>
 </div>
 </div>
 <p>Continue incrementing the offset by 2,000 for each subsequent batch. When retrieving large datasets, consider pacing your requests to avoid overwhelming your system with data and to allow for graceful error handling. Depending on the volume of data and your application’s capabilities, consider implementing a back-off strategy if errors occur.</p>
@@ -364,50 +470,198 @@ Dataset Search
 <h3 data-number="2.0.2" class="anchored" data-anchor-id="starsratings"><span class="header-section-number">2.0.2</span> Stars/Ratings</h3>
 <p>CMS’s <strong>Five-Star Quality Rating System</strong> is designed to help users compare the overall quality of care across different healthcare providers. Access these ratings by referring to the associated column names:</p>
 <ul>
-<li>Nursing Homes: <code>overall_rating</code></li>
-<li>Hospitals: <code>hospital_overall_rating</code></li>
-<li>Dialysis Facilities: <code>five_star</code></li>
-<li>Hospice: <code>star_rating</code></li>
-<li>Home Health: <code>quality_of_patient_care_star_rating</code></li>
+<li><strong>Nursing Home</strong>: <code>overall_rating</code></li>
+<li><strong>Hospitals</strong>: <code>hospital_overall_rating</code></li>
+<li><strong>Dialysis</strong>: <code>five_star</code></li>
+<li><strong>Hospice</strong>: <code>star_rating</code></li>
+<li><strong>Home Health</strong>: <code>quality_of_patient_care_star_rating</code></li>
 </ul>
-<p>For example, the query for the <a href="https://data.cms.gov/provider-data/dataset/4pq5-n9py"><strong>Nursing Homes</strong></a> dataset for facilities with less than a 5-star overall rating:</p>
+<p>For example, the query for <a href="https://data.cms.gov/provider-data/dataset/4pq5-n9py"><strong>Nursing Home</strong></a> facilities with <em>less than</em> a 5-star overall rating is:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>weburl<span class="sc">::</span><span class="fu">url_parse</span>(</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://data.cms.gov/"</span>,</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"provider-data/api/1/"</span>,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"datastore/query/4pq5-n9py/0?"</span>,</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"conditions[0][property]=overall_rating&amp;"</span>,</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"conditions[0][value]=5&amp;"</span>,</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"conditions[0][operator]=&lt;"</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character),  <span class="sc">~</span> <span class="fu">na_if</span>(.x, <span class="st">""</span>))) <span class="sc">|&gt;</span> </span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">remove_all_na</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>nhome0 <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">url_parse</span>(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">base_url =</span> <span class="st">"https://data.cms.gov/provider-data/api/1/datastore/query/"</span>, </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">url      =</span> <span class="st">"4pq5-n9py/0"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">url_modify_query</span>(</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">conditions[0][property]</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"overall_rating"</span>,</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">conditions[0][value]</span><span class="st">`</span>    <span class="ot">=</span> <span class="dv">5</span>,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">conditions[0][operator]</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"&lt;"</span>,</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">offset                    =</span> <span class="dv">0</span>, </span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">limit                     =</span> <span class="dv">2000</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">url_build</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">request</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>nhome0<span class="sc">$</span>query</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>- $scheme c1  https                                                         ...
-- $host   c1  data.cms.gov                                                  ...
-- $path   c1  /provider-data/api/1/datastore/query/4pq5-n9py/0              ...
-- $query  c1  conditions[0][property]=overall_rating&amp;conditions[0][value]=5 ...</code></pre>
+<pre><code>$conditions
+        property value operator
+1 overall_rating     5        &lt;
+
+$offset
+[1] 0
+
+$limit
+[1] 2000
+
+$resources
+                                    id alias
+1 f93da3a3-400b-5efe-960d-c1d72b1d4f65     t
+
+$count
+[1] TRUE
+
+$results
+[1] TRUE
+
+$schema
+[1] TRUE
+
+$keys
+[1] TRUE
+
+$format
+[1] "json"
+
+$rowIds
+[1] FALSE
+
+$properties
+  [1] "cms_certification_number_ccn"                                    
+  [2] "provider_name"                                                   
+  [3] "provider_address"                                                
+  [4] "citytown"                                                        
+  [5] "state"                                                           
+  [6] "zip_code"                                                        
+  [7] "telephone_number"                                                
+  [8] "provider_ssa_county_code"                                        
+  [9] "countyparish"                                                    
+ [10] "ownership_type"                                                  
+ [11] "number_of_certified_beds"                                        
+ [12] "average_number_of_residents_per_day"                             
+ [13] "average_number_of_residents_per_day_footnote"                    
+ [14] "provider_type"                                                   
+ [15] "provider_resides_in_hospital"                                    
+ [16] "legal_business_name"                                             
+ [17] "date_first_approved_to_provide_medicare_and_medicaid_services"   
+ [18] "affiliated_entity_name"                                          
+ [19] "affiliated_entity_id"                                            
+ [20] "continuing_care_retirement_community"                            
+ [21] "special_focus_status"                                            
+ [22] "abuse_icon"                                                      
+ [23] "most_recent_health_inspection_more_than_2_years_ago"             
+ [24] "provider_changed_ownership_in_last_12_months"                    
+ [25] "with_a_resident_and_family_council"                              
+ [26] "automatic_sprinkler_systems_in_all_required_areas"               
+ [27] "overall_rating"                                                  
+ [28] "overall_rating_footnote"                                         
+ [29] "health_inspection_rating"                                        
+ [30] "health_inspection_rating_footnote"                               
+ [31] "qm_rating"                                                       
+ [32] "qm_rating_footnote"                                              
+ [33] "longstay_qm_rating"                                              
+ [34] "longstay_qm_rating_footnote"                                     
+ [35] "shortstay_qm_rating"                                             
+ [36] "shortstay_qm_rating_footnote"                                    
+ [37] "staffing_rating"                                                 
+ [38] "staffing_rating_footnote"                                        
+ [39] "reported_staffing_footnote"                                      
+ [40] "physical_therapist_staffing_footnote"                            
+ [41] "reported_nurse_aide_staffing_hours_per_resident_per_day"         
+ [42] "reported_lpn_staffing_hours_per_resident_per_day"                
+ [43] "reported_rn_staffing_hours_per_resident_per_day"                 
+ [44] "reported_licensed_staffing_hours_per_resident_per_day"           
+ [45] "reported_total_nurse_staffing_hours_per_resident_per_day"        
+ [46] "total_number_of_nurse_staff_hours_per_resident_per_day_on_t_4a14"
+ [47] "registered_nurse_hours_per_resident_per_day_on_the_weekend"      
+ [48] "reported_physical_therapist_staffing_hours_per_resident_per_day" 
+ [49] "total_nursing_staff_turnover"                                    
+ [50] "total_nursing_staff_turnover_footnote"                           
+ [51] "registered_nurse_turnover"                                       
+ [52] "registered_nurse_turnover_footnote"                              
+ [53] "number_of_administrators_who_have_left_the_nursing_home"         
+ [54] "administrator_turnover_footnote"                                 
+ [55] "nursing_casemix_index"                                           
+ [56] "nursing_casemix_index_ratio"                                     
+ [57] "casemix_nurse_aide_staffing_hours_per_resident_per_day"          
+ [58] "casemix_lpn_staffing_hours_per_resident_per_day"                 
+ [59] "casemix_rn_staffing_hours_per_resident_per_day"                  
+ [60] "casemix_total_nurse_staffing_hours_per_resident_per_day"         
+ [61] "casemix_weekend_total_nurse_staffing_hours_per_resident_per_day" 
+ [62] "adjusted_nurse_aide_staffing_hours_per_resident_per_day"         
+ [63] "adjusted_lpn_staffing_hours_per_resident_per_day"                
+ [64] "adjusted_rn_staffing_hours_per_resident_per_day"                 
+ [65] "adjusted_total_nurse_staffing_hours_per_resident_per_day"        
+ [66] "adjusted_weekend_total_nurse_staffing_hours_per_resident_per_day"
+ [67] "rating_cycle_1_standard_survey_health_date"                      
+ [68] "rating_cycle_1_total_number_of_health_deficiencies"              
+ [69] "rating_cycle_1_number_of_standard_health_deficiencies"           
+ [70] "rating_cycle_1_number_of_complaint_health_deficiencies"          
+ [71] "rating_cycle_1_health_deficiency_score"                          
+ [72] "rating_cycle_1_number_of_health_revisits"                        
+ [73] "rating_cycle_1_health_revisit_score"                             
+ [74] "rating_cycle_1_total_health_score"                               
+ [75] "rating_cycle_2_standard_health_survey_date"                      
+ [76] "rating_cycle_2_total_number_of_health_deficiencies"              
+ [77] "rating_cycle_2_number_of_standard_health_deficiencies"           
+ [78] "rating_cycle_2_number_of_complaint_health_deficiencies"          
+ [79] "rating_cycle_2_health_deficiency_score"                          
+ [80] "rating_cycle_2_number_of_health_revisits"                        
+ [81] "rating_cycle_2_health_revisit_score"                             
+ [82] "rating_cycle_2_total_health_score"                               
+ [83] "rating_cycle_3_standard_health_survey_date"                      
+ [84] "rating_cycle_3_total_number_of_health_deficiencies"              
+ [85] "rating_cycle_3_number_of_standard_health_deficiencies"           
+ [86] "rating_cycle_3_number_of_complaint_health_deficiencies"          
+ [87] "rating_cycle_3_health_deficiency_score"                          
+ [88] "rating_cycle_3_number_of_health_revisits"                        
+ [89] "rating_cycle_3_health_revisit_score"                             
+ [90] "rating_cycle_3_total_health_score"                               
+ [91] "total_weighted_health_survey_score"                              
+ [92] "number_of_facility_reported_incidents"                           
+ [93] "number_of_substantiated_complaints"                              
+ [94] "number_of_citations_from_infection_control_inspections"          
+ [95] "number_of_fines"                                                 
+ [96] "total_amount_of_fines_in_dollars"                                
+ [97] "number_of_payment_denials"                                       
+ [98] "total_number_of_penalties"                                       
+ [99] "location"                                                        
+[100] "latitude"                                                        
+[101] "longitude"                                                       
+[102] "geocoding_footnote"                                              
+[103] "processing_date"                                                 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">request</span>(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://data.cms.gov/"</span>,</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"provider-data/api/1/"</span>,</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"datastore/query/4pq5-n9py/0?"</span>,</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"conditions[0][property]=overall_rating&amp;"</span>,</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"conditions[0][value]=5&amp;"</span>,</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"conditions[0][operator]=&lt;"</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span>results <span class="sc">|&gt;</span> </span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character),  <span class="sc">~</span> <span class="fu">na_if</span>(.x, <span class="st">""</span>))) <span class="sc">|&gt;</span> </span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">remove_all_na</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(overall_rating, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>nhome0<span class="sc">$</span>count</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 12130</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>nhome0<span class="sc">$</span>results <span class="sc">|&gt;</span> <span class="fu">tibble</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2,000 × 103
+   cms_certification_nu…¹ provider_name provider_address citytown state zip_code
+   &lt;chr&gt;                  &lt;chr&gt;         &lt;chr&gt;            &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;   
+ 1 015009                 BURNS NURSIN… 701 MONROE STRE… RUSSELL… AL    35653   
+ 2 015010                 COOSA VALLEY… 260 WEST WALNUT… SYLACAU… AL    35150   
+ 3 015012                 HIGHLANDS HE… 380 WOODS COVE … SCOTTSB… AL    35768   
+ 4 015014                 EASTVIEW REH… 7755 FOURTH AVE… BIRMING… AL    35206   
+ 5 015015                 PLANTATION M… 6450 OLD TUSCAL… MC CALLA AL    35111   
+ 6 015019                 MERRY WOOD L… 280 MT HEBRON R… ELMORE   AL    36025   
+ 7 015024                 LIMESTONE NU… 1600 WEST HOBBS… ATHENS   AL    35611   
+ 8 015027                 WETUMPKA HEA… 1825 HOLTVILLE … WETUMPKA AL    36092   
+ 9 015031                 MITCHELL-HOL… 805 FLAGG CIRCLE FLORENCE AL    35631   
+10 015032                 DIVERSICARE … 1701 NORTH ALST… FOLEY    AL    36535   
+# ℹ 1,990 more rows
+# ℹ abbreviated name: ¹​cms_certification_number_ccn
+# ℹ 97 more variables: telephone_number &lt;chr&gt;, provider_ssa_county_code &lt;chr&gt;,
+#   countyparish &lt;chr&gt;, ownership_type &lt;chr&gt;, number_of_certified_beds &lt;chr&gt;,
+#   average_number_of_residents_per_day &lt;chr&gt;,
+#   average_number_of_residents_per_day_footnote &lt;chr&gt;, provider_type &lt;chr&gt;,
+#   provider_resides_in_hospital &lt;chr&gt;, legal_business_name &lt;chr&gt;, …</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>nhome0<span class="sc">$</span>results <span class="sc">|&gt;</span> </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character),  <span class="sc">~</span> <span class="fu">na_if</span>(.x, <span class="st">""</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">remove_all_na</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(overall_rating, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  overall_rating   n
 1              2 561
@@ -417,192 +671,388 @@ Dataset Search
 5           &lt;NA&gt;  20</code></pre>
 </div>
 </div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>nhome1 <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">url_parse</span>(</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">base_url =</span> <span class="st">"https://data.cms.gov/provider-data/api/1/datastore/query/"</span>, </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">url      =</span> <span class="st">"4pq5-n9py/0"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">url_modify_query</span>(</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">conditions[0][property]</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"overall_rating"</span>,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">conditions[0][value]</span><span class="st">`</span>    <span class="ot">=</span> <span class="dv">5</span>,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">conditions[0][operator]</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"&lt;"</span>,</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">offset                    =</span> <span class="dv">2001</span>, </span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">limit                     =</span> <span class="dv">2000</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">url_build</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">request</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>nhome1<span class="sc">$</span>query</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$conditions
+        property value operator
+1 overall_rating     5        &lt;
+
+$offset
+[1] 2001
+
+$limit
+[1] 2000
+
+$resources
+                                    id alias
+1 f93da3a3-400b-5efe-960d-c1d72b1d4f65     t
+
+$count
+[1] TRUE
+
+$results
+[1] TRUE
+
+$schema
+[1] TRUE
+
+$keys
+[1] TRUE
+
+$format
+[1] "json"
+
+$rowIds
+[1] FALSE
+
+$properties
+  [1] "cms_certification_number_ccn"                                    
+  [2] "provider_name"                                                   
+  [3] "provider_address"                                                
+  [4] "citytown"                                                        
+  [5] "state"                                                           
+  [6] "zip_code"                                                        
+  [7] "telephone_number"                                                
+  [8] "provider_ssa_county_code"                                        
+  [9] "countyparish"                                                    
+ [10] "ownership_type"                                                  
+ [11] "number_of_certified_beds"                                        
+ [12] "average_number_of_residents_per_day"                             
+ [13] "average_number_of_residents_per_day_footnote"                    
+ [14] "provider_type"                                                   
+ [15] "provider_resides_in_hospital"                                    
+ [16] "legal_business_name"                                             
+ [17] "date_first_approved_to_provide_medicare_and_medicaid_services"   
+ [18] "affiliated_entity_name"                                          
+ [19] "affiliated_entity_id"                                            
+ [20] "continuing_care_retirement_community"                            
+ [21] "special_focus_status"                                            
+ [22] "abuse_icon"                                                      
+ [23] "most_recent_health_inspection_more_than_2_years_ago"             
+ [24] "provider_changed_ownership_in_last_12_months"                    
+ [25] "with_a_resident_and_family_council"                              
+ [26] "automatic_sprinkler_systems_in_all_required_areas"               
+ [27] "overall_rating"                                                  
+ [28] "overall_rating_footnote"                                         
+ [29] "health_inspection_rating"                                        
+ [30] "health_inspection_rating_footnote"                               
+ [31] "qm_rating"                                                       
+ [32] "qm_rating_footnote"                                              
+ [33] "longstay_qm_rating"                                              
+ [34] "longstay_qm_rating_footnote"                                     
+ [35] "shortstay_qm_rating"                                             
+ [36] "shortstay_qm_rating_footnote"                                    
+ [37] "staffing_rating"                                                 
+ [38] "staffing_rating_footnote"                                        
+ [39] "reported_staffing_footnote"                                      
+ [40] "physical_therapist_staffing_footnote"                            
+ [41] "reported_nurse_aide_staffing_hours_per_resident_per_day"         
+ [42] "reported_lpn_staffing_hours_per_resident_per_day"                
+ [43] "reported_rn_staffing_hours_per_resident_per_day"                 
+ [44] "reported_licensed_staffing_hours_per_resident_per_day"           
+ [45] "reported_total_nurse_staffing_hours_per_resident_per_day"        
+ [46] "total_number_of_nurse_staff_hours_per_resident_per_day_on_t_4a14"
+ [47] "registered_nurse_hours_per_resident_per_day_on_the_weekend"      
+ [48] "reported_physical_therapist_staffing_hours_per_resident_per_day" 
+ [49] "total_nursing_staff_turnover"                                    
+ [50] "total_nursing_staff_turnover_footnote"                           
+ [51] "registered_nurse_turnover"                                       
+ [52] "registered_nurse_turnover_footnote"                              
+ [53] "number_of_administrators_who_have_left_the_nursing_home"         
+ [54] "administrator_turnover_footnote"                                 
+ [55] "nursing_casemix_index"                                           
+ [56] "nursing_casemix_index_ratio"                                     
+ [57] "casemix_nurse_aide_staffing_hours_per_resident_per_day"          
+ [58] "casemix_lpn_staffing_hours_per_resident_per_day"                 
+ [59] "casemix_rn_staffing_hours_per_resident_per_day"                  
+ [60] "casemix_total_nurse_staffing_hours_per_resident_per_day"         
+ [61] "casemix_weekend_total_nurse_staffing_hours_per_resident_per_day" 
+ [62] "adjusted_nurse_aide_staffing_hours_per_resident_per_day"         
+ [63] "adjusted_lpn_staffing_hours_per_resident_per_day"                
+ [64] "adjusted_rn_staffing_hours_per_resident_per_day"                 
+ [65] "adjusted_total_nurse_staffing_hours_per_resident_per_day"        
+ [66] "adjusted_weekend_total_nurse_staffing_hours_per_resident_per_day"
+ [67] "rating_cycle_1_standard_survey_health_date"                      
+ [68] "rating_cycle_1_total_number_of_health_deficiencies"              
+ [69] "rating_cycle_1_number_of_standard_health_deficiencies"           
+ [70] "rating_cycle_1_number_of_complaint_health_deficiencies"          
+ [71] "rating_cycle_1_health_deficiency_score"                          
+ [72] "rating_cycle_1_number_of_health_revisits"                        
+ [73] "rating_cycle_1_health_revisit_score"                             
+ [74] "rating_cycle_1_total_health_score"                               
+ [75] "rating_cycle_2_standard_health_survey_date"                      
+ [76] "rating_cycle_2_total_number_of_health_deficiencies"              
+ [77] "rating_cycle_2_number_of_standard_health_deficiencies"           
+ [78] "rating_cycle_2_number_of_complaint_health_deficiencies"          
+ [79] "rating_cycle_2_health_deficiency_score"                          
+ [80] "rating_cycle_2_number_of_health_revisits"                        
+ [81] "rating_cycle_2_health_revisit_score"                             
+ [82] "rating_cycle_2_total_health_score"                               
+ [83] "rating_cycle_3_standard_health_survey_date"                      
+ [84] "rating_cycle_3_total_number_of_health_deficiencies"              
+ [85] "rating_cycle_3_number_of_standard_health_deficiencies"           
+ [86] "rating_cycle_3_number_of_complaint_health_deficiencies"          
+ [87] "rating_cycle_3_health_deficiency_score"                          
+ [88] "rating_cycle_3_number_of_health_revisits"                        
+ [89] "rating_cycle_3_health_revisit_score"                             
+ [90] "rating_cycle_3_total_health_score"                               
+ [91] "total_weighted_health_survey_score"                              
+ [92] "number_of_facility_reported_incidents"                           
+ [93] "number_of_substantiated_complaints"                              
+ [94] "number_of_citations_from_infection_control_inspections"          
+ [95] "number_of_fines"                                                 
+ [96] "total_amount_of_fines_in_dollars"                                
+ [97] "number_of_payment_denials"                                       
+ [98] "total_number_of_penalties"                                       
+ [99] "location"                                                        
+[100] "latitude"                                                        
+[101] "longitude"                                                       
+[102] "geocoding_footnote"                                              
+[103] "processing_date"                                                 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>nhome1<span class="sc">$</span>count</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 12130</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>nhome1<span class="sc">$</span>results <span class="sc">|&gt;</span> <span class="fu">tibble</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2,000 × 103
+   cms_certification_nu…¹ provider_name provider_address citytown state zip_code
+   &lt;chr&gt;                  &lt;chr&gt;         &lt;chr&gt;            &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;   
+ 1 115418                 PRUITTHEALTH… 521 CABINESS RO… FORSYTH  GA    31029   
+ 2 115419                 OAKS - ATHEN… 490 KATHWOOD DR  ATHENS   GA    30607   
+ 3 115421                 WOODSTOCK NU… 105 ARNOLD MILL… WOODSTO… GA    30188   
+ 4 115422                 ROSWELL NURS… 1109 GREEN STRE… ROSWELL  GA    30075   
+ 5 115423                 CHESTNUT RID… 125 SAMARITAN D… CUMMING  GA    30040   
+ 6 115424                 LAKE CROSSIN… 6698 WASHINGTON… APPLING  GA    30802   
+ 7 115427                 THOMASVILLE … 120 SKYLINE DRI… THOMASV… GA    31757   
+ 8 115429                 CORDELE HEAL… 1106 NORTH 4TH … CORDELE  GA    31015   
+ 9 115430                 SUMMERHILL E… 500 STANLEY STR… PERRY    GA    31069   
+10 115431                 HARALSON NSG… 315 FIELD STREET BREMEN   GA    30110   
+# ℹ 1,990 more rows
+# ℹ abbreviated name: ¹​cms_certification_number_ccn
+# ℹ 97 more variables: telephone_number &lt;chr&gt;, provider_ssa_county_code &lt;chr&gt;,
+#   countyparish &lt;chr&gt;, ownership_type &lt;chr&gt;, number_of_certified_beds &lt;chr&gt;,
+#   average_number_of_residents_per_day &lt;chr&gt;,
+#   average_number_of_residents_per_day_footnote &lt;chr&gt;, provider_type &lt;chr&gt;,
+#   provider_resides_in_hospital &lt;chr&gt;, legal_business_name &lt;chr&gt;, …</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>nhome1<span class="sc">$</span>results <span class="sc">|&gt;</span> </span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character),  <span class="sc">~</span> <span class="fu">na_if</span>(.x, <span class="st">""</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">remove_all_na</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(overall_rating, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  overall_rating   n
+1              1 695
+2              2 447
+3              3 439
+4              4 396
+5           &lt;NA&gt;  23</code></pre>
+</div>
+</div>
 </section>
 <section id="specific-conditions" class="level3" data-number="2.0.3">
 <h3 data-number="2.0.3" class="anchored" data-anchor-id="specific-conditions"><span class="header-section-number">2.0.3</span> Specific Conditions</h3>
-<p>Recommended method: Use the <strong>Datastore Query Endpoint</strong> (<code>datastore/query/{datasetID}/{index}</code>); takes two arguments: the <code>datasetID</code>, which can be obtained from the URL of the dataset and does not change between data refreshes, and the index of the distribution. Currently on the PDC, the index will <em>always</em> be <code>0</code>.</p>
-<p>To return the first 500 results of a dataset with a column named <code>overall_rating</code>, first identify the dataset with that column:</p>
+<p>Use the <strong>Datastore Query Endpoint</strong> (<code>datastore/query/{datasetID}/{index}</code>). It takes two arguments: the <strong><code>datasetID</code></strong>, which does not change between data refreshes, and the distribution’s <strong><code>index</code></strong>, which will <em>always</em> be <code>0</code>.</p>
+<p>For example, to return the first 500 results (the default) of a dataset with an overall rating of 5:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>weburl<span class="sc">::</span><span class="fu">url_parse</span>(</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://data.cms.gov/"</span>,</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"provider-data/api/1/"</span>,</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"datastore/query/4pq5-n9py/0"</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character),  <span class="sc">~</span> <span class="fu">na_if</span>(.x, <span class="st">""</span>))) <span class="sc">|&gt;</span> </span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">remove_all_na</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>- $scheme c1  https                                           
-- $host   c1  data.cms.gov                                    
-- $path   c1  /provider-data/api/1/datastore/query/4pq5-n9py/0</code></pre>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>httr2<span class="sc">::</span><span class="fu">url_parse</span>(</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">base_url =</span> <span class="st">"https://data.cms.gov/provider-data/api/1/datastore/query/"</span>, </span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">url      =</span> <span class="st">"4pq5-n9py/0"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">url_modify_query</span>(</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">conditions[0][property]</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"overall_rating"</span>,</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">conditions[0][value]</span><span class="st">`</span>    <span class="ot">=</span> <span class="dv">5</span>,</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">conditions[0][operator]</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"="</span>,</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">offset                    =</span> <span class="dv">0</span>, </span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">limit                     =</span> <span class="dv">500</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>&lt;httr2_url&gt;
+https://data.cms.gov/provider-data/api/1/datastore/query/4pq5-n9py/0?conditions%5B0%5D%5Bproperty%5D=overall_rating&amp;conditions%5B0%5D%5Bvalue%5D=5&amp;conditions%5B0%5D%5Boperator%5D=%3D&amp;offset=0&amp;limit=500</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">request</span>(</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://data.cms.gov/"</span>,</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"provider-data/api/1/"</span>,</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"datastore/query/4pq5-n9py/0"</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span>results <span class="sc">|&gt;</span> </span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character),  <span class="sc">~</span> <span class="fu">na_if</span>(.x, <span class="st">""</span>))) <span class="sc">|&gt;</span> </span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">remove_all_na</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(overall_rating, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  overall_rating   n
-1              2 456
-2              3 417
-3              5 395
-4              1 359
-5              4 359
-6           &lt;NA&gt;  14</code></pre>
+<div class="cell-output cell-output-stderr">
+<pre><code>• scheme: https</code></pre>
 </div>
+<div class="cell-output cell-output-stderr">
+<pre><code>• hostname: data.cms.gov</code></pre>
 </div>
-<p>To return the first 500 results with an overall rating of 5:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>weburl<span class="sc">::</span><span class="fu">url_parse</span>(</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://data.cms.gov/"</span>,</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"provider-data/api/1/"</span>,</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"datastore/query/4pq5-n9py/0?"</span>,</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"conditions[0][property]=overall_rating&amp;"</span>,</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"conditions[0][value]=5&amp;"</span>,</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"conditions[0][operator]=="</span></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character),  <span class="sc">~</span> <span class="fu">na_if</span>(.x, <span class="st">""</span>))) <span class="sc">|&gt;</span> </span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">remove_all_na</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>- $scheme c1  https                                                         ...
-- $host   c1  data.cms.gov                                                  ...
-- $path   c1  /provider-data/api/1/datastore/query/4pq5-n9py/0              ...
-- $query  c1  conditions[0][property]=overall_rating&amp;conditions[0][value]=5 ...</code></pre>
+<div class="cell-output cell-output-stderr">
+<pre><code>• path: /provider-data/api/1/datastore/query/4pq5-n9py/0</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">request</span>(</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://data.cms.gov/"</span>,</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"provider-data/api/1/"</span>,</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"datastore/query/4pq5-n9py/0?"</span>,</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"conditions[0][property]=overall_rating&amp;"</span>,</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"conditions[0][value]=5&amp;"</span>,</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"conditions[0][operator]=="</span></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span>results <span class="sc">|&gt;</span> </span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character),  <span class="sc">~</span> <span class="fu">na_if</span>(.x, <span class="st">""</span>))) <span class="sc">|&gt;</span> </span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">remove_all_na</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(state, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>   state   n
-1     OH 184
-2     FL 163
-3     CA 138
-4     NY 122
-5     IN 105
-6     IL  91
-7     MI  91
-8     MN  90
-9     IA  79
-10    NJ  71
-11    PA  65
-12    MA  61
-13    NC  60
-14    KS  53
-15    MO  46
-16    NE  42
-17    AR  40
-18    MD  40
-19    AL  39
-20    CO  39
-21    AZ  38
-22    GA  37
-23    KY  37
-24    CT  34
-25    OK  29
-26    ID  25
-27    OR  22
-28    MS  20
-29    LA  19
-30    HI  17
-31    ME  17
-32    ND  16
-33    NH  15
-34    NV  13
-35    DE  10
-36    AK   9
-37    MT   9
-38    NM   9
-39    DC   5</code></pre>
+<div class="cell-output cell-output-stderr">
+<pre><code>• query:</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>  • conditions[0][property]: overall_rating</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>  • conditions[0][value]: 5</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>  • conditions[0][operator]: %3D</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>  • offset: 0</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>  • limit: 500</code></pre>
 </div>
 </div>
-<p>More complex queries can be created in JSON and converted to an HTTP query string using the <a href="https://www.convertonline.io/convert/json-to-query-string">JSON Query to String</a> tool. For example, to return the <code>cms_certification_number_ccn</code> and <code>overall_rating</code> columns with a rating greater than 3, use the following JSON:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>{</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">"properties"</span><span class="sc">:</span> [</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"cms_certification_number_ccn"</span>,</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"overall_rating"</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    ],</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"conditions"</span><span class="sc">:</span> [</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>        {</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">"property"</span><span class="sc">:</span><span class="st">"overall_rating"</span>,</span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>            <span class="st">"value"</span><span class="sc">:</span> <span class="st">"3"</span>,</span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>            <span class="st">"operator"</span><span class="sc">:</span> <span class="st">"&gt;"</span></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>        }</span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    ]</span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>More complex queries can be created in JSON and converted to an HTTP query string using the <a href="https://www.convertonline.io/convert/json-to-query-string">JSON Query to String</a> tool.</p>
+<p>For example, to return the <code>cms_certification_number_ccn</code> and <code>overall_rating</code> columns with a rating greater than 3, use the following JSON:</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode json code-with-copy"><code class="sourceCode json"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"properties"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">"cms_certification_number_ccn"</span><span class="ot">,</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">"overall_rating"</span></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>    <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>    <span class="dt">"conditions"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>            <span class="dt">"property"</span><span class="fu">:</span><span class="st">"overall_rating"</span><span class="fu">,</span></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>            <span class="dt">"value"</span><span class="fu">:</span> <span class="st">"3"</span><span class="fu">,</span></span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>            <span class="dt">"operator"</span><span class="fu">:</span> <span class="st">"&gt;"</span></span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">}</span></span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>    <span class="ot">]</span></span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This converts to a query string of:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>weburl<span class="sc">::</span><span class="fu">url_parse</span>(</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://data.cms.gov/"</span>,</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"provider-data/api/1/"</span>,</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"datastore/query/4pq5-n9py/0?"</span>,</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"properties[]=cms_certification_number_ccn&amp;"</span>,   </span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"properties[]=overall_rating&amp;"</span>,</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"conditions[0][property]=overall_rating&amp;"</span>,   </span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"conditions[0][value]=3&amp;"</span>,</span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"conditions[0][operator]=&gt;"</span></span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character),  <span class="sc">~</span> <span class="fu">na_if</span>(.x, <span class="st">""</span>))) <span class="sc">|&gt;</span> </span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">remove_all_na</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>nhomegt3 <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">url_parse</span>(</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">base_url =</span> <span class="st">"https://data.cms.gov/provider-data/api/1/datastore/query/"</span>, </span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">url      =</span> <span class="st">"4pq5-n9py/0"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">url_modify_query</span>(</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">properties[]</span><span class="st">`</span>            <span class="ot">=</span> <span class="st">"state"</span>,</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">properties[]</span><span class="st">`</span>            <span class="ot">=</span> <span class="st">"overall_rating"</span>,</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">conditions[0][property]</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"overall_rating"</span>,</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">conditions[0][value]</span><span class="st">`</span>    <span class="ot">=</span> <span class="dv">3</span>,</span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">conditions[0][operator]</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"&gt;"</span>,</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">offset                    =</span> <span class="dv">0</span>, </span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">limit                     =</span> <span class="dv">2000</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">url_build</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">request</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a>nhomegt3<span class="sc">$</span>query</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>- $scheme c1  https                                                         ...
-- $host   c1  data.cms.gov                                                  ...
-- $path   c1  /provider-data/api/1/datastore/query/4pq5-n9py/0              ...
-- $query  c1  properties[]=cms_certification_number_ccn&amp;properties[]=overal ...</code></pre>
+<pre><code>$properties
+[1] "state"          "overall_rating"
+
+$conditions
+        property value operator
+1 overall_rating     3        &gt;
+
+$offset
+[1] 0
+
+$limit
+[1] 2000
+
+$resources
+                                    id alias
+1 f93da3a3-400b-5efe-960d-c1d72b1d4f65     t
+
+$count
+[1] TRUE
+
+$results
+[1] TRUE
+
+$schema
+[1] TRUE
+
+$keys
+[1] TRUE
+
+$format
+[1] "json"
+
+$rowIds
+[1] FALSE</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">request</span>(</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://data.cms.gov/"</span>,</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"provider-data/api/1/"</span>,</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"datastore/query/4pq5-n9py/0?"</span>,</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"properties[]=state&amp;"</span>,   </span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"properties[]=overall_rating&amp;"</span>,</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"conditions[0][property]=overall_rating&amp;"</span>,   </span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"conditions[0][value]=3&amp;"</span>,</span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"conditions[0][operator]=&gt;"</span></span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span>results <span class="sc">|&gt;</span> </span>
-<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character),  <span class="sc">~</span> <span class="fu">na_if</span>(.x, <span class="st">""</span>))) <span class="sc">|&gt;</span> </span>
-<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">remove_all_na</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(overall_rating, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>nhomegt3<span class="sc">$</span>count</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  overall_rating    n
-1              5 1048
-2              4  952</code></pre>
+<pre><code>[1] 5174</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>nhomegt3<span class="sc">$</span>results <span class="sc">|&gt;</span> <span class="fu">tibble</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2,000 × 2
+   state overall_rating
+   &lt;chr&gt; &lt;chr&gt;         
+ 1 AL    4             
+ 2 AL    4             
+ 3 AL    5             
+ 4 AL    5             
+ 5 AL    5             
+ 6 AL    4             
+ 7 AL    5             
+ 8 AL    4             
+ 9 AL    4             
+10 AL    5             
+# ℹ 1,990 more rows</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>nhomegt3<span class="sc">$</span>results <span class="sc">|&gt;</span> </span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character),  <span class="sc">~</span> <span class="fu">na_if</span>(.x, <span class="st">""</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">remove_all_na</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(state, overall_rating, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   state overall_rating   n
+1     FL              5 163
+2     CA              5 138
+3     CA              4 117
+4     FL              4 110
+5     IN              5 105
+6     IL              4  98
+7     IL              5  91
+8     IN              4  89
+9     IA              5  79
+10    IA              4  73
+11    KS              4  59
+12    GA              4  53
+13    KS              5  53
+14    AL              4  43
+15    AR              4  43
+16    KY              4  42
+17    CT              4  41
+18    AR              5  40
+19    MD              5  40
+20    AL              5  39
+21    CO              4  39
+22    CO              5  39
+23    AZ              5  38
+24    GA              5  37
+25    KY              5  37
+26    CT              5  34
+27    LA              4  31
+28    MD              4  29
+29    ID              5  25
+30    AZ              4  20
+31    LA              5  19
+32    ID              4  18
+33    MA              4  18
+34    HI              5  17
+35    ME              5  17
+36    MA              5  13
+37    DE              5  10
+38    AK              5   9
+39    DE              4   9
+40    ME              4   9
+41    HI              4   7
+42    DC              5   5
+43    AK              4   2
+44    DC              4   2</code></pre>
 </div>
 </div>
 </section>
@@ -610,20 +1060,20 @@ Dataset Search
 <h3 data-number="2.0.4" class="anchored" data-anchor-id="all-dataset-ids"><span class="header-section-number">2.0.4</span> All Dataset IDs</h3>
 <p>Retrieve a comprehensive list of all datasets available by leveraging the <code>metastore/schemas</code> endpoint:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">request</span>(</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://data.cms.gov/"</span>,</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"provider-data/api/1/"</span>,</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"metastore/schemas/dataset/items"</span></span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>x <span class="sc">|&gt;</span> </span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character),  <span class="sc">~</span> <span class="fu">na_if</span>(.x, <span class="st">""</span>))) <span class="sc">|&gt;</span> </span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">remove_all_na</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">request</span>(</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://data.cms.gov/"</span>,</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"provider-data/api/1/"</span>,</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"metastore/schemas/dataset/items"</span></span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a>x <span class="sc">|&gt;</span> </span>
+<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character),  <span class="sc">~</span> <span class="fu">na_if</span>(.x, <span class="st">""</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">remove_all_na</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 234 × 17
    accessLevel landingPage   bureauCode issued `@type` modified released keyword
@@ -649,22 +1099,22 @@ Dataset Search
 <h3 data-number="2.0.5" class="anchored" data-anchor-id="search-theme"><span class="header-section-number">2.0.5</span> Search <code>theme</code></h3>
 <p>Return a list of all public datasets for a particular <strong>Topic</strong> area via the <code>/api/1/search</code> endpoint. For example, to get a list of all datasets in the <code>Home health services</code> Topic, you could use:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">request</span>(</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://data.cms.gov/"</span>,</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"provider-data/api/1/"</span>,</span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"search?"</span>,</span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"page-size=100&amp;"</span>,</span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"theme=Home%20health%20services"</span></span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span>facets <span class="sc">|&gt;</span> </span>
-<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character),  <span class="sc">~</span> <span class="fu">na_if</span>(.x, <span class="st">""</span>))) <span class="sc">|&gt;</span> </span>
-<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">remove_all_na</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">request</span>(</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://data.cms.gov/"</span>,</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"provider-data/api/1/"</span>,</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"search?"</span>,</span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"page-size=100&amp;"</span>,</span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"theme=Home%20health%20services"</span></span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-13"><a href="#cb51-13" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span>facets <span class="sc">|&gt;</span> </span>
+<span id="cb51-14"><a href="#cb51-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb51-15"><a href="#cb51-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character),  <span class="sc">~</span> <span class="fu">na_if</span>(.x, <span class="st">""</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb51-16"><a href="#cb51-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">remove_all_na</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 221 × 3
    type            name                                           total
@@ -681,7 +1131,7 @@ Dataset Search
 10 keyword         Ratings                                            5
 # ℹ 211 more rows</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span>results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span>results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$`dkan_dataset/6jpm-sxkc`
 $`dkan_dataset/6jpm-sxkc`$`@type`
@@ -1723,23 +2173,23 @@ $`dkan_dataset/vxub-6swi`$`%Ref:distribution`
 <h3 data-number="2.0.6" class="anchored" data-anchor-id="search-keyword"><span class="header-section-number">2.0.6</span> Search <code>keyword</code></h3>
 <p>One of the easiest ways to generate your search parameters is to use the Provider Data Catalog <a href="https://data.cms.gov/provider-data/search">search page</a> and then copy the query string to the end of the search endpoint. For example, if you filter by <em>“Dialysis facilities”</em> tagged with <em>“Linking Quality to Payment”</em> and select 25 results per page, the query string produced is:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">request</span>(</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://data.cms.gov/"</span>,</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"provider-data/api/1/"</span>,</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"search?"</span>,</span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"keyword=Linking%20Quality%20to%20Payment&amp;"</span>,</span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"page-size=25&amp;"</span>,</span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"theme=Dialysis%20facilities"</span></span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span>facets <span class="sc">|&gt;</span> </span>
-<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character),  <span class="sc">~</span> <span class="fu">na_if</span>(.x, <span class="st">""</span>))) <span class="sc">|&gt;</span> </span>
-<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">remove_all_na</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">request</span>(</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://data.cms.gov/"</span>,</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"provider-data/api/1/"</span>,</span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"search?"</span>,</span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"keyword=Linking%20Quality%20to%20Payment&amp;"</span>,</span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"page-size=25&amp;"</span>,</span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"theme=Dialysis%20facilities"</span></span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb55-13"><a href="#cb55-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-14"><a href="#cb55-14" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span>facets <span class="sc">|&gt;</span> </span>
+<span id="cb55-15"><a href="#cb55-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb55-16"><a href="#cb55-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character),  <span class="sc">~</span> <span class="fu">na_if</span>(.x, <span class="st">""</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb55-17"><a href="#cb55-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">remove_all_na</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 221 × 3
    type            name                                           total
@@ -1756,7 +2206,7 @@ $`dkan_dataset/vxub-6swi`$`%Ref:distribution`
 10 keyword         Addiction Medicine                                 0
 # ℹ 211 more rows</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span>results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span>results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$`dkan_dataset/clinical_depression`
 $`dkan_dataset/clinical_depression`$accessLevel
@@ -3323,21 +3773,21 @@ $`dkan_dataset/vat_topic`$`%Ref:distribution`
 <h3 data-number="2.0.7" class="anchored" data-anchor-id="search-fulltext"><span class="header-section-number">2.0.7</span> Search <code>fulltext</code></h3>
 <p>Use the same method to return a list of datasets that contain a keyword (like “ratings”) in their title and/or description:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">request</span>(</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(</span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://data.cms.gov/"</span>,</span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"provider-data/api/1/"</span>,</span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"search?"</span>,</span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"fulltext=ratings"</span></span>
-<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span>facets <span class="sc">|&gt;</span> </span>
-<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character),  <span class="sc">~</span> <span class="fu">na_if</span>(.x, <span class="st">""</span>))) <span class="sc">|&gt;</span> </span>
-<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">remove_all_na</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">request</span>(</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://data.cms.gov/"</span>,</span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"provider-data/api/1/"</span>,</span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"search?"</span>,</span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"fulltext=ratings"</span></span>
+<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb59-9"><a href="#cb59-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb59-10"><a href="#cb59-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb59-11"><a href="#cb59-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-12"><a href="#cb59-12" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span>facets <span class="sc">|&gt;</span> </span>
+<span id="cb59-13"><a href="#cb59-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb59-14"><a href="#cb59-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.character),  <span class="sc">~</span> <span class="fu">na_if</span>(.x, <span class="st">""</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb59-15"><a href="#cb59-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">remove_all_na</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 221 × 3
    type            name                                           total
@@ -3354,7 +3804,7 @@ $`dkan_dataset/vat_topic`$`%Ref:distribution`
 10 keyword         Quality                                            2
 # ℹ 211 more rows</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span>results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span>results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$`dkan_dataset/48nr-hqxx`
 $`dkan_dataset/48nr-hqxx`$accessLevel
@@ -3976,14 +4426,14 @@ Differences
 <p>The <code>datasetID</code> does not change between refreshes, and, currently, all <strong>Provider Data Catalog</strong> datasets only have a single resource, so the <code>index</code> will <em>always</em> be <code>0</code>.</p>
 <p>For example, search the <a href="https://data.cms.gov/provider-data/dataset/5zdx-ny2x">Long Term Care Hospital dataset</a> with:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="st">"https://data.cms.gov/provider-data/api/1/datastore/query/5zdx-ny2x/0"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="st">"https://data.cms.gov/provider-data/api/1/datastore/query/5zdx-ny2x/0"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "https://data.cms.gov/provider-data/api/1/datastore/query/5zdx-ny2x/0"</code></pre>
 </div>
 </div>
 <p>Distribution IDs change with every dataset update, so it is better to use APIs with the Dataset ID and the index of the distribution. If you still need the current distribution ID, you can access it through the metadata API, under <code>distribution -&gt; identifier</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="st">"https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/[datasetID]?show-reference-ids"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="st">"https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/[datasetID]?show-reference-ids"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/[datasetID]?show-reference-ids"</code></pre>
 </div>

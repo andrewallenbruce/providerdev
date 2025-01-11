@@ -30,6 +30,30 @@ The **Provider Data Catalog API** currently limits each batch of results to a ma
    1. Fetch the first 2000 results:
 
 ```{r}
+ownership0 <- httr2::url_parse(
+  base_url = "https://data.cms.gov/provider-data/", 
+  url      = "api/1/datastore/query/7t8x-u3ir/0") |> 
+  httr2::url_modify_query(
+    offset = 0, 
+    size   = 2000) |> 
+  httr2::url_build() |> 
+  httr2::request() |> 
+  httr2::req_perform() |> 
+  httr2::resp_body_json(simplifyVector = TRUE)
+
+ownership0$query
+
+ownership0$count
+
+ownership0$results |> 
+  tibble() |> 
+  glimpse()
+```
+
+```{r}
+#| label: weburl_1
+#| eval: false
+#| echo: false
 weburl::url_parse(
   paste0(
     "https://data.cms.gov/",
@@ -46,17 +70,24 @@ weburl::url_parse(
    2. Fetch the next 2000 results (2001-4000):
 
 ```{r}
-weburl::url_parse(
-  paste0(
-    "https://data.cms.gov/",
-    "provider-data/api/1/",
-    "datastore/query/7t8x-u3ir/0?",
-    "offset=2000"
-    )
-  ) |> 
-  mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
-  remove_all_na() |> 
-  purse()
+ownership1 <- httr2::url_parse(
+  base_url = "https://data.cms.gov/provider-data/api/1/datastore/query/", 
+  url      = "7t8x-u3ir/0") |> 
+  httr2::url_modify_query(
+    offset = 2001, 
+    size   = 4000) |> 
+  httr2::url_build() |> 
+  httr2::request() |> 
+  httr2::req_perform() |> 
+  httr2::resp_body_json(simplifyVector = TRUE)
+
+ownership1$query
+
+ownership1$count
+
+ownership1$results |> 
+  tibble() |> 
+  glimpse()
 ```
 
 Continue incrementing the offset by 2,000 for each subsequent batch. When retrieving large datasets, consider pacing your requests to avoid overwhelming your system with data and to allow for graceful error handling. Depending on the volume of data and your application's capabilities, consider implementing a back-off strategy if errors occur.
@@ -65,124 +96,96 @@ Continue incrementing the offset by 2,000 for each subsequent batch. When retrie
 
 CMS's **Five-Star Quality Rating System** is designed to help users compare the overall quality of care across different healthcare providers. Access these ratings by referring to the associated column names:
 
-   * Nursing Homes: `overall_rating`
-   * Hospitals: `hospital_overall_rating`
-   * Dialysis Facilities: `five_star`
-   * Hospice: `star_rating`
-   * Home Health: `quality_of_patient_care_star_rating`
+   * __Nursing Home__: `overall_rating`
+   * __Hospitals__: `hospital_overall_rating`
+   * __Dialysis__: `five_star`
+   * __Hospice__: `star_rating`
+   * __Home Health__: `quality_of_patient_care_star_rating`
 
-For example, the query for the [**Nursing Homes**](https://data.cms.gov/provider-data/dataset/4pq5-n9py) dataset for facilities with less than a 5-star overall rating:
+For example, the query for [**Nursing Home**](https://data.cms.gov/provider-data/dataset/4pq5-n9py) facilities with _less than_ a 5-star overall rating is:
 
 ```{r}
-#| label: nursing_homes
-weburl::url_parse(
-  paste0(
-    "https://data.cms.gov/",
-    "provider-data/api/1/",
-    "datastore/query/4pq5-n9py/0?",
-    "conditions[0][property]=overall_rating&",
-    "conditions[0][value]=5&",
-    "conditions[0][operator]=<"
-    )
-  ) |> 
-  mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
-  remove_all_na() |> 
-  purse()
+#| label: nhome0
+nhome0 <- httr2::url_parse(
+  base_url = "https://data.cms.gov/provider-data/api/1/datastore/query/", 
+  url      = "4pq5-n9py/0") |> 
+  httr2::url_modify_query(
+    `conditions[0][property]` = "overall_rating",
+    `conditions[0][value]`    = 5,
+    `conditions[0][operator]` = "<",
+    offset                    = 0, 
+    limit                     = 2000) |> 
+  httr2::url_build() |> 
+  httr2::request() |> 
+  httr2::req_perform() |> 
+  httr2::resp_body_json(simplifyVector = TRUE)
 
-x <- request(
-  paste0(
-    "https://data.cms.gov/",
-    "provider-data/api/1/",
-    "datastore/query/4pq5-n9py/0?",
-    "conditions[0][property]=overall_rating&",
-    "conditions[0][value]=5&",
-    "conditions[0][operator]=<"
-    )
-  ) |> 
-  req_perform() |> 
-  resp_body_json(simplifyVector = TRUE)
+nhome0$query
 
-x$results |> 
+nhome0$count
+
+nhome0$results |> tibble()
+
+nhome0$results |> 
   mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
   remove_all_na() |> 
   count(overall_rating, sort = TRUE)
 ```
+
+
+```{r}
+#| label: nhome1
+nhome1 <- httr2::url_parse(
+  base_url = "https://data.cms.gov/provider-data/api/1/datastore/query/", 
+  url      = "4pq5-n9py/0") |> 
+  httr2::url_modify_query(
+    `conditions[0][property]` = "overall_rating",
+    `conditions[0][value]`    = 5,
+    `conditions[0][operator]` = "<",
+    offset                    = 2001, 
+    limit                     = 2000) |> 
+  httr2::url_build() |> 
+  httr2::request() |> 
+  httr2::req_perform() |> 
+  httr2::resp_body_json(simplifyVector = TRUE)
+
+nhome1$query
+
+nhome1$count
+
+nhome1$results |> tibble()
+
+nhome1$results |> 
+  mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
+  remove_all_na() |> 
+  count(overall_rating, sort = TRUE)
+```
+
 
 ### Specific Conditions
 
-Recommended method: Use the __Datastore Query Endpoint__ (`datastore/query/{datasetID}/{index}`); takes two arguments: the `datasetID`, which can be obtained from the URL of the dataset and does not change between data refreshes, and the index of the distribution. Currently on the PDC, the index will _always_ be `0`.
+Use the __Datastore Query Endpoint__ (`datastore/query/{datasetID}/{index}`). It takes two arguments: the __`datasetID`__, which does not change between data refreshes, and the distribution's __`index`__, which will _always_ be `0`.
 
-To return the first 500 results of a dataset with a column named `overall_rating`, first identify the dataset with that column:
+For example, to return the first 500 results (the default) of a dataset with an overall rating of 5:
 
 ```{r}
 #| label: first_500
-weburl::url_parse(
-  paste0(
-    "https://data.cms.gov/",
-    "provider-data/api/1/",
-    "datastore/query/4pq5-n9py/0"
-    )
-  ) |> 
-  mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
-  remove_all_na() |> 
-  purse()
-
-x <- request(
-  paste0(
-    "https://data.cms.gov/",
-    "provider-data/api/1/",
-    "datastore/query/4pq5-n9py/0"
-    )
-  ) |> 
-  req_perform() |> 
-  resp_body_json(simplifyVector = TRUE)
-
-x$results |> 
-  mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
-  remove_all_na() |> 
-  count(overall_rating, sort = TRUE)
+httr2::url_parse(
+  base_url = "https://data.cms.gov/provider-data/api/1/datastore/query/", 
+  url      = "4pq5-n9py/0") |> 
+  httr2::url_modify_query(
+    `conditions[0][property]` = "overall_rating",
+    `conditions[0][value]`    = 5,
+    `conditions[0][operator]` = "=",
+    offset                    = 0, 
+    limit                     = 500)
 ```
 
-To return the first 500 results with an overall rating of 5:
+More complex queries can be created in JSON and converted to an HTTP query string using the [JSON Query to String](https://www.convertonline.io/convert/json-to-query-string) tool. 
 
-```{r}
-#| label: rating_five
-weburl::url_parse(
-  paste0(
-    "https://data.cms.gov/",
-    "provider-data/api/1/",
-    "datastore/query/4pq5-n9py/0?",
-    "conditions[0][property]=overall_rating&",
-    "conditions[0][value]=5&",
-    "conditions[0][operator]=="
-    )
-  ) |> 
-  mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
-  remove_all_na() |> 
-  purse()
+For example, to return the `cms_certification_number_ccn` and `overall_rating` columns with a rating greater than 3, use the following JSON:
 
-x <- request(
-  paste0(
-    "https://data.cms.gov/",
-    "provider-data/api/1/",
-    "datastore/query/4pq5-n9py/0?",
-    "conditions[0][property]=overall_rating&",
-    "conditions[0][value]=5&",
-    "conditions[0][operator]=="
-    )
-  ) |> 
-  req_perform() |> 
-  resp_body_json(simplifyVector = TRUE)
-
-x$results |> 
-  mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
-  remove_all_na() |> 
-  count(state, sort = TRUE)
-```
-
-More complex queries can be created in JSON and converted to an HTTP query string using the [JSON Query to String](https://www.convertonline.io/convert/json-to-query-string) tool. For example, to return the `cms_certification_number_ccn` and `overall_rating` columns with a rating greater than 3, use the following JSON:
-
-```r
+```{.json}
 {
     "properties": [
         "cms_certification_number_ccn",
@@ -197,45 +200,37 @@ More complex queries can be created in JSON and converted to an HTTP query strin
     ]
 }
 ```
+
 This converts to a query string of:
 
 ```{r}
 #| label: ccn_rating
-weburl::url_parse(
-  paste0(
-    "https://data.cms.gov/",
-    "provider-data/api/1/",
-    "datastore/query/4pq5-n9py/0?",
-    "properties[]=cms_certification_number_ccn&",   
-    "properties[]=overall_rating&",
-    "conditions[0][property]=overall_rating&",   
-    "conditions[0][value]=3&",
-    "conditions[0][operator]=>"
-    )
-  ) |>
+nhomegt3 <- httr2::url_parse(
+  base_url = "https://data.cms.gov/provider-data/api/1/datastore/query/", 
+  url      = "4pq5-n9py/0") |> 
+  httr2::url_modify_query(
+    `properties[]`            = "state",
+    `properties[]`            = "overall_rating",
+    `conditions[0][property]` = "overall_rating",
+    `conditions[0][value]`    = 3,
+    `conditions[0][operator]` = ">",
+    offset                    = 0, 
+    limit                     = 2000) |> 
+  httr2::url_build() |> 
+  httr2::request() |> 
+  httr2::req_perform() |> 
+  httr2::resp_body_json(simplifyVector = TRUE)
+
+nhomegt3$query
+
+nhomegt3$count
+
+nhomegt3$results |> tibble()
+
+nhomegt3$results |> 
   mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
   remove_all_na() |> 
-  purse()
-
-x <- request(
-  paste0(
-    "https://data.cms.gov/",
-    "provider-data/api/1/",
-    "datastore/query/4pq5-n9py/0?",
-    "properties[]=state&",   
-    "properties[]=overall_rating&",
-    "conditions[0][property]=overall_rating&",   
-    "conditions[0][value]=3&",
-    "conditions[0][operator]=>"
-    )
-  ) |> 
-  req_perform() |> 
-  resp_body_json(simplifyVector = TRUE)
-
-x$results |> 
-  mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
-  remove_all_na() |> 
-  count(overall_rating, sort = TRUE)
+  count(state, overall_rating, sort = TRUE)
 ```
 
 ### All Dataset IDs
