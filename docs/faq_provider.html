@@ -2811,6 +2811,2225 @@ $rowIds
 </section>
 <section id="datastore-query" class="level3" data-number="2.2.4">
 <h3 data-number="2.2.4" class="anchored" data-anchor-id="datastore-query"><span class="header-section-number">2.2.4</span> Datastore: query</h3>
+<ol start="6" type="1">
+<li>Query one or more datastore resources
+<ul>
+<li><strong>POST</strong> No Parameters</li>
+</ul></li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">request</span>(<span class="st">"https://data.cms.gov/provider-data/api/1/datastore/query/f93da3a3-400b-5efe-960d-c1d72b1d4f65"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_method</span>(<span class="st">"POST"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_headers</span>(<span class="at">Accept =</span> <span class="st">"application/json"</span>, </span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a>              <span class="st">`</span><span class="at">Content-Type</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"application/json"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_body_json</span>(</span>
+<span id="cb67-6"><a href="#cb67-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">list</span>(<span class="at">limit =</span> <span class="dv">1</span>, </span>
+<span id="cb67-7"><a href="#cb67-7" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">conditions[0][property]</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"record_number"</span>,</span>
+<span id="cb67-8"><a href="#cb67-8" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">conditions[0][value]</span><span class="st">`</span>    <span class="ot">=</span> <span class="dv">1</span>,</span>
+<span id="cb67-9"><a href="#cb67-9" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">conditions[0][operator]</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"&gt;"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb67-10"><a href="#cb67-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb67-11"><a href="#cb67-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$results
+  cms_certification_number_ccn            provider_name     provider_address
+1                       015009 BURNS NURSING HOME, INC. 701 MONROE STREET NW
+      citytown state zip_code telephone_number provider_ssa_county_code
+1 RUSSELLVILLE    AL    35653       2563324110                      290
+  countyparish           ownership_type number_of_certified_beds
+1     Franklin For profit - Corporation                       57
+  average_number_of_residents_per_day
+1                                53.3
+  average_number_of_residents_per_day_footnote         provider_type
+1                                              Medicare and Medicaid
+  provider_resides_in_hospital      legal_business_name
+1                            N BURNS NURSING HOME, INC.
+  date_first_approved_to_provide_medicare_and_medicaid_services
+1                                                    1969-09-01
+  affiliated_entity_name affiliated_entity_id
+1                                            
+  continuing_care_retirement_community special_focus_status abuse_icon
+1                                    N                               N
+  most_recent_health_inspection_more_than_2_years_ago
+1                                                   N
+  provider_changed_ownership_in_last_12_months
+1                                            N
+  with_a_resident_and_family_council
+1                           Resident
+  automatic_sprinkler_systems_in_all_required_areas overall_rating
+1                                               Yes              2
+  overall_rating_footnote health_inspection_rating
+1                                                2
+  health_inspection_rating_footnote qm_rating qm_rating_footnote
+1                                           4                   
+  longstay_qm_rating longstay_qm_rating_footnote shortstay_qm_rating
+1                  4                                               4
+  shortstay_qm_rating_footnote staffing_rating staffing_rating_footnote
+1                                            4                         
+  reported_staffing_footnote physical_therapist_staffing_footnote
+1                                                                
+  reported_nurse_aide_staffing_hours_per_resident_per_day
+1                                                 2.58352
+  reported_lpn_staffing_hours_per_resident_per_day
+1                                          0.42259
+  reported_rn_staffing_hours_per_resident_per_day
+1                                         1.28749
+  reported_licensed_staffing_hours_per_resident_per_day
+1                                               1.71009
+  reported_total_nurse_staffing_hours_per_resident_per_day
+1                                                  4.29361
+  total_number_of_nurse_staff_hours_per_resident_per_day_on_t_4a14
+1                                                          3.30871
+  registered_nurse_hours_per_resident_per_day_on_the_weekend
+1                                                    0.76957
+  reported_physical_therapist_staffing_hours_per_resident_per_day
+1                                                         0.01578
+  total_nursing_staff_turnover total_nursing_staff_turnover_footnote
+1                         36.2                                      
+  registered_nurse_turnover registered_nurse_turnover_footnote
+1                      18.2                                   
+  number_of_administrators_who_have_left_the_nursing_home
+1                                                       3
+  administrator_turnover_footnote nursing_casemix_index
+1                                               1.35392
+  nursing_casemix_index_ratio
+1                     0.99840
+  casemix_nurse_aide_staffing_hours_per_resident_per_day
+1                                                2.28854
+  casemix_lpn_staffing_hours_per_resident_per_day
+1                                         0.87571
+  casemix_rn_staffing_hours_per_resident_per_day
+1                                        0.66700
+  casemix_total_nurse_staffing_hours_per_resident_per_day
+1                                                 3.83125
+  casemix_weekend_total_nurse_staffing_hours_per_resident_per_day
+1                                                         3.34780
+  adjusted_nurse_aide_staffing_hours_per_resident_per_day
+1                                                 2.57325
+  adjusted_lpn_staffing_hours_per_resident_per_day
+1                                          0.42092
+  adjusted_rn_staffing_hours_per_resident_per_day
+1                                         1.28238
+  adjusted_total_nurse_staffing_hours_per_resident_per_day
+1                                                  4.27655
+  adjusted_weekend_total_nurse_staffing_hours_per_resident_per_day
+1                                                          3.29556
+  rating_cycle_1_standard_survey_health_date
+1                                 2023-03-02
+  rating_cycle_1_total_number_of_health_deficiencies
+1                                                  4
+  rating_cycle_1_number_of_standard_health_deficiencies
+1                                                     4
+  rating_cycle_1_number_of_complaint_health_deficiencies
+1                                                      3
+  rating_cycle_1_health_deficiency_score
+1                                     56
+  rating_cycle_1_number_of_health_revisits rating_cycle_1_health_revisit_score
+1                                        1                                   0
+  rating_cycle_1_total_health_score rating_cycle_2_standard_health_survey_date
+1                                56                                 2019-08-21
+  rating_cycle_2_total_number_of_health_deficiencies
+1                                                  2
+  rating_cycle_2_number_of_standard_health_deficiencies
+1                                                     2
+  rating_cycle_2_number_of_complaint_health_deficiencies
+1                                                      0
+  rating_cycle_2_health_deficiency_score
+1                                      8
+  rating_cycle_2_number_of_health_revisits rating_cycle_2_health_revisit_score
+1                                        1                                   0
+  rating_cycle_2_total_health_score rating_cycle_3_standard_health_survey_date
+1                                 8                                 2018-08-01
+  rating_cycle_3_total_number_of_health_deficiencies
+1                                                  1
+  rating_cycle_3_number_of_standard_health_deficiencies
+1                                                     1
+  rating_cycle_3_number_of_complaint_health_deficiencies
+1                                                      0
+  rating_cycle_3_health_deficiency_score
+1                                      4
+  rating_cycle_3_number_of_health_revisits rating_cycle_3_health_revisit_score
+1                                        1                                   0
+  rating_cycle_3_total_health_score total_weighted_health_survey_score
+1                                 4                             31.333
+  number_of_facility_reported_incidents number_of_substantiated_complaints
+1                                     2                                  0
+  number_of_citations_from_infection_control_inspections number_of_fines
+1                                                                      1
+  total_amount_of_fines_in_dollars number_of_payment_denials
+1                         23989.00                         0
+  total_number_of_penalties                                   location latitude
+1                         1 701 MONROE STREET NW,RUSSELLVILLE,AL,35653  34.5149
+  longitude geocoding_footnote processing_date
+1   -87.736                         2024-11-01
+
+$count
+[1] 14807
+
+$schema
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$cms_certification_number_ccn
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$cms_certification_number_ccn$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$cms_certification_number_ccn$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$cms_certification_number_ccn$description
+[1] "CMS Certification Number (CCN)"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$provider_name
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$provider_name$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$provider_name$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$provider_name$description
+[1] "Provider Name"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$provider_address
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$provider_address$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$provider_address$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$provider_address$description
+[1] "Provider Address"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$citytown
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$citytown$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$citytown$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$citytown$description
+[1] "City/Town"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$state
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$state$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$state$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$state$description
+[1] "State"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$zip_code
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$zip_code$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$zip_code$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$zip_code$description
+[1] "ZIP Code"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$telephone_number
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$telephone_number$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$telephone_number$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$telephone_number$description
+[1] "Telephone Number"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$provider_ssa_county_code
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$provider_ssa_county_code$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$provider_ssa_county_code$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$provider_ssa_county_code$description
+[1] "Provider SSA County Code"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$countyparish
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$countyparish$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$countyparish$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$countyparish$description
+[1] "County/Parish"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$ownership_type
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$ownership_type$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$ownership_type$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$ownership_type$description
+[1] "Ownership Type"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$number_of_certified_beds
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$number_of_certified_beds$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$number_of_certified_beds$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$number_of_certified_beds$description
+[1] "Number of Certified Beds"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$average_number_of_residents_per_day
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$average_number_of_residents_per_day$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$average_number_of_residents_per_day$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$average_number_of_residents_per_day$description
+[1] "Average Number of Residents per Day"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$average_number_of_residents_per_day_footnote
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$average_number_of_residents_per_day_footnote$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$average_number_of_residents_per_day_footnote$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$average_number_of_residents_per_day_footnote$description
+[1] "Average Number of Residents per Day Footnote"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$provider_type
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$provider_type$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$provider_type$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$provider_type$description
+[1] "Provider Type"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$provider_resides_in_hospital
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$provider_resides_in_hospital$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$provider_resides_in_hospital$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$provider_resides_in_hospital$description
+[1] "Provider Resides in Hospital"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$legal_business_name
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$legal_business_name$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$legal_business_name$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$legal_business_name$description
+[1] "Legal Business Name"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$date_first_approved_to_provide_medicare_and_medicaid_services
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$date_first_approved_to_provide_medicare_and_medicaid_services$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$date_first_approved_to_provide_medicare_and_medicaid_services$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$date_first_approved_to_provide_medicare_and_medicaid_services$description
+[1] "Date First Approved to Provide Medicare and Medicaid Services"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$affiliated_entity_name
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$affiliated_entity_name$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$affiliated_entity_name$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$affiliated_entity_name$description
+[1] "Affiliated Entity Name"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$affiliated_entity_id
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$affiliated_entity_id$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$affiliated_entity_id$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$affiliated_entity_id$description
+[1] "Affiliated Entity ID"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$continuing_care_retirement_community
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$continuing_care_retirement_community$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$continuing_care_retirement_community$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$continuing_care_retirement_community$description
+[1] "Continuing Care Retirement Community"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$special_focus_status
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$special_focus_status$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$special_focus_status$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$special_focus_status$description
+[1] "Special Focus Status"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$abuse_icon
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$abuse_icon$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$abuse_icon$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$abuse_icon$description
+[1] "Abuse Icon"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$most_recent_health_inspection_more_than_2_years_ago
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$most_recent_health_inspection_more_than_2_years_ago$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$most_recent_health_inspection_more_than_2_years_ago$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$most_recent_health_inspection_more_than_2_years_ago$description
+[1] "Most Recent Health Inspection More Than 2 Years Ago"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$provider_changed_ownership_in_last_12_months
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$provider_changed_ownership_in_last_12_months$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$provider_changed_ownership_in_last_12_months$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$provider_changed_ownership_in_last_12_months$description
+[1] "Provider Changed Ownership in Last 12 Months"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$with_a_resident_and_family_council
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$with_a_resident_and_family_council$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$with_a_resident_and_family_council$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$with_a_resident_and_family_council$description
+[1] "With a Resident and Family Council"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$automatic_sprinkler_systems_in_all_required_areas
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$automatic_sprinkler_systems_in_all_required_areas$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$automatic_sprinkler_systems_in_all_required_areas$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$automatic_sprinkler_systems_in_all_required_areas$description
+[1] "Automatic Sprinkler Systems in All Required Areas"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$overall_rating
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$overall_rating$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$overall_rating$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$overall_rating$description
+[1] "Overall Rating"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$overall_rating_footnote
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$overall_rating_footnote$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$overall_rating_footnote$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$overall_rating_footnote$description
+[1] "Overall Rating Footnote"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$health_inspection_rating
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$health_inspection_rating$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$health_inspection_rating$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$health_inspection_rating$description
+[1] "Health Inspection Rating"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$health_inspection_rating_footnote
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$health_inspection_rating_footnote$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$health_inspection_rating_footnote$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$health_inspection_rating_footnote$description
+[1] "Health Inspection Rating Footnote"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$qm_rating
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$qm_rating$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$qm_rating$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$qm_rating$description
+[1] "QM Rating"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$qm_rating_footnote
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$qm_rating_footnote$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$qm_rating_footnote$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$qm_rating_footnote$description
+[1] "QM Rating Footnote"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$longstay_qm_rating
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$longstay_qm_rating$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$longstay_qm_rating$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$longstay_qm_rating$description
+[1] "Long-Stay QM Rating"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$longstay_qm_rating_footnote
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$longstay_qm_rating_footnote$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$longstay_qm_rating_footnote$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$longstay_qm_rating_footnote$description
+[1] "Long-Stay QM Rating Footnote"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$shortstay_qm_rating
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$shortstay_qm_rating$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$shortstay_qm_rating$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$shortstay_qm_rating$description
+[1] "Short-Stay QM Rating"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$shortstay_qm_rating_footnote
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$shortstay_qm_rating_footnote$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$shortstay_qm_rating_footnote$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$shortstay_qm_rating_footnote$description
+[1] "Short-Stay QM Rating Footnote"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$staffing_rating
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$staffing_rating$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$staffing_rating$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$staffing_rating$description
+[1] "Staffing Rating"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$staffing_rating_footnote
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$staffing_rating_footnote$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$staffing_rating_footnote$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$staffing_rating_footnote$description
+[1] "Staffing Rating Footnote"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$reported_staffing_footnote
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$reported_staffing_footnote$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$reported_staffing_footnote$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$reported_staffing_footnote$description
+[1] "Reported Staffing Footnote"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$physical_therapist_staffing_footnote
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$physical_therapist_staffing_footnote$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$physical_therapist_staffing_footnote$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$physical_therapist_staffing_footnote$description
+[1] "Physical Therapist Staffing Footnote"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$reported_nurse_aide_staffing_hours_per_resident_per_day
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$reported_nurse_aide_staffing_hours_per_resident_per_day$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$reported_nurse_aide_staffing_hours_per_resident_per_day$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$reported_nurse_aide_staffing_hours_per_resident_per_day$description
+[1] "Reported Nurse Aide Staffing Hours per Resident per Day"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$reported_lpn_staffing_hours_per_resident_per_day
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$reported_lpn_staffing_hours_per_resident_per_day$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$reported_lpn_staffing_hours_per_resident_per_day$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$reported_lpn_staffing_hours_per_resident_per_day$description
+[1] "Reported LPN Staffing Hours per Resident per Day"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$reported_rn_staffing_hours_per_resident_per_day
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$reported_rn_staffing_hours_per_resident_per_day$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$reported_rn_staffing_hours_per_resident_per_day$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$reported_rn_staffing_hours_per_resident_per_day$description
+[1] "Reported RN Staffing Hours per Resident per Day"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$reported_licensed_staffing_hours_per_resident_per_day
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$reported_licensed_staffing_hours_per_resident_per_day$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$reported_licensed_staffing_hours_per_resident_per_day$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$reported_licensed_staffing_hours_per_resident_per_day$description
+[1] "Reported Licensed Staffing Hours per Resident per Day"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$reported_total_nurse_staffing_hours_per_resident_per_day
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$reported_total_nurse_staffing_hours_per_resident_per_day$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$reported_total_nurse_staffing_hours_per_resident_per_day$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$reported_total_nurse_staffing_hours_per_resident_per_day$description
+[1] "Reported Total Nurse Staffing Hours per Resident per Day"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$total_number_of_nurse_staff_hours_per_resident_per_day_on_t_4a14
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$total_number_of_nurse_staff_hours_per_resident_per_day_on_t_4a14$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$total_number_of_nurse_staff_hours_per_resident_per_day_on_t_4a14$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$total_number_of_nurse_staff_hours_per_resident_per_day_on_t_4a14$description
+[1] "Total number of nurse staff hours per resident per day on the weekend"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$registered_nurse_hours_per_resident_per_day_on_the_weekend
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$registered_nurse_hours_per_resident_per_day_on_the_weekend$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$registered_nurse_hours_per_resident_per_day_on_the_weekend$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$registered_nurse_hours_per_resident_per_day_on_the_weekend$description
+[1] "Registered Nurse hours per resident per day on the weekend"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$reported_physical_therapist_staffing_hours_per_resident_per_day
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$reported_physical_therapist_staffing_hours_per_resident_per_day$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$reported_physical_therapist_staffing_hours_per_resident_per_day$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$reported_physical_therapist_staffing_hours_per_resident_per_day$description
+[1] "Reported Physical Therapist Staffing Hours per Resident Per Day"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$total_nursing_staff_turnover
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$total_nursing_staff_turnover$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$total_nursing_staff_turnover$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$total_nursing_staff_turnover$description
+[1] "Total nursing staff turnover"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$total_nursing_staff_turnover_footnote
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$total_nursing_staff_turnover_footnote$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$total_nursing_staff_turnover_footnote$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$total_nursing_staff_turnover_footnote$description
+[1] "Total nursing staff turnover footnote"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$registered_nurse_turnover
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$registered_nurse_turnover$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$registered_nurse_turnover$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$registered_nurse_turnover$description
+[1] "Registered Nurse turnover"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$registered_nurse_turnover_footnote
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$registered_nurse_turnover_footnote$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$registered_nurse_turnover_footnote$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$registered_nurse_turnover_footnote$description
+[1] "Registered Nurse turnover footnote"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$number_of_administrators_who_have_left_the_nursing_home
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$number_of_administrators_who_have_left_the_nursing_home$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$number_of_administrators_who_have_left_the_nursing_home$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$number_of_administrators_who_have_left_the_nursing_home$description
+[1] "Number of administrators who have left the nursing home"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$administrator_turnover_footnote
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$administrator_turnover_footnote$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$administrator_turnover_footnote$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$administrator_turnover_footnote$description
+[1] "Administrator turnover footnote"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$nursing_casemix_index
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$nursing_casemix_index$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$nursing_casemix_index$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$nursing_casemix_index$description
+[1] "Nursing Case-Mix Index"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$nursing_casemix_index_ratio
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$nursing_casemix_index_ratio$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$nursing_casemix_index_ratio$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$nursing_casemix_index_ratio$description
+[1] "Nursing Case-Mix Index Ratio"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$casemix_nurse_aide_staffing_hours_per_resident_per_day
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$casemix_nurse_aide_staffing_hours_per_resident_per_day$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$casemix_nurse_aide_staffing_hours_per_resident_per_day$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$casemix_nurse_aide_staffing_hours_per_resident_per_day$description
+[1] "Case-Mix Nurse Aide Staffing Hours per Resident per Day"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$casemix_lpn_staffing_hours_per_resident_per_day
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$casemix_lpn_staffing_hours_per_resident_per_day$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$casemix_lpn_staffing_hours_per_resident_per_day$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$casemix_lpn_staffing_hours_per_resident_per_day$description
+[1] "Case-Mix LPN Staffing Hours per Resident per Day"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$casemix_rn_staffing_hours_per_resident_per_day
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$casemix_rn_staffing_hours_per_resident_per_day$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$casemix_rn_staffing_hours_per_resident_per_day$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$casemix_rn_staffing_hours_per_resident_per_day$description
+[1] "Case-Mix RN Staffing Hours per Resident per Day"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$casemix_total_nurse_staffing_hours_per_resident_per_day
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$casemix_total_nurse_staffing_hours_per_resident_per_day$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$casemix_total_nurse_staffing_hours_per_resident_per_day$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$casemix_total_nurse_staffing_hours_per_resident_per_day$description
+[1] "Case-Mix Total Nurse Staffing Hours per Resident per Day"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$casemix_weekend_total_nurse_staffing_hours_per_resident_per_day
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$casemix_weekend_total_nurse_staffing_hours_per_resident_per_day$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$casemix_weekend_total_nurse_staffing_hours_per_resident_per_day$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$casemix_weekend_total_nurse_staffing_hours_per_resident_per_day$description
+[1] "Case-Mix Weekend Total Nurse Staffing Hours per Resident per Day"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$adjusted_nurse_aide_staffing_hours_per_resident_per_day
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$adjusted_nurse_aide_staffing_hours_per_resident_per_day$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$adjusted_nurse_aide_staffing_hours_per_resident_per_day$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$adjusted_nurse_aide_staffing_hours_per_resident_per_day$description
+[1] "Adjusted Nurse Aide Staffing Hours per Resident per Day"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$adjusted_lpn_staffing_hours_per_resident_per_day
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$adjusted_lpn_staffing_hours_per_resident_per_day$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$adjusted_lpn_staffing_hours_per_resident_per_day$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$adjusted_lpn_staffing_hours_per_resident_per_day$description
+[1] "Adjusted LPN Staffing Hours per Resident per Day"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$adjusted_rn_staffing_hours_per_resident_per_day
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$adjusted_rn_staffing_hours_per_resident_per_day$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$adjusted_rn_staffing_hours_per_resident_per_day$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$adjusted_rn_staffing_hours_per_resident_per_day$description
+[1] "Adjusted RN Staffing Hours per Resident per Day"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$adjusted_total_nurse_staffing_hours_per_resident_per_day
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$adjusted_total_nurse_staffing_hours_per_resident_per_day$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$adjusted_total_nurse_staffing_hours_per_resident_per_day$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$adjusted_total_nurse_staffing_hours_per_resident_per_day$description
+[1] "Adjusted Total Nurse Staffing Hours per Resident per Day"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$adjusted_weekend_total_nurse_staffing_hours_per_resident_per_day
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$adjusted_weekend_total_nurse_staffing_hours_per_resident_per_day$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$adjusted_weekend_total_nurse_staffing_hours_per_resident_per_day$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$adjusted_weekend_total_nurse_staffing_hours_per_resident_per_day$description
+[1] "Adjusted Weekend Total Nurse Staffing Hours per Resident per Day"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_standard_survey_health_date
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_standard_survey_health_date$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_standard_survey_health_date$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_standard_survey_health_date$description
+[1] "Rating Cycle 1 Standard Survey Health Date"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_total_number_of_health_deficiencies
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_total_number_of_health_deficiencies$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_total_number_of_health_deficiencies$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_total_number_of_health_deficiencies$description
+[1] "Rating Cycle 1 Total Number of Health Deficiencies"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_number_of_standard_health_deficiencies
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_number_of_standard_health_deficiencies$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_number_of_standard_health_deficiencies$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_number_of_standard_health_deficiencies$description
+[1] "Rating Cycle 1 Number of Standard Health Deficiencies"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_number_of_complaint_health_deficiencies
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_number_of_complaint_health_deficiencies$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_number_of_complaint_health_deficiencies$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_number_of_complaint_health_deficiencies$description
+[1] "Rating Cycle 1 Number of Complaint Health Deficiencies"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_health_deficiency_score
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_health_deficiency_score$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_health_deficiency_score$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_health_deficiency_score$description
+[1] "Rating Cycle 1 Health Deficiency Score"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_number_of_health_revisits
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_number_of_health_revisits$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_number_of_health_revisits$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_number_of_health_revisits$description
+[1] "Rating Cycle 1 Number of Health Revisits"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_health_revisit_score
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_health_revisit_score$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_health_revisit_score$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_health_revisit_score$description
+[1] "Rating Cycle 1 Health Revisit Score"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_total_health_score
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_total_health_score$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_total_health_score$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_1_total_health_score$description
+[1] "Rating Cycle 1 Total Health Score"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_standard_health_survey_date
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_standard_health_survey_date$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_standard_health_survey_date$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_standard_health_survey_date$description
+[1] "Rating Cycle 2 Standard Health Survey Date"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_total_number_of_health_deficiencies
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_total_number_of_health_deficiencies$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_total_number_of_health_deficiencies$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_total_number_of_health_deficiencies$description
+[1] "Rating Cycle 2 Total Number of Health Deficiencies"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_number_of_standard_health_deficiencies
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_number_of_standard_health_deficiencies$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_number_of_standard_health_deficiencies$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_number_of_standard_health_deficiencies$description
+[1] "Rating Cycle 2 Number of Standard Health Deficiencies"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_number_of_complaint_health_deficiencies
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_number_of_complaint_health_deficiencies$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_number_of_complaint_health_deficiencies$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_number_of_complaint_health_deficiencies$description
+[1] "Rating Cycle 2 Number of Complaint Health Deficiencies"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_health_deficiency_score
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_health_deficiency_score$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_health_deficiency_score$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_health_deficiency_score$description
+[1] "Rating Cycle 2 Health Deficiency Score"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_number_of_health_revisits
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_number_of_health_revisits$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_number_of_health_revisits$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_number_of_health_revisits$description
+[1] "Rating Cycle 2 Number of Health Revisits"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_health_revisit_score
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_health_revisit_score$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_health_revisit_score$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_health_revisit_score$description
+[1] "Rating Cycle 2 Health Revisit Score"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_total_health_score
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_total_health_score$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_total_health_score$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_2_total_health_score$description
+[1] "Rating Cycle 2 Total Health Score"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_standard_health_survey_date
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_standard_health_survey_date$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_standard_health_survey_date$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_standard_health_survey_date$description
+[1] "Rating Cycle 3 Standard Health Survey Date"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_total_number_of_health_deficiencies
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_total_number_of_health_deficiencies$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_total_number_of_health_deficiencies$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_total_number_of_health_deficiencies$description
+[1] "Rating Cycle 3 Total Number of Health Deficiencies"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_number_of_standard_health_deficiencies
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_number_of_standard_health_deficiencies$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_number_of_standard_health_deficiencies$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_number_of_standard_health_deficiencies$description
+[1] "Rating Cycle 3 Number of Standard Health Deficiencies"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_number_of_complaint_health_deficiencies
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_number_of_complaint_health_deficiencies$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_number_of_complaint_health_deficiencies$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_number_of_complaint_health_deficiencies$description
+[1] "Rating Cycle 3 Number of Complaint Health Deficiencies"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_health_deficiency_score
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_health_deficiency_score$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_health_deficiency_score$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_health_deficiency_score$description
+[1] "Rating Cycle 3 Health Deficiency Score"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_number_of_health_revisits
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_number_of_health_revisits$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_number_of_health_revisits$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_number_of_health_revisits$description
+[1] "Rating Cycle 3 Number of Health Revisits"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_health_revisit_score
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_health_revisit_score$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_health_revisit_score$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_health_revisit_score$description
+[1] "Rating Cycle 3 Health Revisit Score"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_total_health_score
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_total_health_score$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_total_health_score$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$rating_cycle_3_total_health_score$description
+[1] "Rating Cycle 3 Total Health Score"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$total_weighted_health_survey_score
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$total_weighted_health_survey_score$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$total_weighted_health_survey_score$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$total_weighted_health_survey_score$description
+[1] "Total Weighted Health Survey Score"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$number_of_facility_reported_incidents
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$number_of_facility_reported_incidents$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$number_of_facility_reported_incidents$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$number_of_facility_reported_incidents$description
+[1] "Number of Facility Reported Incidents"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$number_of_substantiated_complaints
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$number_of_substantiated_complaints$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$number_of_substantiated_complaints$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$number_of_substantiated_complaints$description
+[1] "Number of Substantiated Complaints"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$number_of_citations_from_infection_control_inspections
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$number_of_citations_from_infection_control_inspections$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$number_of_citations_from_infection_control_inspections$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$number_of_citations_from_infection_control_inspections$description
+[1] "Number of Citations from Infection Control Inspections"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$number_of_fines
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$number_of_fines$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$number_of_fines$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$number_of_fines$description
+[1] "Number of Fines"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$total_amount_of_fines_in_dollars
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$total_amount_of_fines_in_dollars$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$total_amount_of_fines_in_dollars$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$total_amount_of_fines_in_dollars$description
+[1] "Total Amount of Fines in Dollars"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$number_of_payment_denials
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$number_of_payment_denials$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$number_of_payment_denials$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$number_of_payment_denials$description
+[1] "Number of Payment Denials"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$total_number_of_penalties
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$total_number_of_penalties$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$total_number_of_penalties$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$total_number_of_penalties$description
+[1] "Total Number of Penalties"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$location
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$location$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$location$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$location$description
+[1] "Location"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$latitude
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$latitude$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$latitude$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$latitude$description
+[1] "Latitude"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$longitude
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$longitude$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$longitude$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$longitude$description
+[1] "Longitude"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$geocoding_footnote
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$geocoding_footnote$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$geocoding_footnote$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$geocoding_footnote$description
+[1] "Geocoding Footnote"
+
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$processing_date
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$processing_date$type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$processing_date$mysql_type
+[1] "text"
+
+$schema$`f93da3a3-400b-5efe-960d-c1d72b1d4f65`$fields$processing_date$description
+[1] "Processing Date"
+
+
+
+
+
+$query
+$query$limit
+[1] 1
+
+$query$`conditions[0][property]`
+[1] "record_number"
+
+$query$`conditions[0][value]`
+[1] 1
+
+$query$`conditions[0][operator]`
+[1] "&gt;"
+
+$query$resources
+                                    id alias
+1 f93da3a3-400b-5efe-960d-c1d72b1d4f65     t
+
+$query$offset
+[1] 0
+
+$query$count
+[1] TRUE
+
+$query$results
+[1] TRUE
+
+$query$schema
+[1] TRUE
+
+$query$keys
+[1] TRUE
+
+$query$format
+[1] "json"
+
+$query$rowIds
+[1] FALSE
+
+$query$properties
+  [1] "cms_certification_number_ccn"                                    
+  [2] "provider_name"                                                   
+  [3] "provider_address"                                                
+  [4] "citytown"                                                        
+  [5] "state"                                                           
+  [6] "zip_code"                                                        
+  [7] "telephone_number"                                                
+  [8] "provider_ssa_county_code"                                        
+  [9] "countyparish"                                                    
+ [10] "ownership_type"                                                  
+ [11] "number_of_certified_beds"                                        
+ [12] "average_number_of_residents_per_day"                             
+ [13] "average_number_of_residents_per_day_footnote"                    
+ [14] "provider_type"                                                   
+ [15] "provider_resides_in_hospital"                                    
+ [16] "legal_business_name"                                             
+ [17] "date_first_approved_to_provide_medicare_and_medicaid_services"   
+ [18] "affiliated_entity_name"                                          
+ [19] "affiliated_entity_id"                                            
+ [20] "continuing_care_retirement_community"                            
+ [21] "special_focus_status"                                            
+ [22] "abuse_icon"                                                      
+ [23] "most_recent_health_inspection_more_than_2_years_ago"             
+ [24] "provider_changed_ownership_in_last_12_months"                    
+ [25] "with_a_resident_and_family_council"                              
+ [26] "automatic_sprinkler_systems_in_all_required_areas"               
+ [27] "overall_rating"                                                  
+ [28] "overall_rating_footnote"                                         
+ [29] "health_inspection_rating"                                        
+ [30] "health_inspection_rating_footnote"                               
+ [31] "qm_rating"                                                       
+ [32] "qm_rating_footnote"                                              
+ [33] "longstay_qm_rating"                                              
+ [34] "longstay_qm_rating_footnote"                                     
+ [35] "shortstay_qm_rating"                                             
+ [36] "shortstay_qm_rating_footnote"                                    
+ [37] "staffing_rating"                                                 
+ [38] "staffing_rating_footnote"                                        
+ [39] "reported_staffing_footnote"                                      
+ [40] "physical_therapist_staffing_footnote"                            
+ [41] "reported_nurse_aide_staffing_hours_per_resident_per_day"         
+ [42] "reported_lpn_staffing_hours_per_resident_per_day"                
+ [43] "reported_rn_staffing_hours_per_resident_per_day"                 
+ [44] "reported_licensed_staffing_hours_per_resident_per_day"           
+ [45] "reported_total_nurse_staffing_hours_per_resident_per_day"        
+ [46] "total_number_of_nurse_staff_hours_per_resident_per_day_on_t_4a14"
+ [47] "registered_nurse_hours_per_resident_per_day_on_the_weekend"      
+ [48] "reported_physical_therapist_staffing_hours_per_resident_per_day" 
+ [49] "total_nursing_staff_turnover"                                    
+ [50] "total_nursing_staff_turnover_footnote"                           
+ [51] "registered_nurse_turnover"                                       
+ [52] "registered_nurse_turnover_footnote"                              
+ [53] "number_of_administrators_who_have_left_the_nursing_home"         
+ [54] "administrator_turnover_footnote"                                 
+ [55] "nursing_casemix_index"                                           
+ [56] "nursing_casemix_index_ratio"                                     
+ [57] "casemix_nurse_aide_staffing_hours_per_resident_per_day"          
+ [58] "casemix_lpn_staffing_hours_per_resident_per_day"                 
+ [59] "casemix_rn_staffing_hours_per_resident_per_day"                  
+ [60] "casemix_total_nurse_staffing_hours_per_resident_per_day"         
+ [61] "casemix_weekend_total_nurse_staffing_hours_per_resident_per_day" 
+ [62] "adjusted_nurse_aide_staffing_hours_per_resident_per_day"         
+ [63] "adjusted_lpn_staffing_hours_per_resident_per_day"                
+ [64] "adjusted_rn_staffing_hours_per_resident_per_day"                 
+ [65] "adjusted_total_nurse_staffing_hours_per_resident_per_day"        
+ [66] "adjusted_weekend_total_nurse_staffing_hours_per_resident_per_day"
+ [67] "rating_cycle_1_standard_survey_health_date"                      
+ [68] "rating_cycle_1_total_number_of_health_deficiencies"              
+ [69] "rating_cycle_1_number_of_standard_health_deficiencies"           
+ [70] "rating_cycle_1_number_of_complaint_health_deficiencies"          
+ [71] "rating_cycle_1_health_deficiency_score"                          
+ [72] "rating_cycle_1_number_of_health_revisits"                        
+ [73] "rating_cycle_1_health_revisit_score"                             
+ [74] "rating_cycle_1_total_health_score"                               
+ [75] "rating_cycle_2_standard_health_survey_date"                      
+ [76] "rating_cycle_2_total_number_of_health_deficiencies"              
+ [77] "rating_cycle_2_number_of_standard_health_deficiencies"           
+ [78] "rating_cycle_2_number_of_complaint_health_deficiencies"          
+ [79] "rating_cycle_2_health_deficiency_score"                          
+ [80] "rating_cycle_2_number_of_health_revisits"                        
+ [81] "rating_cycle_2_health_revisit_score"                             
+ [82] "rating_cycle_2_total_health_score"                               
+ [83] "rating_cycle_3_standard_health_survey_date"                      
+ [84] "rating_cycle_3_total_number_of_health_deficiencies"              
+ [85] "rating_cycle_3_number_of_standard_health_deficiencies"           
+ [86] "rating_cycle_3_number_of_complaint_health_deficiencies"          
+ [87] "rating_cycle_3_health_deficiency_score"                          
+ [88] "rating_cycle_3_number_of_health_revisits"                        
+ [89] "rating_cycle_3_health_revisit_score"                             
+ [90] "rating_cycle_3_total_health_score"                               
+ [91] "total_weighted_health_survey_score"                              
+ [92] "number_of_facility_reported_incidents"                           
+ [93] "number_of_substantiated_complaints"                              
+ [94] "number_of_citations_from_infection_control_inspections"          
+ [95] "number_of_fines"                                                 
+ [96] "total_amount_of_fines_in_dollars"                                
+ [97] "number_of_payment_denials"                                       
+ [98] "total_number_of_penalties"                                       
+ [99] "location"                                                        
+[100] "latitude"                                                        
+[101] "longitude"                                                       
+[102] "geocoding_footnote"                                              
+[103] "processing_date"                                                 </code></pre>
+</div>
+</div>
+<ol start="7" type="1">
+<li>Simple <strong>GET</strong> equivalent of a <strong>POST</strong> query. Note that parameters containing arrays or objects are not yet supported by <strong>SwaggerUI.</strong> For conditions, sorts, and other complex parameters, write your query in <code>JSON</code> and then convert to a nested query string. See <a href="https://www.convertonline.io/convert/json-to-query-string">this web tool</a> for an example.</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="fu">request</span>(<span class="st">"https://data.cms.gov/provider-data/api/1/datastore/query/f93da3a3-400b-5efe-960d-c1d72b1d4f65"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_query</span>(</span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">limit =</span> <span class="dv">1</span>,</span>
+<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">offset =</span> <span class="dv">10</span>,</span>
+<span id="cb69-5"><a href="#cb69-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">count =</span> <span class="st">"true"</span>,</span>
+<span id="cb69-6"><a href="#cb69-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">results =</span> <span class="st">"true"</span>,</span>
+<span id="cb69-7"><a href="#cb69-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">schema =</span> <span class="st">"true"</span>,</span>
+<span id="cb69-8"><a href="#cb69-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">keys =</span> <span class="st">"true"</span>,</span>
+<span id="cb69-9"><a href="#cb69-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">format =</span> <span class="st">"json"</span>,</span>
+<span id="cb69-10"><a href="#cb69-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">rowIds =</span> <span class="st">"false"</span>,</span>
+<span id="cb69-11"><a href="#cb69-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">conditions[0][property]</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"record_number"</span>,</span>
+<span id="cb69-12"><a href="#cb69-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">conditions[0][value]</span><span class="st">`</span>    <span class="ot">=</span> <span class="dv">1</span>,</span>
+<span id="cb69-13"><a href="#cb69-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">conditions[0][operator]</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"&gt;"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb69-14"><a href="#cb69-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb69-15"><a href="#cb69-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_string</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb69-16"><a href="#cb69-16" aria-hidden="true" tabindex="-1"></a>  jsonify<span class="sc">::</span><span class="fu">pretty_json</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{
+    "results": [
+        {
+            "cms_certification_number_ccn": "015031",
+            "provider_name": "MITCHELL-HOLLINGSWORTH NURSING &amp; REHABILITATION",
+            "provider_address": "805 FLAGG CIRCLE",
+            "citytown": "FLORENCE",
+            "state": "AL",
+            "zip_code": "35631",
+            "telephone_number": "2567405400",
+            "provider_ssa_county_code": "380",
+            "countyparish": "Lauderdale",
+            "ownership_type": "For profit - Corporation",
+            "number_of_certified_beds": "222",
+            "average_number_of_residents_per_day": "184.1",
+            "average_number_of_residents_per_day_footnote": "",
+            "provider_type": "Medicare and Medicaid",
+            "provider_resides_in_hospital": "N",
+            "legal_business_name": "MITCHELL-HOLLINGSWORTH NURSING &amp; REHAB CENTER",
+            "date_first_approved_to_provide_medicare_and_medicaid_services": "1967-01-01",
+            "affiliated_entity_name": "PRESTON HEALTH SERVICES",
+            "affiliated_entity_id": "702",
+            "continuing_care_retirement_community": "N",
+            "special_focus_status": "",
+            "abuse_icon": "N",
+            "most_recent_health_inspection_more_than_2_years_ago": "Y",
+            "provider_changed_ownership_in_last_12_months": "N",
+            "with_a_resident_and_family_council": "Both",
+            "automatic_sprinkler_systems_in_all_required_areas": "Yes",
+            "overall_rating": "4",
+            "overall_rating_footnote": "",
+            "health_inspection_rating": "4",
+            "health_inspection_rating_footnote": "",
+            "qm_rating": "3",
+            "qm_rating_footnote": "",
+            "longstay_qm_rating": "3",
+            "longstay_qm_rating_footnote": "",
+            "shortstay_qm_rating": "3",
+            "shortstay_qm_rating_footnote": "",
+            "staffing_rating": "4",
+            "staffing_rating_footnote": "",
+            "reported_staffing_footnote": "",
+            "physical_therapist_staffing_footnote": "",
+            "reported_nurse_aide_staffing_hours_per_resident_per_day": "1.76764",
+            "reported_lpn_staffing_hours_per_resident_per_day": "1.03232",
+            "reported_rn_staffing_hours_per_resident_per_day": "0.70871",
+            "reported_licensed_staffing_hours_per_resident_per_day": "1.74103",
+            "reported_total_nurse_staffing_hours_per_resident_per_day": "3.50867",
+            "total_number_of_nurse_staff_hours_per_resident_per_day_on_t_4a14": "2.95554",
+            "registered_nurse_hours_per_resident_per_day_on_the_weekend": "0.38149",
+            "reported_physical_therapist_staffing_hours_per_resident_per_day": "0.03236",
+            "total_nursing_staff_turnover": "34.3",
+            "total_nursing_staff_turnover_footnote": "",
+            "registered_nurse_turnover": "23.3",
+            "registered_nurse_turnover_footnote": "",
+            "number_of_administrators_who_have_left_the_nursing_home": "0",
+            "administrator_turnover_footnote": "",
+            "nursing_casemix_index": "1.20899",
+            "nursing_casemix_index_ratio": "0.89153",
+            "casemix_nurse_aide_staffing_hours_per_resident_per_day": "2.04356",
+            "casemix_lpn_staffing_hours_per_resident_per_day": "0.78197",
+            "casemix_rn_staffing_hours_per_resident_per_day": "0.59560",
+            "casemix_total_nurse_staffing_hours_per_resident_per_day": "3.42113",
+            "casemix_weekend_total_nurse_staffing_hours_per_resident_per_day": "2.98943",
+            "adjusted_nurse_aide_staffing_hours_per_resident_per_day": "1.97167",
+            "adjusted_lpn_staffing_hours_per_resident_per_day": "1.15148",
+            "adjusted_rn_staffing_hours_per_resident_per_day": "0.79052",
+            "adjusted_total_nurse_staffing_hours_per_resident_per_day": "3.91367",
+            "adjusted_weekend_total_nurse_staffing_hours_per_resident_per_day": "3.29669",
+            "rating_cycle_1_standard_survey_health_date": "2019-09-05",
+            "rating_cycle_1_total_number_of_health_deficiencies": "1",
+            "rating_cycle_1_number_of_standard_health_deficiencies": "1",
+            "rating_cycle_1_number_of_complaint_health_deficiencies": "0",
+            "rating_cycle_1_health_deficiency_score": "4",
+            "rating_cycle_1_number_of_health_revisits": "1",
+            "rating_cycle_1_health_revisit_score": "0",
+            "rating_cycle_1_total_health_score": "4",
+            "rating_cycle_2_standard_health_survey_date": "2018-08-02",
+            "rating_cycle_2_total_number_of_health_deficiencies": "4",
+            "rating_cycle_2_number_of_standard_health_deficiencies": "4",
+            "rating_cycle_2_number_of_complaint_health_deficiencies": "0",
+            "rating_cycle_2_health_deficiency_score": "28",
+            "rating_cycle_2_number_of_health_revisits": "1",
+            "rating_cycle_2_health_revisit_score": "0",
+            "rating_cycle_2_total_health_score": "28",
+            "rating_cycle_3_standard_health_survey_date": "2017-06-15",
+            "rating_cycle_3_total_number_of_health_deficiencies": "1",
+            "rating_cycle_3_number_of_standard_health_deficiencies": "1",
+            "rating_cycle_3_number_of_complaint_health_deficiencies": "0",
+            "rating_cycle_3_health_deficiency_score": "4",
+            "rating_cycle_3_number_of_health_revisits": "1",
+            "rating_cycle_3_health_revisit_score": "0",
+            "rating_cycle_3_total_health_score": "4",
+            "total_weighted_health_survey_score": "12.000",
+            "number_of_facility_reported_incidents": "0",
+            "number_of_substantiated_complaints": "0",
+            "number_of_citations_from_infection_control_inspections": "",
+            "number_of_fines": "0",
+            "total_amount_of_fines_in_dollars": "0.00",
+            "number_of_payment_denials": "0",
+            "total_number_of_penalties": "0",
+            "location": "805 FLAGG CIRCLE,FLORENCE,AL,35631",
+            "latitude": "34.8082",
+            "longitude": "-87.687",
+            "geocoding_footnote": "",
+            "processing_date": "2024-11-01"
+        }
+    ],
+    "count": 14806,
+    "schema": {
+        "f93da3a3-400b-5efe-960d-c1d72b1d4f65": {
+            "fields": {
+                "cms_certification_number_ccn": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "CMS Certification Number (CCN)"
+                },
+                "provider_name": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Provider Name"
+                },
+                "provider_address": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Provider Address"
+                },
+                "citytown": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "City/Town"
+                },
+                "state": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "State"
+                },
+                "zip_code": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "ZIP Code"
+                },
+                "telephone_number": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Telephone Number"
+                },
+                "provider_ssa_county_code": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Provider SSA County Code"
+                },
+                "countyparish": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "County/Parish"
+                },
+                "ownership_type": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Ownership Type"
+                },
+                "number_of_certified_beds": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Number of Certified Beds"
+                },
+                "average_number_of_residents_per_day": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Average Number of Residents per Day"
+                },
+                "average_number_of_residents_per_day_footnote": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Average Number of Residents per Day Footnote"
+                },
+                "provider_type": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Provider Type"
+                },
+                "provider_resides_in_hospital": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Provider Resides in Hospital"
+                },
+                "legal_business_name": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Legal Business Name"
+                },
+                "date_first_approved_to_provide_medicare_and_medicaid_services": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Date First Approved to Provide Medicare and Medicaid Services"
+                },
+                "affiliated_entity_name": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Affiliated Entity Name"
+                },
+                "affiliated_entity_id": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Affiliated Entity ID"
+                },
+                "continuing_care_retirement_community": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Continuing Care Retirement Community"
+                },
+                "special_focus_status": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Special Focus Status"
+                },
+                "abuse_icon": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Abuse Icon"
+                },
+                "most_recent_health_inspection_more_than_2_years_ago": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Most Recent Health Inspection More Than 2 Years Ago"
+                },
+                "provider_changed_ownership_in_last_12_months": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Provider Changed Ownership in Last 12 Months"
+                },
+                "with_a_resident_and_family_council": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "With a Resident and Family Council"
+                },
+                "automatic_sprinkler_systems_in_all_required_areas": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Automatic Sprinkler Systems in All Required Areas"
+                },
+                "overall_rating": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Overall Rating"
+                },
+                "overall_rating_footnote": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Overall Rating Footnote"
+                },
+                "health_inspection_rating": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Health Inspection Rating"
+                },
+                "health_inspection_rating_footnote": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Health Inspection Rating Footnote"
+                },
+                "qm_rating": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "QM Rating"
+                },
+                "qm_rating_footnote": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "QM Rating Footnote"
+                },
+                "longstay_qm_rating": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Long-Stay QM Rating"
+                },
+                "longstay_qm_rating_footnote": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Long-Stay QM Rating Footnote"
+                },
+                "shortstay_qm_rating": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Short-Stay QM Rating"
+                },
+                "shortstay_qm_rating_footnote": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Short-Stay QM Rating Footnote"
+                },
+                "staffing_rating": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Staffing Rating"
+                },
+                "staffing_rating_footnote": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Staffing Rating Footnote"
+                },
+                "reported_staffing_footnote": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Reported Staffing Footnote"
+                },
+                "physical_therapist_staffing_footnote": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Physical Therapist Staffing Footnote"
+                },
+                "reported_nurse_aide_staffing_hours_per_resident_per_day": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Reported Nurse Aide Staffing Hours per Resident per Day"
+                },
+                "reported_lpn_staffing_hours_per_resident_per_day": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Reported LPN Staffing Hours per Resident per Day"
+                },
+                "reported_rn_staffing_hours_per_resident_per_day": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Reported RN Staffing Hours per Resident per Day"
+                },
+                "reported_licensed_staffing_hours_per_resident_per_day": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Reported Licensed Staffing Hours per Resident per Day"
+                },
+                "reported_total_nurse_staffing_hours_per_resident_per_day": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Reported Total Nurse Staffing Hours per Resident per Day"
+                },
+                "total_number_of_nurse_staff_hours_per_resident_per_day_on_t_4a14": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Total number of nurse staff hours per resident per day on the weekend"
+                },
+                "registered_nurse_hours_per_resident_per_day_on_the_weekend": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Registered Nurse hours per resident per day on the weekend"
+                },
+                "reported_physical_therapist_staffing_hours_per_resident_per_day": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Reported Physical Therapist Staffing Hours per Resident Per Day"
+                },
+                "total_nursing_staff_turnover": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Total nursing staff turnover"
+                },
+                "total_nursing_staff_turnover_footnote": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Total nursing staff turnover footnote"
+                },
+                "registered_nurse_turnover": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Registered Nurse turnover"
+                },
+                "registered_nurse_turnover_footnote": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Registered Nurse turnover footnote"
+                },
+                "number_of_administrators_who_have_left_the_nursing_home": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Number of administrators who have left the nursing home"
+                },
+                "administrator_turnover_footnote": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Administrator turnover footnote"
+                },
+                "nursing_casemix_index": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Nursing Case-Mix Index"
+                },
+                "nursing_casemix_index_ratio": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Nursing Case-Mix Index Ratio"
+                },
+                "casemix_nurse_aide_staffing_hours_per_resident_per_day": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Case-Mix Nurse Aide Staffing Hours per Resident per Day"
+                },
+                "casemix_lpn_staffing_hours_per_resident_per_day": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Case-Mix LPN Staffing Hours per Resident per Day"
+                },
+                "casemix_rn_staffing_hours_per_resident_per_day": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Case-Mix RN Staffing Hours per Resident per Day"
+                },
+                "casemix_total_nurse_staffing_hours_per_resident_per_day": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Case-Mix Total Nurse Staffing Hours per Resident per Day"
+                },
+                "casemix_weekend_total_nurse_staffing_hours_per_resident_per_day": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Case-Mix Weekend Total Nurse Staffing Hours per Resident per Day"
+                },
+                "adjusted_nurse_aide_staffing_hours_per_resident_per_day": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Adjusted Nurse Aide Staffing Hours per Resident per Day"
+                },
+                "adjusted_lpn_staffing_hours_per_resident_per_day": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Adjusted LPN Staffing Hours per Resident per Day"
+                },
+                "adjusted_rn_staffing_hours_per_resident_per_day": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Adjusted RN Staffing Hours per Resident per Day"
+                },
+                "adjusted_total_nurse_staffing_hours_per_resident_per_day": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Adjusted Total Nurse Staffing Hours per Resident per Day"
+                },
+                "adjusted_weekend_total_nurse_staffing_hours_per_resident_per_day": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Adjusted Weekend Total Nurse Staffing Hours per Resident per Day"
+                },
+                "rating_cycle_1_standard_survey_health_date": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Rating Cycle 1 Standard Survey Health Date"
+                },
+                "rating_cycle_1_total_number_of_health_deficiencies": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Rating Cycle 1 Total Number of Health Deficiencies"
+                },
+                "rating_cycle_1_number_of_standard_health_deficiencies": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Rating Cycle 1 Number of Standard Health Deficiencies"
+                },
+                "rating_cycle_1_number_of_complaint_health_deficiencies": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Rating Cycle 1 Number of Complaint Health Deficiencies"
+                },
+                "rating_cycle_1_health_deficiency_score": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Rating Cycle 1 Health Deficiency Score"
+                },
+                "rating_cycle_1_number_of_health_revisits": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Rating Cycle 1 Number of Health Revisits"
+                },
+                "rating_cycle_1_health_revisit_score": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Rating Cycle 1 Health Revisit Score"
+                },
+                "rating_cycle_1_total_health_score": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Rating Cycle 1 Total Health Score"
+                },
+                "rating_cycle_2_standard_health_survey_date": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Rating Cycle 2 Standard Health Survey Date"
+                },
+                "rating_cycle_2_total_number_of_health_deficiencies": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Rating Cycle 2 Total Number of Health Deficiencies"
+                },
+                "rating_cycle_2_number_of_standard_health_deficiencies": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Rating Cycle 2 Number of Standard Health Deficiencies"
+                },
+                "rating_cycle_2_number_of_complaint_health_deficiencies": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Rating Cycle 2 Number of Complaint Health Deficiencies"
+                },
+                "rating_cycle_2_health_deficiency_score": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Rating Cycle 2 Health Deficiency Score"
+                },
+                "rating_cycle_2_number_of_health_revisits": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Rating Cycle 2 Number of Health Revisits"
+                },
+                "rating_cycle_2_health_revisit_score": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Rating Cycle 2 Health Revisit Score"
+                },
+                "rating_cycle_2_total_health_score": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Rating Cycle 2 Total Health Score"
+                },
+                "rating_cycle_3_standard_health_survey_date": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Rating Cycle 3 Standard Health Survey Date"
+                },
+                "rating_cycle_3_total_number_of_health_deficiencies": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Rating Cycle 3 Total Number of Health Deficiencies"
+                },
+                "rating_cycle_3_number_of_standard_health_deficiencies": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Rating Cycle 3 Number of Standard Health Deficiencies"
+                },
+                "rating_cycle_3_number_of_complaint_health_deficiencies": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Rating Cycle 3 Number of Complaint Health Deficiencies"
+                },
+                "rating_cycle_3_health_deficiency_score": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Rating Cycle 3 Health Deficiency Score"
+                },
+                "rating_cycle_3_number_of_health_revisits": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Rating Cycle 3 Number of Health Revisits"
+                },
+                "rating_cycle_3_health_revisit_score": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Rating Cycle 3 Health Revisit Score"
+                },
+                "rating_cycle_3_total_health_score": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Rating Cycle 3 Total Health Score"
+                },
+                "total_weighted_health_survey_score": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Total Weighted Health Survey Score"
+                },
+                "number_of_facility_reported_incidents": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Number of Facility Reported Incidents"
+                },
+                "number_of_substantiated_complaints": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Number of Substantiated Complaints"
+                },
+                "number_of_citations_from_infection_control_inspections": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Number of Citations from Infection Control Inspections"
+                },
+                "number_of_fines": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Number of Fines"
+                },
+                "total_amount_of_fines_in_dollars": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Total Amount of Fines in Dollars"
+                },
+                "number_of_payment_denials": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Number of Payment Denials"
+                },
+                "total_number_of_penalties": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Total Number of Penalties"
+                },
+                "location": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Location"
+                },
+                "latitude": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Latitude"
+                },
+                "longitude": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Longitude"
+                },
+                "geocoding_footnote": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Geocoding Footnote"
+                },
+                "processing_date": {
+                    "type": "text",
+                    "mysql_type": "text",
+                    "description": "Processing Date"
+                }
+            }
+        }
+    },
+    "query": {
+        "limit": 1,
+        "offset": 10,
+        "count": true,
+        "results": true,
+        "schema": true,
+        "keys": true,
+        "format": "json",
+        "rowIds": false,
+        "conditions": [
+            {
+                "property": "record_number",
+                "value": "1",
+                "operator": "&gt;"
+            }
+        ],
+        "resources": [
+            {
+                "id": "f93da3a3-400b-5efe-960d-c1d72b1d4f65",
+                "alias": "t"
+            }
+        ],
+        "properties": [
+            "cms_certification_number_ccn",
+            "provider_name",
+            "provider_address",
+            "citytown",
+            "state",
+            "zip_code",
+            "telephone_number",
+            "provider_ssa_county_code",
+            "countyparish",
+            "ownership_type",
+            "number_of_certified_beds",
+            "average_number_of_residents_per_day",
+            "average_number_of_residents_per_day_footnote",
+            "provider_type",
+            "provider_resides_in_hospital",
+            "legal_business_name",
+            "date_first_approved_to_provide_medicare_and_medicaid_services",
+            "affiliated_entity_name",
+            "affiliated_entity_id",
+            "continuing_care_retirement_community",
+            "special_focus_status",
+            "abuse_icon",
+            "most_recent_health_inspection_more_than_2_years_ago",
+            "provider_changed_ownership_in_last_12_months",
+            "with_a_resident_and_family_council",
+            "automatic_sprinkler_systems_in_all_required_areas",
+            "overall_rating",
+            "overall_rating_footnote",
+            "health_inspection_rating",
+            "health_inspection_rating_footnote",
+            "qm_rating",
+            "qm_rating_footnote",
+            "longstay_qm_rating",
+            "longstay_qm_rating_footnote",
+            "shortstay_qm_rating",
+            "shortstay_qm_rating_footnote",
+            "staffing_rating",
+            "staffing_rating_footnote",
+            "reported_staffing_footnote",
+            "physical_therapist_staffing_footnote",
+            "reported_nurse_aide_staffing_hours_per_resident_per_day",
+            "reported_lpn_staffing_hours_per_resident_per_day",
+            "reported_rn_staffing_hours_per_resident_per_day",
+            "reported_licensed_staffing_hours_per_resident_per_day",
+            "reported_total_nurse_staffing_hours_per_resident_per_day",
+            "total_number_of_nurse_staff_hours_per_resident_per_day_on_t_4a14",
+            "registered_nurse_hours_per_resident_per_day_on_the_weekend",
+            "reported_physical_therapist_staffing_hours_per_resident_per_day",
+            "total_nursing_staff_turnover",
+            "total_nursing_staff_turnover_footnote",
+            "registered_nurse_turnover",
+            "registered_nurse_turnover_footnote",
+            "number_of_administrators_who_have_left_the_nursing_home",
+            "administrator_turnover_footnote",
+            "nursing_casemix_index",
+            "nursing_casemix_index_ratio",
+            "casemix_nurse_aide_staffing_hours_per_resident_per_day",
+            "casemix_lpn_staffing_hours_per_resident_per_day",
+            "casemix_rn_staffing_hours_per_resident_per_day",
+            "casemix_total_nurse_staffing_hours_per_resident_per_day",
+            "casemix_weekend_total_nurse_staffing_hours_per_resident_per_day",
+            "adjusted_nurse_aide_staffing_hours_per_resident_per_day",
+            "adjusted_lpn_staffing_hours_per_resident_per_day",
+            "adjusted_rn_staffing_hours_per_resident_per_day",
+            "adjusted_total_nurse_staffing_hours_per_resident_per_day",
+            "adjusted_weekend_total_nurse_staffing_hours_per_resident_per_day",
+            "rating_cycle_1_standard_survey_health_date",
+            "rating_cycle_1_total_number_of_health_deficiencies",
+            "rating_cycle_1_number_of_standard_health_deficiencies",
+            "rating_cycle_1_number_of_complaint_health_deficiencies",
+            "rating_cycle_1_health_deficiency_score",
+            "rating_cycle_1_number_of_health_revisits",
+            "rating_cycle_1_health_revisit_score",
+            "rating_cycle_1_total_health_score",
+            "rating_cycle_2_standard_health_survey_date",
+            "rating_cycle_2_total_number_of_health_deficiencies",
+            "rating_cycle_2_number_of_standard_health_deficiencies",
+            "rating_cycle_2_number_of_complaint_health_deficiencies",
+            "rating_cycle_2_health_deficiency_score",
+            "rating_cycle_2_number_of_health_revisits",
+            "rating_cycle_2_health_revisit_score",
+            "rating_cycle_2_total_health_score",
+            "rating_cycle_3_standard_health_survey_date",
+            "rating_cycle_3_total_number_of_health_deficiencies",
+            "rating_cycle_3_number_of_standard_health_deficiencies",
+            "rating_cycle_3_number_of_complaint_health_deficiencies",
+            "rating_cycle_3_health_deficiency_score",
+            "rating_cycle_3_number_of_health_revisits",
+            "rating_cycle_3_health_revisit_score",
+            "rating_cycle_3_total_health_score",
+            "total_weighted_health_survey_score",
+            "number_of_facility_reported_incidents",
+            "number_of_substantiated_complaints",
+            "number_of_citations_from_infection_control_inspections",
+            "number_of_fines",
+            "total_amount_of_fines_in_dollars",
+            "number_of_payment_denials",
+            "total_number_of_penalties",
+            "location",
+            "latitude",
+            "longitude",
+            "geocoding_footnote",
+            "processing_date"
+        ]
+    }
+}</code></pre>
+</div>
+</div>
 </section>
 <section id="datastore-sql-query" class="level3" data-number="2.2.5">
 <h3 data-number="2.2.5" class="anchored" data-anchor-id="datastore-sql-query"><span class="header-section-number">2.2.5</span> Datastore: SQL Query</h3>

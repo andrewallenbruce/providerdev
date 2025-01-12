@@ -456,6 +456,45 @@ Distribution IDs change with every dataset update, so it is better to use APIs w
 
 ### Datastore: query
 
+   6. Query one or more datastore resources
+      - __POST__ No Parameters
+
+```{r}
+request("https://data.cms.gov/provider-data/api/1/datastore/query/f93da3a3-400b-5efe-960d-c1d72b1d4f65") |> 
+  req_method("POST") |> 
+  req_headers(Accept = "application/json", 
+              `Content-Type` = "application/json") |> 
+  req_body_json(
+    list(limit = 1, 
+         `conditions[0][property]` = "record_number",
+         `conditions[0][value]`    = 1,
+         `conditions[0][operator]` = ">")) |> 
+  req_perform() |> 
+  resp_body_json(simplifyVector = TRUE)
+```
+
+   7. Simple __GET__ equivalent of a __POST__ query. Note that parameters containing arrays or objects are not yet supported by __SwaggerUI.__ For conditions, sorts, and other complex parameters, write your query in `JSON` and then convert to a nested query string. See [this web tool](https://www.convertonline.io/convert/json-to-query-string) for an example.
+
+```{r}
+request("https://data.cms.gov/provider-data/api/1/datastore/query/f93da3a3-400b-5efe-960d-c1d72b1d4f65") |>
+  req_url_query(
+    limit = 1,
+    offset = 10,
+    count = "true",
+    results = "true",
+    schema = "true",
+    keys = "true",
+    format = "json",
+    rowIds = "false",
+    `conditions[0][property]` = "record_number",
+    `conditions[0][value]`    = 1,
+    `conditions[0][operator]` = ">") |> 
+  req_perform() |> 
+  resp_body_string() |> 
+  jsonify::pretty_json()
+```
+
+
 ### Datastore: SQL Query
 
 ### Search
