@@ -15,17 +15,94 @@ htmltools::tagList(
            "Provider API Docs"),
   btn_link("https://data.cms.gov/provider-data/search", 
            "Dataset Search"))
+
+library(gt)
 ```
 
 
-This site provides access to the Centers for Medicare & Medicaid Services official data that are used on the **Medicare Care Compare** website and directories.
+The **Provider Data Catalog API** provides access to official CMS data used on the **Medicare Care Compare** website and directories.
 
    * [Home](https://data.cms.gov/provider-data/)
    * [About](https://data.cms.gov/provider-data/about)
 
+### Catalog
+
+A comprehensive list of all datasets available from the `metastore/schemas` endpoint:
+
+```{r}
+#| label: Catalog
+provider_data() |>
+  reframe(
+    id = row_number(),
+    title,
+    keyword,
+    description,
+    issued,
+    modified,
+    released,
+    download = distribution_downloadURL,
+    website = landingPage
+  ) |>
+  arrange(id, title) |>
+  gt(rowname_col = "id") |>
+  opt_all_caps() |>
+  opt_table_font(font = google_font(name = "Open Sans")) |>
+  fmt_date(columns = c(issued, modified, released)) |>
+  fmt_url(
+    columns = download,
+    show_underline = TRUE,
+    label = "CSV File",
+    button_fill = "darkgreen"
+  ) |>
+  fmt_url(
+    columns = website,
+    show_underline = TRUE,
+    label = "Site Home",
+    button_fill = "darkgreen"
+  ) |>
+  tab_style(
+    style = css(
+      position = "sticky",
+      top = "-1em",
+      `z-index` = 10
+    ),
+    locations = cells_column_labels()
+  ) |>
+  tab_style(
+    style = cell_text(weight = "lighter", size = "small"),
+    locations = cells_body(columns = c(keyword, description, issued, modified, released))
+  ) |>
+  tab_style(
+    style = cell_text(
+      weight = "bold",
+      size = "small",
+      font = google_font(name = "Fira Code")
+    ),
+    locations = cells_body(columns = c(title, issued, modified, released, download, website))
+  ) |>
+  tab_style(style = cell_text(weight = "bold"),
+            locations = cells_body(columns = title)) |>
+  tab_options(
+    column_labels.border.bottom.style = "hidden",
+    column_labels.padding.horizontal = px(20),
+    column_labels.background.color = "#555555",
+    container.height = px(500),
+    data_row.padding.horizontal = px(20),
+    heading.align = "left",
+    heading.border.bottom.color = "#555555",
+    heading.title.font.weight = "bold",
+    heading.background.color = "#555555",
+    quarto.disable_processing = TRUE,
+    source_notes.font.size = px(16),
+    table.border.top.color = "#555555",
+    table.border.top.style = "hidden",
+    table.width = pct(50)
+  )
+```
+
 ### Rate Limit
 
-The **Provider Data Catalog API** currently limits each batch of results to a maximum of **2,000** entries. To retrieve datasets larger than this threshold, you must execute multiple requests, incrementing the offset each time to paginate through results:
+The API is currently limited to a maximum of **`2000`** per request. The following example uses the __ESRD QIP - Clinical Depression Screening and Follow-up - Payment Year 2024__ dataset
 
    1. Fetch the first 2000 results:
 
@@ -48,23 +125,6 @@ ownership0$count
 ownership0$results |> 
   tibble() |> 
   glimpse()
-```
-
-```{r}
-#| label: weburl_1
-#| eval: false
-#| echo: false
-weburl::url_parse(
-  paste0(
-    "https://data.cms.gov/",
-    "provider-data/api/1/",
-    "datastore/query/7t8x-u3ir/0?",
-    "offset=0"
-    )
-  ) |> 
-  mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
-  remove_all_na() |>
-  purse()
 ```
 
    2. Fetch the next 2000 results (2001-4000):
@@ -92,7 +152,7 @@ ownership1$results |>
 
 Continue incrementing the offset by 2,000 for each subsequent batch. When retrieving large datasets, consider pacing your requests to avoid overwhelming your system with data and to allow for graceful error handling. Depending on the volume of data and your application's capabilities, consider implementing a back-off strategy if errors occur.
 
-### Stars/Ratings
+### Ratings
 
 CMS's **Five-Star Quality Rating System** is designed to help users compare the overall quality of care across different healthcare providers. Access these ratings by referring to the associated column names:
 
@@ -233,29 +293,9 @@ nhomegt3$results |>
   count(state, overall_rating, sort = TRUE)
 ```
 
-### All Dataset IDs
+### Search
 
-Retrieve a comprehensive list of all datasets available by leveraging the `metastore/schemas` endpoint:
-
-```{r}
-#| label: data_ids
-x <- request(
-  paste0(
-    "https://data.cms.gov/",
-    "provider-data/api/1/",
-    "metastore/schemas/dataset/items"
-    )
-  ) |> 
-  req_perform() |> 
-  resp_body_json(simplifyVector = TRUE)
-
-x |> 
-  tibble() |> 
-  mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
-  remove_all_na()
-```
-
-### Search `theme`
+#### `theme`
 
 Return a list of all public datasets for a particular __Topic__ area via the `/api/1/search` endpoint. For example, to get a list of all datasets in the `Home health services` Topic, you could use:
 
@@ -284,7 +324,7 @@ x
 
 > __Note__: If the `page-size` is not provided, the default result limit is 10.
 
-### Search `keyword`
+#### `keyword`
 
 One of the easiest ways to generate your search parameters is to use the Provider Data Catalog [search page](https://data.cms.gov/provider-data/search) and then copy the query string to the end of the search endpoint. For example, if you filter by _"Dialysis facilities"_ tagged with _"Linking Quality to Payment"_ and select 25 results per page, the query string produced is:
 
@@ -312,7 +352,7 @@ x$facets |>
 x$results
 ```
 
-### Search `fulltext`
+#### `fulltext`
 
 Use the same method to return a list of datasets that contain a keyword (like "ratings") in their title and/or description:
 
@@ -341,7 +381,7 @@ x$results
 
 ## Differences
 
-::: callout
+::: {#nte-differences .callout-note collapse="false"}
 
 #### __Datastore__ vs. __Metastore__
 
@@ -351,20 +391,20 @@ x$results
       * Metadata from the `data.json` file 
       * `title`, `last_updated`, `release_date`, `keywords`, etc.
 
-Think of the __Metastore__ as the library index that helps you find the right book (`dataset`), and the __Datastore__ as the book itself.
+> Think of the __Metastore__ as the library index that helps you find the right book (`dataset`), and the __Datastore__ as the book itself.
 
 
 #### __Distribution__ vs. __Dataset__
 
    * __Distribution__
       * Unique identifier of the __Datastore__ 
+      * _Changes with every data refresh_
       * Specific to a particular CSV data import
-      * Changes with every data refresh
    * __Dataset__
       * Unique identifier of the __Dataset__ 
-      * Comes from the data.json file
+      * _Does not change between data refreshes_
+      * Comes from the `data.json` file
       * Appears as part of the URL in the PDC site
-      * Does not change between data refreshes
 
 --------------------------------------------------------------------------------
 
