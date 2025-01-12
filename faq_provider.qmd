@@ -387,3 +387,77 @@ Distribution IDs change with every dataset update, so it is better to use APIs w
 ::: 
 
 --------------------------------------------------------------------------------
+
+
+## Endpoints
+
+   * [Link: API Documentation](https://data.cms.gov/provider-data/docs)
+
+### Metastore
+
+   1. Full collection of available metastore schemas
+      - __GET__ (No Parameters)
+
+```{r}
+"https://data.cms.gov/provider-data/api/1/metastore/schemas" |> 
+  request() |> 
+  req_perform() |> 
+  resp_body_string() |> 
+  jsonify::pretty_json()
+```
+
+   2. A specific schema definition, see <https://json-schema.org/>
+      - __GET__ `provider-data/api/1/metastore/schemas/{schema_id}`
+
+```{r}
+"https://data.cms.gov/provider-data/api/1/metastore/schemas/data-dictionary" |> 
+  request() |> 
+  req_perform() |> 
+  resp_body_string() |> 
+  jsonify::pretty_json()
+```
+
+   3. Get all items for a specific schema (e.g., "dataset")
+      - __GET__ `provider-data/api/1/metastore/schemas/{schema_id}/items`
+
+```{r}
+"https://data.cms.gov/provider-data/api/1/metastore/schemas/data-dictionary" |> 
+  request() |> 
+  req_perform() |> 
+  resp_body_string() |> 
+  jsonify::pretty_json()
+```
+
+### Metastore: dataset
+
+   4. Get a single dataset.
+      - __GET__ `provider-data/api/1/metastore/schemas/dataset/items/{identifier}`
+
+```{r}
+"https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/clinical_depression?show-reference-ids=true" |> 
+  request() |> 
+  req_perform() |> 
+  resp_body_string() |> 
+  jsonify::pretty_json()
+```
+
+### Datastore: import
+
+   5. Datastore statistics: Returns the numbers of rows and columns, and a list of columns headers from the datastore
+      - __GET__ `provider-data/api/1/datastore/imports/{identifier}`
+
+```{r}
+"https://data.cms.gov/provider-data/api/1/datastore/imports/e7fce918-0873-519f-80ae-818e386299d1" |> 
+  request() |> 
+  req_perform() |> 
+  resp_body_string() |> 
+  jsonify::pretty_json()
+```
+
+### Datastore: query
+
+### Datastore: SQL Query
+
+### Search
+
+### Schemas
