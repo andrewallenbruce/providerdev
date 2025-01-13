@@ -16,6 +16,7 @@ library(RcppSimdJson)
 
 library(S7)
 library(listviewerlite)
+library(gt)
 
 btn_link <- \(href, label) {
 
@@ -87,10 +88,7 @@ main_data_rcpp <- \() {
 }
 
 provider_data <- \() {
-
-  httr2::request(
-    "https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items"
-  ) |>
+  httr2::request("https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items") |>
     httr2::req_perform() |>
     httr2::resp_body_json(simplifyVector = TRUE) |>
     dplyr::tibble() |>
@@ -103,6 +101,6 @@ provider_data <- \() {
       keyword     = flatten_column(keyword),
       theme       = flatten_column(theme)) |>
     dplyr::rename_with(remove_at_symbol) |>
-    fuimus::remove_all_na()
-
+    fuimus::remove_all_na() |>
+    dplyr::filter(sf_ndetect(title, "Office Visit Costs$"))
 }

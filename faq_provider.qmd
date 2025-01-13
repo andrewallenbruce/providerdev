@@ -15,8 +15,6 @@ htmltools::tagList(
            "Provider API Docs"),
   btn_link("https://data.cms.gov/provider-data/search", 
            "Dataset Search"))
-
-library(gt)
 ```
 
 
@@ -35,68 +33,61 @@ provider_data() |>
   reframe(
     id = row_number(),
     title,
-    keyword,
     description,
-    issued,
-    modified,
+    dates = issued,
     released,
-    download = distribution_downloadURL,
-    website = landingPage
-  ) |>
+    links = distribution_downloadURL,
+    website = landingPage) |>
   arrange(id, title) |>
-  gt(rowname_col = "id") |>
+  gt() |>
+  cols_width(
+    id ~ px(40),
+    description ~ px(275)
+    ) |> 
+  tab_header(title = md("**Provider Data Catalog API**: Datasets Available")) |> 
   opt_all_caps() |>
-  opt_table_font(font = google_font(name = "Open Sans")) |>
-  fmt_date(columns = c(issued, modified, released)) |>
+  opt_table_font(font = google_font(name = "Rubik")) |>
+  fmt_date(columns = c(dates, released)) |>
   fmt_url(
-    columns = download,
+    columns = links,
     show_underline = TRUE,
-    label = "CSV File",
-    button_fill = "darkgreen"
-  ) |>
+    label = "Download [.csv]") |>
   fmt_url(
     columns = website,
     show_underline = TRUE,
-    label = "Site Home",
-    button_fill = "darkgreen"
-  ) |>
+    label = "Landing Page") |>
   tab_style(
     style = css(
       position = "sticky",
       top = "-1em",
-      `z-index` = 10
-    ),
-    locations = cells_column_labels()
-  ) |>
+      `z-index` = 10), 
+    locations = cells_column_labels()) |>
   tab_style(
     style = cell_text(weight = "lighter", size = "small"),
-    locations = cells_body(columns = c(keyword, description, issued, modified, released))
-  ) |>
+    locations = cells_body(columns = c(description, dates, released))) |>
   tab_style(
     style = cell_text(
       weight = "bold",
       size = "small",
-      font = google_font(name = "Fira Code")
-    ),
-    locations = cells_body(columns = c(title, issued, modified, released, download, website))
-  ) |>
-  tab_style(style = cell_text(weight = "bold"),
+      font = google_font(name = "Fira Code")),
+    locations = cells_body(columns = c(links, website))) |>
+  tab_style(style     = cell_text(weight = "bold", size = "small"),
             locations = cells_body(columns = title)) |>
+  cols_merge(columns = c(dates, released), pattern = "<b>ISSUED</b>: {1} <br> <b>RELEASED</b>: {2}") |>
+  cols_merge(columns = c(links, website), pattern = "{1} <br> {2}") |>
   tab_options(
     column_labels.border.bottom.style = "hidden",
     column_labels.padding.horizontal = px(20),
     column_labels.background.color = "#555555",
     container.height = px(500),
-    data_row.padding.horizontal = px(20),
     heading.align = "left",
     heading.border.bottom.color = "#555555",
     heading.title.font.weight = "bold",
-    heading.background.color = "#555555",
+    heading.background.color = "gray60",
     quarto.disable_processing = TRUE,
-    source_notes.font.size = px(16),
     table.border.top.color = "#555555",
     table.border.top.style = "hidden",
-    table.width = pct(50)
+    table.width = pct(70)
   )
 ```
 
