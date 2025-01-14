@@ -21,7 +21,7 @@ library(gt)
 library(urlparse)
 
 handle_na <- \(x) {
-  purrr::map_df(x, function(x) providertwo::na_if(x, y = "")) |>
+  purrr::modify_if(x, is.character, function(x) providertwo::na_if(x, y = "")) |>
     providertwo::remove_all_na()
 }
 

@@ -1,5 +1,5 @@
 ---
-title: "Offset Sequencing"
+title: "Pagination and Offset Sequencing"
 editor_options: 
    chunk_output_type: console
 ---
@@ -10,3 +10,122 @@ editor_options:
 #| warning: false
 source("_common.R")
 ```
+
+## Pagination Example 1
+
+```{r}
+base <- request("https://data.cms.gov/data-api/v1/dataset") |> 
+  req_url_path_append("9887a515-7552-4693-bf58-735c77af46d7") |> 
+  req_url_path_append("data")
+
+base
+
+stats <- base |> 
+  req_url_path_append("stats")
+
+stats
+
+stats <- stats |> 
+  req_perform() |> 
+  resp_body_json(simplifyVector = TRUE)
+
+stats |> purse()
+
+offset_sequence(
+  nobs = stats$found_rows, 
+  limit = 5000)
+
+glue::glue(
+  "{base$url}",
+  "?size=5000&",
+  "offset=",
+  "{offset_sequence(nobs = stats$found_rows, limit = 5000)}"
+)
+```
+
+## Pagination Example 2
+
+Select Dataset
+
+```{r}
+distribution <- read_json_arrow(
+  file = "https://data.cms.gov/data.json",
+  col_select = c("dataset"),
+  as_data_frame = TRUE) |> 
+  to_duckdb() |> 
+  pull(dataset) |> 
+  pluck(1) |> 
+  select(distribution) |> 
+  as_tibble() |> 
+  unnest(distribution) |> 
+  rename_with(remove_at_symbol) |> 
+  filter(format      == "API", 
+         description == "latest") |> 
+  handle_na()
+
+distribution |> 
+  filter(grepl("Enrollment", title)) |> 
+  pull(title)
+
+accessURL <- distribution |> 
+  filter(grepl("Opt Out Affidavits : ", title)) |> 
+  pull(accessURL)
+
+accessURL
+```
+
+Format Query
+
+```{r}
+query <- glue::glue(
+  'c(
+    "filter[id-{FID}][path]"  = "{PATH}",
+    "filter[id-{FID}][value]" = "{VALUE}"
+  )', 
+  FID = 1, 
+  PATH = "State Code", 
+  VALUE = "CA")
+
+query
+
+query <- query |> 
+  rlang::parse_expr() |> 
+  rlang::eval_bare()
+
+query
+```
+
+
+```{r}
+queryurl <- accessURL |> 
+  request() |> 
+  req_url_query(size = 5000, !!!query)
+
+nresults <- queryurl |> 
+  req_url_path_append("stats") |> 
+  req_perform() |> 
+  resp_body_json() |> 
+  gelm("found")
+
+nresults
+
+reqs <- purrr::map(
+  glue::glue(
+    "{url}", 
+    "offset={off}", 
+    url = queryurl$url, 
+    off = offset_sequence(nobs = nresults, limit = 5000)), 
+  httr2::request)
+
+res <- httr2::req_perform_parallel(reqs) |> 
+  httr2::resps_successes()
+
+res[[1]] |> 
+  resp_body_json(simplifyVector = TRUE)
+
+queryurl |> 
+  req_perform() |> 
+  resp_body_json(simplifyVector = TRUE) |> 
+  tibble()
+```
+
