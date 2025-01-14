@@ -1,0 +1,126 @@
+---
+title: "URL Object"
+editor_options: 
+   chunk_output_type: console
+---
+
+```{r setup}
+#| echo: false
+#| message: false
+#| warning: false
+source("_common.R")
+
+library(urlparse)
+
+handle_na <- \(x) {
+  purrr::map_df(x, function(x) providertwo::na_if(x, y = "")) |> 
+  providertwo::remove_all_na()
+}
+```
+
+## S7 Sketches
+
+```{r}
+#| label: s7_sketches
+PATH <- new_class(
+  name = "PATH",
+  properties = list(
+    head = new_property(
+      class_character,
+      default = NA_character_,
+      setter = function(self, value) {
+        self@head <- value
+        self
+      }),
+    uuid = new_property(
+      class_character,
+      default = NA_character_,
+      setter = function(self, value) {
+        self@uuid <- value
+        self
+      }),
+    tail = new_property(
+      class_character,
+      default = NA_character_,
+      setter = function(self, value) {
+        self@tail <- value
+        self
+      })
+  ),
+  validator = function(self) { 
+    if (length(self@head) != 1L) {
+      "@head must be length 1"
+    } else if (length(self@uuid) != 1L) {
+      "@uuid must be length 1"  
+    } else if (length(self@tail) != 1L) {
+      "@tail must be length 1" 
+    }
+  }
+)
+
+URL <- new_class(
+  name = "URL",
+  properties = list(
+    scheme = new_property(class_character, default = "https"),
+    host = new_property(class_character, default = "data.cms.gov"),
+    path = new_property(class = PATH)
+  )
+)
+```
+
+## Examples
+
+```{r}
+#| label: urlparse_example
+urls <- c(
+  "https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data/stats",
+  "https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data-viewer?size=5000&offset=10000"
+  )
+
+urlparse::url_parse_v2(urls) |> 
+  handle_na() |> 
+  select(path, raw_query)
+```
+
+Re-setting part of the path:
+
+```{r}
+#| label: s7_setter
+ex <- URL(
+  path = PATH(
+    head = "/data-api/v1/dataset/",
+    uuid = "9887a515-7552-4693-bf58-735c77af46d7",
+    tail = "data-viewer"))
+
+ex
+
+ex@path@tail <- "data/stats"
+
+ex
+```
+
+With httr2:
+
+```{r}
+#| label: httr2_example
+httr2::url_parse(
+  base_url = "https://data.cms.gov/provider-data/", 
+  url      = "api/1/datastore/query/mj5m-pzi6/0") |> 
+  httr2::url_modify_query(
+    offset = 0, 
+    limit  = 2000)
+```
+
+With S7:
+
+```{r}
+#| label: httr2_to_S7
+ex2 <- URL(
+  path = PATH(
+    head = "/provider-data/api/1/datastore/query/",
+    uuid = "mj5m-pzi6",
+    tail = "0"))
+
+ex2
+```
+

@@ -411,5 +411,27 @@
       "Endpoints",
       "<span class='chapter-number'>10</span>  <span class='chapter-title'>`quality_eligibility()`</span>"
     ]
+  },
+  {
+    "objectID": "sk_url_builder.html",
+    "href": "sk_url_builder.html",
+    "title": "11  URL Object",
+    "section": "",
+    "text": "11.1 S7 Sketches\nPATH &lt;- new_class(\n  name = \"PATH\",\n  properties = list(\n    head = new_property(\n      class_character,\n      default = NA_character_,\n      setter = function(self, value) {\n        self@head &lt;- value\n        self\n      }),\n    uuid = new_property(\n      class_character,\n      default = NA_character_,\n      setter = function(self, value) {\n        self@uuid &lt;- value\n        self\n      }),\n    tail = new_property(\n      class_character,\n      default = NA_character_,\n      setter = function(self, value) {\n        self@tail &lt;- value\n        self\n      })\n  ),\n  validator = function(self) { \n    if (length(self@head) != 1L) {\n      \"@head must be length 1\"\n    } else if (length(self@uuid) != 1L) {\n      \"@uuid must be length 1\"  \n    } else if (length(self@tail) != 1L) {\n      \"@tail must be length 1\" \n    }\n  }\n)\n\nURL &lt;- new_class(\n  name = \"URL\",\n  properties = list(\n    scheme = new_property(class_character, default = \"https\"),\n    host = new_property(class_character, default = \"data.cms.gov\"),\n    path = new_property(class = PATH)\n  )\n)",
+    "crumbs": [
+      "Sketches",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>URL Object</span>"
+    ]
+  },
+  {
+    "objectID": "sk_url_builder.html#examples",
+    "href": "sk_url_builder.html#examples",
+    "title": "11  URL Object",
+    "section": "11.2 Examples",
+    "text": "11.2 Examples\n\nurls &lt;- c(\n  \"https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data/stats\",\n  \"https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data-viewer?size=5000&offset=10000\"\n  )\n\nurlparse::url_parse_v2(urls) |&gt; \n  handle_na() |&gt; \n  select(path, raw_query)\n\n# A tibble: 2 × 2\n  path                                                                 raw_query\n  &lt;chr&gt;                                                                &lt;chr&gt;    \n1 /data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data/stats &lt;NA&gt;     \n2 /data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data-view… size=500…\n\n\nRe-setting part of the path:\n\nex &lt;- URL(\n  path = PATH(\n    head = \"/data-api/v1/dataset/\",\n    uuid = \"9887a515-7552-4693-bf58-735c77af46d7\",\n    tail = \"data-viewer\"))\n\nex\n\n&lt;URL&gt;\n @ scheme: chr \"https\"\n @ host  : chr \"data.cms.gov\"\n @ path  : &lt;PATH&gt;\n .. @ head: chr \"/data-api/v1/dataset/\"\n .. @ uuid: chr \"9887a515-7552-4693-bf58-735c77af46d7\"\n .. @ tail: chr \"data-viewer\"\n\nex@path@tail &lt;- \"data/stats\"\n\nex\n\n&lt;URL&gt;\n @ scheme: chr \"https\"\n @ host  : chr \"data.cms.gov\"\n @ path  : &lt;PATH&gt;\n .. @ head: chr \"/data-api/v1/dataset/\"\n .. @ uuid: chr \"9887a515-7552-4693-bf58-735c77af46d7\"\n .. @ tail: chr \"data/stats\"\n\n\nWith httr2:\n\nhttr2::url_parse(\n  base_url = \"https://data.cms.gov/provider-data/\", \n  url      = \"api/1/datastore/query/mj5m-pzi6/0\") |&gt; \n  httr2::url_modify_query(\n    offset = 0, \n    limit  = 2000)\n\n&lt;httr2_url&gt;\nhttps://data.cms.gov/provider-data/api/1/datastore/query/mj5m-pzi6/0?offset=0&limit=2000\n\n\n• scheme: https\n\n\n• hostname: data.cms.gov\n\n\n• path: /provider-data/api/1/datastore/query/mj5m-pzi6/0\n\n\n• query:\n\n\n  • offset: 0\n\n\n  • limit: 2000\n\n\nWith S7:\n\nex2 &lt;- URL(\n  path = PATH(\n    head = \"/provider-data/api/1/datastore/query/\",\n    uuid = \"mj5m-pzi6\",\n    tail = \"0\"))\n\nex2\n\n&lt;URL&gt;\n @ scheme: chr \"https\"\n @ host  : chr \"data.cms.gov\"\n @ path  : &lt;PATH&gt;\n .. @ head: chr \"/provider-data/api/1/datastore/query/\"\n .. @ uuid: chr \"mj5m-pzi6\"\n .. @ tail: chr \"0\"",
+    "crumbs": [
+      "Sketches",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>URL Object</span>"
+    ]
   }
 ]
