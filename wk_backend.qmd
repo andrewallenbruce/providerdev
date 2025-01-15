@@ -11,6 +11,94 @@ editor_options:
 source("_common.R")
 ```
 
+## _providertwo_
+
+```{r}
+providertwo::public_dataset()
+providertwo::enrollapi()
+providertwo::enrollees(enid = "I20040309000221")
+providertwo::enrollees(npi = "1417918293", spec_code = "14-41")
+providertwo::enrollees(pac = "2860305554", gender = "9")
+```
+
+### `class_Identifier`
+
+```{r}
+#| label: class_Identifier
+class_Identifier <- new_class(
+  name       = "class_Identifier",
+  properties = list(
+    url      = new_property(
+      class  = NULL | class_list,
+      setter = function(self, value) {
+        if (not_null(value)) {
+          self@url <- url_parse(value)
+          self
+        }}),
+    totalRows = new_property(
+      class  = NULL | class_integer,
+      getter = function(self) {
+        if (not_null(self@url)) {
+          url_build(self@url) |>
+            request() |>
+            req_url_path_append("stats") |>
+            req_perform() |>
+            resp_body_json(simplifyVector = TRUE) |>
+            gelm("total_rows")
+        }})
+    )
+)
+```
+
+### `class_Resources`
+
+```{r}
+#| label: class_Resources
+class_Resources <- new_class(
+  name       = "class_Resources",
+  properties = list(
+    url = NULL | class_character,
+    files = new_property(
+      class  = NULL | class_data.frame,
+      getter = function(self) {
+        if (not_null(self@url)) {
+          qTBL(fload(self@url, query = "/data")) |>
+            mtt(fileSize = prettyunits::pretty_bytes(fileSize, "nopad"))
+        }})
+  )
+)
+```
+
+```{r}
+#| label: class_API
+class_API <- new_class(
+  name = "class_API",
+  properties = list(
+    title              = class_character,
+    description        = class_character,
+    accrualPeriodicity = class_character,
+    modified           = new_property(class_double | class_Date),
+    temporal           = class_character,
+    identifier         = class_Identifier,
+    accessURL          = new_property(
+      NULL | class_list, 
+      setter = \(self, value) { 
+        if (not_null(value)) { 
+          self@accessURL <- request(value); 
+          self 
+          }
+        }),
+    resourcesAPI       = class_Resources,
+    downloadURL        = class_character,
+    describedBy        = class_character,
+    landingPage        = class_character
+  )
+)
+```
+
+
+--------------------------------------------------------------------------------
+
 ## Catalog
 
 ```{r}
@@ -32,119 +120,147 @@ main[["dataset"]] |>
   purse()
 ```
 
-### Distribution: Latest
+### Distribution
+
+`"latest"`
 
 ```{r}
 #| label: distribution_latest
 main[["distribution_latest"]]
 ```
 
-### Distribution: API
+`"API"`
 
 ```{r}
 #| label: distribution_api
 main[["distribution_api"]]
 ```
 
-### Distribution: CSV
+`"text/csv"`
 
 ```{r}
 #| label: distribution_csv
 main[["distribution_csv"]]
 ```
 
-### `S7` Classes
+### `S7` Sketches
 
-#### `Distribution`
-
-```{r}
-#| label: Distribution_class
-# Distribution <- new_class(
-#   name = "Distribution",
-#   properties = list(
-#     
-#   )
-# )
-```
-
-#### `contactPoint`
+#### `class_contactPoint`
 
 ```{r}
-#| label: contactPoint_class
-contactPoint <- new_class(
-  name = "contactPoint",
+#| label: class_contactPoint
+class_contactPoint <- new_class(
+  name       = "class_contactPoint",
   properties = list(
-    type = new_property(class_character, default = "vcard:Contact"),
-    fn = class_character,
-    hasEmail = class_character
+    type     = new_property(class_character, 
+                            default = "vcard:Contact"),
+    fn       = class_character,
+    hasEmail = class_character,
+    hasURL   = class_character
   )
 )
 ```
 
-#### `publisher`
+#### `class_publisher`
 
 ```{r}
-#| label: publisher_class
-publisher <- new_class(
-  name = "publisher",
+#| label: class_publisher
+class_publisher <- new_class(
+  name       = "class_publisher",
   properties = list(
-    type = new_property(class_character, default = "org:Organization"),
-    name = new_property(class_character, default = "Centers for Medicare & Medicaid Services")
+    type     = new_property(class_character, 
+                            default = "org:Organization"),
+    name     = new_property(class_character, 
+                            default = "Centers for Medicare & Medicaid Services")
   )
 )
 ```
 
-#### `Dataset`
+#### `class_Distribution`
 
 ```{r}
-#| label: Dataset_class
-Dataset <- new_class(
-  name = "Dataset",
+#| label: class_Distribution
+class_Distribution <- new_class(
+  name           = "class_Distribution",
+  properties     = list(
+    type         = new_property(class_character, 
+                                default = "dcat:Distribution"),
+    format       = class_character,
+    accessURL    = class_character,
+    resourcesAPI = class_character,
+    description  = class_character,
+    title        = class_character,
+    modified     = class_Date,
+    temporal     = class_character,
+    downloadURL  = class_character,
+    mediaType    = class_character
+    )
+  )
+```
+
+#### `class_Dataset`
+
+```{r}
+#| label: class_Dataset
+class_Dataset <- new_class(
+  name = "class_Dataset",
   properties = list(
-    type               = new_property(class_character, default = "dcat:Dataset"),
-    accessLevel        = new_property(class_character, default = "public"),
+    type               = new_property(class_character, 
+                                      default = "dcat:Dataset"),
+    accessLevel        = new_property(class_character, 
+                                      default = "public"),
     accrualPeriodicity = class_character,
-    bureauCode         = new_property(class_character, default = "009:38"),
-    contactPoint       = new_property(contactPoint, default = contactPoint()),
+    bureauCode         = new_property(class_character, 
+                                      default = "009:38"),
+    contactPoint       = new_property(class_contactPoint),
     describedBy        = class_character,
-    dataQuality        = new_property(class_logical, default = TRUE),
+    dataQuality        = new_property(class_logical, 
+                                      default = TRUE),
     description        = class_character,
-    distribution       = class_data.frame,
+    distribution       = class_Distribution,
     identifier         = class_character,
     keyword            = class_character,
     landingPage        = class_character,
     language           = class_character,
     license            = class_character,
+    issued             = class_Date,
     modified           = class_Date,
-    programCode        = new_property(class_character, default = "009:000"),
-    publisher          = new_property(publisher, default = publisher()),
+    released           = class_Date,
+    programCode        = new_property(class_character, 
+                                      default = "009:000"),
+    publisher          = new_property(class_publisher),
     references         = class_character,
     temporal           = class_character,
     theme              = class_character,
     title              = class_character,
-    describedByType    = class_character
+    describedByType    = class_character,
+    archiveExclude     = new_property(class_logical)
   ))
 
-Dataset()
+class_Dataset()
 ```
 
-#### `Catalog`
+#### `class_Catalog`
 
 ```{r}
-#| label: Catalog_class
-Catalog <- new_class(
-  name = "Catalog",
+#| label: class_Catalog
+class_Catalog <- new_class(
+  name = "class_Catalog",
   properties = list(
-    type        = new_property(class_character, default = "dcat:Catalog"),
-    context     = new_property(class_character, default = "https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld"),
+    type        = new_property(class_character, 
+                               default = "dcat:Catalog"),
+    context     = new_property(class_character, 
+                               default = "https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld"),
     id          = class_character,
-    conformsTo  = new_property(class_character, default = "https://project-open-data.cio.gov/v1.1/schema"),
-    describedBy = new_property(class_character, default = "https://project-open-data.cio.gov/v1.1/schema/catalog.json"),
-    dataset = new_property(Dataset, default = Dataset())
+    conformsTo  = new_property(class_character, 
+                               default = "https://project-open-data.cio.gov/v1.1/schema"),
+    describedBy = new_property(class_character, 
+                               default = "https://project-open-data.cio.gov/v1.1/schema/catalog.json"),
+    dataset     = class_Dataset
   )
 )
 
-Catalog()
+class_Catalog()
 ```
 
 ## Dataset Object

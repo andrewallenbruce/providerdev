@@ -11,30 +11,30 @@ editor_options:
 source("_common.R")
 ```
 
-## S7 Sketches
+## `class_path`
 
 ```{r}
-#| label: s7_sketches
-PATH <- new_class(
-  name = "PATH",
+#| label: class_path
+class_path <- new_class(
+  name = "class_path",
   properties = list(
     head = new_property(
       class_character,
-      default = NA_character_,
+      default = "",
       setter = function(self, value) {
         self@head <- value
         self
       }),
     uuid = new_property(
       class_character,
-      default = NA_character_,
+      default = "",
       setter = function(self, value) {
         self@uuid <- value
         self
       }),
     tail = new_property(
       class_character,
-      default = NA_character_,
+      default = "",
       setter = function(self, value) {
         self@tail <- value
         self
@@ -51,14 +51,38 @@ PATH <- new_class(
   }
 )
 
-URL <- new_class(
-  name = "URL",
+class_path()
+```
+
+
+```{r}
+curl::curl_parse_url("https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data-viewer?size=5000&offset=10000")
+
+new_path <- \(url) {
+  class_path(
+    head = stringi::stri_extract(url, regex = "[0-9a-z]{8}-[0-9]{4}-[0-9]{4}-[0-9a-z]{4}-[0-9a-z]{8}"),
+    uuid = stringi::stri_extract(url, regex = "[0-9a-z]{8}-[0-9]{4}-[0-9]{4}-[0-9a-z]{4}-[0-9a-z]{8}")
+    )
+}
+
+new_path("https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data-viewer?size=5000&offset=10000")
+```
+
+## `class_url`
+
+```{r}
+#| label: class_url
+class_url <- new_class(
+  name = "class_url",
   properties = list(
     scheme = new_property(class_character, default = "https"),
-    host = new_property(class_character, default = "data.cms.gov"),
-    path = new_property(class = PATH)
+    hostname = new_property(class_character, default = "data.cms.gov"),
+    path = new_property(class_path),
+    query = new_property(class_list, default = list())
   )
 )
+
+class_url()
 ```
 
 ## Examples
@@ -79,8 +103,8 @@ Re-setting part of the path:
 
 ```{r}
 #| label: s7_setter
-ex <- URL(
-  path = PATH(
+ex <- class_url(
+  path = class_path(
     head = "/data-api/v1/dataset/",
     uuid = "9887a515-7552-4693-bf58-735c77af46d7",
     tail = "data-viewer"))
@@ -108,8 +132,8 @@ With S7:
 
 ```{r}
 #| label: httr2_to_S7
-ex2 <- URL(
-  path = PATH(
+ex2 <- class_url(
+  path = class_path(
     head = "/provider-data/api/1/datastore/query/",
     uuid = "mj5m-pzi6",
     tail = "0"))
