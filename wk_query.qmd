@@ -11,61 +11,99 @@ editor_options:
 source("_common.R")
 ```
 
-## `class_query`
-
-```{r}
-#| label: class_query
-class_query <- new_class(
-  "class_query",
-  properties = list(
-    path = class_character,
-    operator = class_character,
-    value = class_vector,
-    limit = class_numeric,
-    sort = class_character, 
-    column = class_vector,
-    group = new_property(
-      class_list,
-      default = list(
-        conjunction = "AND",
-        memberOf = ""))
-  )
-)
-```
-
-
 ::: callout
 
 ## JSON:API Allowed Operators
 
 ```{r}
 #| label: allowed_operators
+#| echo: false
 tibble(
   ops = c("=", "<>", ">", ">=", "<", "<=", 
-    "STARTS_WITH", "CONTAINS", "ENDS_WITH", 
-    "IN", "NOT IN", "BETWEEN", "NOT BETWEEN", 
-    "IS NULL", "IS NOT NULL"))
+          "STARTS_WITH", "CONTAINS", "ENDS_WITH", 
+          "IN", "NOT IN", "BETWEEN", "NOT BETWEEN", 
+          "IS NULL", "IS NOT NULL")) |> 
+  gt() |> 
+  tab_header(html("<b>OPERATIONS</b>")) |> 
+  opt_table_font(font = google_font(name = "Spline Sans Mono")) |> 
+  opt_all_caps() |> 
+  opt_table_lines("none") |> 
+  cols_align("center") |> 
+  tab_options(quarto.disable_processing = TRUE, column_labels.hidden = TRUE)
 ```
 
 ::: 
 
+## `class_args`
 
 ```{r}
-protofunc <- function(id, 
-                      state, 
-                      name, 
-                      number) {
-  rlang::list2(
-    id = id,
-    state = state,
-    name = name,
-    number = number
+#| label: class_args
+class_args <- new_class(
+  "class_args",
+  properties = list(
+    id     = new_union(NULL, class_numeric),
+    state  = new_union(NULL, class_vector),
+    name   = new_union(NULL, class_vector),
+    number = new_union(NULL, class_numeric)
+  ),
+  validator = function(self) { 
+    if (not_null(self@state) && 
+        any(!self@state %in% state.abb)) 
+      paste("`state`", self@state, "not found")
+  }
+)
+
+try(
+  class_args(id     = 1234567890, 
+             state  = "ZZ",
+             number = "300.12"))
+
+try(
+  class_args(state  = "ZZ",
+             name   = "Jerry",
+             number = 300.12))
+
+class_args(state  = "GA")
+```
+
+## `query_equals`
+
+```{r}
+#| label: query_equals
+query_equals <- function(args) {
+  glue::glue(
+  "
+  filter[f{seq_along(args)}][condition][path]={names(args)}
+  filter[f{seq_along(args)}][condition][operator]==
+  filter[f{seq_along(args)}][condition][value]={delist(args)}
+  "
   )
 }
 
-protofunc(id = 1234567890, 
-          state = "GA", 
-          name = "Jerry", 
+query_equals(
+  list(state  = "GA", 
+       name   = "Jerry", 
+       number = 300.12))
+```
+
+
+```{r}
+protofunc <- function(id     = NULL, 
+                      state  = NULL, 
+                      name   = NULL, 
+                      number = NULL) {
+  arg <- class_args(
+    id     = id,
+    state  = state,
+    name   = name,
+    number = number)
+  
+  query_equals(compact(props(arg)))
+  
+}
+
+protofunc(state  = "GA", 
+          name   = "Jerry", 
           number = 300.12)
 ```
 
@@ -93,10 +131,7 @@ greater_or_equal <- \(arg, value) {
 }
 
 greater_or_equal("overall_rating", 3)
-```
 
-
-```{r}
 test_url <- glue::as_glue("https://data.cms.gov/data-api/v1/dataset/d10d792e-ea6e-4145-8512-34efbc1be04b/data?size=10&offset=0&")
 
 test_url <- test_url + greater_or_equal("overall_rating", 3)
@@ -104,17 +139,26 @@ test_url <- test_url + greater_or_equal("overall_rating", 3)
 curl::curl_parse_url(test_url)
 ```
 
-## Query Generation
+## `class_query`
 
 ```{r}
-format_syntax <- \(name, value) {
-  setNames(value, paste0(name, "[id-", seq_along(value), "][condition][value]"))
-}
-
-format_syntax(name = "filter", value = c("GA", "NY"))
-
-request("https://example.com") |>
-  req_url_query(!!!format_syntax("filter", c("GA", "NY")))
+#| label: class_query
+class_query <- new_class(
+  "class_query",
+  properties = list(
+    path = class_character,
+    operator = class_character,
+    value = class_vector,
+    limit = class_numeric,
+    sort = class_character, 
+    column = class_vector,
+    group = new_property(
+      class_list,
+      default = list(
+        conjunction = "AND",
+        memberOf = ""))
+  )
+)
 ```
 
 --------------------------------------------------------------------------------

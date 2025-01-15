@@ -8,7 +8,7 @@
 
 <meta name="description" content="This is a personal, informal guide to rewriting an R package. It is a work in progress and will be updated as I learn more about the process.">
 
-<title>8&nbsp; Backend – Refactoring Provider</title>
+<title>7&nbsp; Backend Preload – Refactoring Provider</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -65,8 +65,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./wk_query.html" rel="next">
-<link href="./wk_url.html" rel="prev">
+<link href="./wk_url.html" rel="next">
+<link href="./faq_eligibility.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -118,7 +118,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./wk_url.html">Work Areas</a></li><li class="breadcrumb-item"><a href="./wk_backend.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Backend</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./wk_backend.html">Work Areas</a></li><li class="breadcrumb-item"><a href="./wk_backend.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Backend Preload</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -221,14 +221,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./wk_url.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">URL</span></span></a>
+  <a href="./wk_backend.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Backend Preload</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./wk_backend.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Backend</span></span></a>
+  <a href="./wk_url.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">URL Object</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -278,21 +278,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#providertwo" id="toc-providertwo" class="nav-link active" data-scroll-target="#providertwo"><span class="header-section-number">8.1</span> <em>providertwo</em></a>
+  <li><a href="#providertwo" id="toc-providertwo" class="nav-link active" data-scroll-target="#providertwo"><span class="header-section-number">7.1</span> <em>providertwo</em></a>
   <ul class="collapse">
-  <li><a href="#class_identifier" id="toc-class_identifier" class="nav-link" data-scroll-target="#class_identifier"><span class="header-section-number">8.1.1</span> <code>class_Identifier</code></a></li>
-  <li><a href="#class_resources" id="toc-class_resources" class="nav-link" data-scroll-target="#class_resources"><span class="header-section-number">8.1.2</span> <code>class_Resources</code></a></li>
+  <li><a href="#class_identifier" id="toc-class_identifier" class="nav-link" data-scroll-target="#class_identifier"><span class="header-section-number">7.1.1</span> <code>class_Identifier</code></a></li>
+  <li><a href="#class_resources" id="toc-class_resources" class="nav-link" data-scroll-target="#class_resources"><span class="header-section-number">7.1.2</span> <code>class_Resources</code></a></li>
   </ul></li>
-  <li><a href="#catalog" id="toc-catalog" class="nav-link" data-scroll-target="#catalog"><span class="header-section-number">8.2</span> Catalog</a>
+  <li><a href="#catalog" id="toc-catalog" class="nav-link" data-scroll-target="#catalog"><span class="header-section-number">7.2</span> Catalog</a>
   <ul class="collapse">
-  <li><a href="#dataset" id="toc-dataset" class="nav-link" data-scroll-target="#dataset"><span class="header-section-number">8.2.1</span> Dataset</a></li>
-  <li><a href="#distribution" id="toc-distribution" class="nav-link" data-scroll-target="#distribution"><span class="header-section-number">8.2.2</span> Distribution</a></li>
-  <li><a href="#s7-sketches" id="toc-s7-sketches" class="nav-link" data-scroll-target="#s7-sketches"><span class="header-section-number">8.2.3</span> <code>S7</code> Sketches</a></li>
+  <li><a href="#dataset" id="toc-dataset" class="nav-link" data-scroll-target="#dataset"><span class="header-section-number">7.2.1</span> Dataset</a></li>
+  <li><a href="#distribution" id="toc-distribution" class="nav-link" data-scroll-target="#distribution"><span class="header-section-number">7.2.2</span> Distribution</a></li>
+  <li><a href="#s7-sketches" id="toc-s7-sketches" class="nav-link" data-scroll-target="#s7-sketches"><span class="header-section-number">7.2.3</span> <code>S7</code> Sketches</a></li>
   </ul></li>
-  <li><a href="#dataset-object" id="toc-dataset-object" class="nav-link" data-scroll-target="#dataset-object"><span class="header-section-number">8.3</span> Dataset Object</a>
+  <li><a href="#dataset-object" id="toc-dataset-object" class="nav-link" data-scroll-target="#dataset-object"><span class="header-section-number">7.3</span> Dataset Object</a>
   <ul class="collapse">
-  <li><a href="#national-downloadable-file" id="toc-national-downloadable-file" class="nav-link" data-scroll-target="#national-downloadable-file"><span class="header-section-number">8.3.1</span> National Downloadable File</a></li>
-  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples"><span class="header-section-number">8.3.2</span> Examples</a></li>
+  <li><a href="#national-downloadable-file" id="toc-national-downloadable-file" class="nav-link" data-scroll-target="#national-downloadable-file"><span class="header-section-number">7.3.1</span> National Downloadable File</a></li>
+  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples"><span class="header-section-number">7.3.2</span> Examples</a></li>
   </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/andrewallenbruce/providerdev/blob/main/wk_backend.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li></ul></div></nav>
@@ -300,9 +300,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./wk_url.html">Work Areas</a></li><li class="breadcrumb-item"><a href="./wk_backend.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Backend</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./wk_backend.html">Work Areas</a></li><li class="breadcrumb-item"><a href="./wk_backend.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Backend Preload</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Backend</span></h1>
+<h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Backend Preload</span></h1>
 </div>
 
 
@@ -319,8 +319,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="providertwo" class="level2" data-number="8.1">
-<h2 data-number="8.1" class="anchored" data-anchor-id="providertwo"><span class="header-section-number">8.1</span> <em>providertwo</em></h2>
+<section id="providertwo" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="providertwo"><span class="header-section-number">7.1</span> <em>providertwo</em></h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>providertwo<span class="sc">::</span><span class="fu">public_dataset</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -436,8 +436,8 @@ $downloadURL
 #   LAST_NAME &lt;chr&gt;, ORG_NAME &lt;chr&gt;, GNDR_SW &lt;chr&gt;</code></pre>
 </div>
 </div>
-<section id="class_identifier" class="level3" data-number="8.1.1">
-<h3 data-number="8.1.1" class="anchored" data-anchor-id="class_identifier"><span class="header-section-number">8.1.1</span> <code>class_Identifier</code></h3>
+<section id="class_identifier" class="level3" data-number="7.1.1">
+<h3 data-number="7.1.1" class="anchored" data-anchor-id="class_identifier"><span class="header-section-number">7.1.1</span> <code>class_Identifier</code></h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>class_Identifier <span class="ot">&lt;-</span> <span class="fu">new_class</span>(</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">name       =</span> <span class="st">"class_Identifier"</span>,</span>
@@ -464,8 +464,8 @@ $downloadURL
 <span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="class_resources" class="level3" data-number="8.1.2">
-<h3 data-number="8.1.2" class="anchored" data-anchor-id="class_resources"><span class="header-section-number">8.1.2</span> <code>class_Resources</code></h3>
+<section id="class_resources" class="level3" data-number="7.1.2">
+<h3 data-number="7.1.2" class="anchored" data-anchor-id="class_resources"><span class="header-section-number">7.1.2</span> <code>class_Resources</code></h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>class_Resources <span class="ot">&lt;-</span> <span class="fu">new_class</span>(</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">name       =</span> <span class="st">"class_Resources"</span>,</span>
@@ -509,8 +509,8 @@ $downloadURL
 <hr>
 </section>
 </section>
-<section id="catalog" class="level2" data-number="8.2">
-<h2 data-number="8.2" class="anchored" data-anchor-id="catalog"><span class="header-section-number">8.2</span> Catalog</h2>
+<section id="catalog" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="catalog"><span class="header-section-number">7.2</span> Catalog</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>main <span class="ot">&lt;-</span> <span class="fu">main_data_rcpp</span>()</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -600,8 +600,8 @@ $distribution_csv
 # ℹ 1,631 more rows</code></pre>
 </div>
 </div>
-<section id="dataset" class="level3" data-number="8.2.1">
-<h3 data-number="8.2.1" class="anchored" data-anchor-id="dataset"><span class="header-section-number">8.2.1</span> Dataset</h3>
+<section id="dataset" class="level3" data-number="7.2.1">
+<h3 data-number="7.2.1" class="anchored" data-anchor-id="dataset"><span class="header-section-number">7.2.1</span> Dataset</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>main[[<span class="st">"dataset"</span>]] <span class="sc">|&gt;</span> </span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">unnest_wider</span>(contactPoint, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
@@ -637,8 +637,8 @@ $distribution_csv
 </div>
 </div>
 </section>
-<section id="distribution" class="level3" data-number="8.2.2">
-<h3 data-number="8.2.2" class="anchored" data-anchor-id="distribution"><span class="header-section-number">8.2.2</span> Distribution</h3>
+<section id="distribution" class="level3" data-number="7.2.2">
+<h3 data-number="7.2.2" class="anchored" data-anchor-id="distribution"><span class="header-section-number">7.2.2</span> Distribution</h3>
 <p><code>"latest"</code></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>main[[<span class="st">"distribution_latest"</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -700,10 +700,10 @@ $distribution_csv
 </div>
 </div>
 </section>
-<section id="s7-sketches" class="level3" data-number="8.2.3">
-<h3 data-number="8.2.3" class="anchored" data-anchor-id="s7-sketches"><span class="header-section-number">8.2.3</span> <code>S7</code> Sketches</h3>
-<section id="class_contactpoint" class="level4" data-number="8.2.3.1">
-<h4 data-number="8.2.3.1" class="anchored" data-anchor-id="class_contactpoint"><span class="header-section-number">8.2.3.1</span> <code>class_contactPoint</code></h4>
+<section id="s7-sketches" class="level3" data-number="7.2.3">
+<h3 data-number="7.2.3" class="anchored" data-anchor-id="s7-sketches"><span class="header-section-number">7.2.3</span> <code>S7</code> Sketches</h3>
+<section id="class_contactpoint" class="level4" data-number="7.2.3.1">
+<h4 data-number="7.2.3.1" class="anchored" data-anchor-id="class_contactpoint"><span class="header-section-number">7.2.3.1</span> <code>class_contactPoint</code></h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>class_contactPoint <span class="ot">&lt;-</span> <span class="fu">new_class</span>(</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">name       =</span> <span class="st">"class_contactPoint"</span>,</span>
@@ -717,8 +717,8 @@ $distribution_csv
 <span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="class_publisher" class="level4" data-number="8.2.3.2">
-<h4 data-number="8.2.3.2" class="anchored" data-anchor-id="class_publisher"><span class="header-section-number">8.2.3.2</span> <code>class_publisher</code></h4>
+<section id="class_publisher" class="level4" data-number="7.2.3.2">
+<h4 data-number="7.2.3.2" class="anchored" data-anchor-id="class_publisher"><span class="header-section-number">7.2.3.2</span> <code>class_publisher</code></h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>class_publisher <span class="ot">&lt;-</span> <span class="fu">new_class</span>(</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">name       =</span> <span class="st">"class_publisher"</span>,</span>
@@ -731,8 +731,8 @@ $distribution_csv
 <span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="class_distribution" class="level4" data-number="8.2.3.3">
-<h4 data-number="8.2.3.3" class="anchored" data-anchor-id="class_distribution"><span class="header-section-number">8.2.3.3</span> <code>class_Distribution</code></h4>
+<section id="class_distribution" class="level4" data-number="7.2.3.3">
+<h4 data-number="7.2.3.3" class="anchored" data-anchor-id="class_distribution"><span class="header-section-number">7.2.3.3</span> <code>class_Distribution</code></h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>class_Distribution <span class="ot">&lt;-</span> <span class="fu">new_class</span>(</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">name           =</span> <span class="st">"class_Distribution"</span>,</span>
@@ -752,8 +752,8 @@ $distribution_csv
 <span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="class_dataset" class="level4" data-number="8.2.3.4">
-<h4 data-number="8.2.3.4" class="anchored" data-anchor-id="class_dataset"><span class="header-section-number">8.2.3.4</span> <code>class_Dataset</code></h4>
+<section id="class_dataset" class="level4" data-number="7.2.3.4">
+<h4 data-number="7.2.3.4" class="anchored" data-anchor-id="class_dataset"><span class="header-section-number">7.2.3.4</span> <code>class_Dataset</code></h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>class_Dataset <span class="ot">&lt;-</span> <span class="fu">new_class</span>(</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">"class_Dataset"</span>,</span>
@@ -837,8 +837,8 @@ $distribution_csv
 </div>
 </div>
 </section>
-<section id="class_catalog" class="level4" data-number="8.2.3.5">
-<h4 data-number="8.2.3.5" class="anchored" data-anchor-id="class_catalog"><span class="header-section-number">8.2.3.5</span> <code>class_Catalog</code></h4>
+<section id="class_catalog" class="level4" data-number="7.2.3.5">
+<h4 data-number="7.2.3.5" class="anchored" data-anchor-id="class_catalog"><span class="header-section-number">7.2.3.5</span> <code>class_Catalog</code></h4>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>class_Catalog <span class="ot">&lt;-</span> <span class="fu">new_class</span>(</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">"class_Catalog"</span>,</span>
@@ -911,8 +911,8 @@ $distribution_csv
 </section>
 </section>
 </section>
-<section id="dataset-object" class="level2" data-number="8.3">
-<h2 data-number="8.3" class="anchored" data-anchor-id="dataset-object"><span class="header-section-number">8.3</span> Dataset Object</h2>
+<section id="dataset-object" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="dataset-object"><span class="header-section-number">7.3</span> Dataset Object</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">provider_data</span>() <span class="sc">|&gt;</span> </span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -942,267 +942,111 @@ $distribution_csv
 - $theme                    c151 Dialysis facilities                        ...
 - $archiveExclude           l151 NA                                         ...</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">provider_data</span>() <span class="sc">|&gt;</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(title) <span class="sc">|&gt;</span></span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="at">sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Dialysis Facility - Listing by Facility
-Dialysis Facility - State Averages
-Dialysis Facility - National Averages
-Patient survey (ICH CAHPS) - Facility
-Patient survey (ICH CAHPS) - National
-Home Health Care - Zip Codes
-Home Health Care Agencies
-Home Health Care - National Data
-Hospice - Zip Data
-Hospice - General Information
-Hospice - Provider Data
-Hospice care - Provider CAHPS Hospice Survey Data
-Hospice care - National CAHPS Hospice Survey Data
-Outpatient and Ambulatory Surgery Consumer Assessment of Healthcare Providers and Systems (OAS CAHPS) survey for ambulatory surgical centers - Facility
-Ambulatory Surgical Center Quality Measures - Facility
-Ambulatory Surgical Center Quality Measures - National
-Outpatient and Ambulatory Surgery Consumer Assessment of Healthcare Providers and Systems (OAS CAHPS) survey for ambulatory surgical centers - National
-Ambulatory Surgical Center Quality Measures - State
-Outpatient and Ambulatory Surgery Consumer Assessment of Healthcare Providers and Systems (OAS CAHPS) survey for ambulatory surgical centers - State
-Comprehensive Care For Joint Replacement Model - Provider Data
-CMS Medicare PSI-90 and component measures - six-digit estimate dataset
-Complications and Deaths - Hospital
-Complications and Deaths - National
-Complications and Deaths - State
-Footnote Crosswalk
-Outpatient and Ambulatory Surgery Consumer Assessment of Healthcare Providers and Systems (OAS CAHPS) survey - Footnotes
-Table 2: FY2021 Distribution of Net Change in Base Operating DRG Payment Amount
-Table 1: FY2021 Net Change in Base Operating DRG Payment Amount
-Table 3: FY2021 Percent Change in Medicare Payments
-Table 4: FY2021 Value-Based Incentive Payment Amount
-Patient survey (HCAHPS) - Hospital
-Patient survey (HCAHPS) - National
-Patient survey (HCAHPS) - State
-Healthcare Associated Infections - Hospital
-Healthcare Associated Infections - National
-Healthcare Associated Infections - State
-Outpatient and Ambulatory Surgery Consumer Assessment of Healthcare Providers and Systems (OAS CAHPS) survey for hospital outpatient departments - Facility
-Outpatient and Ambulatory Surgery Consumer Assessment of Healthcare Providers and Systems (OAS CAHPS) survey for hospital outpatient departments - National
-Outpatient and Ambulatory Surgery Consumer Assessment of Healthcare Providers and Systems (OAS CAHPS) survey for hospital outpatient departments - State
-Hospital General Information
-Complications and Unplanned Hospital Visits - PPS-Exempt Cancer Hospital - Hospital
-Complications and Unplanned Hospital Visits - PPS-Exempt Cancer Hospital - National
-Hospital-Acquired Condition (HAC) Reduction Program
-Medicare Spending Per Beneficiary - Hospital Additional Decimal Places
-Safety and Healthcare-Associated Infection Measures - PPS-Exempt Cancer Hospital
-Patient Survey (PCH - HCAHPS) PPS-Exempt Cancer Hospital - Hospital
-Patient Survey (PCH - HCAHPS) PPS-Exempt Cancer Hospital - National
-Patient Survey (PCH - HCAHPS) PPS-Exempt Cancer Hospital - State
-Hospital Readmissions Reduction Program
-Hospital Value-Based Purchasing (HVBP) - Clinical Outcomes Domain Scores
-Hospital Value-Based Purchasing (HVBP) - Efficiency Scores
-Hospital Value-Based Purchasing (HVBP) - Person and Community Engagement Domain Scores (HCAHPS)
-Hospital Value-Based Purchasing (HVBP) - Safety
-Hospital Value-Based Purchasing (HVBP) - Total Performance Score
-Inpatient Psychiatric Facility Quality Measure Data - by Facility
-Inpatient Psychiatric Facility Quality Measure Data - National
-Inpatient Psychiatric Facility Quality Measure Data - by State
-Measure Dates
-Medicare Hospital Spending by Claim
-Medicare Spending Per Beneficiary - Hospital
-Medicare Spending Per Beneficiary - National
-Medicare Spending Per Beneficiary - State
-Outpatient Imaging Efficiency - Hospital
-Outpatient Imaging Efficiency - National
-Outpatient Imaging Efficiency - State
-Payment - National
-Payment and value of care - Hospital
-Timely and Effective Care - Hospital
-Timely and Effective Care - National
-Timely and Effective Care - State
-Unplanned Hospital Visits - Hospital
-Unplanned Hospital Visits - National
-Unplanned Hospital Visits - State
-Veterans Health Administration Behavioral Health Data
-Veterans Health Administration Timely and Effective Care Data
-Value of care - National
-Veterans Health Administration Provider Level Data
-Data Updates
-Inpatient Rehabilitation Facility - General Information
-Inpatient Rehabilitation Facility - Provider Data
-Inpatient Rehabilitation Facility - Conditions
-Long-Term Care Hospital - General Information
-Long-Term Care Hospital - Provider Data
-Fire Safety Deficiencies
-Health Deficiencies
-MDS Quality Measures
-Medicare Claims Quality Measures
-Ownership
-Penalties
-Provider Information
-Skilled Nursing Facility Quality Reporting Program - Provider Data
-Skilled Nursing Facility Quality Reporting Program - Swing Beds - Provider Data
-State US Averages
-Survey Summary
-FY 2025 SNF VBP Facility-Level Dataset
-FY 2025 SNF VBP Aggregate Performance
-Nursing Home Data Collection Intervals
-Citation Code Look-up
-National Downloadable File
-PY 2022 Group Public Reporting: MIPS Measures and Attestations
-PY 2022 Group Public Reporting: Patient Experience
-PY 2022 Clinician Public Reporting: MIPS Measures and Attestations
-PY 2022 Clinician Public Reporting: Overall MIPS Performance
-Inspection Dates
-State-Level Health Inspection Cut Points
-Home Health Care - Patient Survey (HHCAHPS) 2023Q3 to 2024Q2
-Home Health Care - Patient Survey (HHCAHPS) National Data 2023Q3 to 2024Q2
-Home Health Care - Patient Survey (HHCAHPS) State Data 2023Q3 to 2024Q2
-Home Health Care - Patient Survey (HHCAHPS) Measure Dates 2023Q3 to 2024Q2
-PY 2022 Virtual Group Public Reporting: MIPS Measures and Attestations
-COVID-19 Vaccination Rates - Provider Data
-COVID-19 Vaccination Rates - State and National Averages
-Hospice care - State CAHPS Hospice Survey Data
-Hospice - State Data
-Home Health Care - State by State Data
-Home Health Care - Measure Date Range
-Payment - State
-Maternal Health - Hospital
-Medical Equipment Suppliers
-Inpatient Rehabilitation Facility - National Data
-Long-Term Care Hospital - National Data
-Skilled Nursing Facility Quality Reporting Program - National Data
-Patient survey (ICH CAHPS) - State
-Hospice-National Data
-Facility Affiliation Data
-Utilization Data
-ESRD QIP - Clinical Depression Screening and Follow-up - Payment Year 2025
-ESRD QIP - Complete QIP Data - Payment Year 2025
-ESRD QIP - Dialysis Adequacy - Payment Year 2025
-ESRD QIP - Footnotes - Payment Year 2025
-ESRD QIP - Hypercalcemia - Payment Year 2025
-ESRD QIP - NHSN Dialysis Event Measure - Payment Year 2025
-ESRD QIP - NHSN Bloodstream Infection - Payment Year 2025
-ESRD QIP - Standardized Readmission Ratio - Payment Year 2025
-ESRD QIP - Standardized Transfusion Ratio - Payment Year 2025
-ESRD QIP - Total Performance Scores - Payment Year 2025
-ESRD QIP - Vascular Access Topic - Payment Year 2025
-ESRD QIP - Ultrafiltration Rate - Payment Year 2025
-ESRD QIP - Standardized Hospitalization Ratio - Payment Year 2025
-ESRD QIP - Medication Reconciliation - Payment Year 2025
-ESRD QIP - Percentage of Prevalent Patients Waitlisted - Payment Year 2025
-ESRD QIP - In-Center Hemodialysis Consumer Assessment Of Healthcare Providers And Services Systems (ICH CAHPS) Survey - Payment Year 2025
-Patient-Reported Outcomes - Hospital
-Palliative Care - PPS-Exempt Cancer Hospital - Hospital
-Palliative Care - PPS-Exempt Cancer Hospital - National
-Health Equity - Hospital
-Health Equity - State
-Health Equity - National
-ESRD QIP - Covid-19 healthcare personnel Data - Payment Year 2025
-Expanded Home Health Value-Based Purchasing (HHVBP) Model - Agency Data
-Expanded Home Health Value-Based Purchasing (HHVBP) Model - Cohort Data</code></pre>
 </div>
-</div>
-<section id="national-downloadable-file" class="level3" data-number="8.3.1">
-<h3 data-number="8.3.1" class="anchored" data-anchor-id="national-downloadable-file"><span class="header-section-number">8.3.1</span> National Downloadable File</h3>
+<section id="national-downloadable-file" class="level3" data-number="7.3.1">
+<h3 data-number="7.3.1" class="anchored" data-anchor-id="national-downloadable-file"><span class="header-section-number">7.3.1</span> National Downloadable File</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>httr2<span class="sc">::</span><span class="fu">url_parse</span>(<span class="st">"https://data.cms.gov/provider-data/api/1/datastore/query/"</span>)</span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a><span class="co"># distro </span></span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="fu">unclass</span>(</span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">url_parse</span>(</span>
-<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"?limit=1&amp;offset=100&amp;count=true&amp;results=true&amp;schema=true&amp;keys=true&amp;format=json&amp;rowIds=true"</span></span>
-<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>ndf_identifier <span class="ot">&lt;-</span> \(x) {</span>
-<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>  kit<span class="sc">::</span><span class="fu">nswitch</span>(x,</span>
-<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"affiliations"</span>, <span class="st">"27ea-46a8"</span>,</span>
-<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"clinicians"</span>, <span class="st">"mj5m-pzi6"</span>,</span>
-<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">default =</span> <span class="cn">NA_character_</span>,</span>
-<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">nThread =</span> <span class="dv">4</span>L)</span>
-<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a>url_ndf <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">url_parse</span>(</span>
-<span id="cb35-20"><a href="#cb35-20" aria-hidden="true" tabindex="-1"></a>  <span class="st">"https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/"</span></span>
-<span id="cb35-21"><a href="#cb35-21" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb35-22"><a href="#cb35-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-23"><a href="#cb35-23" aria-hidden="true" tabindex="-1"></a>url_tmp <span class="ot">&lt;-</span> url_ndf <span class="sc">|&gt;</span> </span>
-<span id="cb35-24"><a href="#cb35-24" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">url_build</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb35-25"><a href="#cb35-25" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">request</span>()</span>
-<span id="cb35-26"><a href="#cb35-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-27"><a href="#cb35-27" aria-hidden="true" tabindex="-1"></a>httr2<span class="sc">::</span><span class="fu">req_template</span>(</span>
-<span id="cb35-28"><a href="#cb35-28" aria-hidden="true" tabindex="-1"></a>  url_tmp, </span>
-<span id="cb35-29"><a href="#cb35-29" aria-hidden="true" tabindex="-1"></a>  <span class="st">"/{fname}?show-reference-ids=true"</span>, </span>
-<span id="cb35-30"><a href="#cb35-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">fname =</span> <span class="fu">ndf_identifier</span>(<span class="st">"affiliations"</span>))</span>
-<span id="cb35-31"><a href="#cb35-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-32"><a href="#cb35-32" aria-hidden="true" tabindex="-1"></a>url_ndf <span class="sc">|&gt;</span> </span>
-<span id="cb35-33"><a href="#cb35-33" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">url_build</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb35-34"><a href="#cb35-34" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">request</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb35-35"><a href="#cb35-35" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">req_url_path_append</span>(</span>
-<span id="cb35-36"><a href="#cb35-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ndf_identifier</span>(fname)) <span class="sc">|&gt;</span> </span>
-<span id="cb35-37"><a href="#cb35-37" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">req_url_path_append</span>(<span class="st">"?show-reference-ids=true"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb35-38"><a href="#cb35-38" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">req_perform</span>() <span class="sc">|&gt;</span></span>
-<span id="cb35-39"><a href="#cb35-39" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(<span class="at">check_type =</span> <span class="cn">FALSE</span>, <span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>httr2<span class="sc">::</span><span class="fu">url_parse</span>(<span class="st">"https://data.cms.gov/provider-data/api/1/datastore/query/"</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co"># distro </span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="fu">unclass</span>(</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">url_parse</span>(</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"?limit=1&amp;offset=100&amp;count=true&amp;results=true&amp;schema=true&amp;keys=true&amp;format=json&amp;rowIds=true"</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>ndf_identifier <span class="ot">&lt;-</span> \(x) {</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>  kit<span class="sc">::</span><span class="fu">nswitch</span>(x,</span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"affiliations"</span>, <span class="st">"27ea-46a8"</span>,</span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"clinicians"</span>, <span class="st">"mj5m-pzi6"</span>,</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">default =</span> <span class="cn">NA_character_</span>,</span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">nThread =</span> <span class="dv">4</span>L)</span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a>url_ndf <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">url_parse</span>(</span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a>  <span class="st">"https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/"</span></span>
+<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a>url_tmp <span class="ot">&lt;-</span> url_ndf <span class="sc">|&gt;</span> </span>
+<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">url_build</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">request</span>()</span>
+<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-27"><a href="#cb33-27" aria-hidden="true" tabindex="-1"></a>httr2<span class="sc">::</span><span class="fu">req_template</span>(</span>
+<span id="cb33-28"><a href="#cb33-28" aria-hidden="true" tabindex="-1"></a>  url_tmp, </span>
+<span id="cb33-29"><a href="#cb33-29" aria-hidden="true" tabindex="-1"></a>  <span class="st">"/{fname}?show-reference-ids=true"</span>, </span>
+<span id="cb33-30"><a href="#cb33-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">fname =</span> <span class="fu">ndf_identifier</span>(<span class="st">"affiliations"</span>))</span>
+<span id="cb33-31"><a href="#cb33-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-32"><a href="#cb33-32" aria-hidden="true" tabindex="-1"></a>url_ndf <span class="sc">|&gt;</span> </span>
+<span id="cb33-33"><a href="#cb33-33" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">url_build</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb33-34"><a href="#cb33-34" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">request</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb33-35"><a href="#cb33-35" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">req_url_path_append</span>(</span>
+<span id="cb33-36"><a href="#cb33-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ndf_identifier</span>(fname)) <span class="sc">|&gt;</span> </span>
+<span id="cb33-37"><a href="#cb33-37" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">req_url_path_append</span>(<span class="st">"?show-reference-ids=true"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb33-38"><a href="#cb33-38" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">req_perform</span>() <span class="sc">|&gt;</span></span>
+<span id="cb33-39"><a href="#cb33-39" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(<span class="at">check_type =</span> <span class="cn">FALSE</span>, <span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>meta_ndf <span class="ot">&lt;-</span> \(fname) {</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(curl<span class="sc">::</span><span class="fu">has_internet</span>())</span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">request</span>(</span>
-<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste0</span>(</span>
-<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>      <span class="st">"https://data.cms.gov/"</span>,</span>
-<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>      <span class="st">"provider-data/api/1/"</span>,</span>
-<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>      <span class="st">"metastore/schemas/"</span>,</span>
-<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>      <span class="st">"dataset/items/"</span>,</span>
-<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>      <span class="cf">switch</span>(fname, </span>
-<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>             <span class="at">affiliations =</span> <span class="st">"27ea-46a8"</span>, </span>
-<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>             <span class="at">clinicians   =</span> <span class="st">"mj5m-pzi6"</span>, </span>
-<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>             <span class="fu">stop</span>(<span class="st">"Invalid argument"</span>)),</span>
-<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"?show-reference-ids=true"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a>       <span class="fu">req_perform</span>() <span class="sc">|&gt;</span></span>
-<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a>       <span class="fu">resp_body_json</span>(</span>
-<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a>         <span class="at">check_type     =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a>         <span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb36-21"><a href="#cb36-21" aria-hidden="true" tabindex="-1"></a>  distro <span class="ot">&lt;-</span> <span class="fu">gelm</span>(<span class="fu">gelm</span>(x, <span class="st">"distribution"</span>), <span class="st">"identifier"</span>)</span>
-<span id="cb36-22"><a href="#cb36-22" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb36-23"><a href="#cb36-23" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">request</span>(</span>
-<span id="cb36-24"><a href="#cb36-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste0</span>(</span>
-<span id="cb36-25"><a href="#cb36-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://data.cms.gov/"</span>, </span>
-<span id="cb36-26"><a href="#cb36-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">"provider-data/api/1/"</span>,</span>
-<span id="cb36-27"><a href="#cb36-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">"datastore/query/"</span>, </span>
-<span id="cb36-28"><a href="#cb36-28" aria-hidden="true" tabindex="-1"></a>    distro, </span>
-<span id="cb36-29"><a href="#cb36-29" aria-hidden="true" tabindex="-1"></a>    <span class="st">"?limit=1&amp;offset=100&amp;"</span>,</span>
-<span id="cb36-30"><a href="#cb36-30" aria-hidden="true" tabindex="-1"></a>    <span class="st">"count=true&amp;results=true&amp;"</span>, </span>
-<span id="cb36-31"><a href="#cb36-31" aria-hidden="true" tabindex="-1"></a>    <span class="st">"schema=true&amp;keys=true&amp;"</span>,</span>
-<span id="cb36-32"><a href="#cb36-32" aria-hidden="true" tabindex="-1"></a>    <span class="st">"format=json&amp;rowIds=true"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb36-33"><a href="#cb36-33" aria-hidden="true" tabindex="-1"></a>       <span class="fu">req_perform</span>() <span class="sc">|&gt;</span></span>
-<span id="cb36-34"><a href="#cb36-34" aria-hidden="true" tabindex="-1"></a>       <span class="fu">resp_body_json</span>(</span>
-<span id="cb36-35"><a href="#cb36-35" aria-hidden="true" tabindex="-1"></a>         <span class="at">check_type =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb36-36"><a href="#cb36-36" aria-hidden="true" tabindex="-1"></a>         <span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb36-37"><a href="#cb36-37" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb36-38"><a href="#cb36-38" aria-hidden="true" tabindex="-1"></a>  z <span class="ot">&lt;-</span> <span class="fu">gelm</span>(<span class="fu">gelm</span>(<span class="fu">gelm</span>(y, <span class="st">"schema"</span>), distro), <span class="st">"fields"</span>)</span>
-<span id="cb36-39"><a href="#cb36-39" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb36-40"><a href="#cb36-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb36-41"><a href="#cb36-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">title        =</span> <span class="fu">gelm</span>(x, <span class="st">"title"</span>),</span>
-<span id="cb36-42"><a href="#cb36-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">description  =</span> <span class="fu">gelm</span>(x, <span class="st">"description"</span>),</span>
-<span id="cb36-43"><a href="#cb36-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">identifier   =</span> <span class="fu">gelm</span>(<span class="fu">gelm</span>(x, <span class="st">"identifier"</span>), <span class="st">"identifier"</span>),</span>
-<span id="cb36-44"><a href="#cb36-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">distribution =</span> distro,</span>
-<span id="cb36-45"><a href="#cb36-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">issued       =</span> <span class="fu">gelm</span>(x, <span class="st">"issued"</span>), </span>
-<span id="cb36-46"><a href="#cb36-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">modified     =</span> <span class="fu">gelm</span>(x, <span class="st">"modified"</span>)[[<span class="dv">1</span>]], </span>
-<span id="cb36-47"><a href="#cb36-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">released     =</span> <span class="fu">gelm</span>(x, <span class="st">"released"</span>),</span>
-<span id="cb36-48"><a href="#cb36-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">dimensions   =</span> <span class="fu">paste0</span>(<span class="fu">gelm</span>(<span class="fu">gelm</span>(y, <span class="st">"count"</span>), is.numeric), <span class="st">" x "</span>, <span class="fu">gelm</span>(<span class="fu">gelm</span>(z, <span class="st">"record_number"</span>), <span class="st">"length"</span>)), </span>
-<span id="cb36-49"><a href="#cb36-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">fields       =</span> <span class="fu">names</span>(z),</span>
-<span id="cb36-50"><a href="#cb36-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">site         =</span> <span class="fu">gelm</span>(x, <span class="st">"landingPage"</span>),</span>
-<span id="cb36-51"><a href="#cb36-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">csv          =</span> <span class="fu">gelm</span>(<span class="fu">gelm</span>(<span class="fu">gelm</span>(x, <span class="st">"distribution"</span>), <span class="st">"data"</span>), <span class="st">"downloadURL"</span>, <span class="at">m =</span> <span class="st">"df"</span>),</span>
-<span id="cb36-52"><a href="#cb36-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">dictionary   =</span> <span class="fu">paste0</span>(<span class="st">"https://data.cms.gov/provider-data/sites/default/files/data_dictionaries/physician/DOC_Data_Dictionary.pdf"</span>))</span>
-<span id="cb36-53"><a href="#cb36-53" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb36-54"><a href="#cb36-54" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>meta_ndf <span class="ot">&lt;-</span> \(fname) {</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(curl<span class="sc">::</span><span class="fu">has_internet</span>())</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">request</span>(</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste0</span>(</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>      <span class="st">"https://data.cms.gov/"</span>,</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>      <span class="st">"provider-data/api/1/"</span>,</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>      <span class="st">"metastore/schemas/"</span>,</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>      <span class="st">"dataset/items/"</span>,</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>      <span class="cf">switch</span>(fname, </span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>             <span class="at">affiliations =</span> <span class="st">"27ea-46a8"</span>, </span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>             <span class="at">clinicians   =</span> <span class="st">"mj5m-pzi6"</span>, </span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>             <span class="fu">stop</span>(<span class="st">"Invalid argument"</span>)),</span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"?show-reference-ids=true"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>       <span class="fu">req_perform</span>() <span class="sc">|&gt;</span></span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>       <span class="fu">resp_body_json</span>(</span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>         <span class="at">check_type     =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a>         <span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a>  distro <span class="ot">&lt;-</span> <span class="fu">gelm</span>(<span class="fu">gelm</span>(x, <span class="st">"distribution"</span>), <span class="st">"identifier"</span>)</span>
+<span id="cb34-22"><a href="#cb34-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb34-23"><a href="#cb34-23" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">request</span>(</span>
+<span id="cb34-24"><a href="#cb34-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste0</span>(</span>
+<span id="cb34-25"><a href="#cb34-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://data.cms.gov/"</span>, </span>
+<span id="cb34-26"><a href="#cb34-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">"provider-data/api/1/"</span>,</span>
+<span id="cb34-27"><a href="#cb34-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">"datastore/query/"</span>, </span>
+<span id="cb34-28"><a href="#cb34-28" aria-hidden="true" tabindex="-1"></a>    distro, </span>
+<span id="cb34-29"><a href="#cb34-29" aria-hidden="true" tabindex="-1"></a>    <span class="st">"?limit=1&amp;offset=100&amp;"</span>,</span>
+<span id="cb34-30"><a href="#cb34-30" aria-hidden="true" tabindex="-1"></a>    <span class="st">"count=true&amp;results=true&amp;"</span>, </span>
+<span id="cb34-31"><a href="#cb34-31" aria-hidden="true" tabindex="-1"></a>    <span class="st">"schema=true&amp;keys=true&amp;"</span>,</span>
+<span id="cb34-32"><a href="#cb34-32" aria-hidden="true" tabindex="-1"></a>    <span class="st">"format=json&amp;rowIds=true"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb34-33"><a href="#cb34-33" aria-hidden="true" tabindex="-1"></a>       <span class="fu">req_perform</span>() <span class="sc">|&gt;</span></span>
+<span id="cb34-34"><a href="#cb34-34" aria-hidden="true" tabindex="-1"></a>       <span class="fu">resp_body_json</span>(</span>
+<span id="cb34-35"><a href="#cb34-35" aria-hidden="true" tabindex="-1"></a>         <span class="at">check_type =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb34-36"><a href="#cb34-36" aria-hidden="true" tabindex="-1"></a>         <span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb34-37"><a href="#cb34-37" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb34-38"><a href="#cb34-38" aria-hidden="true" tabindex="-1"></a>  z <span class="ot">&lt;-</span> <span class="fu">gelm</span>(<span class="fu">gelm</span>(<span class="fu">gelm</span>(y, <span class="st">"schema"</span>), distro), <span class="st">"fields"</span>)</span>
+<span id="cb34-39"><a href="#cb34-39" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb34-40"><a href="#cb34-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb34-41"><a href="#cb34-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">title        =</span> <span class="fu">gelm</span>(x, <span class="st">"title"</span>),</span>
+<span id="cb34-42"><a href="#cb34-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">description  =</span> <span class="fu">gelm</span>(x, <span class="st">"description"</span>),</span>
+<span id="cb34-43"><a href="#cb34-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">identifier   =</span> <span class="fu">gelm</span>(<span class="fu">gelm</span>(x, <span class="st">"identifier"</span>), <span class="st">"identifier"</span>),</span>
+<span id="cb34-44"><a href="#cb34-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">distribution =</span> distro,</span>
+<span id="cb34-45"><a href="#cb34-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">issued       =</span> <span class="fu">gelm</span>(x, <span class="st">"issued"</span>), </span>
+<span id="cb34-46"><a href="#cb34-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">modified     =</span> <span class="fu">gelm</span>(x, <span class="st">"modified"</span>)[[<span class="dv">1</span>]], </span>
+<span id="cb34-47"><a href="#cb34-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">released     =</span> <span class="fu">gelm</span>(x, <span class="st">"released"</span>),</span>
+<span id="cb34-48"><a href="#cb34-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">dimensions   =</span> <span class="fu">paste0</span>(<span class="fu">gelm</span>(<span class="fu">gelm</span>(y, <span class="st">"count"</span>), is.numeric), <span class="st">" x "</span>, <span class="fu">gelm</span>(<span class="fu">gelm</span>(z, <span class="st">"record_number"</span>), <span class="st">"length"</span>)), </span>
+<span id="cb34-49"><a href="#cb34-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">fields       =</span> <span class="fu">names</span>(z),</span>
+<span id="cb34-50"><a href="#cb34-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">site         =</span> <span class="fu">gelm</span>(x, <span class="st">"landingPage"</span>),</span>
+<span id="cb34-51"><a href="#cb34-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">csv          =</span> <span class="fu">gelm</span>(<span class="fu">gelm</span>(<span class="fu">gelm</span>(x, <span class="st">"distribution"</span>), <span class="st">"data"</span>), <span class="st">"downloadURL"</span>, <span class="at">m =</span> <span class="st">"df"</span>),</span>
+<span id="cb34-52"><a href="#cb34-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">dictionary   =</span> <span class="fu">paste0</span>(<span class="st">"https://data.cms.gov/provider-data/sites/default/files/data_dictionaries/physician/DOC_Data_Dictionary.pdf"</span>))</span>
+<span id="cb34-53"><a href="#cb34-53" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb34-54"><a href="#cb34-54" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="examples" class="level3" data-number="8.3.2">
-<h3 data-number="8.3.2" class="anchored" data-anchor-id="examples"><span class="header-section-number">8.3.2</span> Examples</h3>
+<section id="examples" class="level3" data-number="7.3.2">
+<h3 data-number="7.3.2" class="anchored" data-anchor-id="examples"><span class="header-section-number">7.3.2</span> Examples</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">meta_ndf</span>(<span class="st">"affiliations"</span>) <span class="sc">|&gt;</span> <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">meta_ndf</span>(<span class="st">"affiliations"</span>) <span class="sc">|&gt;</span> <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>- $title        c1  Facility Affiliation Data
 - $description  c1  This is the facility affiliations data publicly reporte ...
@@ -1219,7 +1063,7 @@ Expanded Home Health Value-Based Purchasing (HHVBP) Model - Cohort Data</code></
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">meta_ndf</span>(<span class="st">"clinicians"</span>) <span class="sc">|&gt;</span> <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">meta_ndf</span>(<span class="st">"clinicians"</span>) <span class="sc">|&gt;</span> <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>- $title        c1  National Downloadable File
 - $description  c1  The Doctors and Clinicians national downloadable file i ...
@@ -1660,13 +1504,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./wk_url.html" class="pagination-link" aria-label="URL">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">URL</span></span>
+      <a href="./faq_eligibility.html" class="pagination-link" aria-label="QPP Eligibility API">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">QPP Eligibility API</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./wk_query.html" class="pagination-link" aria-label="Query DSL">
-        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Query DSL</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./wk_url.html" class="pagination-link" aria-label="URL Object">
+        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">URL Object</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
