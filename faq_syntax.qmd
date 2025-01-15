@@ -17,19 +17,6 @@ htmltools::tagList(
     ))
 ```
 
-## Query Generation
-
-```{r}
-format_syntax <- \(name, value) {
-  setNames(value, paste0(name, "[id-", seq_along(value), "][condition][value]"))
-}
-
-format_syntax(name = "filter", value = c("GA", "NY"))
-
-request("https://example.com") |>
-  req_url_query(!!!format_syntax("filter", c("GA", "NY")))
-```
-
 ## JSON:API
 
 The Drupal core [JSON:API module](https://www.drupal.org/docs/core-modules-and-themes/core-modules/jsonapi-module) implements the JSON:API spec for Drupal entities. It provides a zero-configuration required, opinionated, way to allow RESTful CRUD for a Drupal site's content.
@@ -124,60 +111,6 @@ Let's add another filter so we only get Janises with a last name that starts wit
    filter[fID-2][condition][operator]=STARTS_WITH&
    filter[fID-2][condition][value]=J
 ```
-
-::: callout
-
-## JSON:API Allowed Operators
-
-```r
-= 
-<>
-> 
->= 
-< 
-<=
-STARTS_WITH 
-CONTAINS 
-ENDS_WITH
-IN 
-NOT IN
-BETWEEN 
-NOT BETWEEN
-IS NULL 
-IS NOT NULL
-```
-
-```{r}
-GT <- \(arg, value) {
-  glue::glue(
-  "
-  [condition][path]={arg}&
-  [condition][operator]=>&
-  [condition][value]={value}&
-  ")
-}
-
-GT("overall_rating", 3)
-
-GTE <- \(arg, value) {
-  glue::glue(
-  "filter[fID-1][condition][path]={arg}&\\
-  filter[fID-1][condition][operator]=>=&\\
-  filter[fID-1][condition][value]={value}"
-  )
-}
-
-GTE("overall_rating", 3)
-
-test_url <- glue::as_glue("https://data.cms.gov/data-api/v1/dataset/datad10d792e-ea6e-4145-8512-34efbc1be04b/data?size=10&offset=0&")
-
-test_url <- test_url + GTE("overall_rating", 3)
-
-curl::curl_parse_url(test_url)
-```
-
-
-::: 
 
 ### Groups
 
@@ -627,36 +560,3 @@ filter[my-filter][condition][path]=my_field
 filter[my-filter][condition][operator]=IS NULL
 ```
 
---------------------------------------------------------------------------------
-
-## Building Queries
-
-   1. Select Dataset/Method
-   1. Build JSON Query
-   1. Retrieve Number of Results
-   1. Build Offset Sequence
-   1. Build Request
-
-```r
-catalog:        main_catalog
-  format:       API
-  description:  latest
-  title:        Medicare Fee-For-Service Public Provider Enrollment
-  accessURL:    ""
-```
-
-```{.yaml}
-scheme:   https://
-hostname: data.cms.gov/
-path:
-          head:       data-api/v1/dataset/
-          identifier: 9887a515-7552-4693-bf58-735c77af46d7/
-          tail:       data?
-          nobs:       data/stats?
-query:
-          filter:     1
-          path:       PROVIDER_TYPE_DESC
-          operator:   =
-          value:      PRACTITIONER - GENERAL PRACTICE
-          call:       filter[PROVIDER_TYPE_DESC]=PRACTITIONER - GENERAL PRACTICE
-```

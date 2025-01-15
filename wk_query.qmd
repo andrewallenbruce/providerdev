@@ -1,5 +1,5 @@
 ---
-title: "Query"
+title: "Query DSL"
 editor_options: 
    chunk_output_type: console
 ---
@@ -9,4 +9,121 @@ editor_options:
 #| message: false
 #| warning: false
 source("_common.R")
+```
+
+::: callout
+
+## JSON:API Allowed Operators
+
+```{r}
+#| label: allowed_operators
+tibble(
+  ops = c("=", "<>", ">", ">=", "<", "<=", 
+    "STARTS_WITH", "CONTAINS", "ENDS_WITH", 
+    "IN", "NOT IN", "BETWEEN", "NOT BETWEEN", 
+    "IS NULL", "IS NOT NULL"))
+```
+
+::: 
+
+
+```{r}
+protofunc <- function(id, 
+                      state, 
+                      name, 
+                      number) {
+  rlang::list2(
+    id = id,
+    state = state,
+    name = name,
+    number = number
+  )
+}
+
+protofunc(id = 1234567890, 
+          state = "GA", 
+          name = "Jerry", 
+          number = 300.12)
+```
+
+
+
+```{r}
+greater_than <- \(arg, value) {
+  glue::glue(
+  "
+  [condition][path]={arg}&
+  [condition][operator]=>&
+  [condition][value]={value}&
+  "
+  )
+}
+
+greater_than("overall_rating", 3)
+
+greater_or_equal <- \(arg, value) {
+  glue::glue(
+  "filter[fID-1][condition][path]={arg}&\\
+  filter[fID-1][condition][operator]=>=&\\
+  filter[fID-1][condition][value]={value}"
+  )
+}
+
+greater_or_equal("overall_rating", 3)
+```
+
+
+```{r}
+test_url <- glue::as_glue("https://data.cms.gov/data-api/v1/dataset/d10d792e-ea6e-4145-8512-34efbc1be04b/data?size=10&offset=0&")
+
+test_url <- test_url + greater_or_equal("overall_rating", 3)
+
+curl::curl_parse_url(test_url)
+```
+
+## Query Generation
+
+```{r}
+format_syntax <- \(name, value) {
+  setNames(value, paste0(name, "[id-", seq_along(value), "][condition][value]"))
+}
+
+format_syntax(name = "filter", value = c("GA", "NY"))
+
+request("https://example.com") |>
+  req_url_query(!!!format_syntax("filter", c("GA", "NY")))
+```
+
+--------------------------------------------------------------------------------
+
+## Building Queries
+
+   1. Select Dataset/Method
+   1. Build JSON Query
+   1. Retrieve Number of Results
+   1. Build Offset Sequence
+   1. Build Request
+
+```r
+catalog:        main_catalog
+  format:       API
+  description:  latest
+  title:        Medicare Fee-For-Service Public Provider Enrollment
+  accessURL:    ""
+```
+
+```{.yaml}
+scheme:   https://
+hostname: data.cms.gov/
+path:
+          head:       data-api/v1/dataset/
+          identifier: 9887a515-7552-4693-bf58-735c77af46d7/
+          tail:       data?
+          nobs:       data/stats?
+query:
+          filter:     1
+          path:       PROVIDER_TYPE_DESC
+          operator:   =
+          value:      PRACTITIONER - GENERAL PRACTICE
+          call:       filter[PROVIDER_TYPE_DESC]=PRACTITIONER - GENERAL PRACTICE
 ```
