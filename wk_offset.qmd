@@ -35,12 +35,40 @@ offset_sequence(
   nobs = stats$found_rows, 
   limit = 5000)
 
-glue::glue(
+urls <- glue::glue(
   "{base$url}",
   "?size=5000&",
   "offset=",
   "{offset_sequence(nobs = stats$found_rows, limit = 5000)}"
 )
+
+resp <- urls[1:3] |> 
+  purrr::map(
+    function(x) {
+      httr2::request(x) |> 
+        httr2::req_perform() |> 
+        httr2::resp_body_json(simplifyVector = TRUE) |> 
+        dplyr::tibble()
+    }) |> 
+  purrr::list_rbind(names_to = "req") |> 
+  janitor::clean_names()
+
+resp |> 
+  janitor::get_dupes()
+
+dupes <- resp |> 
+  count(npi, sort = TRUE) |> 
+  filter(n > 1) |> 
+  pull(npi)
+
+resp |> 
+  filter(npi %in% dupes) |> 
+  arrange(npi)
+
+resp |> 
+  filter(npi %in% c("1225232226", "1740295518", "1326103029")) |> 
+  relocate(last_updated) |> 
+  arrange(npi)
 ```
 
 ## Pagination Example 2
