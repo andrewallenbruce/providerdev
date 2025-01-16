@@ -11,10 +11,6 @@ editor_options:
 source("_common.R")
 ```
 
-::: callout
-
-## JSON:API Allowed Operators
-
 ```{r}
 #| label: allowed_operators
 #| echo: false
@@ -22,17 +18,36 @@ tibble(
   ops = c("=", "<>", ">", ">=", "<", "<=", 
           "STARTS_WITH", "CONTAINS", "ENDS_WITH", 
           "IN", "NOT IN", "BETWEEN", "NOT BETWEEN", 
-          "IS NULL", "IS NOT NULL")) |> 
+          "IS NULL", "IS NOT NULL"),
+  impl = c("default", 
+           "notequal(x)",
+           "greaterthan(x)",
+           "greater_or_equal(x)",
+           "lessthan(x)",
+           "less_or_equal(x)",
+           "startswith(x)",
+           "includes(x)",
+           "endswith(x)",
+           "in(x)",
+           "notin(x)",
+           "inside(x)",
+           "outside(x)",
+           "X",
+           "X"
+           )
+  ) |> 
   gt() |> 
-  tab_header(html("<b>OPERATIONS</b>")) |> 
-  opt_table_font(font = google_font(name = "Spline Sans Mono")) |> 
+  tab_header(
+    html(
+      '<i>JSON<b>:</b>API</i> <span style="color:gray;"><b>Allowed Operations</b></span>'
+      )
+    ) |> 
+  opt_table_font(font = google_font(name = "JetBrains Mono")) |> 
   opt_all_caps() |> 
-  opt_table_lines("none") |> 
-  cols_align("center") |> 
-  tab_options(quarto.disable_processing = TRUE, column_labels.hidden = TRUE)
+  opt_table_lines("none") |>
+  tab_options(quarto.disable_processing = TRUE, 
+              column_labels.hidden = TRUE)
 ```
-
-::: 
 
 ## `class_args`
 
@@ -56,43 +71,20 @@ class_args <- new_class(
   }
 )
 
-try(
-  class_args(id     = 1234567890, 
-             state  = "ZZ",
-             number = "300.12"))
+try(class_args(
+  id     = 1234567890, 
+  state  = "ZZ",
+  number = "300.12"))
 
-try(
-  class_args(state  = "ZZ",
-             name   = "Jerry",
-             number = 300.12))
+try(class_args(
+  state  = "ZZ",
+  name   = "Jerry",
+  number = 300.12))
 
 class_args(state  = "GA")
 ```
 
-## `query_equals`
-
-```{r}
-#| label: query_slim
-query_equals <- function(args) {
-  glue::glue(
-  "
-  [condition][path]={names(args)}
-  [condition][operator]==
-  [condition][value]={delist(args)}
-  "
-  )
-}
-
-query_equals(
-  list(state  = "GA", 
-       name   = "Jerry", 
-       number = 300.12))
-
-query_add_filter <- function(query) {
-  glue::glue()
-}
-```
-
+## `query_*`
 
 ```{r}
 #| label: query_equals
@@ -106,12 +98,10 @@ query_equals <- function(args) {
   )
 }
 
-query_equals(
-  list(state  = "GA", 
-       name   = "Jerry", 
-       number = 300.12))
+query_add_filter <- function(query) {
+  glue::glue()
+}
 ```
-
 
 ```{r}
 protofunc <- function(id     = NULL, 
@@ -132,8 +122,6 @@ protofunc(state  = "GA",
           name   = "Jerry", 
           number = 300.12)
 ```
-
-
 
 ```{r}
 greater_than <- \(arg, value) {
@@ -172,17 +160,17 @@ curl::curl_parse_url(test_url)
 class_query <- new_class(
   "class_query",
   properties = list(
-    path = class_character,
+    path     = class_character,
     operator = class_character,
-    value = class_vector,
-    limit = class_numeric,
-    sort = class_character, 
-    column = class_vector,
-    group = new_property(
+    value    = class_vector,
+    limit    = class_numeric,
+    sort     = class_character, 
+    column   = class_vector,
+    group    = new_property(
       class_list,
       default = list(
         conjunction = "AND",
-        memberOf = ""))
+        memberOf    = ""))
   )
 )
 ```
@@ -197,26 +185,22 @@ class_query <- new_class(
    1. Build Offset Sequence
    1. Build Request
 
-```r
-catalog:        main_catalog
-  format:       API
-  description:  latest
-  title:        Medicare Fee-For-Service Public Provider Enrollment
-  accessURL:    ""
-```
-
 ```{.yaml}
-scheme:   https://
-hostname: data.cms.gov/
-path:
-          head:       data-api/v1/dataset/
-          identifier: 9887a515-7552-4693-bf58-735c77af46d7/
-          tail:       data?
-          nobs:       data/stats?
-query:
-          filter:     1
-          path:       PROVIDER_TYPE_DESC
-          operator:   =
-          value:      PRACTITIONER - GENERAL PRACTICE
-          call:       filter[PROVIDER_TYPE_DESC]=PRACTITIONER - GENERAL PRACTICE
+catalog: public
+  format: API
+  description: latest
+  title: Medicare Fee-For-Service Public Provider Enrollment
+  url:
+    scheme: https:
+    host: data.cms.gov
+    path:
+      head: data-api/v1/dataset
+      guid: 9887a515-7552-4693-bf58-735c77af46d7
+      tail: data-viewer
+      nobs: stats
+    query:
+      filter: 1
+      path: PROVIDER_TYPE_DESC
+      operator: =
+      value: PRACTITIONER - GENERAL PRACTICE
 ```
