@@ -19,6 +19,8 @@ htmltools::tagList(
     "https://github.com/andrewallenbruce/provider/blob/main/R/affiliations.R", 
     "Source"
     ))
+
+library(dm)
 ```
 
 ## Examples
@@ -40,38 +42,56 @@ individual_search <- \(npi = 1043245657) {
     nppes        = nppes(npi = npi),
     enrollment   = providers(npi = npi),
     order_refer  = order_refer(npi = npi, pivot = FALSE),
+    reassignment = reassignments(1043245657),
     clinician    = clinicians(npi = npi),
     affiliations = affiliations(npi = npi),
-    hospitals    = map_dfr(affiliations[["facility_ccn"]], function(x) hospitals(facility_ccn = x))
+    hospitals    = map_dfr(affiliations[["facility_ccn"]], function(x) hospitals(facility_ccn = x)),
+    taxonomy     = arktax::taxonomy_raw(taxonomy_code = nppes$tx_code)
     )
   
 }
 
 fung <- individual_search()
 
-fung$hospitals <- fung$hospitals[2:3,]
+fung$hospitals <- fung$hospitals[2:3, ]
 
-dm::new_dm(fung) |> 
-  dm::dm_add_pk(nppes, npi) |> 
-  dm::dm_add_pk(enrollment, npi) |> 
-  dm::dm_add_pk(order_refer, npi) |> 
-  dm::dm_add_pk(clinician, npi) |> 
-  dm::dm_add_pk(affiliations, facility_ccn) |> 
-  dm::dm_add_pk(hospitals, facility_ccn) |> 
-  dm::dm_add_fk(nppes, npi, enrollment) |> 
-  dm::dm_add_fk(enrollment, npi, order_refer) |> 
-  dm::dm_add_fk(enrollment, npi, clinician) |> 
-  dm::dm_add_fk(clinician, npi, affiliations) |> 
-  dm::dm_add_fk(clinician, pac_org, hospitals) |> 
-  dm::dm_add_fk(affiliations, facility_ccn, hospitals) |> 
-  dm::dm_draw(
+fung$taxonomy <- fung$taxonomy[32, 3:10]
+
+fung_dm <- new_dm(fung) |> 
+  dm_add_pk(nppes, npi) |> 
+  dm_add_pk(enrollment, npi) |> 
+  dm_add_pk(reassignment, npi) |> 
+  dm_add_pk(order_refer, npi) |> 
+  dm_add_pk(clinician, npi) |> 
+  dm_add_pk(affiliations, facility_ccn) |> 
+  dm_add_pk(hospitals, facility_ccn) |> 
+  dm_add_pk(taxonomy, code) |> 
+  dm_add_fk(nppes, npi, enrollment) |> 
+  dm_add_fk(nppes, tx_code, taxonomy, code) |> 
+  dm_add_fk(nppes, npi, affiliations, npi) |> 
+  dm_add_fk(enrollment, npi, clinician) |> 
+  dm_add_fk(enrollment, npi, order_refer) |> 
+  dm_add_fk(order_refer, npi, reassignment) |> 
+  dm_add_fk(clinician, npi, affiliations, npi) |> 
+  dm_add_fk(clinician, pac_org, hospitals, pac_org) |> 
+  dm_add_fk(reassignment, pac_org, hospitals, pac_org) |> 
+  dm_add_fk(affiliations, facility_ccn, hospitals)
+
+fung_dm
+
+fung_dm |> 
+  dm_set_colors(
+    darkblue = nppes,
+    tomato = taxonomy,
+    mediumpurple = c(enrollment, order_refer, reassignment),
+    seagreen = c(clinician, affiliations, hospitals)) |> 
+  dm_draw(
     font_size = c(
       header = 18L, 
       table_description = 9L, 
       column = 15L),
     column_types = TRUE,
-    rankdir = "LR",
-    view_type = "all")
+    rankdir = "TB")
 ```
 
 ### Organizational Provider

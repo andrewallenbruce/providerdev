@@ -38,13 +38,16 @@ tibble(
 
 ```{r}
 #| label: class_args
+null_numeric <- new_union(NULL, class_numeric)
+null_vector  <- new_union(NULL, class_vector)
+
 class_args <- new_class(
   "class_args",
   properties = list(
-    id     = new_union(NULL, class_numeric),
-    state  = new_union(NULL, class_vector),
-    name   = new_union(NULL, class_vector),
-    number = new_union(NULL, class_numeric)
+    id     = null_numeric,
+    state  = null_vector,
+    name   = null_vector,
+    number = null_numeric
   ),
   validator = function(self) { 
     if (not_null(self@state) && 
@@ -67,6 +70,29 @@ class_args(state  = "GA")
 ```
 
 ## `query_equals`
+
+```{r}
+#| label: query_slim
+query_equals <- function(args) {
+  glue::glue(
+  "
+  [condition][path]={names(args)}
+  [condition][operator]==
+  [condition][value]={delist(args)}
+  "
+  )
+}
+
+query_equals(
+  list(state  = "GA", 
+       name   = "Jerry", 
+       number = 300.12))
+
+query_add_filter <- function(query) {
+  glue::glue()
+}
+```
+
 
 ```{r}
 #| label: query_equals

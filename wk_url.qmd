@@ -25,11 +25,11 @@ class_path <- new_class(
         self@head <- value
         self
       }),
-    uuid = new_property(
+    guid = new_property(
       class_character,
       default = "",
       setter = function(self, value) {
-        self@uuid <- value
+        self@guid <- value
         self
       }),
     tail = new_property(
@@ -41,44 +41,18 @@ class_path <- new_class(
       })
   ),
   validator = function(self) { 
-    if (length(self@head) != 1L) {
-      "@head must be length 1"
-    } else if (length(self@uuid) != 1L) {
-      "@uuid must be length 1"  
-    } else if (length(self@tail) != 1L) {
-      "@tail must be length 1" 
-    }
+    if (length(self@head) != 1L) "@head must be length 1" 
+    if (length(self@guid) != 1L) "@guid must be length 1" 
+    if (nchar(self@guid) == 36 & 
+        !grepl(
+          "(?:\\{{0,1}(?:[0-9a-fA-F]){8}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){12}\\}{0,1})", 
+          self@guid)) 
+      "@guid invalid"
+    if (length(self@tail) != 1L) "@tail must be length 1"
   }
 )
 
 class_path()
-```
-
-
-## GUID
-
-__GUID__ is an acronym for [Globally Unique Identifier](https://uibakery.io/regex-library/guid-regex-python) and used for resource identification. The term is generally used instead of UUID when working with Microsoft technologies.
-
-```{r}
-# regex to validate
-"^(?:\\{{0,1}(?:[0-9a-fA-F]){8}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){12}\\}{0,1})$"
-
-# regex to extract
-"(?:\\{{0,1}(?:[0-9a-fA-F]){8}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){12}\\}{0,1})"
-```
-
-
-```{r}
-curl::curl_parse_url("https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data-viewer?size=5000&offset=10000")
-
-new_path <- \(url) {
-  class_path(
-    head = stringi::stri_extract(url, regex = "[0-9a-z]{8}-[0-9]{4}-[0-9]{4}-[0-9a-z]{4}-[0-9a-z]{8}"),
-    uuid = stringi::stri_extract(url, regex = "[0-9a-z]{8}-[0-9]{4}-[0-9]{4}-[0-9a-z]{4}-[0-9a-z]{8}")
-    )
-}
-
-new_path("https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data-viewer?size=5000&offset=10000")
 ```
 
 ## `class_url`
@@ -98,6 +72,34 @@ class_url <- new_class(
 class_url()
 ```
 
+## GUID
+
+__GUID__ is an acronym for [Globally Unique Identifier](https://uibakery.io/regex-library/guid-regex-python) and used for resource identification. The term is generally used instead of UUID when working with Microsoft technologies.
+
+```{r}
+# regex to validate
+"^(?:\\{{0,1}(?:[0-9a-fA-F]){8}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){12}\\}{0,1})$"
+
+# regex to extract
+"(?:\\{{0,1}(?:[0-9a-fA-F]){8}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){12}\\}{0,1})"
+```
+
+
+```{r}
+curl::curl_parse_url(
+  "https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data-viewer?size=5000&offset=10000"
+  )
+
+new_path <- \(url) {
+  class_path(
+    head = stringi::stri_extract(url, regex = "[0-9a-z]{8}-[0-9]{4}-[0-9]{4}-[0-9a-z]{4}-[0-9a-z]{8}"),
+    guid = stringi::stri_extract(url, regex = "[0-9a-z]{8}-[0-9]{4}-[0-9]{4}-[0-9a-z]{4}-[0-9a-z]{8}")
+    )
+}
+
+new_path("https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data-viewer?size=5000&offset=10000")
+```
+
 ## Examples
 
 ```{r}
@@ -112,14 +114,25 @@ urlparse::url_parse_v2(urls) |>
   select(path, raw_query)
 ```
 
+```{r}
+#| label: httr2_path
+httr2::url_parse(
+  base_url = "https://data.cms.gov/data-api/v1/dataset", 
+  url      = "9887a515-7552-4693-bf58-735c77af46d7/data-viewer") |> 
+  httr2::url_modify_query(
+    offset = 0, 
+    limit  = 2000) |> 
+  httr2::url_modify(path = "data-api/v1/9887a515-7552-4693-bf58-735c77af46d7/data/stats")
+```
+
 Re-setting part of the path:
 
 ```{r}
 #| label: s7_setter
 ex <- class_url(
   path = class_path(
-    head = "/data-api/v1/dataset/",
-    uuid = "9887a515-7552-4693-bf58-735c77af46d7",
+    head = "data-api/v1/dataset",
+    guid = "9887a515-7552-4693-bf58-735c77af46d7",
     tail = "data-viewer"))
 
 ex
@@ -148,7 +161,7 @@ With S7:
 ex2 <- class_url(
   path = class_path(
     head = "/provider-data/api/1/datastore/query/",
-    uuid = "mj5m-pzi6",
+    guid = "mj5m-pzi6",
     tail = "0"))
 
 ex2
