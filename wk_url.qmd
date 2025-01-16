@@ -9,7 +9,21 @@ editor_options:
 #| message: false
 #| warning: false
 source("_common.R")
+
+library(adaR)
+
+urls <- c(
+  "https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data/stats",
+  "https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data-viewer?size=5000&offset=10000",
+  "https://data.cms.gov/provider-data/api/1/datastore/query/mj5m-pzi6/0?offset=0&limit=2000"
+  )
+
+# curl::curl_parse_url(urls)
 ```
+
+## GUID
+
+__GUID__ is an acronym for [Globally Unique Identifier](https://uibakery.io/regex-library/guid-regex-python) and used for resource identification. The term is generally used instead of UUID when working with Microsoft technologies.
 
 ## `class_path`
 
@@ -26,10 +40,15 @@ class_path <- new_class(
         self
       }),
     guid = new_property(
-      class_character,
-      default = "",
+      NULL | class_character,
       setter = function(self, value) {
         self@guid <- value
+        self
+      }),
+    uuid = new_property(
+      NULL | class_character,
+      setter = function(self, value) {
+        self@uuid <- value
         self
       }),
     tail = new_property(
@@ -42,17 +61,41 @@ class_path <- new_class(
   ),
   validator = function(self) { 
     if (length(self@head) != 1L) "@head must be length 1" 
-    if (length(self@guid) != 1L) "@guid must be length 1" 
-    if (nchar(self@guid) == 36 & 
-        !grepl(
-          "(?:\\{{0,1}(?:[0-9a-fA-F]){8}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){12}\\}{0,1})", 
-          self@guid)) 
-      "@guid invalid"
     if (length(self@tail) != 1L) "@tail must be length 1"
+    
+    if (not_null(self@guid)) {
+      if (length(self@guid) != 1L) "@guid must be length 1" 
+      if (!grepl("(?:[0-9a-fA-F]){8}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){12}", self@guid)) "@guid invalid"
+    }
+    if(not_null(self@uuid)) {
+      if (length(self@guid) != 1L) "@uuid must be length 1" 
+      if (nchar(self@uuid) == 9 & !grepl("(?:[0-9a-z]){4}-?(?:[0-9a-zA-F]){4}", self@uuid)) "@uuid invalid"
+    }
   }
 )
+```
 
-class_path()
+```{r}
+new_path <- \(url) {
+  
+  url <- adaR::ada_get_pathname(url = url)
+  
+  class_path(
+    head = stringi::stri_extract(
+      url,
+      regex = "^.*(?=[0-9a-fA-F]{8}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{12})"),
+    guid = stringi::stri_extract(
+      url,
+      regex = "(?:[0-9a-fA-F]){8}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){12}"),
+    tail = stringi::stri_extract(
+      url,
+      regex = "(?<=[0-9a-fA-F]{8}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{12}).*$")
+    )
+}
+
+new_path(urls[1])
+new_path(urls[2])
+new_path(urls[3])
 ```
 
 ## `class_url`
@@ -62,53 +105,37 @@ class_path()
 class_url <- new_class(
   name = "class_url",
   properties = list(
-    scheme = new_property(class_character, default = "https"),
+    scheme   = new_property(class_character, default = "https"),
     hostname = new_property(class_character, default = "data.cms.gov"),
-    path = new_property(class_path),
-    query = new_property(class_list, default = list())
+    path     = new_property(class_path),
+    query    = new_property(class_list, default = list())
   )
 )
-
-class_url()
-```
-
-## GUID
-
-__GUID__ is an acronym for [Globally Unique Identifier](https://uibakery.io/regex-library/guid-regex-python) and used for resource identification. The term is generally used instead of UUID when working with Microsoft technologies.
-
-```{r}
-# regex to validate
-"^(?:\\{{0,1}(?:[0-9a-fA-F]){8}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){12}\\}{0,1})$"
-
-# regex to extract
-"(?:\\{{0,1}(?:[0-9a-fA-F]){8}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){4}-(?:[0-9a-fA-F]){12}\\}{0,1})"
 ```
 
 
 ```{r}
-curl::curl_parse_url(
-  "https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data-viewer?size=5000&offset=10000"
+new_url <- \(url) {
+  
+  class_url(
+    scheme = ada_get_protocol(url),
+    hostname = ada_get_host(url),
+    path = new_path(url),
+    query = list()
   )
-
-new_path <- \(url) {
-  class_path(
-    head = stringi::stri_extract(url, regex = "[0-9a-z]{8}-[0-9]{4}-[0-9]{4}-[0-9a-z]{4}-[0-9a-z]{8}"),
-    guid = stringi::stri_extract(url, regex = "[0-9a-z]{8}-[0-9]{4}-[0-9]{4}-[0-9a-z]{4}-[0-9a-z]{8}")
-    )
+  
 }
 
-new_path("https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data-viewer?size=5000&offset=10000")
+new_url(urls[1])
+new_url(urls[2])
+new_url(urls[3])
 ```
+
 
 ## Examples
 
 ```{r}
 #| label: urlparse_example
-urls <- c(
-  "https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data/stats",
-  "https://data.cms.gov/data-api/v1/dataset/9887a515-7552-4693-bf58-735c77af46d7/data-viewer?size=5000&offset=10000"
-  )
-
 urlparse::url_parse_v2(urls) |> 
   handle_na() |> 
   select(path, raw_query)
@@ -161,7 +188,7 @@ With S7:
 ex2 <- class_url(
   path = class_path(
     head = "/provider-data/api/1/datastore/query/",
-    guid = "mj5m-pzi6",
+    uuid = "mj5m-pzi6",
     tail = "0"))
 
 ex2

@@ -8,7 +8,7 @@ library(provider)
 library(providertwo)
 
 library(httr2)
-library(curl)
+# library(curl)
 # library(weburl)
 
 library(arrow)
