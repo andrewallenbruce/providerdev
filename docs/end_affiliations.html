@@ -8,7 +8,7 @@
 
 <meta name="description" content="This is a personal, informal guide to rewriting an R package. It is a work in progress and will be updated as I learn more about the process.">
 
-<title>11&nbsp; affiliations() – Refactoring Provider</title>
+<title>11&nbsp; affiliations – Refactoring Provider</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -105,6 +105,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
+<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+
+<script src="site_libs/viz-1.8.2/viz.js"></script>
+
+<link href="site_libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet">
+
+<script src="site_libs/grViz-binding-1.0.11/grViz.js"></script>
+
 
 
 </head>
@@ -118,7 +128,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./end_affiliations.html">Endpoints</a></li><li class="breadcrumb-item"><a href="./end_affiliations.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title"><code>affiliations()</code></span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./end_affiliations.html">Endpoints</a></li><li class="breadcrumb-item"><a href="./end_affiliations.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title"><code>affiliations</code></span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -186,26 +196,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./faq_schema.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">DCAT Metadata Schema</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./faq_syntax.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">JSON:API Syntax</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="./faq_openpay.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Open Payments</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Open Payments</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./faq_eligibility.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">QPP Eligibility API</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">QPP API</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./faq_schema.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">DCAT Metadata Schema</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./faq_syntax.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">JSON:API Syntax</span></span></a>
   </div>
 </li>
       </ul>
@@ -257,13 +267,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./end_affiliations.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title"><code>affiliations()</code></span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title"><code>affiliations</code></span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./end_enrollees.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title"><code>enrollees()</code></span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title"><code>enrollees</code></span></span></a>
   </div>
 </li>
       </ul>
@@ -289,9 +299,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./end_affiliations.html">Endpoints</a></li><li class="breadcrumb-item"><a href="./end_affiliations.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title"><code>affiliations()</code></span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./end_affiliations.html">Endpoints</a></li><li class="breadcrumb-item"><a href="./end_affiliations.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title"><code>affiliations</code></span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title"><code>affiliations()</code></span></h1>
+<h1 class="title"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title"><code>affiliations</code></span></h1>
 </div>
 
 
@@ -366,76 +376,65 @@ Source
 <section id="individual-provider" class="level3" data-number="11.1.1">
 <h3 data-number="11.1.1" class="anchored" data-anchor-id="individual-provider"><span class="header-section-number">11.1.1</span> Individual Provider</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lst</span>(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">nppes        =</span> <span class="fu">nppes</span>(<span class="at">npi =</span> <span class="dv">1043245657</span>),</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">providers    =</span> <span class="fu">providers</span>(nppes<span class="sc">$</span>npi),</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">order_refer  =</span> <span class="fu">order_refer</span>(nppes<span class="sc">$</span>npi, <span class="at">pivot =</span> <span class="cn">FALSE</span>),</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">clinicians   =</span> <span class="fu">clinicians</span>(nppes<span class="sc">$</span>npi),</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">affiliations =</span> <span class="fu">affiliations</span>(nppes<span class="sc">$</span>npi),</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">hospitals    =</span> <span class="fu">map_dfr</span>(affiliations<span class="sc">$</span>facility_ccn, <span class="sc">~</span> </span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>                 <span class="fu">hospitals</span>(<span class="at">facility_ccn =</span> .x)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$nppes
-# A tibble: 1 × 29
-  npi        entity_type enum_date  last_update status prefix first middle last 
-  &lt;chr&gt;      &lt;fct&gt;       &lt;date&gt;     &lt;date&gt;      &lt;fct&gt;  &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;
-1 1043245657 Individual  2006-07-11 2013-10-08  Active Dr.    MARK  K      FUNG 
-# ℹ 20 more variables: gender &lt;fct&gt;, credential &lt;chr&gt;, sole_prop &lt;lgl&gt;,
-#   purpose &lt;fct&gt;, address &lt;chr&gt;, city &lt;chr&gt;, state &lt;ord&gt;, zip &lt;chr&gt;,
-#   country &lt;chr&gt;, phone &lt;chr&gt;, fax &lt;chr&gt;, tx_code &lt;chr&gt;, tx_primary &lt;lgl&gt;,
-#   tx_desc &lt;chr&gt;, tx_license &lt;chr&gt;, tx_state &lt;ord&gt;, id_code &lt;chr&gt;,
-#   id_desc &lt;chr&gt;, id_state &lt;ord&gt;, id_identifier &lt;chr&gt;
-
-$providers
-# A tibble: 1 × 10
-  npi        pac   enid  specialty_code specialty_description state first middle
-  &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;          &lt;chr&gt;                 &lt;ord&gt; &lt;chr&gt; &lt;chr&gt; 
-1 1043245657 7810… I200… 14-22          PRACTITIONER - PATHO… VT    MARK  K     
-# ℹ 2 more variables: last &lt;chr&gt;, gender &lt;fct&gt;
-
-$order_refer
-# A tibble: 1 × 8
-  npi        last_name first_name partb dme   hha   pmd   hospice
-  &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;      &lt;lgl&gt; &lt;lgl&gt; &lt;lgl&gt; &lt;lgl&gt; &lt;lgl&gt;  
-1 1043245657 FUNG      MARK       TRUE  TRUE  TRUE  TRUE  TRUE   
-
-$clinicians
-# A tibble: 1 × 19
-  npi        pac     enid  first middle last  gender credential school grad_year
-  &lt;chr&gt;      &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;fct&gt;  &lt;chr&gt;      &lt;chr&gt;      &lt;int&gt;
-1 1043245657 781089… I200… MARK  K      FUNG  Male   MD         UNIVE…      1999
-# ℹ 9 more variables: specialty &lt;chr&gt;, facility_name &lt;chr&gt;, pac_org &lt;chr&gt;,
-#   members_org &lt;int&gt;, address_org &lt;chr&gt;, city_org &lt;chr&gt;, state_org &lt;ord&gt;,
-#   zip_org &lt;chr&gt;, phone_org &lt;chr&gt;
-
-$affiliations
-# A tibble: 2 × 7
-  npi        pac        first middle last  facility_type facility_ccn
-  &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;fct&gt;         &lt;chr&gt;       
-1 1043245657 7810891009 MARK  K      FUNG  Hospital      470003      
-2 1043245657 7810891009 MARK  K      FUNG  Hospital      330250      
-
-$hospitals
-# A tibble: 3 × 21
-  npi_org    pac_org    enid_org        enid_state facility_ccn organization    
-  &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;           &lt;ord&gt;      &lt;chr&gt;        &lt;chr&gt;           
-1 1568419976 3779491071 O20021111000009 VT         470003       UNIVERSITY OF V…
-2 1568419976 3779491071 O20021111000009 VT         470003       UNIVERSITY OF V…
-3 1033270699 2769396878 O20120110000201 NY         330250       CHAMPLAIN VALLE…
-# ℹ 15 more variables: doing_business_as &lt;chr&gt;, specialty_code &lt;chr&gt;,
-#   specialty &lt;chr&gt;, incorp_date &lt;date&gt;, incorp_state &lt;ord&gt;, structure &lt;chr&gt;,
-#   address &lt;chr&gt;, city &lt;chr&gt;, state &lt;ord&gt;, zip &lt;chr&gt;, location_type &lt;chr&gt;,
-#   registration &lt;fct&gt;, multi_npi &lt;lgl&gt;, reh_conversion &lt;lgl&gt;, subgroup &lt;fct&gt;</code></pre>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>individual_search <span class="ot">&lt;-</span> \(<span class="at">npi =</span> <span class="dv">1043245657</span>) {</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lst</span>(</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">nppes        =</span> <span class="fu">nppes</span>(<span class="at">npi =</span> npi),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">enrollment   =</span> <span class="fu">providers</span>(<span class="at">npi =</span> npi),</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">order_refer  =</span> <span class="fu">order_refer</span>(<span class="at">npi =</span> npi, <span class="at">pivot =</span> <span class="cn">FALSE</span>),</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">clinician    =</span> <span class="fu">clinicians</span>(<span class="at">npi =</span> npi),</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">affiliations =</span> <span class="fu">affiliations</span>(<span class="at">npi =</span> npi),</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">hospitals    =</span> <span class="fu">map_dfr</span>(affiliations[[<span class="st">"facility_ccn"</span>]], <span class="cf">function</span>(x) <span class="fu">hospitals</span>(<span class="at">facility_ccn =</span> x))</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>fung <span class="ot">&lt;-</span> <span class="fu">individual_search</span>()</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>fung<span class="sc">$</span>hospitals <span class="ot">&lt;-</span> fung<span class="sc">$</span>hospitals[<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>,]</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>dm<span class="sc">::</span><span class="fu">new_dm</span>(fung) <span class="sc">|&gt;</span> </span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>  dm<span class="sc">::</span><span class="fu">dm_add_pk</span>(nppes, npi) <span class="sc">|&gt;</span> </span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>  dm<span class="sc">::</span><span class="fu">dm_add_pk</span>(enrollment, npi) <span class="sc">|&gt;</span> </span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  dm<span class="sc">::</span><span class="fu">dm_add_pk</span>(order_refer, npi) <span class="sc">|&gt;</span> </span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>  dm<span class="sc">::</span><span class="fu">dm_add_pk</span>(clinician, npi) <span class="sc">|&gt;</span> </span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>  dm<span class="sc">::</span><span class="fu">dm_add_pk</span>(affiliations, facility_ccn) <span class="sc">|&gt;</span> </span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>  dm<span class="sc">::</span><span class="fu">dm_add_pk</span>(hospitals, facility_ccn) <span class="sc">|&gt;</span> </span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>  dm<span class="sc">::</span><span class="fu">dm_add_fk</span>(nppes, npi, enrollment) <span class="sc">|&gt;</span> </span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>  dm<span class="sc">::</span><span class="fu">dm_add_fk</span>(enrollment, npi, order_refer) <span class="sc">|&gt;</span> </span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>  dm<span class="sc">::</span><span class="fu">dm_add_fk</span>(enrollment, npi, clinician) <span class="sc">|&gt;</span> </span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>  dm<span class="sc">::</span><span class="fu">dm_add_fk</span>(clinician, npi, affiliations) <span class="sc">|&gt;</span> </span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>  dm<span class="sc">::</span><span class="fu">dm_add_fk</span>(clinician, pac_org, hospitals) <span class="sc">|&gt;</span> </span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>  dm<span class="sc">::</span><span class="fu">dm_add_fk</span>(affiliations, facility_ccn, hospitals) <span class="sc">|&gt;</span> </span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>  dm<span class="sc">::</span><span class="fu">dm_draw</span>(</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">font_size =</span> <span class="fu">c</span>(</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>      <span class="at">header =</span> <span class="dv">18</span>L, </span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>      <span class="at">table_description =</span> <span class="dv">9</span>L, </span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>      <span class="at">column =</span> <span class="dv">15</span>L),</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">column_types =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">rankdir =</span> <span class="st">"LR"</span>,</span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">view_type =</span> <span class="st">"all"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="grViz html-widget html-fill-item" id="htmlwidget-30b762123d01a4b069c5" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-30b762123d01a4b069c5">{"x":{"diagram":"#data_model\ndigraph {\ngraph [rankdir=LR tooltip=\"Data Model\" ]\n\nnode [margin=0 fontcolor = \"#444444\" ]\n\nedge [color = \"#555555\", arrowsize = 1, ]\n\npack=true\npackmode= \"node\"\n\n  \"affiliations\" [id = \"affiliations\", label = <<TABLE ALIGN=\"LEFT\" BORDER=\"1\" CELLBORDER=\"0\" CELLSPACING=\"0\" COLOR=\"#555555\">\n    <TR>\n      <TD COLSPAN=\"2\" BGCOLOR=\"#EFEBDD\" BORDER=\"0\"><FONT COLOR=\"#000000\" POINT-SIZE=\"18\">affiliations<\/FONT>\n<\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">npi<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">pac<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">first<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">middle<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">last<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">facility_type<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">fct<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\" PORT=\"facility_ccn\"><FONT POINT-SIZE=\"15\"><U>facility_ccn<\/U><\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n  <\/TABLE>>, shape = \"plaintext\"] \n\n  \"clinician\" [id = \"clinician\", label = <<TABLE ALIGN=\"LEFT\" BORDER=\"1\" CELLBORDER=\"0\" CELLSPACING=\"0\" COLOR=\"#555555\">\n    <TR>\n      <TD COLSPAN=\"2\" BGCOLOR=\"#EFEBDD\" BORDER=\"0\"><FONT COLOR=\"#000000\" POINT-SIZE=\"18\">clinician<\/FONT>\n<\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\" PORT=\"npi\"><FONT POINT-SIZE=\"15\"><U>npi<\/U><\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">pac<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">enid<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">first<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">middle<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">last<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">gender<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">fct<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">credential<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">school<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">grad_year<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">int<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">specialty<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">facility_name<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\" PORT=\"pac_org\"><FONT POINT-SIZE=\"15\">pac_org<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">members_org<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">int<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">address_org<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">city_org<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">state_org<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">ord<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">zip_org<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">phone_org<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n  <\/TABLE>>, shape = \"plaintext\"] \n\n  \"enrollment\" [id = \"enrollment\", label = <<TABLE ALIGN=\"LEFT\" BORDER=\"1\" CELLBORDER=\"0\" CELLSPACING=\"0\" COLOR=\"#555555\">\n    <TR>\n      <TD COLSPAN=\"2\" BGCOLOR=\"#EFEBDD\" BORDER=\"0\"><FONT COLOR=\"#000000\" POINT-SIZE=\"18\">enrollment<\/FONT>\n<\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\" PORT=\"npi\"><FONT POINT-SIZE=\"15\"><U>npi<\/U><\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">pac<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">enid<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">specialty_code<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">specialty_description<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">state<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">ord<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">first<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">middle<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">last<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">gender<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">fct<\/FONT><\/TD>\n    <\/TR>\n  <\/TABLE>>, shape = \"plaintext\"] \n\n  \"hospitals\" [id = \"hospitals\", label = <<TABLE ALIGN=\"LEFT\" BORDER=\"1\" CELLBORDER=\"0\" CELLSPACING=\"0\" COLOR=\"#555555\">\n    <TR>\n      <TD COLSPAN=\"2\" BGCOLOR=\"#EFEBDD\" BORDER=\"0\"><FONT COLOR=\"#000000\" POINT-SIZE=\"18\">hospitals<\/FONT>\n<\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">npi_org<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">pac_org<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">enid_org<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">enid_state<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">ord<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\" PORT=\"facility_ccn\"><FONT POINT-SIZE=\"15\"><U>facility_ccn<\/U><\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">organization<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">doing_business_as<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">specialty_code<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">specialty<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">incorp_date<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">date<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">incorp_state<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">ord<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">structure<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">address<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">city<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">state<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">ord<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">zip<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">location_type<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">registration<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">fct<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">multi_npi<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">lgl<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">reh_conversion<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">lgl<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">subgroup<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">fct<\/FONT><\/TD>\n    <\/TR>\n  <\/TABLE>>, shape = \"plaintext\"] \n\n  \"nppes\" [id = \"nppes\", label = <<TABLE ALIGN=\"LEFT\" BORDER=\"1\" CELLBORDER=\"0\" CELLSPACING=\"0\" COLOR=\"#555555\">\n    <TR>\n      <TD COLSPAN=\"2\" BGCOLOR=\"#EFEBDD\" BORDER=\"0\"><FONT COLOR=\"#000000\" POINT-SIZE=\"18\">nppes<\/FONT>\n<\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\" PORT=\"npi\"><FONT POINT-SIZE=\"15\"><U>npi<\/U><\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">entity_type<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">fct<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">enum_date<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">date<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">last_update<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">date<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">status<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">fct<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">prefix<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">first<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">middle<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">last<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">gender<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">fct<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">credential<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">sole_prop<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">lgl<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">purpose<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">fct<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">address<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">city<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">state<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">ord<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">zip<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">country<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">phone<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">fax<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">tx_code<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">tx_primary<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">lgl<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">tx_desc<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">tx_license<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">tx_state<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">ord<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">id_code<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">id_desc<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">id_state<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">ord<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">id_identifier<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n  <\/TABLE>>, shape = \"plaintext\"] \n\n  \"order_refer\" [id = \"order_refer\", label = <<TABLE ALIGN=\"LEFT\" BORDER=\"1\" CELLBORDER=\"0\" CELLSPACING=\"0\" COLOR=\"#555555\">\n    <TR>\n      <TD COLSPAN=\"2\" BGCOLOR=\"#EFEBDD\" BORDER=\"0\"><FONT COLOR=\"#000000\" POINT-SIZE=\"18\">order_refer<\/FONT>\n<\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\" PORT=\"npi\"><FONT POINT-SIZE=\"15\"><U>npi<\/U><\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">last_name<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">first_name<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">partb<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">lgl<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">dme<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">lgl<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">hha<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">lgl<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">pmd<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">lgl<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">hospice<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFFFFF\"><FONT POINT-SIZE=\"15\">lgl<\/FONT><\/TD>\n    <\/TR>\n  <\/TABLE>>, shape = \"plaintext\"] \n\n\"nppes\":\"npi\"->\"enrollment\":\"npi\" [id=\"nppes_1\"]\n\"enrollment\":\"npi\"->\"order_refer\":\"npi\" [id=\"enrollment_1\"]\n\"enrollment\":\"npi\"->\"clinician\":\"npi\" [id=\"enrollment_2\"]\n\"clinician\":\"npi\"->\"affiliations\":\"facility_ccn\" [id=\"clinician_1\"]\n\"clinician\":\"pac_org\"->\"hospitals\":\"facility_ccn\" [id=\"clinician_2\"]\n\"affiliations\":\"facility_ccn\"->\"hospitals\":\"facility_ccn\" [id=\"affiliations_1\"]\n}","config":{"engine":null,"options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </section>
 <section id="organizational-provider" class="level3" data-number="11.1.2">
 <h3 data-number="11.1.2" class="anchored" data-anchor-id="organizational-provider"><span class="header-section-number">11.1.2</span> Organizational Provider</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lst</span>(</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">hospitals    =</span> <span class="fu">hospitals</span>(<span class="at">organization =</span> <span class="st">"Elizabethtown Community Hospital"</span>),</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">affiliations =</span> <span class="fu">map_dfr</span>(hospitals<span class="sc">$</span>facility_ccn, <span class="sc">~</span> </span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>                 <span class="fu">affiliations</span>(<span class="at">facility_ccn =</span> .x)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>organizational_search <span class="ot">&lt;-</span> \(<span class="at">org_name =</span> <span class="st">"Elizabethtown Community Hospital"</span>) {</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">lst</span>(</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">hospitals    =</span> <span class="fu">hospitals</span>(<span class="at">organization =</span> org_name),</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">affiliations =</span> <span class="fu">map_dfr</span>(hospitals[[<span class="st">"facility_ccn"</span>]], <span class="cf">function</span>(x) <span class="fu">affiliations</span>(<span class="at">facility_ccn =</span> x))</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>beth <span class="ot">&lt;-</span> <span class="fu">organizational_search</span>()</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>beth</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$hospitals
 # A tibble: 2 × 20
@@ -895,8 +894,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./end_enrollees.html" class="pagination-link" aria-label="`enrollees()`">
-        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title"><code>enrollees()</code></span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./end_enrollees.html" class="pagination-link" aria-label="`enrollees`">
+        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title"><code>enrollees</code></span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

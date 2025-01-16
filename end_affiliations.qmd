@@ -1,5 +1,5 @@
 ---
-title: "`affiliations()`"
+title: "`affiliations`"
 editor_options: 
    chunk_output_type: console
 ---
@@ -33,22 +33,62 @@ affiliations(facility_ccn = "33Z302")
 ### Individual Provider
 
 ```{r}
-lst(
-  nppes        = nppes(npi = 1043245657),
-  providers    = providers(nppes$npi),
-  order_refer  = order_refer(nppes$npi, pivot = FALSE),
-  clinicians   = clinicians(nppes$npi),
-  affiliations = affiliations(nppes$npi),
-  hospitals    = map_dfr(affiliations$facility_ccn, ~ 
-                 hospitals(facility_ccn = .x)))
+#| label: individual
+individual_search <- \(npi = 1043245657) {
+  
+  lst(
+    nppes        = nppes(npi = npi),
+    enrollment   = providers(npi = npi),
+    order_refer  = order_refer(npi = npi, pivot = FALSE),
+    clinician    = clinicians(npi = npi),
+    affiliations = affiliations(npi = npi),
+    hospitals    = map_dfr(affiliations[["facility_ccn"]], function(x) hospitals(facility_ccn = x))
+    )
+  
+}
+
+fung <- individual_search()
+
+fung$hospitals <- fung$hospitals[2:3,]
+
+dm::new_dm(fung) |> 
+  dm::dm_add_pk(nppes, npi) |> 
+  dm::dm_add_pk(enrollment, npi) |> 
+  dm::dm_add_pk(order_refer, npi) |> 
+  dm::dm_add_pk(clinician, npi) |> 
+  dm::dm_add_pk(affiliations, facility_ccn) |> 
+  dm::dm_add_pk(hospitals, facility_ccn) |> 
+  dm::dm_add_fk(nppes, npi, enrollment) |> 
+  dm::dm_add_fk(enrollment, npi, order_refer) |> 
+  dm::dm_add_fk(enrollment, npi, clinician) |> 
+  dm::dm_add_fk(clinician, npi, affiliations) |> 
+  dm::dm_add_fk(clinician, pac_org, hospitals) |> 
+  dm::dm_add_fk(affiliations, facility_ccn, hospitals) |> 
+  dm::dm_draw(
+    font_size = c(
+      header = 18L, 
+      table_description = 9L, 
+      column = 15L),
+    column_types = TRUE,
+    rankdir = "LR",
+    view_type = "all")
 ```
 
 ### Organizational Provider
 
 ```{r}
-lst(
-  hospitals    = hospitals(organization = "Elizabethtown Community Hospital"),
-  affiliations = map_dfr(hospitals$facility_ccn, ~ 
-                 affiliations(facility_ccn = .x)))
+#| label: organizational
+organizational_search <- \(org_name = "Elizabethtown Community Hospital") {
+  
+  lst(
+    hospitals    = hospitals(organization = org_name),
+    affiliations = map_dfr(hospitals[["facility_ccn"]], function(x) affiliations(facility_ccn = x))
+  )
+  
+}
+
+beth <- organizational_search()
+
+beth
 ```
 
