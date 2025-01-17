@@ -4,11 +4,10 @@ editor_options:
    chunk_output_type: console
 ---
 
-```{r setup}
-#| echo: false
-#| message: false
-#| warning: false
-source("_common.R")
+```{r}
+#| label: setup-common-01
+#| include: false
+source("includes/_common.R")
 ```
 
 ```{r}
@@ -53,15 +52,16 @@ tibble(
 
 ```{r}
 #| label: class_args
-null_numeric <- new_union(NULL, class_numeric)
-null_vector  <- new_union(NULL, class_vector)
+null_numeric    <- new_union(NULL, class_numeric)
+null_vector     <- new_union(NULL, class_vector)
+null_character  <- new_union(NULL, class_character)
 
 class_args <- new_class(
   "class_args",
   properties = list(
     id     = null_numeric,
-    state  = null_vector,
-    name   = null_vector,
+    state  = null_character,
+    name   = null_character,
     number = null_numeric
   ),
   validator = function(self) { 
@@ -81,7 +81,7 @@ try(class_args(
   name   = "Jerry",
   number = 300.12))
 
-class_args(state  = "GA")
+class_args(state  = c("GA", "MD"))
 ```
 
 ## `query_*`
@@ -89,6 +89,9 @@ class_args(state  = "GA")
 ```{r}
 #| label: query_equals
 query_equals <- function(args) {
+  
+  args <- args[cheapr::which_(cheapr::lengths_(args, names = TRUE) == 1)]
+  
   glue::glue(
   "
   filter[f{seq_along(args)}][condition][path]={names(args)}
@@ -98,9 +101,40 @@ query_equals <- function(args) {
   )
 }
 
-query_add_filter <- function(query) {
-  glue::glue()
+query_in <- function(args) {
+  
+  args <- args[cheapr::which_(cheapr::lengths_(args, names = TRUE) > 1)]
+  
+  # values <- glue::glue(
+  #   "filter[f{seq_along(args)}]",
+  #   "[condition][value]",
+  #   "[{seq_along(delist(args))}]={delist(args)}")
+  # 
+  # path_op <- glue::glue(
+  # "filter[f{seq_along(args)}][condition][path]={names(args)}", 
+  # "filter[f{seq_along(args)}][condition][operator]=IN")
+  
+  glue::as_glue(
+    c(
+      glue::glue(
+        "filter[f{seq_along(args)}][condition][path]={names(args)}
+        filter[f{seq_along(args)}][condition][operator]=IN"
+        ), 
+      glue::glue(
+        "filter[f{seq_along(args)}]",
+        "[condition][value]",
+        "[{seq_along(delist(args))}]={delist(args)}"
+        )
+      )
+    )
 }
+
+ex <- list(
+  state  = c("GA", "MD"), 
+  name   = "Jerry", 
+  number = 300.12)
+
+glue::as_glue(c(query_in(ex), query_equals(ex)))
 ```
 
 ```{r}
@@ -118,7 +152,7 @@ protofunc <- function(id     = NULL,
   
 }
 
-protofunc(state  = "GA", 
+protofunc(state  = c("GA"), 
           name   = "Jerry", 
           number = 300.12)
 ```
