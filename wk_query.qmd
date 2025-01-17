@@ -8,7 +8,13 @@ editor_options:
 #| label: setup-common-01
 #| include: false
 source("includes/_common.R")
+
+# test_url <- glue::as_glue("https://data.cms.gov/data-api/v1/dataset/d10d792e-ea6e-4145-8512-34efbc1be04b/data?size=10&offset=0&")
+# 
+# test_url <- test_url + greater_or_equal("overall_rating", 3)
 ```
+
+## Operators
 
 ```{r}
 #| label: allowed_operators
@@ -48,7 +54,31 @@ tibble(
               column_labels.hidden = TRUE)
 ```
 
-## `class_args`
+## S7
+
+### `class_query`
+
+```{r}
+#| label: class_query
+class_query <- new_class(
+  "class_query",
+  properties = list(
+    path     = class_character,
+    operator = class_character,
+    value    = class_vector,
+    limit    = class_numeric,
+    sort     = class_character, 
+    column   = class_vector,
+    group    = new_property(
+      class_list,
+      default = list(
+        conjunction = "AND",
+        memberOf    = ""))
+  )
+)
+```
+
+### `class_args`
 
 ```{r}
 #| label: class_args
@@ -84,35 +114,74 @@ try(class_args(
 class_args(state  = c("GA", "MD"))
 ```
 
-## `query_*`
+## `query` Formatters
 
 ```{r}
-#| label: query_equals
-query_equals <- function(args) {
+#| label: query_test
+ex <- list(
+  state  = c("GA", "MD"), 
+  name   = "Jerry", 
+  number = 300.12)
+```
+
+### `query_comparison`
+
+```{r}
+#| label: query_comparison
+query_comparison <- function(args, operator = c("=", ">", ">=", "<", "<=", "<>")) {
   
-  args <- args[cheapr::which_(cheapr::lengths_(args, names = TRUE) == 1)]
+  operator <- match.arg(operator)
+  args     <- args[
+    cheapr::which_(
+      cheapr::lengths_(
+        args, 
+        names = TRUE) == 1
+      )]
   
   glue::glue(
   "
   filter[f{seq_along(args)}][condition][path]={names(args)}
-  filter[f{seq_along(args)}][condition][operator]==
+  filter[f{seq_along(args)}][condition][operator]={operator}
   filter[f{seq_along(args)}][condition][value]={delist(args)}
   "
   )
 }
 
-query_in <- function(args) {
+query_comparison(ex)
+query_comparison(ex, ">=")
+```
+
+### `query_equals_simple`
+
+```{r}
+#| label: query_equals_simple
+query_equals_simple <- function(args) {
   
-  args <- args[cheapr::which_(cheapr::lengths_(args, names = TRUE) > 1)]
+  args <- args[
+    cheapr::which_(
+      cheapr::lengths_(
+        args, 
+        names = TRUE) == 1
+      )]
   
-  # values <- glue::glue(
-  #   "filter[f{seq_along(args)}]",
-  #   "[condition][value]",
-  #   "[{seq_along(delist(args))}]={delist(args)}")
-  # 
-  # path_op <- glue::glue(
-  # "filter[f{seq_along(args)}][condition][path]={names(args)}", 
-  # "filter[f{seq_along(args)}][condition][operator]=IN")
+  glue::glue(
+  "
+  filter[{names(args)}]={delist(args)}
+  "
+  )
+}
+
+query_equals_simple(ex)
+```
+
+### `query_in_notin`
+
+```{r}
+#| label: query_in_notin
+query_in_notin <- function(args, operator = c("IN", "NOT IN")) {
+  
+  operator <- match.arg(operator)
+  args     <- args[cheapr::which_(cheapr::lengths_(args, names = TRUE) > 1)]
   
   glue::as_glue(
     c(
@@ -129,13 +198,17 @@ query_in <- function(args) {
     )
 }
 
-ex <- list(
-  state  = c("GA", "MD"), 
-  name   = "Jerry", 
-  number = 300.12)
-
-glue::as_glue(c(query_in(ex), query_equals(ex)))
+query_in_notin(ex)
+query_in_notin(ex, "NOT IN")
 ```
+
+### Finalizing `query` Components
+
+```{r}
+glue::as_glue(c(query_in_notin(ex), query_comparison(ex)))
+```
+
+### Testing in a Function
 
 ```{r}
 protofunc <- function(id     = NULL, 
@@ -148,65 +221,13 @@ protofunc <- function(id     = NULL,
     name   = name,
     number = number)
   
-  query_equals(compact(props(arg)))
+  query_comparison(compact(props(arg)))
   
 }
 
 protofunc(state  = c("GA"), 
           name   = "Jerry", 
           number = 300.12)
-```
-
-```{r}
-greater_than <- \(arg, value) {
-  glue::glue(
-  "
-  [condition][path]={arg}&
-  [condition][operator]=>&
-  [condition][value]={value}&
-  "
-  )
-}
-
-greater_than("overall_rating", 3)
-
-greater_or_equal <- \(arg, value) {
-  glue::glue(
-  "filter[fID-1][condition][path]={arg}&\\
-  filter[fID-1][condition][operator]=>=&\\
-  filter[fID-1][condition][value]={value}"
-  )
-}
-
-greater_or_equal("overall_rating", 3)
-
-test_url <- glue::as_glue("https://data.cms.gov/data-api/v1/dataset/d10d792e-ea6e-4145-8512-34efbc1be04b/data?size=10&offset=0&")
-
-test_url <- test_url + greater_or_equal("overall_rating", 3)
-
-curl::curl_parse_url(test_url)
-```
-
-## `class_query`
-
-```{r}
-#| label: class_query
-class_query <- new_class(
-  "class_query",
-  properties = list(
-    path     = class_character,
-    operator = class_character,
-    value    = class_vector,
-    limit    = class_numeric,
-    sort     = class_character, 
-    column   = class_vector,
-    group    = new_property(
-      class_list,
-      default = list(
-        conjunction = "AND",
-        memberOf    = ""))
-  )
-)
 ```
 
 --------------------------------------------------------------------------------
