@@ -14,6 +14,34 @@ source("includes/_common.R")
 # test_url <- test_url + greater_or_equal("overall_rating", 3)
 ```
 
+## Building Queries
+
+   1. Select Dataset/Method
+   1. Build JSON Query
+   1. Retrieve Number of Results
+   1. Build Offset Sequence
+   1. Build Request
+
+```{.yaml}
+catalog: public
+  format: API
+  description: latest
+  title: Medicare Fee-For-Service Public Provider Enrollment
+  url:
+    scheme: https:
+    host: data.cms.gov
+    path:
+      head: data-api/v1/dataset
+      guid: 9887a515-7552-4693-bf58-735c77af46d7
+      tail: data-viewer
+      nobs: stats
+    query:
+      filter: 1
+      path: PROVIDER_TYPE_DESC
+      operator: =
+      value: PRACTITIONER - GENERAL PRACTICE
+```
+
 ## Operators
 
 ```{r}
@@ -231,31 +259,3 @@ protofunc(state  = c("GA"),
 ```
 
 --------------------------------------------------------------------------------
-
-## Building Queries
-
-   1. Select Dataset/Method
-   1. Build JSON Query
-   1. Retrieve Number of Results
-   1. Build Offset Sequence
-   1. Build Request
-
-```{.yaml}
-catalog: public
-  format: API
-  description: latest
-  title: Medicare Fee-For-Service Public Provider Enrollment
-  url:
-    scheme: https:
-    host: data.cms.gov
-    path:
-      head: data-api/v1/dataset
-      guid: 9887a515-7552-4693-bf58-735c77af46d7
-      tail: data-viewer
-      nobs: stats
-    query:
-      filter: 1
-      path: PROVIDER_TYPE_DESC
-      operator: =
-      value: PRACTITIONER - GENERAL PRACTICE
-```
