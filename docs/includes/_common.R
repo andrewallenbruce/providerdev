@@ -10,6 +10,7 @@ library(providertwo)
 library(httr2)
 # library(curl)
 # library(weburl)
+# library(urlparse)
 
 library(arrow)
 library(RcppSimdJson)
@@ -18,12 +19,11 @@ library(S7)
 library(listviewerlite)
 library(gt)
 
-library(urlparse)
 
-handle_na <- \(x) {
-  purrr::modify_if(x, is.character, function(x) providertwo::na_if(x, y = "")) |>
-    providertwo::remove_all_na()
-}
+# handle_na <- \(x) {
+#   purrr::modify_if(x, is.character, function(x) providertwo::na_if(x, y = "")) |>
+#     providertwo::remove_all_na()
+# }
 
 btn_link <- \(href, label) {
 
