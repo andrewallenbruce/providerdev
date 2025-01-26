@@ -306,63 +306,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="dataset" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="dataset"><span class="header-section-number">3.1</span> Dataset</h2>
+<ul>
+<li><code>publisher</code>: <code>"openpaymentsdata.cms.gov"</code></li>
+<li><code>bureauCode</code>: <code>"009:38"</code></li>
+<li><code>programCode</code>: <code>"009:000"</code></li>
+<li><code>"accessLevel"</code>: <code>"public"</code></li>
+</ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>open_dataset <span class="ot">&lt;-</span> <span class="fu">qTBL</span>(</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fload</span>(</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids"</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    ), </span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">keep.attr =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mtt</span>(<span class="at">issued             =</span> <span class="fu">as_date</span>(issued),</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">modified           =</span> <span class="fu">as_date</span>(modified),</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">accrualPeriodicity =</span> <span class="fu">recode_iso8601</span>(accrualPeriodicity),</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">description        =</span> <span class="fu">sf_remove</span>(description, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>),</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">bureauCode         =</span> <span class="fu">delist</span>(bureauCode),</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">programCode        =</span> <span class="fu">delist</span>(programCode))</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>open_dataset</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 74 × 19
-   bureauCode programCode accessLevel keyword      contactPoint     dataQuality
-   &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;       &lt;list&gt;       &lt;list&gt;           &lt;lgl&gt;      
- 1 009:38     009:000     public      &lt;df [1 × 2]&gt; &lt;named list [2]&gt; TRUE       
- 2 009:38     009:000     public      &lt;df [1 × 2]&gt; &lt;named list [2]&gt; TRUE       
- 3 009:38     009:000     public      &lt;df [1 × 2]&gt; &lt;named list [2]&gt; TRUE       
- 4 009:38     009:000     public      &lt;df [1 × 2]&gt; &lt;named list [2]&gt; TRUE       
- 5 009:38     009:000     public      &lt;df [1 × 2]&gt; &lt;named list [2]&gt; TRUE       
- 6 009:38     009:000     public      &lt;df [1 × 2]&gt; &lt;named list [2]&gt; TRUE       
- 7 009:38     009:000     public      &lt;df [1 × 2]&gt; &lt;named list [2]&gt; TRUE       
- 8 009:38     009:000     public      &lt;df [1 × 2]&gt; &lt;named list [2]&gt; TRUE       
- 9 009:38     009:000     public      &lt;df [1 × 2]&gt; &lt;named list [2]&gt; TRUE       
-10 009:38     009:000     public      &lt;df [1 × 2]&gt; &lt;named list [2]&gt; TRUE       
-# ℹ 64 more rows
-# ℹ 13 more variables: description &lt;chr&gt;, distribution &lt;list&gt;,
-#   identifier &lt;chr&gt;, title &lt;chr&gt;, issued &lt;date&gt;, modified &lt;date&gt;,
-#   temporal &lt;chr&gt;, publisher &lt;list&gt;, license &lt;chr&gt;, theme &lt;list&gt;,
-#   `%modified` &lt;chr&gt;, `@type` &lt;chr&gt;, accrualPeriodicity &lt;chr&gt;</code></pre>
-</div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fload</span>(<span class="st">"https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids"</span>), </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">keep.attr =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mtt</span>(<span class="at">issued             =</span> <span class="fu">as_date</span>(issued),</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">modified           =</span> <span class="fu">as_date</span>(modified),</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">accrualPeriodicity =</span> <span class="fu">recode_iso8601</span>(accrualPeriodicity),</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">description        =</span> <span class="fu">sf_remove</span>(description, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">bureauCode         =</span> <span class="fu">delist</span>(bureauCode),</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">programCode        =</span> <span class="fu">delist</span>(programCode),</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">theme              =</span> <span class="fu">delist</span>(<span class="fu">map</span>(theme, \(x) <span class="fu">gelm</span>(<span class="fu">as.list</span>(x), <span class="st">"data"</span>))),</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">year               =</span> <span class="fu">delist</span>(<span class="fu">map</span>(keyword, \(x) <span class="fu">gelm</span>(<span class="fu">as.list</span>(x), <span class="st">"data"</span>))),</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">%modified</span><span class="st">`</span>        <span class="ot">=</span> clock<span class="sc">::</span><span class="fu">date_time_parse_RFC_3339</span>(<span class="st">`</span><span class="at">%modified</span><span class="st">`</span>, <span class="at">offset =</span> <span class="st">"%Ez"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(year,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>      title,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>      description,</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>      theme,</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>      issued,</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>      modified,</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">modified_dttm =</span> <span class="st">`</span><span class="at">%modified</span><span class="st">`</span>,</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>      temporal,</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>      accrualPeriodicity,</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>      distribution)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>identifiers <span class="ot">&lt;-</span> <span class="fu">uniq</span>(<span class="fu">qTBL</span>(<span class="fu">rowbind</span>(<span class="fu">gelm</span>(open_dataset, <span class="st">"keyword"</span>))))</span>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># identifiers &lt;- uniq(qTBL(rowbind(gelm(open_dataset, "keyword"))))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>identifier <span class="ot">&lt;-</span> <span class="fu">qTBL</span>(<span class="fu">rowbind</span>(<span class="fu">gelm</span>(open_dataset, <span class="st">"distribution"</span>), <span class="at">fill =</span> <span class="cn">TRUE</span>), <span class="at">keep.attr =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>identifiers</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 8 × 2
-  identifier                           data     
-  &lt;chr&gt;                                &lt;chr&gt;    
-1 7a69eb60-9b96-52b9-a965-bc355eb14783 2017     
-2 84dbcaf9-e303-5091-bc41-db1d8a56b15e 2018     
-3 9a0e833d-bee5-5a80-a438-f9bccb1e0317 2019     
-4 299719dd-3e81-510f-a4ca-1d48bfb5f412 2020     
-5 d15f292d-9e85-5beb-93fb-8a0cb73798f2 2021     
-6 53edf88c-ba11-5f87-9794-cb14e4eb48aa 2022     
-7 9409f61b-252f-5359-ac36-8d6684df11fb 2023     
-8 33f48f29-a62d-56ce-ad0f-5829514d427b all years</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>identifier <span class="ot">&lt;-</span> <span class="fu">qTBL</span>(<span class="fu">rowbind</span>(<span class="fu">gelm</span>(open_dataset, <span class="st">"distribution"</span>), <span class="at">fill =</span> <span class="cn">TRUE</span>), <span class="at">keep.attr =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>identifier</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>identifier</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 74 × 2
    identifier                           data            
@@ -381,55 +361,101 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>distribution <span class="ot">&lt;-</span> <span class="fu">qTBL</span>(<span class="fu">rowbind</span>(<span class="fu">gelm</span>(identifier, <span class="st">"data"</span>), <span class="at">fill =</span> <span class="cn">TRUE</span>), <span class="at">keep.attr =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>distribution <span class="sc">|&gt;</span> </span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>distribution <span class="ot">&lt;-</span> <span class="fu">qTBL</span>(<span class="fu">rowbind</span>(<span class="fu">gelm</span>(identifier, <span class="st">"data"</span>), <span class="at">fill =</span> <span class="cn">TRUE</span>), <span class="at">keep.attr =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(<span class="sc">-</span><span class="st">`</span><span class="at">@type</span><span class="st">`</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>distribution <span class="sc">|&gt;</span> </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="st">`</span><span class="at">%Ref:downloadURL</span><span class="st">`</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(<span class="st">`</span><span class="at">%Ref:downloadURL</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Rows: 148
-Columns: 8
-$ title              &lt;chr&gt; "Research Payment Data – Detailed Dataset 2017 Repo…
-$ mediaType          &lt;chr&gt; "text/csv", "text/csv", "text/csv", "text/csv", "te…
-$ format             &lt;chr&gt; "csv", "csv", "csv", "csv", "csv", "csv", "csv", "c…
-$ downloadURL        &lt;chr&gt; "https://download.cms.gov/openpayments/PGYR17_P0628…
-$ describedBy        &lt;chr&gt; "https://openpaymentsdata.cms.gov/api/1/metastore/s…
-$ describedByType    &lt;chr&gt; "application/vnd.tableschema+json", "application/vn…
-$ `%Ref:downloadURL` &lt;df[,148]&gt; &lt;data.frame[26 x 148]&gt;
-$ `@type`            &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…</code></pre>
+<pre><code># A tibble: 6 × 148
+  `%Ref:downloadURL_1`                 `%Ref:downloadURL_2` `%Ref:downloadURL_3`
+  &lt;chr&gt;                                        &lt;list&lt;list&gt;&gt; &lt;chr&gt;               
+1 406c2298a6b7301216c629a77526e892__1…                  [1] 8ceb3ee081ecd373992…
+2 406c2298a6b7301216c629a77526e892__1…                  [1] 8ceb3ee081ecd373992…
+3 406c2298a6b7301216c629a77526e892__1…                  [1] 8ceb3ee081ecd373992…
+4 406c2298a6b7301216c629a77526e892__1…                  [1] 8ceb3ee081ecd373992…
+5 406c2298a6b7301216c629a77526e892__1…                  [1] 8ceb3ee081ecd373992…
+6 406c2298a6b7301216c629a77526e892__1…                  [1] 8ceb3ee081ecd373992…
+# ℹ 145 more variables: `%Ref:downloadURL_4` &lt;list&lt;list&gt;&gt;,
+#   `%Ref:downloadURL_5` &lt;chr&gt;, `%Ref:downloadURL_6` &lt;list&lt;list&gt;&gt;,
+#   `%Ref:downloadURL_7` &lt;chr&gt;, `%Ref:downloadURL_8` &lt;list&lt;list&gt;&gt;,
+#   `%Ref:downloadURL_9` &lt;chr&gt;, `%Ref:downloadURL_10` &lt;list&lt;list&gt;&gt;,
+#   `%Ref:downloadURL_11` &lt;chr&gt;, `%Ref:downloadURL_12` &lt;list&lt;list&gt;&gt;,
+#   `%Ref:downloadURL_13` &lt;chr&gt;, `%Ref:downloadURL_14` &lt;list&lt;list&gt;&gt;,
+#   `%Ref:downloadURL_15` &lt;chr&gt;, `%Ref:downloadURL_16` &lt;list&lt;list&gt;&gt;, …</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">slt</span>(open_dataset, </span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    title, </span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    keyword, </span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    description, </span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    identifier,</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    issued,</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    modified,</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    temporal,</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    publisher,</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    contactPoint,</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    theme,</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">%modified</span><span class="st">`</span>,</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    accrualPeriodicity) <span class="sc">|&gt;</span></span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_vars</span>(<span class="at">id2 =</span> <span class="fu">gelm</span>(identifier, <span class="st">"identifier"</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># qTBL(distribution[["%Ref:downloadURL"]])</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># qTBL(rowbind(, fill = TRUE), keep.attr = TRUE)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>open_data <span class="ot">&lt;-</span> <span class="fu">request</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids"</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(keyword, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(theme, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(contactPoint, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(publisher, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(publisher_data, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(distribution, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(distribution_data, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(<span class="st">`</span><span class="at">distribution_data_%Ref:downloadURL</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(<span class="st">`</span><span class="at">distribution_data_%Ref:downloadURL_1</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(<span class="st">`</span><span class="at">distribution_data_%Ref:downloadURL_1_data</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">description        =</span> <span class="fu">replace_open_desc</span>(description),</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">bureauCode         =</span> <span class="fu">delist</span>(bureauCode),</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">programCode        =</span> <span class="fu">delist</span>(programCode)) <span class="sc">|&gt;</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(remove_at_symbol) <span class="sc">|&gt;</span> </span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">modified_dttm =</span> <span class="st">`</span><span class="at">%modified</span><span class="st">`</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">remove_all_na</span>()</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>open_data <span class="sc">|&gt;</span> </span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Rows: 74
-Columns: 13
-$ title              &lt;chr&gt; "2017 Research Payment Data", "2017 Ownership Payme…
-$ keyword            &lt;list&gt; [&lt;data.frame[1 x 2]&gt;], [&lt;data.frame[1 x 2]&gt;], [&lt;da…
-$ description        &lt;chr&gt; "Research Payment Data – Detailed Dataset 2017 Repo…
-$ identifier         &lt;chr&gt; "0e3977b9-a5d6-427e-bc02-480481edd6e0", "f90c33d1-c…
-$ issued             &lt;date&gt; 2024-06-28, 2024-06-28, 2024-06-28, 2024-06-28, 20…
-$ modified           &lt;date&gt; 2024-06-28, 2024-06-28, 2024-06-28, 2024-06-28, 20…
-$ temporal           &lt;chr&gt; "2017-01-01/2017-12-31", "2017-01-01/2017-12-31", "…
-$ publisher          &lt;list&gt; ["11b41668-9929-5de3-b494-6464ac4f018d", ["openpay…
-$ contactPoint       &lt;list&gt; ["Open Payments", "mailto:openpayments@cms.hhs.gov…
-$ theme              &lt;list&gt; [&lt;data.frame[1 x 2]&gt;], [&lt;data.frame[1 x 2]&gt;], [&lt;da…
-$ `%modified`        &lt;chr&gt; "2024-07-29T20:42:01+0000", "2024-07-29T20:42:03+00…
-$ accrualPeriodicity &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
-$ id2                &lt;chr&gt; "10ec915a-726a-53b1-9eee-546846c90a60", "74072985-5…</code></pre>
+<pre><code>- $bureauCode                                            c74 009:38         ...
+- $programCode                                           c74 009:000        ...
+- $accessLevel                                           c74 public         ...
+- $keyword_identifier                                    c74 7a69eb60-9b96- ...
+- $keyword_data                                          c74 2017           ...
+- $contactPoint_fn                                       c74 Open Payments  ...
+- $contactPoint_hasEmail                                 c74 mailto:openpay ...
+- $dataQuality                                           l74 T              ...
+- $description                                           c74 Research Payme ...
+- $distribution_identifier                               c74 10ec915a-726a- ...
+- $distribution_data_title                               c74 Research Payme ...
+- $distribution_data_mediaType                           c74 text/csv       ...
+- $distribution_data_format                              c74 csv            ...
+- $distribution_data_downloadURL                         c74 https://downlo ...
+- $distribution_data_describedBy                         c74 https://openpa ...
+- $distribution_data_describedByType                     c74 application/vn ...
+- $distribution_data_%Ref:downloadURL_1_identifier       c74 406c2298a6b730 ...
+- $distribution_data_%Ref:downloadURL_1_data_filePath    c74 https://downlo ...
+- $distribution_data_%Ref:downloadURL_1_data_identifier  c74 406c2298a6b730 ...
+- $distribution_data_%Ref:downloadURL_1_data_mimeType    c74 text/csv       ...
+- $distribution_data_%Ref:downloadURL_1_data_perspective c74 source         ...
+- $distribution_data_%Ref:downloadURL_1_data_version     c74 1718422528     ...
+- $distribution_data_type                                c74 NA             ...
+- $identifier                                            c74 0e3977b9-a5d6- ...
+- $title                                                 c74 2017 Research  ...
+- $issued                                                c74 2024-06-28     ...
+- $modified                                              c74 2024-06-28     ...
+- $temporal                                              c74 2017-01-01/201 ...
+- $publisher_identifier                                  c74 11b41668-9929- ...
+- $publisher_data_name                                   c74 openpaymentsda ...
+- $publisher_data_type                                   c74 NA             ...
+- $license                                               c74 https://www.us ...
+- $theme_identifier                                      c74 0dbaba68-b7d1- ...
+- $theme_data                                            c74 Research Payme ...
+- $modified_dttm                                         c74 2024-07-29T20: ...
+- $type                                                  c74 NA             ...
+- $accrualPeriodicity                                    c74 NA             ...</code></pre>
 </div>
 </div>
 
