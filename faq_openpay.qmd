@@ -1,5 +1,5 @@
 ---
-title: "Open Payments"
+title: "Open Payments API"
 editor_options: 
    chunk_output_type: console
 ---
@@ -12,7 +12,68 @@ source("includes/_common.R")
 ## Dataset
 
 ```{r}
+#| label: open_dataset
+open_dataset <- qTBL(
+  fload(
+    "https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids"
+    ), 
+  keep.attr = TRUE) |>
+    mtt(issued             = as_date(issued),
+        modified           = as_date(modified),
+        accrualPeriodicity = recode_iso8601(accrualPeriodicity),
+        description        = sf_remove(description, "\n"),
+        bureauCode         = delist(bureauCode),
+        programCode        = delist(programCode))
+
+open_dataset
+```
+
+
+```{r}
+identifiers <- uniq(qTBL(rowbind(gelm(open_dataset, "keyword"))))
+
+identifiers
+```
+
+
+```{r}
+identifier <- qTBL(rowbind(gelm(open_dataset, "distribution"), fill = TRUE), keep.attr = TRUE)
+
+identifier
+```
+
+
+```{r}
+distribution <- qTBL(rowbind(gelm(identifier, "data"), fill = TRUE), keep.attr = TRUE)
+
+distribution |> 
+  glimpse()
+```
+
+
+```{r}
+slt(open_dataset, 
+    title, 
+    keyword, 
+    description, 
+    identifier,
+    issued,
+    modified,
+    temporal,
+    publisher,
+    contactPoint,
+    theme,
+    `%modified`,
+    accrualPeriodicity) |>
+  add_vars(id2 = gelm(identifier, "identifier")) |> 
+  glimpse()
+```
+
+
+```{r}
 #| label: open_data
+#| eval: false
+#| echo: false
 open_data <- request(
   "https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids"
   ) |>
