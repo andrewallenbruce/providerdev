@@ -20,10 +20,10 @@ library(listviewerlite)
 library(gt)
 
 
-# handle_na <- \(x) {
-#   purrr::modify_if(x, is.character, function(x) providertwo::na_if(x, y = "")) |>
-#     providertwo::remove_all_na()
-# }
+handle_na <- \(x) {
+  purrr::modify_if(x, is.character, function(x) providertwo::na_if(x, y = "")) |>
+    providertwo::remove_all_na()
+}
 
 btn_link <- \(href, label) {
 

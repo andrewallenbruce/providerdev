@@ -325,45 +325,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>stats <span class="sc">|&gt;</span> <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>- $found_rows i1  47984
-- $total_rows i1  47984</code></pre>
+<pre><code>- $found_rows i1  48702
+- $total_rows i1  48702</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">offset_sequence</span>(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">nobs =</span> stats<span class="sc">$</span>found_rows, </span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">limit =</span> <span class="dv">5000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Offset shouldn't go to 50000</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">offset_sequence</span>(stats<span class="sc">$</span>found_rows, <span class="dv">5000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> [1]     0  5001 10001 15001 20001 25001 30001 35001 40001 45001 47984</code></pre>
+<pre><code> [1]     0  5000 10000 15000 20000 25000 30000 35000 40000 45000 50000</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>urls <span class="ot">&lt;-</span> glue<span class="sc">::</span><span class="fu">glue</span>(</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"{base$url}"</span>,</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"?size=5000&amp;"</span>,</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"offset="</span>,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"{offset_sequence(nobs = stats$found_rows, limit = 5000)}"</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"{offset_sequence(stats$found_rows, 5000)}"</span></span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>resp <span class="ot">&lt;-</span> urls[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>] <span class="sc">|&gt;</span> </span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">map</span>(</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(</span>
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) {</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>      httr2<span class="sc">::</span><span class="fu">request</span>(x) <span class="sc">|&gt;</span> </span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        httr2<span class="sc">::</span><span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        httr2<span class="sc">::</span><span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        dplyr<span class="sc">::</span><span class="fu">tibble</span>()</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">request</span>(x) <span class="sc">|&gt;</span> </span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        <span class="fu">tibble</span>()</span>
 <span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    }) <span class="sc">|&gt;</span> </span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">list_rbind</span>(<span class="at">names_to =</span> <span class="st">"req"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list_rbind</span>(<span class="at">names_to =</span> <span class="st">"reqID"</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>()</span>
 <span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>resp <span class="sc">|&gt;</span> </span>
 <span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">get_dupes</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 15
-    req first_name last_name npi        specialty  optout_effective_date
-  &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;                
-1     2 Joseph     Kunnel    1740295518 Dentist    09/25/2015           
-2     2 Joseph     Kunnel    1740295518 Dentist    09/25/2015           
-3     3 David      Fernitz   1225232226 Dentist    03/15/2016           
-4     3 David      Fernitz   1225232226 Dentist    03/15/2016           
-5     3 Martin     Drooker   1326103029 Psychiatry 04/01/2016           
-6     3 Martin     Drooker   1326103029 Psychiatry 04/01/2016           
+  req_id first_name last_name npi        specialty  optout_effective_date
+   &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;                
+1      2 Joseph     Kunnel    1740295518 Dentist    09/25/2015           
+2      2 Joseph     Kunnel    1740295518 Dentist    09/25/2015           
+3      3 David      Fernitz   1225232226 Dentist    03/15/2016           
+4      3 David      Fernitz   1225232226 Dentist    03/15/2016           
+5      3 Martin     Drooker   1326103029 Psychiatry 04/01/2016           
+6      3 Martin     Drooker   1326103029 Psychiatry 04/01/2016           
 # ℹ 9 more variables: optout_end_date &lt;chr&gt;, first_line_street_address &lt;chr&gt;,
 #   second_line_street_address &lt;chr&gt;, city_name &lt;chr&gt;, state_code &lt;chr&gt;,
 #   zip_code &lt;chr&gt;, eligible_to_order_and_refer &lt;chr&gt;, last_updated &lt;chr&gt;,
@@ -378,20 +377,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(npi <span class="sc">%in%</span> dupes) <span class="sc">|&gt;</span> </span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(npi)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 163 × 14
-     req first_name last_name npi        specialty         optout_effective_date
-   &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;      &lt;chr&gt;             &lt;chr&gt;                
- 1     2 Barbara    Lino      1013130632 Clinical Psychol… 04/16/2021           
- 2     2 Barbara    Lino      1013130632 Clinical Psychol… 04/19/2021           
- 3     2 Victoria   Lasser    1043597586 Clinical Psychol… 10/21/2015           
- 4     3 Victoria   Lasser    1043597586 Clinical Psychol… 01/13/2016           
- 5     2 Peter      Chang     1053320606 Dentist           09/25/2015           
- 6     3 Peter      Chang     1053320606 Dentist           05/31/2016           
- 7     1 Donna      Lewinter  1053493767 Psychiatry        10/10/2002           
- 8     1 Donna      Lewinter  1053493767 Psychiatry        10/10/2012           
- 9     1 Jeffrey    Dean      1073687711 Oral Surgery      06/25/2023           
-10     1 Jeffrey    Dean      1073687711 Maxillofacial Su… 06/25/2013           
-# ℹ 153 more rows
+<pre><code># A tibble: 161 × 14
+   req_id first_name last_name npi        specialty        optout_effective_date
+    &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;      &lt;chr&gt;            &lt;chr&gt;                
+ 1      2 Barbara    Lino      1013130632 Clinical Psycho… 04/16/2021           
+ 2      2 Barbara    Lino      1013130632 Clinical Psycho… 04/19/2021           
+ 3      2 Victoria   Lasser    1043597586 Clinical Psycho… 10/21/2015           
+ 4      3 Victoria   Lasser    1043597586 Clinical Psycho… 01/13/2016           
+ 5      2 Peter      Chang     1053320606 Dentist          09/25/2015           
+ 6      3 Peter      Chang     1053320606 Dentist          05/31/2016           
+ 7      1 Donna      Lewinter  1053493767 Psychiatry       10/10/2002           
+ 8      1 Donna      Lewinter  1053493767 Psychiatry       10/10/2012           
+ 9      1 Jeffrey    Dean      1073687711 Oral Surgery     06/25/2023           
+10      1 Jeffrey    Dean      1073687711 Maxillofacial S… 06/25/2013           
+# ℹ 151 more rows
 # ℹ 8 more variables: optout_end_date &lt;chr&gt;, first_line_street_address &lt;chr&gt;,
 #   second_line_street_address &lt;chr&gt;, city_name &lt;chr&gt;, state_code &lt;chr&gt;,
 #   zip_code &lt;chr&gt;, eligible_to_order_and_refer &lt;chr&gt;, last_updated &lt;chr&gt;</code></pre>
@@ -402,14 +401,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(npi)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 14
-  last_updated   req first_name last_name npi    specialty optout_effective_date
-  &lt;chr&gt;        &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;                
-1 10/15/2024       3 David      Fernitz   12252… Dentist   03/15/2016           
-2 10/15/2024       3 David      Fernitz   12252… Dentist   03/15/2016           
-3 05/15/2024       3 Martin     Drooker   13261… Psychiat… 04/01/2016           
-4 05/15/2024       3 Martin     Drooker   13261… Psychiat… 04/01/2016           
-5 10/15/2024       2 Joseph     Kunnel    17402… Dentist   09/25/2015           
-6 10/15/2024       2 Joseph     Kunnel    17402… Dentist   09/25/2015           
+  last_updated req_id first_name last_name npi   specialty optout_effective_date
+  &lt;chr&gt;         &lt;int&gt; &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;                
+1 10/15/2024        3 David      Fernitz   1225… Dentist   03/15/2016           
+2 10/15/2024        3 David      Fernitz   1225… Dentist   03/15/2016           
+3 05/15/2024        3 Martin     Drooker   1326… Psychiat… 04/01/2016           
+4 05/15/2024        3 Martin     Drooker   1326… Psychiat… 04/01/2016           
+5 10/15/2024        2 Joseph     Kunnel    1740… Dentist   09/25/2015           
+6 10/15/2024        2 Joseph     Kunnel    1740… Dentist   09/25/2015           
 # ℹ 7 more variables: optout_end_date &lt;chr&gt;, first_line_street_address &lt;chr&gt;,
 #   second_line_street_address &lt;chr&gt;, city_name &lt;chr&gt;, state_code &lt;chr&gt;,
 #   zip_code &lt;chr&gt;, eligible_to_order_and_refer &lt;chr&gt;</code></pre>
@@ -461,8 +460,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>query <span class="ot">&lt;-</span> glue<span class="sc">::</span><span class="fu">glue</span>(</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">'c(</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="st">    "filter[id-{FID}][path]"  = "{PATH}",</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="st">    "filter[id-{FID}][value]" = "{VALUE}"</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="st">    "filter[{FID}][path]"  = "{PATH}",</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="st">    "filter[{FID}][value]" = "{VALUE}"</span></span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="st">  )'</span>, </span>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">FID =</span> <span class="dv">1</span>, </span>
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">PATH =</span> <span class="st">"State Code"</span>, </span>
@@ -471,8 +470,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>query</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>c(
-  "filter[id-1][path]"  = "State Code",
-  "filter[id-1][value]" = "CA"
+  "filter[1][path]"  = "State Code",
+  "filter[1][value]" = "CA"
 )</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>query <span class="ot">&lt;-</span> query <span class="sc">|&gt;</span> </span>
@@ -481,8 +480,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>query</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> filter[id-1][path] filter[id-1][value] 
-       "State Code"                "CA" </code></pre>
+<pre><code> filter[1][path] filter[1][value] 
+    "State Code"             "CA" </code></pre>
 </div>
 </div>
 <div class="cell">
@@ -498,43 +497,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>nresults</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 9288</code></pre>
+<pre><code>[1] 9405</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>reqs <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  glue<span class="sc">::</span><span class="fu">glue</span>(</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"{url}"</span>, </span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"offset={off}"</span>, </span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">url =</span> queryurl<span class="sc">$</span>url, </span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">off =</span> <span class="fu">offset_sequence</span>(<span class="at">nobs =</span> nresults, <span class="at">limit =</span> <span class="dv">5000</span>)), </span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span>request)</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> httr2<span class="sc">::</span><span class="fu">req_perform_parallel</span>(reqs) <span class="sc">|&gt;</span> </span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">resps_successes</span>()</span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>res[[<span class="dv">1</span>]] <span class="sc">|&gt;</span> </span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">url_parse</span>(queryurl<span class="sc">$</span>url)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Offset Shouldn't go to 10000</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>off <span class="ot">&lt;-</span> <span class="fu">offset_sequence</span>(nresults, <span class="dv">5000</span>)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>off <span class="ot">&lt;-</span> off[<span class="sc">-</span><span class="dv">3</span>]</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>reqs <span class="ot">&lt;-</span> <span class="fu">map</span>(</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  glue<span class="sc">::</span><span class="fu">glue</span>(</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"{url}"</span>, </span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"&amp;offset={off}"</span>, </span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">url =</span> queryurl<span class="sc">$</span>url, </span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">off =</span> ), </span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span>request)</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">req_perform_parallel</span>(reqs) <span class="sc">|&gt;</span> <span class="fu">resps_successes</span>()</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">map</span>(res, \(x) <span class="fu">tibble</span>(<span class="fu">resp_body_json</span>(x, <span class="at">simplifyVector =</span> <span class="cn">TRUE</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>()</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>list()</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>queryurl <span class="sc">|&gt;</span> </span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 5,000 × 13
+<pre><code># A tibble: 9,405 × 13
    `First Name` `Last Name` NPI        Specialty          Optout Effective Dat…¹
    &lt;chr&gt;        &lt;chr&gt;       &lt;chr&gt;      &lt;chr&gt;              &lt;chr&gt;                 
  1 Namir        Damluji     1124116793 Psychiatry         07/26/2020            
  2 Lesley       Macarthur   1073604054 Psychiatry         04/05/2012            
  3 Sharon       Bae         1346211372 Internal Medicine  06/01/2012            
  4 Albert       Fuchs       1013964386 Internal Medicine  07/01/2012            
- 5 Linda        Schaffer    1740495043 Psychiatry         06/14/2012            
- 6 Charles      Schaffer    1114132313 Psychiatry         06/14/2012            
- 7 Cheri        Adrian      1366597833 Clinical Psycholo… 05/25/2012            
- 8 Richard      Wolf        1891713079 Internal Medicine  08/16/2012            
- 9 Robert       Woods       1881601029 Psychiatry         06/11/2012            
-10 Shela        Fisk        1417084583 Clinical Psycholo… 06/20/2012            
-# ℹ 4,990 more rows
+ 5 Abilash      Gopal       1306179486 Psychiatry         11/29/2016            
+ 6 Linda        Schaffer    1740495043 Psychiatry         06/14/2012            
+ 7 Charles      Schaffer    1114132313 Psychiatry         06/14/2012            
+ 8 Cheri        Adrian      1366597833 Clinical Psycholo… 05/25/2012            
+ 9 Richard      Wolf        1891713079 Internal Medicine  08/16/2012            
+10 Robert       Woods       1881601029 Psychiatry         06/11/2012            
+# ℹ 9,395 more rows
 # ℹ abbreviated name: ¹​`Optout Effective Date`
 # ℹ 8 more variables: `Optout End Date` &lt;chr&gt;,
 #   `First Line Street Address` &lt;chr&gt;, `Second Line Street Address` &lt;chr&gt;,
