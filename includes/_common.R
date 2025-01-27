@@ -2,23 +2,24 @@ options(scipen = 999, digits = 3)
 
 library(collapse)
 library(tidyverse)
+library(httr2)
+library(glue)
 library(here)
+library(S7)
+library(rlang)
+library(gt)
 
 library(provider)
 library(providertwo)
 
-library(httr2)
-# library(curl)
-# library(weburl)
-# library(urlparse)
-
 library(arrow)
 library(RcppSimdJson)
 
-library(S7)
 library(listviewerlite)
-library(gt)
 
+# library(curl)
+# library(weburl)
+# library(urlparse)
 
 handle_na <- \(x) {
   purrr::modify_if(x, is.character, function(x) providertwo::na_if(x, y = "")) |>

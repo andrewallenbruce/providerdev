@@ -40,6 +40,8 @@ urls <- glue::glue(
   "{offset_sequence(stats$found_rows, 5000)}"
 )
 
+urls
+
 resp <- urls[1:3] |> 
   map(
     function(x) {
@@ -115,12 +117,13 @@ query <- glue::glue(
 query
 
 query <- query |> 
-  rlang::parse_expr() |> 
-  rlang::eval_bare()
+  parse_expr() |> 
+  eval_bare()
 
 query
 ```
 
+Retrieve Number of Results
 
 ```{r}
 queryurl <- accessURL |> 
@@ -137,24 +140,25 @@ nresults
 
 url_parse(queryurl$url)
 
-# Offset Shouldn't go to 10000
 off <- offset_sequence(nresults, 5000)
 
-off <- off[-3]
+off
+```
 
+Generate and Send Requests
+
+```{r}
 reqs <- map(
-  glue::glue(
+  glue(
     "{url}", 
     "&offset={off}", 
     url = queryurl$url, 
     off = ), 
   httr2::request)
 
-res <- req_perform_parallel(reqs) |> resps_successes()
-
-results <- map(res, \(x) tibble(resp_body_json(x, simplifyVector = TRUE))) |> 
+req_perform_parallel(reqs) |> 
+  resps_successes() |> 
+  map(\(x) tibble(resp_body_json(x, simplifyVector = TRUE))) |> 
   bind_rows()
-
-results
 ```
 
