@@ -14,7 +14,7 @@ source("includes/_common.R")
    * `publisher`: `"openpaymentsdata.cms.gov"`
    * `bureauCode`: `"009:38"`
    * `programCode`: `"009:000"`
-   * `"accessLevel"`: `"public"`
+   * `accessLevel`: `"public"`
 
 ```{r}
 #| label: open_dataset
@@ -29,7 +29,9 @@ open_dataset <- qTBL(
         programCode        = delist(programCode),
         theme              = delist(map(theme, \(x) gelm(as.list(x), "data"))),
         year               = delist(map(keyword, \(x) gelm(as.list(x), "data"))),
-        `%modified`        = clock::date_time_parse_RFC_3339(`%modified`, offset = "%Ez")) |> 
+        # `%modified`        = as_date(`%modified`, fmt = "%Y-%m-%dT%H:%M:%Ez")
+        `%modified`        = clock::date_time_parse_RFC_3339(`%modified`, offset = "%Ez")
+        ) |> 
   slt(year,
       title,
       description,
@@ -40,6 +42,8 @@ open_dataset <- qTBL(
       temporal,
       accrualPeriodicity,
       distribution)
+
+open_dataset
 ```
 
 
@@ -77,7 +81,9 @@ open_data <- request(
   ) |>
   req_perform() |>
   resp_body_json(simplifyVector = TRUE) |> 
-  tibble() |> 
+  tibble()
+
+open_data |> 
   unnest_wider(keyword, names_sep = "_") |>
   unnest_wider(theme, names_sep = "_") |>
   unnest_wider(contactPoint, names_sep = "_") |>

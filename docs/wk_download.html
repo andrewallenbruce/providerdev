@@ -8,7 +8,7 @@
 
 <meta name="description" content="This is a personal, informal guide to rewriting an R package. It is a work in progress and will be updated as I learn more about the process.">
 
-<title>3&nbsp; Open Payments API – Refactoring Provider</title>
+<title>11&nbsp; Downloads – Refactoring Provider</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,40 +21,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -65,8 +31,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./faq_eligibility.html" rel="next">
-<link href="./faq_provider.html" rel="prev">
+<link href="./end_affiliations.html" rel="next">
+<link href="./wk_offset.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -118,7 +84,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./faq_public.html">Notes</a></li><li class="breadcrumb-item"><a href="./faq_openpay.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Open Payments API</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./wk_backend.html">Work Areas</a></li><li class="breadcrumb-item"><a href="./wk_download.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Downloads</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -186,7 +152,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./faq_openpay.html" class="sidebar-item-text sidebar-link active">
+  <a href="./faq_openpay.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Open Payments API</span></span></a>
   </div>
 </li>
@@ -245,7 +211,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./wk_download.html" class="sidebar-item-text sidebar-link">
+  <a href="./wk_download.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Downloads</span></span></a>
   </div>
 </li>
@@ -280,20 +246,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
-   
-  <ul>
-  <li><a href="#dataset" id="toc-dataset" class="nav-link active" data-scroll-target="#dataset"><span class="header-section-number">3.1</span> Dataset</a></li>
-  </ul>
-<div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li></ul></div></nav>
-    </div>
+        
+    <div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li></ul></div></div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./faq_public.html">Notes</a></li><li class="breadcrumb-item"><a href="./faq_openpay.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Open Payments API</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./wk_backend.html">Work Areas</a></li><li class="breadcrumb-item"><a href="./wk_download.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Downloads</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Open Payments API</span></h1>
+<h1 class="title"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Downloads</span></h1>
 </div>
 
 
@@ -310,190 +270,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="dataset" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="dataset"><span class="header-section-number">3.1</span> Dataset</h2>
-<ul>
-<li><code>publisher</code>: <code>"openpaymentsdata.cms.gov"</code></li>
-<li><code>bureauCode</code>: <code>"009:38"</code></li>
-<li><code>programCode</code>: <code>"009:000"</code></li>
-<li><code>accessLevel</code>: <code>"public"</code></li>
-</ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>open_dataset <span class="ot">&lt;-</span> <span class="fu">qTBL</span>(</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fload</span>(<span class="st">"https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids"</span>), </span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">keep.attr =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mtt</span>(<span class="at">issued             =</span> <span class="fu">as_date</span>(issued),</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">modified           =</span> <span class="fu">as_date</span>(modified),</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">accrualPeriodicity =</span> <span class="fu">recode_iso8601</span>(accrualPeriodicity),</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">description        =</span> <span class="fu">sf_remove</span>(description, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>),</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">bureauCode         =</span> <span class="fu">delist</span>(bureauCode),</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">programCode        =</span> <span class="fu">delist</span>(programCode),</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">theme              =</span> <span class="fu">delist</span>(<span class="fu">map</span>(theme, \(x) <span class="fu">gelm</span>(<span class="fu">as.list</span>(x), <span class="st">"data"</span>))),</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">year               =</span> <span class="fu">delist</span>(<span class="fu">map</span>(keyword, \(x) <span class="fu">gelm</span>(<span class="fu">as.list</span>(x), <span class="st">"data"</span>))),</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        <span class="co"># `%modified`        = as_date(`%modified`, fmt = "%Y-%m-%dT%H:%M:%Ez")</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">`</span><span class="at">%modified</span><span class="st">`</span>        <span class="ot">=</span> clock<span class="sc">::</span><span class="fu">date_time_parse_RFC_3339</span>(<span class="st">`</span><span class="at">%modified</span><span class="st">`</span>, <span class="at">offset =</span> <span class="st">"%Ez"</span>)</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        ) <span class="sc">|&gt;</span> </span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(year,</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>      title,</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>      description,</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>      theme,</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>      issued,</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>      modified,</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">modified_dttm =</span> <span class="st">`</span><span class="at">%modified</span><span class="st">`</span>,</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>      temporal,</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>      accrualPeriodicity,</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>      distribution)</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>open_dataset</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 74 × 10
-   year  title       description theme issued     modified   modified_dttm      
-   &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;       &lt;chr&gt; &lt;date&gt;     &lt;date&gt;     &lt;dttm&gt;             
- 1 2017  2017 Resea… "Research … Rese… 2024-06-28 2024-06-28 2024-07-29 20:42:01
- 2 2017  2017 Owner… "Ownership… Owne… 2024-06-28 2024-06-28 2024-07-29 20:42:03
- 3 2017  2017 Gener… "All gener… Gene… 2024-06-28 2024-06-28 2024-07-29 20:42:05
- 4 2018  2018 Resea… "Research … Rese… 2024-06-28 2024-06-28 2024-07-29 20:37:44
- 5 2018  2018 Owner… "Ownership… Owne… 2024-06-28 2024-06-28 2024-07-29 20:37:46
- 6 2018  2018 Gener… "All gener… Gene… 2024-06-28 2024-06-28 2024-07-29 20:37:49
- 7 2019  2019 Resea… "Research … Rese… 2024-06-28 2024-06-28 2024-07-29 20:37:55
- 8 2019  2019 Owner… "Ownership… Owne… 2024-06-28 2024-06-28 2024-07-29 20:37:57
- 9 2019  2019 Gener… "All gener… Gene… 2024-06-28 2024-06-28 2024-07-29 20:38:00
-10 2020  2020 Resea… "Research … Rese… 2024-06-28 2024-06-28 2024-07-29 20:41:53
-# ℹ 64 more rows
-# ℹ 3 more variables: temporal &lt;chr&gt;, accrualPeriodicity &lt;chr&gt;,
-#   distribution &lt;list&gt;</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># identifiers &lt;- uniq(qTBL(rowbind(gelm(open_dataset, "keyword"))))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>identifier <span class="ot">&lt;-</span> <span class="fu">qTBL</span>(<span class="fu">rowbind</span>(<span class="fu">gelm</span>(open_dataset, <span class="st">"distribution"</span>), <span class="at">fill =</span> <span class="cn">TRUE</span>), <span class="at">keep.attr =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>identifier</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 74 × 2
-   identifier                           data            
-   &lt;chr&gt;                                &lt;list&gt;          
- 1 10ec915a-726a-53b1-9eee-546846c90a60 &lt;named list [7]&gt;
- 2 74072985-5917-5079-a3f4-a0da51425bf8 &lt;named list [7]&gt;
- 3 972fcce6-f7d1-5be0-9241-863086d2480f &lt;named list [7]&gt;
- 4 bfb00fa2-35de-5252-af36-3792394e0f4d &lt;named list [7]&gt;
- 5 e8e70351-162d-5ef6-b1ac-2ee76547596c &lt;named list [7]&gt;
- 6 ce9b904c-ba82-538d-aa58-8aaf403485c7 &lt;named list [7]&gt;
- 7 6817039d-2e36-5f2f-a39a-ff06348fde9d &lt;named list [7]&gt;
- 8 76157bd1-ad0c-5013-8507-7d1d60c8704c &lt;named list [7]&gt;
- 9 9604af6a-476a-5106-ac01-9a0fb7749e01 &lt;named list [7]&gt;
-10 d3d56ac4-0d97-5e8f-986c-eb577ff5086a &lt;named list [7]&gt;
-# ℹ 64 more rows</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>distribution <span class="ot">&lt;-</span> <span class="fu">qTBL</span>(<span class="fu">rowbind</span>(<span class="fu">gelm</span>(identifier, <span class="st">"data"</span>), <span class="at">fill =</span> <span class="cn">TRUE</span>), <span class="at">keep.attr =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(<span class="sc">-</span><span class="st">`</span><span class="at">@type</span><span class="st">`</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>distribution <span class="sc">|&gt;</span> </span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="st">`</span><span class="at">%Ref:downloadURL</span><span class="st">`</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(<span class="st">`</span><span class="at">%Ref:downloadURL</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 148
-  `%Ref:downloadURL_1`                 `%Ref:downloadURL_2` `%Ref:downloadURL_3`
-  &lt;chr&gt;                                        &lt;list&lt;list&gt;&gt; &lt;chr&gt;               
-1 406c2298a6b7301216c629a77526e892__1…                  [1] 8ceb3ee081ecd373992…
-2 406c2298a6b7301216c629a77526e892__1…                  [1] 8ceb3ee081ecd373992…
-3 406c2298a6b7301216c629a77526e892__1…                  [1] 8ceb3ee081ecd373992…
-4 406c2298a6b7301216c629a77526e892__1…                  [1] 8ceb3ee081ecd373992…
-5 406c2298a6b7301216c629a77526e892__1…                  [1] 8ceb3ee081ecd373992…
-6 406c2298a6b7301216c629a77526e892__1…                  [1] 8ceb3ee081ecd373992…
-# ℹ 145 more variables: `%Ref:downloadURL_4` &lt;list&lt;list&gt;&gt;,
-#   `%Ref:downloadURL_5` &lt;chr&gt;, `%Ref:downloadURL_6` &lt;list&lt;list&gt;&gt;,
-#   `%Ref:downloadURL_7` &lt;chr&gt;, `%Ref:downloadURL_8` &lt;list&lt;list&gt;&gt;,
-#   `%Ref:downloadURL_9` &lt;chr&gt;, `%Ref:downloadURL_10` &lt;list&lt;list&gt;&gt;,
-#   `%Ref:downloadURL_11` &lt;chr&gt;, `%Ref:downloadURL_12` &lt;list&lt;list&gt;&gt;,
-#   `%Ref:downloadURL_13` &lt;chr&gt;, `%Ref:downloadURL_14` &lt;list&lt;list&gt;&gt;,
-#   `%Ref:downloadURL_15` &lt;chr&gt;, `%Ref:downloadURL_16` &lt;list&lt;list&gt;&gt;, …</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># qTBL(distribution[["%Ref:downloadURL"]])</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># qTBL(rowbind(, fill = TRUE), keep.attr = TRUE)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>open_data <span class="ot">&lt;-</span> <span class="fu">request</span>(</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids"</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>()</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>open_data <span class="sc">|&gt;</span> </span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(keyword, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(theme, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(contactPoint, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(publisher, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(publisher_data, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(distribution, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(distribution_data, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(<span class="st">`</span><span class="at">distribution_data_%Ref:downloadURL</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(<span class="st">`</span><span class="at">distribution_data_%Ref:downloadURL_1</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(<span class="st">`</span><span class="at">distribution_data_%Ref:downloadURL_1_data</span><span class="st">`</span>, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">description        =</span> <span class="fu">replace_open_desc</span>(description),</span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">bureauCode         =</span> <span class="fu">delist</span>(bureauCode),</span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">programCode        =</span> <span class="fu">delist</span>(programCode)) <span class="sc">|&gt;</span></span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(remove_at_symbol) <span class="sc">|&gt;</span> </span>
-<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">modified_dttm =</span> <span class="st">`</span><span class="at">%modified</span><span class="st">`</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">remove_all_na</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 74 × 37
-   bureauCode programCode accessLevel keyword_identifier            keyword_data
-   &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;       &lt;chr&gt;                         &lt;chr&gt;       
- 1 009:38     009:000     public      7a69eb60-9b96-52b9-a965-bc35… 2017        
- 2 009:38     009:000     public      7a69eb60-9b96-52b9-a965-bc35… 2017        
- 3 009:38     009:000     public      7a69eb60-9b96-52b9-a965-bc35… 2017        
- 4 009:38     009:000     public      84dbcaf9-e303-5091-bc41-db1d… 2018        
- 5 009:38     009:000     public      84dbcaf9-e303-5091-bc41-db1d… 2018        
- 6 009:38     009:000     public      84dbcaf9-e303-5091-bc41-db1d… 2018        
- 7 009:38     009:000     public      9a0e833d-bee5-5a80-a438-f9bc… 2019        
- 8 009:38     009:000     public      9a0e833d-bee5-5a80-a438-f9bc… 2019        
- 9 009:38     009:000     public      9a0e833d-bee5-5a80-a438-f9bc… 2019        
-10 009:38     009:000     public      299719dd-3e81-510f-a4ca-1d48… 2020        
-# ℹ 64 more rows
-# ℹ 32 more variables: contactPoint_fn &lt;chr&gt;, contactPoint_hasEmail &lt;chr&gt;,
-#   dataQuality &lt;lgl&gt;, description &lt;chr&gt;, distribution_identifier &lt;chr&gt;,
-#   distribution_data_title &lt;chr&gt;, distribution_data_mediaType &lt;chr&gt;,
-#   distribution_data_format &lt;chr&gt;, distribution_data_downloadURL &lt;chr&gt;,
-#   distribution_data_describedBy &lt;chr&gt;,
-#   distribution_data_describedByType &lt;chr&gt;, …</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>open_data <span class="sc">|&gt;</span> </span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>- $bureauCode         L74 list("009:38", "009:38", "009:38", "009:38", "009 ...
-- $programCode        L74 list("009:000", "009:000", "009:000", "009:000",  ...
-- $accessLevel        c74 public                                            ...
-- $keyword            L74 list(structure(list(identifier = "7a69eb60-9b96-5 ...
-- $contactPoint       L2  structure(list(c("Open Payments", "Open Payments" ...
-- $dataQuality        l74 T                                                 ...
-- $description        c74 Research Payment Data – Detailed Dataset 2017 Rep ...
-- $distribution       L74 list(structure(list(identifier = "10ec915a-726a-5 ...
-- $identifier         c74 0e3977b9-a5d6-427e-bc02-480481edd6e0              ...
-- $title              c74 2017 Research Payment Data                        ...
-- $issued             c74 2024-06-28                                        ...
-- $modified           c74 2024-06-28                                        ...
-- $temporal           c74 2017-01-01/2017-12-31                             ...
-- $publisher          L2  structure(list(c("11b41668-9929-5de3-b494-6464ac4 ...
-- $license            c74 https://www.usa.gov/government-works              ...
-- $theme              L74 list(structure(list(identifier = "0dbaba68-b7d1-5 ...
-- $%modified          c74 2024-07-29T20:42:01+0000                          ...
-- $@type              c74 NA                                                ...
-- $accrualPeriodicity c74 NA                                                ...</code></pre>
-</div>
-</div>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -915,13 +693,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./faq_provider.html" class="pagination-link" aria-label="Provider API">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Provider API</span></span>
+      <a href="./wk_offset.html" class="pagination-link" aria-label="Pagination + Offset">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Pagination + Offset</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./faq_eligibility.html" class="pagination-link" aria-label="QPP API">
-        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">QPP API</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./end_affiliations.html" class="pagination-link" aria-label="`affiliations`">
+        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title"><code>affiliations</code></span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
