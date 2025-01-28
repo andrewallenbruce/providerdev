@@ -10,3 +10,62 @@ editor_options:
 source("includes/_common.R")
 ```
 
+## Provider Enrollment Sub-Files
+
+```{r}
+#| label: subfile_csvs
+resourcesAPI <- prop(public_Dataset("Provider Enrollment"), "resourcesAPI")
+
+resourcesAPI
+
+subfile_csvs <- filter(resourcesAPI@files, fileType == "csv", sf_detect(name, "Sub-File"))
+
+subfile_csvs
+
+subfile_urls <- subfile_csvs$downloadURL
+
+subfile_urls
+```
+
+### Reassignment Sub-File 2024 Q4
+
+```{r}
+#| label: reassign_subfile
+reassign_subfile <- read_csv_arrow(
+  file = subfile_urls[1], 
+  col_types = "cc",
+  col_names = c("REASGN_BNFT_ENRLMT_ID", "RCV_BNFT_ENRLMT_ID"),
+  as_data_frame = TRUE) |> 
+  to_duckdb()
+
+reassign_subfile
+```
+
+### Address Sub-File 2024 Q4
+
+```{r}
+#| label: address_subfile
+address_subfile <- read_csv_arrow(
+  file = subfile_urls[2], 
+  col_types = "cccc",
+  col_names = c("ENRLMT_ID", "CITY_NAME", "STATE_CD", "ZIP_CD"),
+  as_data_frame = TRUE) |> 
+  to_duckdb()
+
+address_subfile
+```
+
+### Secondary Specialty Sub-File 2024 Q4
+
+```{r}
+#| label: second_specialty
+second_specialty <- read_csv_arrow(
+  file = subfile_urls[3], 
+  col_types = "ccc",
+  col_names = c("ENRLMT_ID", "PROVIDER_TYPE_CD", "PROVIDER_TYPE_DESC"),
+  as_data_frame = TRUE) |> 
+  to_duckdb()
+
+second_specialty
+```
+
