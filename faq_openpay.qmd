@@ -153,6 +153,44 @@ open_ids <- function(search) {
 ## New Function
 
 ```{r}
+fields <- c(
+  "year",
+  "covered_recipient_npi",                                         
+  "covered_recipient_type",                                        
+  "covered_recipient_first_name",                                  
+  "covered_recipient_last_name",                                   
+  "recipient_city",                                                
+  "recipient_state",                                               
+  "recipient_zip_code",                                            
+  "teaching_hospital_name",                                        
+  "form_of_payment_or_transfer_of_value",                          
+  "nature_of_payment_or_transfer_of_value",                        
+  "applicable_manufacturer_or_applicable_gpo_making_payment_name",
+  "applicable_manufacturer_or_applicable_gpo_making_payment_id")
+
+process_params <- \(arg_names, field_names) {
+  
+  nms <- set_names(arg_names, field_names)
+  
+  parse_expr(
+    paste0(
+      "list2(", 
+      glue_collapse(
+        glue('{names(nms)} = {unname(nms)}'), 
+        sep = ", "), ")"))
+}
+
+has_operator <- \(args) {
+  map_lgl(args, function(x) inherits(x, "query_operator"))
+}
+
+name_path <- \(args) {
+  map(args, \(x) x[[names(x)]][["path"]] <- names(x))
+}
+```
+
+
+```{r}
 open_pay <- function(year,
                      npi               = NULL,
                      covered_type      = NULL,
@@ -166,37 +204,16 @@ open_pay <- function(year,
                      payment_nature    = NULL,
                      payer             = NULL,
                      payer_id          = NULL) {
-
-  arg_names <- set_names(
-    fn_fmls_names(),
-      c("year",
-        "covered_recipient_npi",                                         
-        "covered_recipient_type",                                        
-        "covered_recipient_first_name",                                  
-        "covered_recipient_last_name",                                   
-        "recipient_city",                                                
-        "recipient_state",                                               
-        "recipient_zip_code",                                            
-        "teaching_hospital_name",                                        
-        "form_of_payment_or_transfer_of_value",                          
-        "nature_of_payment_or_transfer_of_value",                        
-        "applicable_manufacturer_or_applicable_gpo_making_payment_name",
-        "applicable_manufacturer_or_applicable_gpo_making_payment_id"
-        )
-      )
   
-  paste0(
-    "list2(", 
-    glue_collapse(
-      glue('{names(arg_names)} = {unname(arg_names)}'), 
-      sep = ", "), 
-    ")") |> 
-  parse_expr() |> 
-  eval_bare() |> 
+  fn_args <- process_params(fn_fmls_names(), fields) |> 
+    eval_bare() |> 
     compact()
+  
+  # if (any(has_operator(fn_args))) fn_args[has_operator(fn_args)] <- name_path(fn_args[has_operator(fn_args)])
+  
+  fn_args
 }
 ```
-
 
 ```{r}
 open_pay(year = 2021, npi = "1043218118")
@@ -206,6 +223,41 @@ open_pay(year = 2021, payer = "Adaptive Biotechnologies Corporation")
 open_pay(year = 2021, teaching_hospital = "Nyu Langone Hospitals")
 open_pay(year = 2017:2023, npi = "1043477615")
 ```
+
+```{r}
+starts_with <- \(x) {
+  structure(
+    c(path      = NA_character_,
+      operator  = "STARTS_WITH",
+      value     = x),
+    class = "query_operator")
+}
+
+starts_with("Royalty or License")
+
+x <- open_pay(
+  year = 2021, 
+  payment_nature = starts_with("Royalty or License"), 
+  teaching_hospital = starts_with("NYU"))
+
+x
+
+names(x[has_operator(x)])
+
+x[has_operator(x)][[1]][["path"]] <- names(x[has_operator(x)])[[1]]
+
+x
+
+# map(args, \(x) x[[names(x)]][["path"]] <- names(x))
+# 
+# x[has_operator(x)] <- providertwo:::map2(
+#   x[has_operator(x)], 
+#   names(x[has_operator(x)]), 
+#   function(x, y) x[["path"]] <- y)
+# 
+# x
+```
+
 
 ## Query Format
 
