@@ -5,17 +5,101 @@
 #| include: false
 source("includes/_common.R")
 
-htmltools::tagList(
-  btn_link(
-    "https://andrewallenbruce.github.io/provider/reference/providers.html",
-    "Documentation"),
-  btn_link(
-    "https://github.com/andrewallenbruce/provider/blob/main/R/providers.R", 
-    "Source"))
+# htmltools::tagList(
+#   btn_link(
+#     "https://andrewallenbruce.github.io/provider/reference/providers.html",
+#     "Documentation"),
+#   btn_link(
+#     "https://github.com/andrewallenbruce/provider/blob/main/R/providers.R", 
+#     "Source"))
 ```
 
    * Base URL: `https://data.cms.gov/data-api/v1/`
    * Identifier: `2457ea29-fc82-48b0-86ec-3b0755de7515`
+
+```{r}
+complete_limit <- function(limit) {
+  
+  function(resp) length(resp_body_json(resp)$data) < limit
+  
+}
+```
+
+
+```{r}
+enrollees2 <- function(npi       = NULL,
+                      pac       = NULL,
+                      enid      = NULL,
+                      spec_code = NULL,
+                      spec_desc = NULL,
+                      first     = NULL,
+                      middle    = NULL,
+                      last      = NULL,
+                      org       = NULL,
+                      state     = NULL,
+                      gender    = NULL,
+                      limit     = 5000) {
+
+  providertwo:::check_number_whole(limit, min = 0)
+
+  args <- list2(
+    "NPI"                = npi,
+    "PECOS_ASCT_CNTL_ID" = pac,
+    "ENRLMT_ID"          = enid,
+    "PROVIDER_TYPE_CD"   = spec_code,
+    "PROVIDER_TYPE_DESC" = spec_desc,
+    "STATE_CD"           = state,
+    "FIRST_NAME"         = first,
+    "MDL_NAME"           = middle,
+    "LAST_NAME"          = last,
+    "ORG_NAME"           = org,
+    "GNDR_SW"            = gender)
+
+  api <- public_Dataset("Public Provider Enrollment")
+
+  nobs <- req_url_query(api@identifier@request, !!!format_query(args), size = limit) |>
+    req_url_path_append("stats") |>
+    req_perform() |>
+    resp_body_json(simplifyVector = TRUE) |>
+    gelm("found_rows") |>
+    offset_sequence(limit = limit)
+
+  resp <- req_url_query(api@identifier@request, !!!format_query(args), size = limit) |>
+    req_perform_iterative(
+    next_req = iterate_with_offset(
+      "offset",
+      start = 0,
+      offset = 5000,
+      resp_complete = complete_limit(limit)))
+
+
+  cat(format(api@title), "\n")
+
+  utils::formatUL(
+    label  = "==>",
+    offset = 2,
+    c(paste0("Periodicity: ", format(api@accrualPeriodicity)),
+      paste0("Last Modified:       ", format(api@modified)))
+    ) |>
+    writeLines()
+
+  cat("\n")
+
+  map(resp, \(x)
+      resp_body_string(x) |>
+        fparse() |>
+        _[["data"]] |>
+        qTBL()) |>
+    rowbind() |>
+    setNames(names(args)) |>
+    providertwo:::vna_if()
+
+  # qTBL(resp[["data"]]) |>
+  #   setNames(names(args))
+
+}
+```
+
 
 ## Catalog
 
