@@ -17,16 +17,6 @@ source("includes/_common.R")
    * Base URL: `https://data.cms.gov/data-api/v1/`
    * Identifier: `2457ea29-fc82-48b0-86ec-3b0755de7515`
 
-```{r}
-abort_no_results <- function(x) {
-  rlang::abort(
-    message = c("!" = glue::glue("{x} results found.")),
-    use_cli_format = TRUE,
-    class = "abort_no_results"
-  )
-}
-```
-
 
 ```{r}
 perform_request <- \(request, query, limit) {
@@ -42,18 +32,25 @@ perform_request <- \(request, query, limit) {
     getelem("found_rows")
   
   if (n == 0) {
-    abort_no_results(n)
+    rlang::abort(
+    message = c("!" = glue::glue("{n} results found.")),
+    use_cli_format = TRUE,
+    call = rlang::caller_env(),
+    class = "abort_no_results"
+  )
     }
   
   off_len <- length(offset_sequence(n = n, limit = limit))
   
   if (off_len == 1) {
     return(
-      fparse(resp_body_string(req_perform(req))) |> 
-      _[["data"]] |> 
-      qTBL() |> 
-      set_names(names(query)) |>
-    providertwo:::map_na_if()
+      qTBL(
+        fparse(
+          resp_body_string(
+            req_perform(req))) |> 
+          _[["data"]]) |> 
+      set_names(names(query)) |> 
+      providertwo:::map_na_if()
     )
   }
   
@@ -61,15 +58,15 @@ perform_request <- \(request, query, limit) {
     return(
       req_perform_iterative(
       req,
-      next_req = iterate_with_offset(
-        param_name = "offset",
-        start  = 0,
-        offset = limit,
+      next_req        = iterate_with_offset(
+        param_name    = "offset",
+        start         = 0,
+        offset        = limit,
         resp_complete = providertwo:::is_complete_with_limit(limit))) |> 
-      map(\(x) fparse(resp_body_string(x)) |> _[["data"]] |> qTBL()) |>
+      map(\(x) qTBL(fparse(resp_body_string(x)) |> _[["data"]])) |>
       rowbind() |>
-    set_names(names(query)) |>
-    providertwo:::map_na_if()
+    set_names(names(query)) |> 
+      providertwo:::map_na_if()
     )
   }
 }
