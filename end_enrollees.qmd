@@ -18,27 +18,76 @@ source("includes/_common.R")
    * Identifier: `2457ea29-fc82-48b0-86ec-3b0755de7515`
 
 ```{r}
-complete_limit <- function(limit) {
-  
-  function(resp) length(resp_body_json(resp)$data) < limit
-  
+abort_no_results <- function(x) {
+  rlang::abort(
+    message = c("!" = glue::glue("{x} results found.")),
+    use_cli_format = TRUE,
+    class = "abort_no_results"
+  )
 }
 ```
 
 
 ```{r}
+perform_request <- \(request, query, limit) {
+  
+  req <- req_url_query(
+    request, 
+    !!!format_query(query), 
+    size = limit)
+  
+  n <- req_url_path_append(req, "stats") |>
+    req_perform() |>
+    resp_body_json(simplifyVector = TRUE) |>
+    getelem("found_rows")
+  
+  if (n == 0) {
+    abort_no_results(n)
+    }
+  
+  off_len <- length(offset_sequence(n = n, limit = limit))
+  
+  if (off_len == 1) {
+    return(
+      fparse(resp_body_string(req_perform(req))) |> 
+      _[["data"]] |> 
+      qTBL() |> 
+      set_names(names(query)) |>
+    providertwo:::map_na_if()
+    )
+  }
+  
+  if (off_len > 1) {
+    return(
+      req_perform_iterative(
+      req,
+      next_req = iterate_with_offset(
+        param_name = "offset",
+        start  = 0,
+        offset = limit,
+        resp_complete = providertwo:::is_complete_with_limit(limit))) |> 
+      map(\(x) fparse(resp_body_string(x)) |> _[["data"]] |> qTBL()) |>
+      rowbind() |>
+    set_names(names(query)) |>
+    providertwo:::map_na_if()
+    )
+  }
+}
+```
+
+```{r}
 enrollees2 <- function(npi       = NULL,
-                      pac       = NULL,
-                      enid      = NULL,
-                      spec_code = NULL,
-                      spec_desc = NULL,
-                      first     = NULL,
-                      middle    = NULL,
-                      last      = NULL,
-                      org       = NULL,
-                      state     = NULL,
-                      gender    = NULL,
-                      limit     = 5000) {
+                       pac       = NULL,
+                       enid      = NULL,
+                       spec_code = NULL,
+                       spec_desc = NULL,
+                       first     = NULL,
+                       middle    = NULL,
+                       last      = NULL,
+                       org       = NULL,
+                       state     = NULL,
+                       gender    = NULL,
+                       limit     = 5000) {
 
   providertwo:::check_number_whole(limit, min = 0)
 
@@ -56,48 +105,22 @@ enrollees2 <- function(npi       = NULL,
     "GNDR_SW"            = gender)
 
   api <- public_Dataset("Public Provider Enrollment")
-
-  nobs <- req_url_query(api@identifier@request, !!!format_query(args), size = limit) |>
-    req_url_path_append("stats") |>
-    req_perform() |>
-    resp_body_json(simplifyVector = TRUE) |>
-    gelm("found_rows") |>
-    offset_sequence(limit = limit)
-
-  resp <- req_url_query(api@identifier@request, !!!format_query(args), size = limit) |>
-    req_perform_iterative(
-    next_req = iterate_with_offset(
-      "offset",
-      start = 0,
-      offset = 5000,
-      resp_complete = complete_limit(limit)))
-
-
-  cat(format(api@title), "\n")
-
-  utils::formatUL(
-    label  = "==>",
-    offset = 2,
-    c(paste0("Periodicity: ", format(api@accrualPeriodicity)),
-      paste0("Last Modified:       ", format(api@modified)))
-    ) |>
-    writeLines()
-
-  cat("\n")
-
-  map(resp, \(x)
-      resp_body_string(x) |>
-        fparse() |>
-        _[["data"]] |>
-        qTBL()) |>
-    rowbind() |>
-    setNames(names(args)) |>
-    providertwo:::vna_if()
-
-  # qTBL(resp[["data"]]) |>
-  #   setNames(names(args))
-
+  
+  perform_request(
+    request = api@identifier@request, 
+    query   = args, 
+    limit   = limit)
 }
+```
+
+
+```{r}
+#| error: true
+enrollees2(enid = "I2004030900022")
+enrollees2(npi = "1417918293", spec_code = "14-41")
+enrollees2(pac = "2860305554", gender = "9")
+enrollees2(state = "GA", gender = "9")
+enrollees2(state = "GA", gender = "F")
 ```
 
 
