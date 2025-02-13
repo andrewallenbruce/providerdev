@@ -4,9 +4,9 @@
     "href": "index.html",
     "title": "Refactoring Provider",
     "section": "",
-    "text": "Home",
+    "text": "Preface",
     "crumbs": [
-      "Home"
+      "Preface"
     ]
   },
   {
@@ -14,9 +14,9 @@
     "href": "index.html#sections",
     "title": "Refactoring Provider",
     "section": "Sections",
-    "text": "Sections\n\n12  affiliations\n13  enrollees",
+    "text": "Sections\n\n9  Querying\n12  affiliations\n13  enrollees\n14  Backend\n15  Keyword Groups",
     "crumbs": [
-      "Home"
+      "Preface"
     ]
   },
   {
@@ -392,78 +392,78 @@
   {
     "objectID": "wk_query.html",
     "href": "wk_query.html",
-    "title": "9  Query DSL",
+    "title": "9  Querying",
     "section": "",
     "text": "9.1 Building Queries",
     "crumbs": [
       "Work Areas",
-      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Query DSL</span>"
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Querying</span>"
     ]
   },
   {
     "objectID": "wk_query.html#building-queries",
     "href": "wk_query.html#building-queries",
-    "title": "9  Query DSL",
+    "title": "9  Querying",
     "section": "",
     "text": "Select Dataset/Method\nBuild JSON Query\nRetrieve Number of Results\nBuild Offset Sequence\nBuild Request\n\ncatalog: public\n  format: API\n  description: latest\n  title: Medicare Fee-For-Service Public Provider Enrollment\n  url:\n    scheme: https:\n    host: data.cms.gov\n    path:\n      head: data-api/v1/dataset\n      guid: 9887a515-7552-4693-bf58-735c77af46d7\n      tail: data-viewer\n      nobs: stats\n    query:\n      filter: 1\n      path: PROVIDER_TYPE_DESC\n      operator: =\n      value: PRACTITIONER - GENERAL PRACTICE",
     "crumbs": [
       "Work Areas",
-      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Query DSL</span>"
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Querying</span>"
     ]
   },
   {
     "objectID": "wk_query.html#operators",
     "href": "wk_query.html#operators",
-    "title": "9  Query DSL",
+    "title": "9  Querying",
     "section": "9.2 Operators",
     "text": "9.2 Operators\n\n\n\n\n\n  \n    \n      JSON:API Allowed Operations\n    \n    \n  \n  \n    =\ndefault\n    &lt;&gt;\nnotequal(x)\n    &gt;\ngreaterthan(x)\n    &gt;=\ngreater_or_equal(x)\n    &lt;\nlessthan(x)\n    &lt;=\nless_or_equal(x)\n    STARTS_WITH\nstartswith(x)\n    CONTAINS\nincludes(x)\n    ENDS_WITH\nendswith(x)\n    IN\nin(x)\n    NOT IN\nnotin(x)\n    BETWEEN\ninside(x)\n    NOT BETWEEN\noutside(x)\n    IS NULL\nX\n    IS NOT NULL\nX",
     "crumbs": [
       "Work Areas",
-      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Query DSL</span>"
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Querying</span>"
     ]
   },
   {
     "objectID": "wk_query.html#s7",
     "href": "wk_query.html#s7",
-    "title": "9  Query DSL",
+    "title": "9  Querying",
     "section": "9.3 S7",
     "text": "9.3 S7\n\n9.3.1 class_query\n\nclass_query &lt;- new_class(\n  \"class_query\",\n  properties = list(\n    path     = class_character,\n    operator = class_character,\n    value    = class_vector,\n    limit    = class_numeric,\n    sort     = class_character, \n    column   = class_vector,\n    group    = new_property(\n      class_list,\n      default = list(\n        conjunction = \"AND\",\n        memberOf    = \"\"))\n  )\n)\n\n\n\n9.3.2 class_args\n\nnull_numeric    &lt;- new_union(NULL, class_numeric)\nnull_vector     &lt;- new_union(NULL, class_vector)\nnull_character  &lt;- new_union(NULL, class_character)\n\nclass_args &lt;- new_class(\n  \"class_args\",\n  properties = list(\n    id     = null_numeric,\n    state  = null_character,\n    name   = null_character,\n    number = null_numeric\n  ),\n  validator = function(self) { \n    if (not_null(self@state) && \n        any(!self@state %in% state.abb)) \n      paste(\"`state`\", self@state, \"not found\")\n  }\n)\n\ntry(class_args(\n  id     = 1234567890, \n  state  = \"ZZ\",\n  number = \"300.12\"))\n\nError : &lt;class_args&gt; object properties are invalid:\n- @number must be &lt;NULL&gt;, &lt;integer&gt;, or &lt;double&gt;, not &lt;character&gt;\n\ntry(class_args(\n  state  = \"ZZ\",\n  name   = \"Jerry\",\n  number = 300.12))\n\nError : &lt;class_args&gt; object is invalid:\n- `state` ZZ not found\n\nclass_args(state  = c(\"GA\", \"MD\"))\n\n&lt;class_args&gt;\n @ id    : NULL\n @ state : chr [1:2] \"GA\" \"MD\"\n @ name  : NULL\n @ number: NULL",
     "crumbs": [
       "Work Areas",
-      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Query DSL</span>"
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Querying</span>"
     ]
   },
   {
     "objectID": "wk_query.html#query-formatters",
     "href": "wk_query.html#query-formatters",
-    "title": "9  Query DSL",
+    "title": "9  Querying",
     "section": "9.4 query Formatters",
     "text": "9.4 query Formatters\n\nex &lt;- list(\n  state  = c(\"GA\", \"MD\"), \n  name   = \"Jerry\", \n  number = 300.12)\n\n\n9.4.1 query_comparison\n\nquery_comparison &lt;- function(args, operator = c(\"=\", \"&gt;\", \"&gt;=\", \"&lt;\", \"&lt;=\", \"&lt;&gt;\")) {\n  \n  operator &lt;- match.arg(operator)\n  args     &lt;- args[\n    cheapr::which_(\n      cheapr::lengths_(\n        args, \n        names = TRUE) == 1\n      )]\n  \n  glue::glue(\n  \"\n  filter[f{seq_along(args)}][condition][path]={names(args)}\n  filter[f{seq_along(args)}][condition][operator]={operator}\n  filter[f{seq_along(args)}][condition][value]={delist(args)}\n  \"\n  )\n}\n\nquery_comparison(ex)\n\nfilter[f1][condition][path]=name\nfilter[f1][condition][operator]==\nfilter[f1][condition][value]=Jerry\nfilter[f2][condition][path]=number\nfilter[f2][condition][operator]==\nfilter[f2][condition][value]=300.12\n\nquery_comparison(ex, \"&gt;=\")\n\nfilter[f1][condition][path]=name\nfilter[f1][condition][operator]=&gt;=\nfilter[f1][condition][value]=Jerry\nfilter[f2][condition][path]=number\nfilter[f2][condition][operator]=&gt;=\nfilter[f2][condition][value]=300.12\n\n\n\n\n9.4.2 query_equals_simple\n\nquery_equals_simple &lt;- function(args) {\n  \n  args &lt;- args[\n    cheapr::which_(\n      cheapr::lengths_(\n        args, \n        names = TRUE) == 1\n      )]\n  \n  glue::glue(\n  \"\n  filter[{names(args)}]={delist(args)}\n  \"\n  )\n}\n\nquery_equals_simple(ex)\n\nfilter[name]=Jerry\nfilter[number]=300.12\n\n\n\n\n9.4.3 query_in_notin\n\nquery_in_notin &lt;- function(args, operator = c(\"IN\", \"NOT IN\")) {\n  \n  operator &lt;- match.arg(operator)\n  args     &lt;- args[cheapr::which_(cheapr::lengths_(args, names = TRUE) &gt; 1)]\n  \n  glue::as_glue(\n    c(\n      glue::glue(\n        \"filter[f{seq_along(args)}][condition][path]={names(args)}\n        filter[f{seq_along(args)}][condition][operator]={operator}\"\n        ), \n      glue::glue(\n        \"filter[f{seq_along(args)}]\",\n        \"[condition][value]\",\n        \"[{seq_along(delist(args))}]={delist(args)}\"\n        )\n      )\n    )\n}\n\nquery_in_notin(ex)\n\nfilter[f1][condition][path]=state\nfilter[f1][condition][operator]=IN\nfilter[f1][condition][value][1]=GA\nfilter[f1][condition][value][2]=MD\n\nquery_in_notin(ex, \"NOT IN\")\n\nfilter[f1][condition][path]=state\nfilter[f1][condition][operator]=NOT IN\nfilter[f1][condition][value][1]=GA\nfilter[f1][condition][value][2]=MD\n\n\n\n\n9.4.4 Finalizing query Components\n\nglue::as_glue(c(query_in_notin(ex), query_comparison(ex)))\n\nfilter[f1][condition][path]=state\nfilter[f1][condition][operator]=IN\nfilter[f1][condition][value][1]=GA\nfilter[f1][condition][value][2]=MD\nfilter[f1][condition][path]=name\nfilter[f1][condition][operator]==\nfilter[f1][condition][value]=Jerry\nfilter[f2][condition][path]=number\nfilter[f2][condition][operator]==\nfilter[f2][condition][value]=300.12\n\n\n\n\n9.4.5 Testing in a Function\n\nprotofunc &lt;- function(id     = NULL, \n                      state  = NULL, \n                      name   = NULL, \n                      number = NULL) {\n  arg &lt;- class_args(\n    id     = id,\n    state  = state,\n    name   = name,\n    number = number)\n  \n  query_comparison(compact(props(arg)))\n  \n}\n\nprotofunc(state  = c(\"GA\"), \n          name   = \"Jerry\", \n          number = 300.12)\n\nfilter[f1][condition][path]=state\nfilter[f1][condition][operator]==\nfilter[f1][condition][value]=GA\nfilter[f2][condition][path]=name\nfilter[f2][condition][operator]==\nfilter[f2][condition][value]=Jerry\nfilter[f3][condition][path]=number\nfilter[f3][condition][operator]==\nfilter[f3][condition][value]=300.12",
     "crumbs": [
       "Work Areas",
-      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Query DSL</span>"
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Querying</span>"
     ]
   },
   {
     "objectID": "wk_query.html#new-function",
     "href": "wk_query.html#new-function",
-    "title": "9  Query DSL",
+    "title": "9  Querying",
     "section": "9.5 New Function",
     "text": "9.5 New Function\n\nfields &lt;- c(\n  \"year\",\n  \"covered_recipient_npi\",                                         \n  \"covered_recipient_type\",                                        \n  \"covered_recipient_first_name\",                                  \n  \"covered_recipient_last_name\",                                   \n  \"recipient_city\",                                                \n  \"recipient_state\",                                               \n  \"recipient_zip_code\",                                            \n  \"teaching_hospital_name\",                                        \n  \"form_of_payment_or_transfer_of_value\",                          \n  \"nature_of_payment_or_transfer_of_value\",                        \n  \"applicable_manufacturer_or_applicable_gpo_making_payment_name\",\n  \"applicable_manufacturer_or_applicable_gpo_making_payment_id\")\n\nprocess_params &lt;- \\(arg_names, field_names) {\n  \n  nms &lt;- set_names(arg_names, field_names)\n  \n  parse_expr(\n    paste0(\n      \"list2(\", \n      glue_collapse(\n        glue('{names(nms)} = {unname(nms)}'), \n        sep = \", \"), \")\"))\n}\n\nhas_operator &lt;- \\(args) {\n  map_lgl(args, function(x) inherits(x, \"query_operator\"))\n}\n\nname_path &lt;- \\(args) {\n  map(args, \\(x) x[[names(x)]][[\"path\"]] &lt;- names(x))\n}\n\n\nopen_pay &lt;- function(year,\n                     npi               = NULL,\n                     covered_type      = NULL,\n                     first             = NULL,\n                     last              = NULL,\n                     city              = NULL,\n                     state             = NULL,\n                     zip               = NULL,\n                     teaching_hospital = NULL,\n                     payment_form      = NULL,\n                     payment_nature    = NULL,\n                     payer             = NULL,\n                     payer_id          = NULL) {\n  \n  fn_args &lt;- process_params(fn_fmls_names(), fields) |&gt; \n    eval_bare() |&gt; \n    compact()\n  \n  # if (any(has_operator(fn_args))) fn_args[has_operator(fn_args)] &lt;- name_path(fn_args[has_operator(fn_args)])\n  \n  fn_args\n}\n\n\nopen_pay(year = 2021, npi = \"1043218118\")\n\n$year\n[1] 2021\n\n$covered_recipient_npi\n[1] \"1043218118\"\n\nopen_pay(year = 2021, payment_nature = \"Royalty or License\")\n\n$year\n[1] 2021\n\n$nature_of_payment_or_transfer_of_value\n[1] \"Royalty or License\"\n\nopen_pay(year = 2021, payment_form = \"Stock option\")\n\n$year\n[1] 2021\n\n$form_of_payment_or_transfer_of_value\n[1] \"Stock option\"\n\nopen_pay(year = 2021, payer = \"Adaptive Biotechnologies Corporation\")\n\n$year\n[1] 2021\n\n$applicable_manufacturer_or_applicable_gpo_making_payment_name\n[1] \"Adaptive Biotechnologies Corporation\"\n\nopen_pay(year = 2021, teaching_hospital = \"Nyu Langone Hospitals\")\n\n$year\n[1] 2021\n\n$teaching_hospital_name\n[1] \"Nyu Langone Hospitals\"\n\nopen_pay(year = 2017:2023, npi = \"1043477615\")\n\n$year\n[1] 2017 2018 2019 2020 2021 2022 2023\n\n$covered_recipient_npi\n[1] \"1043477615\"\n\n\n\nstarts_with &lt;- \\(x) {\n  structure(\n    c(path      = NA_character_,\n      operator  = \"STARTS_WITH\",\n      value     = x),\n    class = \"query_operator\")\n}\n\nstarts_with(\"Royalty or License\")\n\n                path             operator                value \n                  NA        \"STARTS_WITH\" \"Royalty or License\" \nattr(,\"class\")\n[1] \"query_operator\"\n\nx &lt;- open_pay(\n  year = 2021, \n  payment_nature = starts_with(\"Royalty or License\"), \n  teaching_hospital = starts_with(\"NYU\"))\n\nx\n\n$year\n[1] 2021\n\n$teaching_hospital_name\n         path      operator         value \n           NA \"STARTS_WITH\"         \"NYU\" \nattr(,\"class\")\n[1] \"query_operator\"\n\n$nature_of_payment_or_transfer_of_value\n                path             operator                value \n                  NA        \"STARTS_WITH\" \"Royalty or License\" \nattr(,\"class\")\n[1] \"query_operator\"\n\nnames(x[has_operator(x)])\n\n[1] \"teaching_hospital_name\"                \n[2] \"nature_of_payment_or_transfer_of_value\"\n\nx[has_operator(x)][[1]][[\"path\"]] &lt;- names(x[has_operator(x)])[[1]]\n\nx\n\n$year\n[1] 2021\n\n$teaching_hospital_name\n                    path                 operator                    value \n\"teaching_hospital_name\"            \"STARTS_WITH\"                    \"NYU\" \nattr(,\"class\")\n[1] \"query_operator\"\n\n$nature_of_payment_or_transfer_of_value\n                path             operator                value \n                  NA        \"STARTS_WITH\" \"Royalty or License\" \nattr(,\"class\")\n[1] \"query_operator\"\n\n# map(args, \\(x) x[[names(x)]][[\"path\"]] &lt;- names(x))\n# \n# x[has_operator(x)] &lt;- providertwo:::map2(\n#   x[has_operator(x)], \n#   names(x[has_operator(x)]), \n#   function(x, y) x[[\"path\"]] &lt;- y)\n# \n# x",
     "crumbs": [
       "Work Areas",
-      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Query DSL</span>"
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Querying</span>"
     ]
   },
   {
     "objectID": "wk_query.html#query-format",
     "href": "wk_query.html#query-format",
-    "title": "9  Query DSL",
+    "title": "9  Querying",
     "section": "9.6 Query Format",
     "text": "9.6 Query Format\n\nurl_parse(\n  base_url = \"https://openpaymentsdata.cms.gov/api/1/datastore/\", \n  url      = \"query/fdc3c773-018a-412c-8a81-d7b8a13a037b/0\") |&gt; \n  url_modify_query(\n    `conditions[0][property]` = \"covered_recipient_last_name\",\n    `conditions[0][value]`    = \"SMITH\",\n    `conditions[0][operator]` = \"=\",\n    schema = \"false\",\n    keys = \"false\",\n    results = \"false\",\n    offset = 0,\n    limit = 500) |&gt;\n  url_build() |&gt; \n  request() |&gt; \n  req_perform() |&gt; \n  resp_body_json(simplifyVector = TRUE) |&gt; \n  _[[\"count\"]]\n\n[1] 77\n\n\n\nurl_parse(\n  base_url = \"https://openpaymentsdata.cms.gov/api/1/datastore/\", \n  url      = \"query/fdc3c773-018a-412c-8a81-d7b8a13a037b/0\") |&gt; \n  url_modify_query(\n    `conditions[0][property]` = \"covered_recipient_first_name\",\n    `conditions[0][value]`    = \"PATRICK\",\n    `conditions[0][operator]` = \"=\",\n    `conditions[1][property]` = \"covered_recipient_last_name\",\n    `conditions[1][value]`    = \"WARD\",\n    `conditions[1][operator]` = \"=\",\n    schema                    = \"false\",\n    keys                      = \"false\",\n    results                   = \"false\",\n    offset                    = 0) |&gt;\n  url_build() |&gt; \n  request() |&gt; \n  req_perform() |&gt; \n  resp_body_json(simplifyVector = TRUE) |&gt; \n  _[[\"count\"]]\n\n[1] 48\n\n\n\nquery &lt;- glue::glue(\n  '\n  \"filter[fID{fID}][path]\" = \"{PATH}\",\n  \"filter[fID{fID}][operator]\" = \"{OPERATOR}\",\n  \"filter[fID{fID}][value]\" = \"{VALUE}\"\n  ', \n  fID = 1:2, \n  PATH = c(\"STATE_CD\", \"LAST_NAME\"), \n  OPERATOR = \"=\",\n  VALUE = c(\"GA\", \"SMITH\")\n  ) |&gt; \n  glue::glue_collapse(sep = \",\\n\")\n\nquery &lt;- glue::glue('c({query})') |&gt; \n  rlang::parse_expr() |&gt; \n  rlang::eval_bare()\n\nglue::glue(\n  '\n  filter[{PATH}][operator]={OPERATOR}\n  filter[{PATH}][value]={VALUE}\n  ', \n  PATH = c(\"STATE_CD\", \"LAST_NAME\"), \n  OPERATOR = \"IN\",\n  VALUE = c(\"GA\", \"SMITH\")\n  )\n\n\nformat_syntax &lt;- \\(name, value) {\n  setNames(\n    value, \n    paste0(\n      name, \n      \"[id-\", \n      seq_along(value), \n      \"][condition][value]\"))\n}\n\nformat_syntax(\"filter\", c(\"GA\", \"NY\"))\n\n\n# query_syntax &lt;- c(\n#   \"filter[STATE_CD]\" = \"GA\",\n#   \"filter[LAST_NAME]\" = \"SMITH\"\n#   )",
     "crumbs": [
       "Work Areas",
-      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Query DSL</span>"
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Querying</span>"
     ]
   },
   {
@@ -493,7 +493,7 @@
     "href": "wk_download.html",
     "title": "11  Downloads",
     "section": "",
-    "text": "11.1 Provider Enrollment Sub-Files\nresourcesAPI &lt;- prop(public_Dataset(\"Provider Enrollment\"), \"resourcesAPI\")\n\nresourcesAPI\n\n&lt;providertwo::dataset_Resources&gt;\n @ url  : chr \"https://data.cms.gov/data-api/v1/dataset-resources/7dcf9ea6-ee2f-4bf1-8b5d-39c18b0e8541\"\n @ files: tibble [7 × 4] (S3: tbl_df/tbl/data.frame)\n $ name       : chr [1:7] \"Medicare FFS Public Provider Enrollment Q4 2024\" \"Medicare FFS Public Provider Enrollment Data Dictionary\" \"Medicare FFS  Public Provider Enrollment Methodology\" \"Reassignment Sub-File 2024 Q4\" ...\n $ fileSize   : chr [1:7] \"316.55 MB\" \"144.35 kB\" \"61.36 kB\" \"111.75 MB\" ...\n $ fileType   : chr [1:7] \"csv\" \"pdf\" \"pdf\" \"csv\" ...\n $ downloadURL: chr [1:7] \"https://data.cms.gov/sites/default/files/2025-01/8ced283e-4017-4b90-b511-142aabb8531b/PPEF_Enrollment_Extract_2025.01.02.csv\" \"https://data.cms.gov/sites/default/files/2022-07/adb9dd34-73da-4488-855f-f091a648f87c/Medicare%20Fee-For-Servic\"| __truncated__ \"https://data.cms.gov/sites/default/files/2020-08/PPEF_Data_Guidance_07_31_2020.pdf\" \"https://data.cms.gov/sites/default/files/2025-01/PPEF_Reassignment_Extract_2025.01.02.csv\" ...\n\nsubfile_csvs &lt;- filter(resourcesAPI@files, fileType == \"csv\", sf_detect(name, \"Sub-File\"))\n\nsubfile_csvs\n\n# A tibble: 3 × 4\n  name                                 fileSize  fileType downloadURL           \n  &lt;chr&gt;                                &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;                 \n1 Reassignment Sub-File 2024 Q4        111.75 MB csv      https://data.cms.gov/…\n2 Address Sub-File 2024 Q4             43.09 MB  csv      https://data.cms.gov/…\n3 Secondary Specialty Sub-File 2024 Q4 28.34 MB  csv      https://data.cms.gov/…\n\nsubfile_urls &lt;- subfile_csvs$downloadURL\n\nsubfile_urls\n\n[1] \"https://data.cms.gov/sites/default/files/2025-01/PPEF_Reassignment_Extract_2025.01.02.csv\"       \n[2] \"https://data.cms.gov/sites/default/files/2025-01/PPEF_Practice_Location_Extract_2025.01.02.csv\"  \n[3] \"https://data.cms.gov/sites/default/files/2025-01/PPEF_Secondary_Specialty_Extract_2025.01.02.csv\"",
+    "text": "11.1 Provider Enrollment Sub-Files\nresources &lt;- prop(\n  public_Dataset(\"enrollees\"), \n  \"resources\")\n\nsubfiles &lt;- filter(\n  prop(resources, \"files\"), \n  fileType == \"csv\", \n  sf_detect(name, \"Sub-File\")) |&gt; \n  pull(downloadURL)\n\nbasename(subfiles) |&gt; purse()\n\n-  c3  PPEF_Reassignment_Extract_2025.01.02.csv PPEF_Practice_Location_Extr ...",
     "crumbs": [
       "Work Areas",
       "<span class='chapter-number'>11</span>  <span class='chapter-title'>Downloads</span>"
@@ -504,7 +504,7 @@
     "href": "wk_download.html#provider-enrollment-sub-files",
     "title": "11  Downloads",
     "section": "",
-    "text": "11.1.1 Reassignment Sub-File 2024 Q4\n\nreassign_subfile &lt;- read_csv_arrow(\n  file = subfile_urls[1], \n  col_types = \"cc\",\n  col_names = c(\"REASGN_BNFT_ENRLMT_ID\", \"RCV_BNFT_ENRLMT_ID\"),\n  as_data_frame = TRUE) |&gt; \n  to_duckdb()\n\nreassign_subfile\n\n# Source:   table&lt;arrow_001&gt; [?? x 2]\n# Database: DuckDB v1.1.3 [Andrew@Windows 10 x64:R 4.4.2/:memory:]\n   REASGN_BNFT_ENRLMT_ID RCV_BNFT_ENRLMT_ID\n   &lt;chr&gt;                 &lt;chr&gt;             \n 1 REASGN_BNFT_ENRLMT_ID RCV_BNFT_ENRLMT_ID\n 2 I20031103000001       O20031216000213   \n 3 I20031103000001       O20111004000177   \n 4 I20031103000007       O20040308000883   \n 5 I20031103000007       O20051206000046   \n 6 I20031103000014       O20070303000050   \n 7 I20031103000014       O20221026001638   \n 8 I20031103000020       O20190812002967   \n 9 I20031103000033       O20181107003537   \n10 I20031103000033       O20181204002777   \n# ℹ more rows\n\n\n\n\n11.1.2 Address Sub-File 2024 Q4\n\naddress_subfile &lt;- read_csv_arrow(\n  file = subfile_urls[2], \n  col_types = \"cccc\",\n  col_names = c(\"ENRLMT_ID\", \"CITY_NAME\", \"STATE_CD\", \"ZIP_CD\"),\n  as_data_frame = TRUE) |&gt; \n  to_duckdb()\n\naddress_subfile\n\n# Source:   table&lt;arrow_002&gt; [?? x 4]\n# Database: DuckDB v1.1.3 [Andrew@Windows 10 x64:R 4.4.2/:memory:]\n   ENRLMT_ID       CITY_NAME     STATE_CD ZIP_CD   \n   &lt;chr&gt;           &lt;chr&gt;         &lt;chr&gt;    &lt;chr&gt;    \n 1 ENRLMT_ID       CITY_NAME     STATE_CD ZIP_CD   \n 2 I20031103000005 MECHANICSBURG PA       170501925\n 3 I20031103000013 SAN JUAN      PR       009175030\n 4 I20031103000015 TOMS RIVER    NJ       08757    \n 5 I20031103000028 JERSEY CITY   NJ       073062305\n 6 I20031103000030 AGUADILLA     PR       006055256\n 7 I20031103000032 BINGHAM FARMS MI       480255810\n 8 I20031103000036 LAJAS         PR       006672082\n 9 I20031103000037 PONCE         PR       00780    \n10 I20031103000063 CAGUAS        PR       00726    \n# ℹ more rows\n\n\n\n\n11.1.3 Secondary Specialty Sub-File 2024 Q4\n\nsecond_specialty &lt;- read_csv_arrow(\n  file = subfile_urls[3], \n  col_types = \"ccc\",\n  col_names = c(\"ENRLMT_ID\", \"PROVIDER_TYPE_CD\", \"PROVIDER_TYPE_DESC\"),\n  as_data_frame = TRUE) |&gt; \n  to_duckdb()\n\nsecond_specialty\n\n# Source:   table&lt;arrow_003&gt; [?? x 3]\n# Database: DuckDB v1.1.3 [Andrew@Windows 10 x64:R 4.4.2/:memory:]\n   ENRLMT_ID       PROVIDER_TYPE_CD PROVIDER_TYPE_DESC                          \n   &lt;chr&gt;           &lt;chr&gt;            &lt;chr&gt;                                       \n 1 ENRLMT_ID       PROVIDER_TYPE_CD PROVIDER_TYPE_DESC                          \n 2 I20031103000037 14-11            PRACTITIONER - INTERNAL MEDICINE            \n 3 I20031103000037 14-81            PRACTITIONER - CRITICAL CARE (INTENSIVISTS) \n 4 I20031103000039 14-19            PRACTITIONER - ORAL SURGERY                 \n 5 I20031103000089 14-09            PRACTITIONER - INTERVENTIONAL PAIN MANAGEME…\n 6 I20031103000123 14-30            PRACTITIONER - DIAGNOSTIC RADIOLOGY         \n 7 I20031103000159 14-11            PRACTITIONER - INTERNAL MEDICINE            \n 8 I20031103000159 14-17            PRACTITIONER - HOSPICE/PALLIATIVE CARE      \n 9 I20031103000159 14-83            PRACTITIONER - HEMATOLOGY/ONCOLOGY          \n10 I20031103000197 14-25            PRACTITIONER - PHYSICAL MEDICINE AND REHABI…\n# ℹ more rows",
+    "text": "11.1.1 Reassignment Sub-File 2024 Q4\n\npath &lt;- tempfile(\"reassign_subfile\", fileext = \".csv\")\n\ndownload.file(url = subfiles[1], destfile = path)\n\ndk &lt;- read_csv_duckdb(path)\n\nnrow(dk)\n\nError: Materialization would result in 500001 rows, which exceeds the limit of 500000. Use collect() or as_tibble() to materialize.\n\n\n\n\n11.1.2 Address Sub-File 2024 Q4\n\npath &lt;- tempfile(\"address_subfile\", fileext = \".csv\")\n\ndownload.file(url = subfiles[2], destfile = path)\n\ndk &lt;- read_csv_duckdb(path)\n\nnrow(dk)\n\nError: Materialization would result in 250001 rows, which exceeds the limit of 250000. Use collect() or as_tibble() to materialize.\n\n\n\n\n11.1.3 Secondary Specialty Sub-File 2024 Q4\n\npath &lt;- tempfile(\"second_specialty\", fileext = \".csv\")\n\ndownload.file(url = subfiles[3], destfile = path)\n\ndk &lt;- read_csv_duckdb(path)\n\nnrow(dk)\n\nError: Materialization would result in 333334 rows, which exceeds the limit of 333333. Use collect() or as_tibble() to materialize.",
     "crumbs": [
       "Work Areas",
       "<span class='chapter-number'>11</span>  <span class='chapter-title'>Downloads</span>"
@@ -552,17 +552,6 @@
     "crumbs": [
       "Endpoints",
       "<span class='chapter-number'>13</span>  <span class='chapter-title'>`enrollees`</span>"
-    ]
-  },
-  {
-    "objectID": "ben_backend.html",
-    "href": "ben_backend.html",
-    "title": "14  Backend",
-    "section": "",
-    "text": "15 RcppSimdJson vs. yyjsonr",
-    "crumbs": [
-      "Benchmarking",
-      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Backend</span>"
     ]
   }
 ]
