@@ -376,6 +376,26 @@ url_parse(
   base_url = "https://openpaymentsdata.cms.gov/api/1/datastore/", 
   url      = "query/fdc3c773-018a-412c-8a81-d7b8a13a037b/0") |> 
   url_modify_query(
+    `conditions[0][property]` = "covered_recipient_last_name",
+    `conditions[0][value]`    = "SMITH",
+    `conditions[0][operator]` = "=",
+    schema = "false",
+    keys = "false",
+    results = "false",
+    offset = 0,
+    limit = 500) |>
+  url_build() |> 
+  request() |> 
+  req_perform() |> 
+  resp_body_json(simplifyVector = TRUE) |> 
+  _[["count"]]
+```
+
+```{r}
+url_parse(
+  base_url = "https://openpaymentsdata.cms.gov/api/1/datastore/", 
+  url      = "query/fdc3c773-018a-412c-8a81-d7b8a13a037b/0") |> 
+  url_modify_query(
     `conditions[0][property]` = "covered_recipient_first_name",
     `conditions[0][value]`    = "PATRICK",
     `conditions[0][operator]` = "=",
@@ -389,5 +409,59 @@ url_parse(
   url_build() |> 
   request() |> 
   req_perform() |> 
-  resp_body_json(simplifyVector = TRUE)
+  resp_body_json(simplifyVector = TRUE) |> 
+  _[["count"]]
+```
+
+
+
+```{r}
+#| eval: false
+query <- glue::glue(
+  '
+  "filter[fID{fID}][path]" = "{PATH}",
+  "filter[fID{fID}][operator]" = "{OPERATOR}",
+  "filter[fID{fID}][value]" = "{VALUE}"
+  ', 
+  fID = 1:2, 
+  PATH = c("STATE_CD", "LAST_NAME"), 
+  OPERATOR = "=",
+  VALUE = c("GA", "SMITH")
+  ) |> 
+  glue::glue_collapse(sep = ",\n")
+
+query <- glue::glue('c({query})') |> 
+  rlang::parse_expr() |> 
+  rlang::eval_bare()
+
+glue::glue(
+  '
+  filter[{PATH}][operator]={OPERATOR}
+  filter[{PATH}][value]={VALUE}
+  ', 
+  PATH = c("STATE_CD", "LAST_NAME"), 
+  OPERATOR = "IN",
+  VALUE = c("GA", "SMITH")
+  )
+```
+
+```{r}
+#| eval: false
+format_syntax <- \(name, value) {
+  setNames(
+    value, 
+    paste0(
+      name, 
+      "[id-", 
+      seq_along(value), 
+      "][condition][value]"))
+}
+
+format_syntax("filter", c("GA", "NY"))
+
+
+# query_syntax <- c(
+#   "filter[STATE_CD]" = "GA",
+#   "filter[LAST_NAME]" = "SMITH"
+#   )
 ```
