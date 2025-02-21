@@ -1,3 +1,8 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
 # Keyword Groups {#sec-keygroups}
 
 ```{r}
@@ -11,15 +16,64 @@ source("includes/_common.R")
 ```{r}
 open <- providertwo::load_openpayments()
 
-open
+open <- collapse::rsplit(open, ~ theme, keep.by = TRUE)
+```
+
+
+```{r}
+open_summary_all <- collapse::sbt(open$Summary, year == "All")
+
+open_summary_all
+```
+
+
+```{r}
+open_summary_years <- collapse::sbt(open$Summary, year != "All")
+
+open_summary_years
+```
+
+
+```{r}
+open_research <- collapse::mtt(open$`Research Payments`, year = as.integer(year))
+
+open_research
+```
+
+
+```{r}
+open_general <- collapse::mtt(open$`General Payments`, year = as.integer(year))
+
+open_general
+```
+
+
+```{r}
+open_ownership <- collapse::mtt(open$`Ownership Payments`, year = as.integer(year))
+
+open_ownership
 ```
 
 ## Provider Data
 
 ```{r}
-prov <- providertwo::load_provider()
+prov <- providertwo::load_provider() |> collapse::colorder(theme, title)
 
-prov
+prov <- collapse::rsplit(prov, ~ theme, keep.by = TRUE)
+```
+
+
+```{r}
+dialysis_facilities <- prov$`Dialysis facilities`
+
+dialysis_facilities
+```
+
+
+```{r}
+doctors_and_clinicians <- prov$`Doctors and clinicians`
+
+doctors_and_clinicians
 ```
 
 ## Main Data
