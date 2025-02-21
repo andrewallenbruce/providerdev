@@ -319,8 +319,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#dataset" id="toc-dataset" class="nav-link active" data-scroll-target="#dataset"><span class="header-section-number">3.1</span> Dataset</a></li>
-  <li><a href="#new-function" id="toc-new-function" class="nav-link" data-scroll-target="#new-function"><span class="header-section-number">3.2</span> New Function</a></li>
-  <li><a href="#query-format" id="toc-query-format" class="nav-link" data-scroll-target="#query-format"><span class="header-section-number">3.3</span> Query Format</a></li>
+  <li><a href="#dictionaries" id="toc-dictionaries" class="nav-link" data-scroll-target="#dictionaries"><span class="header-section-number">4</span> Dictionaries</a>
+  <ul class="collapse">
+  <li><a href="#new-function" id="toc-new-function" class="nav-link" data-scroll-target="#new-function"><span class="header-section-number">4.1</span> New Function</a></li>
+  <li><a href="#query-format" id="toc-query-format" class="nav-link" data-scroll-target="#query-format"><span class="header-section-number">4.2</span> Query Format</a></li>
+  </ul></li>
   </ul>
 <div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li></ul></div></nav>
     </div>
@@ -356,7 +359,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>limit = <code>500</code></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>providertwo<span class="sc">::</span><span class="fu">load_openpayments</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>dataset <span class="ot">&lt;-</span> fastplyr<span class="sc">::</span><span class="fu">as_tbl</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fload</span>(<span class="st">"https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids"</span>), </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">modified =</span> <span class="fu">as_date</span>(modified), </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">description =</span> <span class="fu">sf_replace</span>(description, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>, <span class="st">". "</span>), </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">description =</span> <span class="fu">sf_remove</span>(description, <span class="st">"</span><span class="sc">\r</span><span class="st">. </span><span class="sc">\r</span><span class="st">."</span>), </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">theme =</span> <span class="fu">delist</span>(<span class="fu">map</span>(theme, <span class="cf">function</span>(x) <span class="fu">get_elem</span>(<span class="fu">as.list</span>(x), <span class="st">"data"</span>))), </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">year =</span> <span class="fu">delist</span>(<span class="fu">map</span>(keyword, <span class="cf">function</span>(x) <span class="fu">get_elem</span>(<span class="fu">as.list</span>(x), <span class="st">"data"</span>))), </span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">year =</span> <span class="fu">sf_replace</span>(year, <span class="st">"all years"</span>, <span class="st">"All"</span>, <span class="at">fix =</span> <span class="cn">TRUE</span>), </span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">identifier =</span> <span class="fu">paste0</span>(<span class="st">"https://openpaymentsdata.cms.gov/api/1/datastore/query/"</span>, identifier, <span class="st">"/0"</span>)))</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>describedby <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="fu">get_elem</span>(<span class="fu">get_elem</span>(dataset<span class="sc">$</span>distribution, <span class="st">"data"</span>, <span class="at">DF.as.list =</span> <span class="cn">TRUE</span>), <span class="st">"title|describedBy"</span>, <span class="at">regex =</span> <span class="cn">TRUE</span>), <span class="cf">function</span>(x) x[<span class="fu">not_null</span>(<span class="fu">names</span>(x))])</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>dataset <span class="ot">&lt;-</span> <span class="fu">roworder</span>(<span class="fu">slt</span>(<span class="fu">join</span>(<span class="fu">add_vars</span>(dataset, <span class="at">downloadURL =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(<span class="fu">get_elem</span>(dataset<span class="sc">$</span>distribution, <span class="st">"data"</span>, <span class="at">DF.as.list =</span> <span class="cn">TRUE</span>), <span class="st">"downloadURL"</span>))), </span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>      cheapr<span class="sc">::</span><span class="fu">new_df</span>(<span class="at">title =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(describedby, <span class="st">"title"</span>)), <span class="at">describedBy =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(describedby, <span class="st">"describedBy"</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(<span class="at">year =</span> stringi<span class="sc">::</span><span class="fu">stri_extract_all_regex</span>(title, <span class="st">"[0-9]{4}"</span>),</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">name =</span> stringi<span class="sc">::</span><span class="fu">stri_extract_all_regex</span>(title, <span class="st">"^.*(?=</span><span class="sc">\\</span><span class="st">s.</span><span class="sc">\\</span><span class="st">sDetailed Dataset [0-9]{4} Reporting Year)"</span>),</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="fu">ifelse</span>(<span class="fu">na</span>(name), title, glue<span class="sc">::</span><span class="fu">glue</span>(<span class="st">"{year} {name}"</span>)),</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">year =</span> <span class="cn">NULL</span>,</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">name =</span> <span class="cn">NULL</span>),</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">on =</span> <span class="st">"title"</span>, </span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>      <span class="at">verbose =</span> <span class="dv">0</span>), </span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    year, </span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    theme, </span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    title, </span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    description, </span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    modified, </span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    temporal, </span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    identifier, </span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    downloadURL, </span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    describedBy), </span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span>theme, </span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span>year, </span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>  title)</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>dataset <span class="co"># |&gt; print(n = 75)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 74 × 9
    year  theme   title    description modified   temporal identifier downloadURL
@@ -376,70 +414,750 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="new-function" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="new-function"><span class="header-section-number">3.2</span> New Function</h2>
+<section id="dictionaries" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Dictionaries</h1>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fields <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"year"</span>,</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"covered_recipient_npi"</span>,                                         </span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"covered_recipient_type"</span>,                                        </span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"covered_recipient_first_name"</span>,                                  </span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"covered_recipient_last_name"</span>,                                   </span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"recipient_city"</span>,                                                </span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"recipient_state"</span>,                                               </span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"recipient_zip_code"</span>,                                            </span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">"teaching_hospital_name"</span>,                                        </span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">"form_of_payment_or_transfer_of_value"</span>,                          </span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">"nature_of_payment_or_transfer_of_value"</span>,                        </span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">"applicable_manufacturer_or_applicable_gpo_making_payment_name"</span>,</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="st">"applicable_manufacturer_or_applicable_gpo_making_payment_id"</span>)</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>process_params <span class="ot">&lt;-</span> \(arg_names, field_names) {</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  nms <span class="ot">&lt;-</span> <span class="fu">set_names</span>(arg_names, field_names)</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">parse_expr</span>(</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste0</span>(</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>      <span class="st">"list2("</span>, </span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>      <span class="fu">glue_collapse</span>(</span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>        <span class="fu">glue</span>(<span class="st">'{names(nms)} = {unname(nms)}'</span>), </span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>        <span class="at">sep =</span> <span class="st">", "</span>), <span class="st">")"</span>))</span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>has_operator <span class="ot">&lt;-</span> \(args) {</span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_lgl</span>(args, <span class="cf">function</span>(x) <span class="fu">inherits</span>(x, <span class="st">"query_operator"</span>))</span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>name_path <span class="ot">&lt;-</span> \(args) {</span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(args, \(x) x[[<span class="fu">names</span>(x)]][[<span class="st">"path"</span>]] <span class="ot">&lt;-</span> <span class="fu">names</span>(x))</span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>dict_urls <span class="ot">&lt;-</span> dataset <span class="sc">|&gt;</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sbt</span>(<span class="fu">not_na</span>(describedBy)) <span class="sc">|&gt;</span> </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(year, theme, title, describedBy)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>dict_urls</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 22 × 4
+   year  theme              title                                describedBy    
+   &lt;chr&gt; &lt;chr&gt;              &lt;chr&gt;                                &lt;chr&gt;          
+ 1 All   Summary            Covered Recipient Profile Supplement https://openpa…
+ 2 2023  Research Payments  2023 Research Payment Data           https://openpa…
+ 3 2022  Research Payments  2022 Research Payment Data           https://openpa…
+ 4 2021  Research Payments  2021 Research Payment Data           https://openpa…
+ 5 2020  Research Payments  2020 Research Payment Data           https://openpa…
+ 6 2019  Research Payments  2019 Research Payment Data           https://openpa…
+ 7 2018  Research Payments  2018 Research Payment Data           https://openpa…
+ 8 2017  Research Payments  2017 Research Payment Data           https://openpa…
+ 9 2023  Ownership Payments 2023 Ownership Payment Data          https://openpa…
+10 2022  Ownership Payments 2022 Ownership Payment Data          https://openpa…
+# ℹ 12 more rows</code></pre>
+</div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>open_pay <span class="ot">&lt;-</span> <span class="cf">function</span>(year,</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">npi               =</span> <span class="cn">NULL</span>,</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">covered_type      =</span> <span class="cn">NULL</span>,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">first             =</span> <span class="cn">NULL</span>,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">last              =</span> <span class="cn">NULL</span>,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>                     <span class="at">city              =</span> <span class="cn">NULL</span>,</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>                     <span class="at">state             =</span> <span class="cn">NULL</span>,</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>                     <span class="at">zip               =</span> <span class="cn">NULL</span>,</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>                     <span class="at">teaching_hospital =</span> <span class="cn">NULL</span>,</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>                     <span class="at">payment_form      =</span> <span class="cn">NULL</span>,</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>                     <span class="at">payment_nature    =</span> <span class="cn">NULL</span>,</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>                     <span class="at">payer             =</span> <span class="cn">NULL</span>,</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>                     <span class="at">payer_id          =</span> <span class="cn">NULL</span>) {</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  fn_args <span class="ot">&lt;-</span> <span class="fu">process_params</span>(<span class="fu">fn_fmls_names</span>(), fields) <span class="sc">|&gt;</span> </span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">eval_bare</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">compact</span>()</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># if (any(has_operator(fn_args))) fn_args[has_operator(fn_args)] &lt;- name_path(fn_args[has_operator(fn_args)])</span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  fn_args</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>dict_list <span class="ot">&lt;-</span> dict_urls <span class="sc">|&gt;</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  fastplyr<span class="sc">::</span><span class="fu">f_filter</span>(theme <span class="sc">==</span> <span class="st">"Summary"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  fastplyr<span class="sc">::</span><span class="fu">f_pull</span>(describedBy) <span class="sc">|&gt;</span> </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">request</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  httr2<span class="sc">::</span><span class="fu">resp_body_json</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  fastplyr<span class="sc">::</span><span class="fu">as_tbl</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  fastplyr<span class="sc">::</span><span class="fu">f_pull</span>(data)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>dict_list<span class="sc">$</span>title</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Covered Recipient Profile Supplement File Attributes"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>dict_list<span class="sc">$</span>fields</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+[[1]]$name
+[1] "covered_recipient_profile_type"
+
+[[1]]$title
+[1] "Covered_Recipient_Profile_Type"
+
+[[1]]$description
+[1] "Indicator showing if recipient of the payment or other transfer of value is a covered recipient physician or covered recipient non-physician practitioner. Example values: Covered Recipient Physician (If the profile is a Physician profile) Covered Recipient Non-Physician Practitioner(If the profile is a Non-Physician Practitioner profile), Covered Recipient Physician/Covered Recipient Non-Physician Practitioner (If the profile is identified as both Physician and a Non-Physician Practitioner)"
+
+[[1]]$type
+[1] "string"
+
+[[1]]$constraints
+[[1]]$constraints$maxLength
+[1] 50
+
+
+
+[[2]]
+[[2]]$name
+[1] "covered_recipient_profile_id"
+
+[[2]]$title
+[1] "Covered_Recipient_Profile_ID"
+
+[[2]]$description
+[1] "System generated unique identifier for physician/non- physician practitioner profile receiving the payment or other transfer of value."
+
+[[2]]$type
+[1] "string"
+
+[[2]]$constraints
+[[2]]$constraints$maxLength
+[1] 38
+
+[[2]]$constraints$pattern
+[1] "^[0-9]+$"
+
+
+
+[[3]]
+[[3]]$name
+[1] "associated_covered_recipient_profile_id_1"
+
+[[3]]$title
+[1] "Associated_Covered_Recipient_Profile_ID_1"
+
+[[3]]$description
+[1] "Covered_Recipient_Profile_ID of first profile (with/without NPI) associated with the same physician/non-physician practitioner."
+
+[[3]]$type
+[1] "string"
+
+[[3]]$constraints
+[[3]]$constraints$maxLength
+[1] 38
+
+[[3]]$constraints$pattern
+[1] "^[0-9]+$"
+
+
+
+[[4]]
+[[4]]$name
+[1] "associated_covered_recipient_profile_id_2"
+
+[[4]]$title
+[1] "Associated_Covered_Recipient_Profile_ID_2"
+
+[[4]]$description
+[1] "Covered_Recipient_Profile_ID of second profile (with/without NPI) associated with the same physician/non-physician practitioner."
+
+[[4]]$type
+[1] "string"
+
+[[4]]$constraints
+[[4]]$constraints$maxLength
+[1] 38
+
+[[4]]$constraints$pattern
+[1] "^[0-9]+$"
+
+
+
+[[5]]
+[[5]]$name
+[1] "covered_recipient_npi"
+
+[[5]]$title
+[1] "Covered_Recipient_NPI"
+
+[[5]]$description
+[1] "National Provider Identifier is a unique identification number for covered recipient physician or non-physician practitioner (and not the NPI of a group the physician/non- physician practitioner belongs to)."
+
+[[5]]$type
+[1] "integer"
+
+[[5]]$constraints
+[[5]]$constraints$maximum
+[1] 9999999999
+
+
+
+[[6]]
+[[6]]$name
+[1] "covered_recipient_profile_first_name"
+
+[[6]]$title
+[1] "Covered_Recipient_Profile_First_Name"
+
+[[6]]$description
+[1] "The first name as available in the CMS-provided Master Profile List (MPL) for Physician\\NPPs and non-physician practitioner that were successfully matched on the list. For physicians/non-physician practitioner who are not on the CMS-provided MPL and were matched against the external physician/ non-physician practitioner matching service, the name as verified against the external physician/ non- physician practitioner matching service is displayed."
+
+[[6]]$type
+[1] "string"
+
+[[6]]$constraints
+[[6]]$constraints$maxLength
+[1] 20
+
+
+
+[[7]]
+[[7]]$name
+[1] "covered_recipient_profile_middle_name"
+
+[[7]]$title
+[1] "Covered_Recipient_Profile_Middle_Name"
+
+[[7]]$description
+[1] "The middle name as available in the CMS-provided MPL for physician/ non-physician practitioners that were successfully matched on the list. For physician/non- physician practitioner s who are not on the CMS-provided MPL and were matched against the external physician/ non-physician practitioner&nbsp; matching service, the middle name is determined by the most frequently reported by AM/GPOs through the record submission in the latest year when the physician/ non-physician practitioner is reported."
+
+[[7]]$type
+[1] "string"
+
+[[7]]$constraints
+[[7]]$constraints$maxLength
+[1] 20
+
+
+
+[[8]]
+[[8]]$name
+[1] "covered_recipient_profile_last_name"
+
+[[8]]$title
+[1] "Covered_Recipient_Profile_Last_Name"
+
+[[8]]$description
+[1] "The last name as available in the CMS-provided MPL provided by CMS for physician/ non-physician practitioners that were successfully matched on the list. For physician/ non-physician practitioners who are not on the CMS- provided MPL and were matched against the external physician/ non-physician practitioner matching service, the name as verified against the external physician/ non- physician practitioner matching service is displayed."
+
+[[8]]$type
+[1] "string"
+
+[[8]]$constraints
+[[8]]$constraints$maxLength
+[1] 35
+
+
+
+[[9]]
+[[9]]$name
+[1] "covered_recipient_profile_suffix"
+
+[[9]]$title
+[1] "Covered_Recipient_Profile_Suffix"
+
+[[9]]$description
+[1] "The suffix as available in the CMS-provided MPL for physician/non-physician practitioners that were successfully matched on the list. For physician/non- physician practitioners who are not on the CMS-provided MPL and were matched against the external physician/non-physician practitioner matching service, the suffix is determined by the most frequently reported by AM/GPOs through the record submission in the latest year when the physician/non-physician practitioner is reported."
+
+[[9]]$type
+[1] "string"
+
+[[9]]$constraints
+[[9]]$constraints$maxLength
+[1] 5
+
+
+
+[[10]]
+[[10]]$name
+[1] "covered_recipient_profile_alternate_first_name"
+
+[[10]]$title
+[1] "Covered_Recipient_Profile_Alternate_First_Name"
+
+[[10]]$description
+[1] "The alternate first name as available in the CMS-provided MPL for physician/non-physician practitioner that were successfully matched on the list. For physician/non- physician practitioner who are not on the CMS-provided MPL and were matched against the external physician/non-physician practitioner matching service, the alternate first name is displayed blank."
+
+[[10]]$type
+[1] "string"
+
+[[10]]$constraints
+[[10]]$constraints$maxLength
+[1] 20
+
+
+
+[[11]]
+[[11]]$name
+[1] "covered_recipient_profile_alternate_middle_name"
+
+[[11]]$title
+[1] "Covered_Recipient_Profile_Alternate_Middle_Name"
+
+[[11]]$description
+[1] "The alternate middle name as available in the CMS- provided MPL for physician/non-physician practitioner that were successfully matched on the list. For physician/non- physician practitioner r who are not on the CMS-provided MPL and were matched against the external\nphysician/non-physician practitioner matching service, the alternate middle name is displayed blank."
+
+[[11]]$type
+[1] "string"
+
+[[11]]$constraints
+[[11]]$constraints$maxLength
+[1] 20
+
+
+
+[[12]]
+[[12]]$name
+[1] "covered_recipient_profile_alternate_last_name"
+
+[[12]]$title
+[1] "Covered_Recipient_Profile_Alternate_Last_Name"
+
+[[12]]$description
+[1] "The alternate last name as available in the CMS-provided MPL for physician/non-physician practitioners that were successfully matched on the list. For physician/non- physician practitioner who are not on the CMS-provided MPL and were matched against the external physician/non-physician practitioner matching service, the alternate last name is displayed blank."
+
+[[12]]$type
+[1] "string"
+
+[[12]]$constraints
+[[12]]$constraints$maxLength
+[1] 35
+
+
+
+[[13]]
+[[13]]$name
+[1] "covered_recipient_profile_alternate_suffix"
+
+[[13]]$title
+[1] "Covered_Recipient_Profile_Alternate_Suffix"
+
+[[13]]$description
+[1] "The alternate suffix as available in the CMS-provided MPL for physician/non-physician practitioner that were successfully matched on the list. For physician/non- physician practitioner who are not on the CMS-provided MPL and were matched against the external physician/non-physician practitioner matching service, the alternate suffix is displayed blank."
+
+[[13]]$type
+[1] "string"
+
+[[13]]$constraints
+[[13]]$constraints$maxLength
+[1] 5
+
+
+
+[[14]]
+[[14]]$name
+[1] "covered_recipient_profile_address_line_1"
+
+[[14]]$title
+[1] "Covered_Recipient_Profile_Address_Line_1"
+
+[[14]]$description
+[1] "The first line of latest “Provider Business Practice Location Address” for all physician/non-physician practitioner that matched as listed in the CMS-provided MPL. If address information is blank in MPL, the first line of latest “Provider Business Practice Location Address” will be determined by the most frequently reported address by AM/GPO’s through the records submission in the latest year when the physician/non-physician practitioner is reported.\nFor physician/non-physician practitioner not on the CMS- provided MPL and matched against the external physician/non-physician practitioner matching service, the second line of latest “Provider Business Practice Location Address” will be determined by the most frequently reported address by AM/GPOs through the records submission in the latest year when the physician/non- physician practitioner is reported. AM/GPOs through the records submission in the latest year when the physician/non-physician practitioner is reported."
+
+[[14]]$type
+[1] "string"
+
+[[14]]$constraints
+[[14]]$constraints$maxLength
+[1] 55
+
+
+
+[[15]]
+[[15]]$name
+[1] "covered_recipient_profile_address_line_2"
+
+[[15]]$title
+[1] "Covered_Recipient_Profile_Address_Line_2"
+
+[[15]]$description
+[1] "The second line of latest “Provider Business Practice Location Address” for all physician/non-physician practitioner that matched as listed in the CMS-provided MPL. If address information is blank in MPL, the second line of latest “Provider Business Practice Location Address” will be determined by the most frequently reported address by AM/GPO’s through the records submission in the latest year when the physician/non-physician practitioner is reported.\nFor physician/non-physician practitioner not on the CMS- provided MPL and matched against the external physician/non-physician practitioner matching service, the second line of latest “Provider Business Practice Location Address” will be determined by the most frequently reported address by AM/GPOs through the records submission in the latest year when the physician/non- physician practitioner is reported. AM/GPOs through the records submission in the latest year when the physician/non-physician practitioner is reported."
+
+[[15]]$type
+[1] "string"
+
+[[15]]$constraints
+[[15]]$constraints$maxLength
+[1] 55
+
+
+
+[[16]]
+[[16]]$name
+[1] "covered_recipient_profile_city"
+
+[[16]]$title
+[1] "Covered_Recipient_Profile_City"
+
+[[16]]$description
+[1] "The city of the latest “Provider Business Practice Location Address” for all physician/non-physician practitioner that matched as listed in the CMS-provided MPL. If Address information is blank in MPL, the city of the latest “Provider Business Practice Location Address”” will be determined by the most frequently reported address by AM/GPO’s through the records submission in the latest year when the physician/non-physician practitioner is reported.\nFor physician/non-physician practitioner not on the CMS- provided MPL and matched against the external physician/non-physician practitioner matching service, the city of the latest “Provider Business Practice Location Address” will be determined by the most frequently reported address by AM/GPOs through the records submission in the latest year when the physician/non- physician practitioner is reported."
+
+[[16]]$type
+[1] "string"
+
+[[16]]$constraints
+[[16]]$constraints$maxLength
+[1] 40
+
+
+
+[[17]]
+[[17]]$name
+[1] "covered_recipient_profile_state"
+
+[[17]]$title
+[1] "Covered_Recipient_Profile_State"
+
+[[17]]$description
+[1] "The state of latest “Provider Business Practice Location Address” for all physician/non-physician practitioners that matched as listed in the CMS-provided MPL. If Address information is blank in MPL, the state of latest “Provider Business Practice Location Address” will be determined by the most frequently reported address by AM/GPO’s through the records submission in the latest year when the physician/non-physician practitioner is reported.\nFor physician/non-physician practitioners not on the CMS- provided MPL and matched against the external physician/non-physician practitioner matching service, the state of latest “Provider Business Practice Location Address” will be determined by the most frequently reported address by AM/GPOs through the records submission in the latest year when the physician/non- physician practitioner is reported."
+
+[[17]]$type
+[1] "string"
+
+[[17]]$constraints
+[[17]]$constraints$maxLength
+[1] 2
+
+
+
+[[18]]
+[[18]]$name
+[1] "covered_recipient_profile_zipcode"
+
+[[18]]$title
+[1] "Covered_Recipient_Profile_Zipcode"
+
+[[18]]$description
+[1] "The zip code of latest “Provider Business Practice Location Address” for all physician/non-physician practitioners that matched as listed in the CMS-provided MPL. If Address information is blank in MPL, the zip code of latest “Provider Business Practice Location Address” will be determined by the most frequently reported address by AM/GPO’s through the records submission in the latest year when the physician/non-physician practitioner is reported.\nFor physician/non-physician practitioners not on the CMS- provided MPL and matched against the external physician/non-physician practitioner matching service, the zip code of latest “Provider Business Practice Location Address” will be determined by the most frequently reported address by AM/GPOs through the records submission in the latest year when the physician/non- physician practitioner is reported. AM/GPOs through the records submission in the latest year when the physician/non-physician practitioner is reported."
+
+[[18]]$type
+[1] "string"
+
+[[18]]$constraints
+[[18]]$constraints$maxLength
+[1] 10
+
+[[18]]$constraints$pattern
+[1] "\\d{5}(-\\d{4})?"
+
+
+
+[[19]]
+[[19]]$name
+[1] "covered_recipient_profile_country_name"
+
+[[19]]$title
+[1] "Covered_Recipient_Profile_Country_Name"
+
+[[19]]$description
+[1] "The country of latest “Provider Business Practice Location Address” provided as listed in the CMS-provided MPL for all physician/non-physician practitioners that were successfully matched on the list. If Address information is blank in MPL, the country name of latest “Provider Business Practice Location Address” will be determined by the most frequently reported address by AM/GPO’s through the records submission in the latest year when the physician/non-physician practitioner is reported.\nFor physician/non-physician practitioners who are not on the CMS-provided MPL and were matched against the external physician/non-physician practitioner matching service, the country of latest “Provider Business Practice Location Address” will be determined by the most frequently reported address by AM/GPOs through the record submission in the latest year when the\nphysician/non-physician practitioner is reported."
+
+[[19]]$type
+[1] "string"
+
+[[19]]$constraints
+[[19]]$constraints$maxLength
+[1] 100
+
+
+
+[[20]]
+[[20]]$name
+[1] "covered_recipient_profile_province_name"
+
+[[20]]$title
+[1] "Covered_Recipient_Profile_Province_Name"
+
+[[20]]$description
+[1] "The state of latest “Provider Business Practice Location Address” for all physician/non-physician practitioners that matched as listed in CMS provided Master Profile List (MPL), if the primary practice/business address is outside the United States and if applicable. If Address information is blank in MPL, the province name of latest “Provider Business Practice Location Address” will be determined by the most frequently reported address by AM/GPO’s through the records submission in the latest year when the physician/non-physician practitioner is reported\nFor physician/non-physician practitioners not on the CMS provided Master physician/non-physician practitioner List (MPL) and matched against external physician/non- physician practitioner matching service, the province name of latest “Provider Business Practice Location Address” will be determined by the most frequently reported address by AM/GPO’s through the records submission in the latest year when the physician/non-physician practitioner is reported, if the primary practice/business address is outside the United States and if applicable."
+
+[[20]]$type
+[1] "string"
+
+[[20]]$constraints
+[[20]]$constraints$maxLength
+[1] 20
+
+
+
+[[21]]
+[[21]]$name
+[1] "covered_recipient_profile_primary_specialty"
+
+[[21]]$title
+[1] "Covered_Recipient_Profile_Primary_Specialty"
+
+[[21]]$description
+[1] "The primary specialty as listed in the CMS-provided MPL for physician/non-physician practitioners that were successfully matched on the list and have a valid Open Payments primary taxonomy. For physician/non-physician practitioners on the list and any other primary taxonomy than the valid Open Payments primary taxonomy and for physician/non-physician practitioners who are not on the CMS-provided MPL and were matched against the external physician/non-physician practitioner matching service, the primary specialty displayed as blank."
+
+[[21]]$type
+[1] "string"
+
+[[21]]$constraints
+[[21]]$constraints$maxLength
+[1] 300
+
+
+
+[[22]]
+[[22]]$name
+[1] "covered_recipient_profile_ops_taxonomy_1"
+
+[[22]]$title
+[1] "Covered_Recipient_Profile_OPS_Taxonomy_1"
+
+[[22]]$description
+[1] "The primary or secondary Open Payments valid taxonomy code as listed in the CMS-provided MPL for physician/non- physician practitioners that were successfully matched on the list and have a valid Open Payments taxonomy.\nFor physician/non-physician practitioners on the list with Primary or Secondary Taxonomy other than a valid Open Payments taxonomy, it will be displayed as the most frequently reported valid taxonomy by AM/GPO's in the published records across all Program Years in all payment categories where the physician/non-physician practitioner was reported. If no valid taxonomy is reported, it should remain blank.\nFor physician/non-physician practitioners who are not on the CMS provided MPL and were matched against external data source, the Open Payments Taxonomy will be displayed as the most frequently reported by AM/GPO's, assuming that it corresponds to a valid OP Taxonomy code."
+
+[[22]]$type
+[1] "string"
+
+[[22]]$constraints
+[[22]]$constraints$maxLength
+[1] 10
+
+
+
+[[23]]
+[[23]]$name
+[1] "covered_recipient_profile_ops_taxonomy_2"
+
+[[23]]$title
+[1] "Covered_Recipient_Profile_OPS_Taxonomy_2"
+
+[[23]]$description
+[1] "The secondary Open Payments valid taxonomy code as listed in the CMS-provided MPL for physician/non- physician practitioners that were successfully matched on the list and have a valid Open Payments taxonomy.\nFor physician/non-physician practitioners on the list with Primary or Secondary Taxonomy other than a valid Open Payments taxonomy, it will be displayed as the most frequently reported valid taxonomy by AM/GPO's in the published records across all Program Years in all payment categories where the physician/non-physician practitioner was reported. If no valid taxonomy is reported, it should remain blank.\nFor physician/non-physician practitioners who are not on the CMS provided MPL and were matched against external data source, the Open Payments Taxonomy will be displayed as the most frequently reported by AM/GPO's, assuming that it corresponds to a valid OP Taxonomy code."
+
+[[23]]$type
+[1] "string"
+
+[[23]]$constraints
+[[23]]$constraints$maxLength
+[1] 10
+
+
+
+[[24]]
+[[24]]$name
+[1] "covered_recipient_profile_ops_taxonomy_3"
+
+[[24]]$title
+[1] "Covered_Recipient_Profile_OPS_Taxonomy_3"
+
+[[24]]$description
+[1] "The secondary Open Payments valid taxonomy code as listed in the CMS-provided MPL for physician/non- physician practitioners that were successfully matched on the list and have a valid Open Payments taxonomy.\nFor physician/non-physician practitioners on the list with Primary or Secondary Taxonomy other than a valid Open Payments taxonomy, it will be displayed as the most frequently reported valid taxonomy by AM/GPO's in the published records across all Program Years in all payment categories where the physician/non-physician practitioner was reported. If no valid taxonomy is reported, it should remain blank.\nFor physician/non-physician practitioners who are not on the CMS provided MPL and were matched against external data source, the Open Payments Taxonomy will be displayed as the most frequently reported by AM/GPO's, assuming that it corresponds to a valid OP Taxonomy code."
+
+[[24]]$type
+[1] "string"
+
+[[24]]$constraints
+[[24]]$constraints$maxLength
+[1] 10
+
+
+
+[[25]]
+[[25]]$name
+[1] "covered_recipient_profile_ops_taxonomy_4"
+
+[[25]]$title
+[1] "Covered_Recipient_Profile_OPS_Taxonomy_4"
+
+[[25]]$description
+[1] "The secondary Open Payments valid taxonomy code as listed in the CMS-provided MPL for physician/non- physician practitioners that were successfully matched on the list and have a valid Open Payments taxonomy.\nFor physician/non-physician practitioners on the list with Primary or Secondary Taxonomy other than a valid Open Payments taxonomy, it will be displayed as the most frequently reported valid taxonomy by AM/GPO's in the published records across all Program Years in all payment categories where the physician/non-physician practitioner was reported. If no valid taxonomy is reported, it should remain blank.\nFor physician/non-physician practitioners who are not on the CMS provided MPL and were matched against external data source, the Open Payments Taxonomy will be displayed as the most frequently reported by AM/GPO's, assuming that it corresponds to a valid OP Taxonomy code."
+
+[[25]]$type
+[1] "string"
+
+[[25]]$constraints
+[[25]]$constraints$maxLength
+[1] 10
+
+
+
+[[26]]
+[[26]]$name
+[1] "covered_recipient_profile_ops_taxonomy_5"
+
+[[26]]$title
+[1] "Covered_Recipient_Profile_OPS_Taxonomy_5"
+
+[[26]]$description
+[1] "The secondary Open Payments valid taxonomy code as listed in the CMS-provided MPL for physician/non- physician practitioners that were successfully matched on the list and have a valid Open Payments taxonomy.\nFor physician/non-physician practitioners on the list with Primary or Secondary Taxonomy other than a valid Open Payments taxonomy, it will be displayed as the most frequently reported valid taxonomy by AM/GPO's in the published records across all Program Years in all payment categories where the physician/non-physician practitioner was reported. If no valid taxonomy is reported, it should remain blank.\nFor physician/non-physician practitioners who are not on the CMS provided MPL and were matched against external data source, the Open Payments Taxonomy will be displayed as the most frequently reported by AM/GPO's, assuming that it corresponds to a valid OP Taxonomy code."
+
+[[26]]$type
+[1] "string"
+
+[[26]]$constraints
+[[26]]$constraints$maxLength
+[1] 10
+
+
+
+[[27]]
+[[27]]$name
+[1] "covered_recipient_profile_ops_taxonomy_6"
+
+[[27]]$title
+[1] "Covered_Recipient_Profile_OPS_Taxonomy_6"
+
+[[27]]$description
+[1] "The secondary Open Payments valid taxonomy code as listed in the CMS-provided MPL for physician/non- physician practitioners that were successfully matched on the list and have a valid Open Payments taxonomy.\nFor physician/non-physician practitioners on the list with Primary or Secondary Taxonomy other than a valid Open Payments taxonomy, it will be displayed as the most frequently reported valid taxonomy by AM/GPO's in the published records across all Program Years in all payment categories where the physician/non-physician practitioner was reported. If no valid taxonomy is reported, it should remain blank.\nFor physician/non-physician practitioners who are not on the CMS provided MPL and were matched against external data source, the Open Payments Taxonomy will be displayed as the most frequently reported by AM/GPO's, assuming that it corresponds to a valid OP Taxonomy code."
+
+[[27]]$type
+[1] "string"
+
+[[27]]$constraints
+[[27]]$constraints$maxLength
+[1] 10
+
+
+
+[[28]]
+[[28]]$name
+[1] "covered_recipient_profile_license_state_code_1"
+
+[[28]]$title
+[1] "Covered_Recipient_Profile_License_State_Code_1"
+
+[[28]]$description
+[1] "The license state code of the physician/non-physician practitioner profile in Open Payments system, which is a 2- letter state abbreviation. The physician/non-physician practitioner may have up to 5 license states, if a physician/non-physician practitioner is licensed in multiple states."
+
+[[28]]$type
+[1] "string"
+
+[[28]]$constraints
+[[28]]$constraints$maxLength
+[1] 2
+
+
+
+[[29]]
+[[29]]$name
+[1] "covered_recipient_profile_license_state_code_2"
+
+[[29]]$title
+[1] "Covered_Recipient_Profile_License_State_Code_2"
+
+[[29]]$description
+[1] "The license state code of the physician profile/Non- Physician Practitioner in Open Payments system, which is a 2-letter state abbreviation. The physician/non-physician practitioner may have up to 5 license states, if a physician/non-physician practitioner is licensed in multiple states."
+
+[[29]]$type
+[1] "string"
+
+[[29]]$constraints
+[[29]]$constraints$maxLength
+[1] 2
+
+
+
+[[30]]
+[[30]]$name
+[1] "covered_recipient_profile_license_state_code_3"
+
+[[30]]$title
+[1] "Covered_Recipient_Profile_License_State_Code_3"
+
+[[30]]$description
+[1] "The license state code of the physician/non-physician practitioner profile in Open Payments system, which is a 2- letter state abbreviation. The physician/non-physician practitioner may have up to 5 license states, if a physician/non-physician practitioner is licensed in multiple states."
+
+[[30]]$type
+[1] "string"
+
+[[30]]$constraints
+[[30]]$constraints$maxLength
+[1] 2
+
+
+
+[[31]]
+[[31]]$name
+[1] "covered_recipient_profile_license_state_code_4"
+
+[[31]]$title
+[1] "Covered_Recipient_Profile_License_State_Code_4"
+
+[[31]]$description
+[1] "The license state code of the physician/non-physician practitioner profile in Open Payments system, which is a 2- letter state abbreviation. The physician/non-physician practitioner may have up to 5 license states, if a physician/non-physician practitioner is licensed in multiple states."
+
+[[31]]$type
+[1] "string"
+
+[[31]]$constraints
+[[31]]$constraints$maxLength
+[1] 2
+
+
+
+[[32]]
+[[32]]$name
+[1] "covered_recipient_profile_license_state_code_5"
+
+[[32]]$title
+[1] "Covered_Recipient_Profile_License_State_Code_5"
+
+[[32]]$description
+[1] "The license state code of the physician/non-physician practitioner profile in Open Payments system, which is a 2- letter state abbreviation. The physician/non-physician practitioner may have up to 5 license states, if a physician/non-physician practitioner is licensed in multiple states."
+
+[[32]]$type
+[1] "string"
+
+[[32]]$constraints
+[[32]]$constraints$maxLength
+[1] 2</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fastplyr<span class="sc">::</span><span class="fu">new_tbl</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">field =</span> <span class="fu">delist</span>(collapse<span class="sc">::</span><span class="fu">get_elem</span>(dict_list<span class="sc">$</span>fields, <span class="st">"name"</span>)),</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">description =</span> <span class="fu">delist</span>(collapse<span class="sc">::</span><span class="fu">get_elem</span>(dict_list<span class="sc">$</span>fields, <span class="st">"description"</span>))</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 32 × 2
+   field                                          description                   
+   &lt;chr&gt;                                          &lt;chr&gt;                         
+ 1 covered_recipient_profile_type                 "Indicator showing if recipie…
+ 2 covered_recipient_profile_id                   "System generated unique iden…
+ 3 associated_covered_recipient_profile_id_1      "Covered_Recipient_Profile_ID…
+ 4 associated_covered_recipient_profile_id_2      "Covered_Recipient_Profile_ID…
+ 5 covered_recipient_npi                          "National Provider Identifier…
+ 6 covered_recipient_profile_first_name           "The first name as available …
+ 7 covered_recipient_profile_middle_name          "The middle name as available…
+ 8 covered_recipient_profile_last_name            "The last name as available i…
+ 9 covered_recipient_profile_suffix               "The suffix as available in t…
+10 covered_recipient_profile_alternate_first_name "The alternate first name as …
+# ℹ 22 more rows</code></pre>
+</div>
+</div>
+<section id="new-function" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="new-function"><span class="header-section-number">4.1</span> New Function</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>fields <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"year"</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"covered_recipient_npi"</span>,                                         </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"covered_recipient_type"</span>,                                        </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"covered_recipient_first_name"</span>,                                  </span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"covered_recipient_last_name"</span>,                                   </span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"recipient_city"</span>,                                                </span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"recipient_state"</span>,                                               </span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"recipient_zip_code"</span>,                                            </span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">"teaching_hospital_name"</span>,                                        </span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">"form_of_payment_or_transfer_of_value"</span>,                          </span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">"nature_of_payment_or_transfer_of_value"</span>,                        </span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  <span class="st">"applicable_manufacturer_or_applicable_gpo_making_payment_name"</span>,</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  <span class="st">"applicable_manufacturer_or_applicable_gpo_making_payment_id"</span>)</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>process_params <span class="ot">&lt;-</span> \(arg_names, field_names) {</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>  nms <span class="ot">&lt;-</span> <span class="fu">set_names</span>(arg_names, field_names)</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">parse_expr</span>(</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste0</span>(</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>      <span class="st">"list2("</span>, </span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>      <span class="fu">glue_collapse</span>(</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>        <span class="fu">glue</span>(<span class="st">'{names(nms)} = {unname(nms)}'</span>), </span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>        <span class="at">sep =</span> <span class="st">", "</span>), <span class="st">")"</span>))</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>has_operator <span class="ot">&lt;-</span> \(args) {</span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_lgl</span>(args, <span class="cf">function</span>(x) <span class="fu">inherits</span>(x, <span class="st">"query_operator"</span>))</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>name_path <span class="ot">&lt;-</span> \(args) {</span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(args, \(x) x[[<span class="fu">names</span>(x)]][[<span class="st">"path"</span>]] <span class="ot">&lt;-</span> <span class="fu">names</span>(x))</span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_pay</span>(<span class="at">year =</span> <span class="dv">2021</span>, <span class="at">npi =</span> <span class="st">"1043218118"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>open_pay <span class="ot">&lt;-</span> <span class="cf">function</span>(year,</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">npi               =</span> <span class="cn">NULL</span>,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">covered_type      =</span> <span class="cn">NULL</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">first             =</span> <span class="cn">NULL</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">last              =</span> <span class="cn">NULL</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>                     <span class="at">city              =</span> <span class="cn">NULL</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>                     <span class="at">state             =</span> <span class="cn">NULL</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>                     <span class="at">zip               =</span> <span class="cn">NULL</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>                     <span class="at">teaching_hospital =</span> <span class="cn">NULL</span>,</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>                     <span class="at">payment_form      =</span> <span class="cn">NULL</span>,</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>                     <span class="at">payment_nature    =</span> <span class="cn">NULL</span>,</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>                     <span class="at">payer             =</span> <span class="cn">NULL</span>,</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>                     <span class="at">payer_id          =</span> <span class="cn">NULL</span>) {</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  fn_args <span class="ot">&lt;-</span> <span class="fu">process_params</span>(<span class="fu">fn_fmls_names</span>(), fields) <span class="sc">|&gt;</span> </span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">eval_bare</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">compact</span>()</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># if (any(has_operator(fn_args))) fn_args[has_operator(fn_args)] &lt;- name_path(fn_args[has_operator(fn_args)])</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>  fn_args</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_pay</span>(<span class="at">year =</span> <span class="dv">2021</span>, <span class="at">npi =</span> <span class="st">"1043218118"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$year
 [1] 2021
@@ -447,7 +1165,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 $covered_recipient_npi
 [1] "1043218118"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_pay</span>(<span class="at">year =</span> <span class="dv">2021</span>, <span class="at">payment_nature =</span> <span class="st">"Royalty or License"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_pay</span>(<span class="at">year =</span> <span class="dv">2021</span>, <span class="at">payment_nature =</span> <span class="st">"Royalty or License"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$year
 [1] 2021
@@ -455,7 +1173,7 @@ $covered_recipient_npi
 $nature_of_payment_or_transfer_of_value
 [1] "Royalty or License"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_pay</span>(<span class="at">year =</span> <span class="dv">2021</span>, <span class="at">payment_form =</span> <span class="st">"Stock option"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_pay</span>(<span class="at">year =</span> <span class="dv">2021</span>, <span class="at">payment_form =</span> <span class="st">"Stock option"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$year
 [1] 2021
@@ -463,7 +1181,7 @@ $nature_of_payment_or_transfer_of_value
 $form_of_payment_or_transfer_of_value
 [1] "Stock option"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_pay</span>(<span class="at">year =</span> <span class="dv">2021</span>, <span class="at">payer =</span> <span class="st">"Adaptive Biotechnologies Corporation"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_pay</span>(<span class="at">year =</span> <span class="dv">2021</span>, <span class="at">payer =</span> <span class="st">"Adaptive Biotechnologies Corporation"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$year
 [1] 2021
@@ -471,7 +1189,7 @@ $form_of_payment_or_transfer_of_value
 $applicable_manufacturer_or_applicable_gpo_making_payment_name
 [1] "Adaptive Biotechnologies Corporation"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_pay</span>(<span class="at">year =</span> <span class="dv">2021</span>, <span class="at">teaching_hospital =</span> <span class="st">"Nyu Langone Hospitals"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_pay</span>(<span class="at">year =</span> <span class="dv">2021</span>, <span class="at">teaching_hospital =</span> <span class="st">"Nyu Langone Hospitals"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$year
 [1] 2021
@@ -479,7 +1197,7 @@ $applicable_manufacturer_or_applicable_gpo_making_payment_name
 $teaching_hospital_name
 [1] "Nyu Langone Hospitals"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_pay</span>(<span class="at">year =</span> <span class="dv">2017</span><span class="sc">:</span><span class="dv">2023</span>, <span class="at">npi =</span> <span class="st">"1043477615"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_pay</span>(<span class="at">year =</span> <span class="dv">2017</span><span class="sc">:</span><span class="dv">2023</span>, <span class="at">npi =</span> <span class="st">"1043477615"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$year
 [1] 2017 2018 2019 2020 2021 2022 2023
@@ -489,27 +1207,27 @@ $covered_recipient_npi
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>starts_with <span class="ot">&lt;-</span> \(x) {</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">structure</span>(</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="at">path      =</span> <span class="cn">NA_character_</span>,</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">operator  =</span> <span class="st">"STARTS_WITH"</span>,</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">value     =</span> x),</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">class =</span> <span class="st">"query_operator"</span>)</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="fu">starts_with</span>(<span class="st">"Royalty or License"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>starts_with <span class="ot">&lt;-</span> \(x) {</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">structure</span>(</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="at">path      =</span> <span class="cn">NA_character_</span>,</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">operator  =</span> <span class="st">"STARTS_WITH"</span>,</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">value     =</span> x),</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">class =</span> <span class="st">"query_operator"</span>)</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="fu">starts_with</span>(<span class="st">"Royalty or License"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                path             operator                value 
                   NA        "STARTS_WITH" "Royalty or License" 
 attr(,"class")
 [1] "query_operator"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">open_pay</span>(</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">year =</span> <span class="dv">2021</span>, </span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">payment_nature =</span> <span class="fu">starts_with</span>(<span class="st">"Royalty or License"</span>), </span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">teaching_hospital =</span> <span class="fu">starts_with</span>(<span class="st">"NYU"</span>))</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">open_pay</span>(</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">year =</span> <span class="dv">2021</span>, </span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">payment_nature =</span> <span class="fu">starts_with</span>(<span class="st">"Royalty or License"</span>), </span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">teaching_hospital =</span> <span class="fu">starts_with</span>(<span class="st">"NYU"</span>))</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$year
 [1] 2021
@@ -526,14 +1244,14 @@ $nature_of_payment_or_transfer_of_value
 attr(,"class")
 [1] "query_operator"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(x[<span class="fu">has_operator</span>(x)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(x[<span class="fu">has_operator</span>(x)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "teaching_hospital_name"                
 [2] "nature_of_payment_or_transfer_of_value"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>x[<span class="fu">has_operator</span>(x)][[<span class="dv">1</span>]][[<span class="st">"path"</span>]] <span class="ot">&lt;-</span> <span class="fu">names</span>(x[<span class="fu">has_operator</span>(x)])[[<span class="dv">1</span>]]</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>x[<span class="fu">has_operator</span>(x)][[<span class="dv">1</span>]][[<span class="st">"path"</span>]] <span class="ot">&lt;-</span> <span class="fu">names</span>(x[<span class="fu">has_operator</span>(x)])[[<span class="dv">1</span>]]</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$year
 [1] 2021
@@ -550,37 +1268,37 @@ $nature_of_payment_or_transfer_of_value
 attr(,"class")
 [1] "query_operator"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># map(args, \(x) x[[names(x)]][["path"]] &lt;- names(x))</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co"># x[has_operator(x)] &lt;- providertwo:::map2(</span></span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   x[has_operator(x)], </span></span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   names(x[has_operator(x)]), </span></span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   function(x, y) x[["path"]] &lt;- y)</span></span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="co"># x</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># map(args, \(x) x[[names(x)]][["path"]] &lt;- names(x))</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co"># x[has_operator(x)] &lt;- providertwo:::map2(</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   x[has_operator(x)], </span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   names(x[has_operator(x)]), </span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   function(x, y) x[["path"]] &lt;- y)</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="co"># x</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="query-format" class="level2" data-number="3.3">
-<h2 data-number="3.3" class="anchored" data-anchor-id="query-format"><span class="header-section-number">3.3</span> Query Format</h2>
+<section id="query-format" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="query-format"><span class="header-section-number">4.2</span> Query Format</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">url_parse</span>(</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">base_url =</span> <span class="st">"https://openpaymentsdata.cms.gov/api/1/datastore/"</span>, </span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">url      =</span> <span class="st">"query/fdc3c773-018a-412c-8a81-d7b8a13a037b/0"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">url_modify_query</span>(</span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">conditions[0][property]</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"covered_recipient_first_name"</span>,</span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">conditions[0][value]</span><span class="st">`</span>    <span class="ot">=</span> <span class="st">"PATRICK"</span>,</span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">conditions[0][operator]</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"="</span>,</span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">conditions[1][property]</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"covered_recipient_last_name"</span>,</span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">conditions[1][value]</span><span class="st">`</span>    <span class="ot">=</span> <span class="st">"WARD"</span>,</span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">conditions[1][operator]</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"="</span>,</span>
-<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">schema                    =</span> <span class="st">"false"</span>,</span>
-<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">keys                      =</span> <span class="st">"false"</span>,</span>
-<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">results                   =</span> <span class="st">"false"</span>,</span>
-<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">offset                    =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
-<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">url_build</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">request</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">url_parse</span>(</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">base_url =</span> <span class="st">"https://openpaymentsdata.cms.gov/api/1/datastore/"</span>, </span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">url      =</span> <span class="st">"query/fdc3c773-018a-412c-8a81-d7b8a13a037b/0"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">url_modify_query</span>(</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">conditions[0][property]</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"covered_recipient_first_name"</span>,</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">conditions[0][value]</span><span class="st">`</span>    <span class="ot">=</span> <span class="st">"PATRICK"</span>,</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">conditions[0][operator]</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"="</span>,</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">conditions[1][property]</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"covered_recipient_last_name"</span>,</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">conditions[1][value]</span><span class="st">`</span>    <span class="ot">=</span> <span class="st">"WARD"</span>,</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">conditions[1][operator]</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"="</span>,</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">schema                    =</span> <span class="st">"false"</span>,</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">keys                      =</span> <span class="st">"false"</span>,</span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">results                   =</span> <span class="st">"false"</span>,</span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">offset                    =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">url_build</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">request</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_json</span>(<span class="at">simplifyVector =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$count
 [1] 48
@@ -876,6 +1594,7 @@ $query$properties
 </div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
