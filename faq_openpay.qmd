@@ -19,7 +19,75 @@ source("includes/_common.R")
 
 ```{r}
 #| label: open_dataset
-providertwo::load_openpayments()
+dataset <- fastplyr::as_tbl(
+  mtt(
+    fload("https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids"), 
+    modified = as_date(modified), 
+    description = sf_replace(description, "\n", ". "), 
+    description = sf_remove(description, "\r. \r."), 
+    theme = delist(map(theme, function(x) get_elem(as.list(x), "data"))), 
+    year = delist(map(keyword, function(x) get_elem(as.list(x), "data"))), 
+    year = sf_replace(year, "all years", "All", fix = TRUE), 
+    identifier = paste0("https://openpaymentsdata.cms.gov/api/1/datastore/query/", identifier, "/0")))
+
+describedby <- map(get_elem(get_elem(dataset$distribution, "data", DF.as.list = TRUE), "title|describedBy", regex = TRUE), function(x) x[not_null(names(x))])
+
+dataset <- roworder(slt(join(add_vars(dataset, downloadURL = delist(get_elem(get_elem(dataset$distribution, "data", DF.as.list = TRUE), "downloadURL"))), 
+      cheapr::new_df(title = delist(get_elem(describedby, "title")), describedBy = delist(get_elem(describedby, "describedBy"))) |> 
+  mtt(year = stringi::stri_extract_all_regex(title, "[0-9]{4}"),
+      name = stringi::stri_extract_all_regex(title, "^.*(?=\\s.\\sDetailed Dataset [0-9]{4} Reporting Year)"),
+      title = ifelse(na(name), title, glue::glue("{year} {name}")),
+      year = NULL,
+      name = NULL),
+      on = "title", 
+      verbose = 0), 
+    year, 
+    theme, 
+    title, 
+    description, 
+    modified, 
+    temporal, 
+    identifier, 
+    downloadURL, 
+    describedBy), 
+  -theme, 
+  -year, 
+  title)
+
+dataset # |> print(n = 75)
+```
+
+# Dictionaries
+
+```{r}
+#| label: open_dataset
+dict_urls <- dataset |> 
+  sbt(not_na(describedBy)) |> 
+  slt(year, theme, title, describedBy)
+
+dict_urls
+```
+
+
+```{r}
+dict_list <- dict_urls |> 
+  fastplyr::f_filter(theme == "Summary") |> 
+  fastplyr::f_pull(describedBy) |> 
+  httr2::request() |> 
+  httr2::req_perform() |> 
+  httr2::resp_body_json() |> 
+  fastplyr::as_tbl() |> 
+  fastplyr::f_pull(data)
+
+dict_list$title
+
+dict_list$fields
+
+
+fastplyr::new_tbl(
+  field = delist(collapse::get_elem(dict_list$fields, "name")),
+  description = delist(collapse::get_elem(dict_list$fields, "description"))
+)
 ```
 
 ## New Function
