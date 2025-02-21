@@ -547,15 +547,16 @@ ds_import$numOfRows
 
 ```{r}
 #| label: datastore_post
-ds_post <- request("https://data.cms.gov/provider-data/api/1/datastore/query/f93da3a3-400b-5efe-960d-c1d72b1d4f65") |> 
+#| eval: false
+ds_post <- request(
+  "https://data.cms.gov/provider-data/api/1/datastore/query/f93da3a3-400b-5efe-960d-c1d72b1d4f65") |> 
   req_method("POST") |> 
   req_headers(Accept = "application/json", 
               `Content-Type` = "application/json") |> 
   req_body_json(
     list(
       limit = 1,
-      state = "GA")
-      ) |> 
+      state = "GA")) |> 
   req_perform() |> 
   resp_body_json(simplifyVector = TRUE)
 
