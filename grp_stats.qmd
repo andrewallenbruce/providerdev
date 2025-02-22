@@ -34,6 +34,100 @@ prov
 ## Main Data
 
 ```{r}
+dataset <- as_tbl(
+    fload("https://data.cms.gov/data.json", query = "/dataset") |>
+      slt(
+        title,
+        theme,
+        keyword,
+        description,
+        periodicity = accrualPeriodicity,
+        modified,
+        temporal,
+        distribution,
+        identifier,
+        contact = contactPoint,
+        dictionary = describedBy,
+        landingPage,
+        references
+      ) |>
+      mtt(
+        modified = as_date(modified),
+        periodicity = recode_iso8601(periodicity),
+        keyword = flatten_column(keyword),
+        theme = flatten_column(theme),
+        description = trimws(sf_remove(description, "\n")),
+        references = delist(references)
+      )
+  ) |>
+    colorder(title)
+
+dataset |> 
+  select(title, keyword) |> 
+  print(n = 139)
+```
+
+
+```{r}
+dataset |> 
+  filter(stri_detect_regex(
+    title, 
+    "Provider of Services File"))
+
+dataset |> 
+  filter(stri_detect_regex(
+    title, 
+    "by Geography|by Provider|by Referring|by Drug|Physician/Supplier Procedure Summary|Hospital Provider Cost Report"))
+
+dataset |> 
+  filter(stri_detect_regex(
+    title, 
+    "Accountable Care Organization|ACO Realizing Equity|Pioneer ACO Model"))
+
+dataset |> 
+  filter(stri_detect_regex(
+    title, 
+    "CMS Program Statistics"))
+
+dataset |> 
+  filter(stri_detect_regex(
+    title, 
+    "^(Federally Qualified Health Center|Rural Health Clinic|Home Health Agency|Hospice|Skilled Nursing Facility|Long-Term Care Facility|Hospital|Home Infusion)"
+    ))
+
+dataset |> 
+  filter(stri_detect_regex(
+    title, 
+    "Innovation Center"))
+
+dataset |> filter(stri_detect_regex(
+  title, 
+  "Market Saturation & Utilization"))
+
+dataset |> 
+  filter(stri_detect_regex(
+    title, 
+    "End-Stage Renal Disease Facility Aggregation Group Performance|Medicare Dialysis Facilities"))
+```
+
+```{r}
+# distribution <- as_tbl(rowbind(get_elem(dataset, "distribution"), fill = TRUE)) |>
+#     mtt(modified    = as_date(modified),
+#         format      = cheapr_if_else(not_na(description), paste0(format, "-", description), format),
+#         `@type`     = NULL,
+#         description = NULL) |>
+#     colorder(title)
+# 
+#   list(
+#     dataset = slt(dataset, title, theme, keyword, description, accrualPeriodicity, contactPoint, describedBy, identifier, modified, landingPage, temporal, references) |> uniq(),
+#     download = sbt(distribution, not_na(mediaType), title, mediaType, downloadURL, modified, temporal) |> uniq(),
+#     distribution = sbt(distribution, not_na(format), title, format, accessURL, modified, temporal) |> uniq(),
+#     resources = slt(distribution, title, resourcesAPI, modified, temporal) |> uniq()
+#   )
+```
+
+
+```{r}
 pub <- providertwo::load_public()
 
 pub
