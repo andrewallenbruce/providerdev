@@ -54,40 +54,99 @@ dataset <- roworder(slt(join(add_vars(dataset, downloadURL = delist(get_elem(get
   -year, 
   title)
 
-dataset # |> print(n = 75)
+dataset <- collapse::rsplit(dataset, ~ theme)
+
+dataset <- list(
+  SummaryAll = sbt(dataset$Summary, year == "All", -year),
+  SummaryYear = mtt(sbt(dataset$Summary, year != "All", -describedBy), 
+                    year = as_int(year)),
+  General = mtt(dataset$`General Payments`, year = as_int(year)),
+  Research = mtt(dataset$`Research Payments`, year = as_int(year)),
+  Ownership = mtt(dataset$`Ownership Payments`, year = as_int(year)))
+
+dataset
 ```
 
-# Dictionaries
+## Dictionaries
+
+### Covered Recipient Profile Supplement
 
 ```{r}
-#| label: dict_urls
-dict_urls <- dataset |> 
+#| label: dict_covered_recipient_profile
+dict_covered_recipient <- dataset$SummaryAll |> 
   sbt(not_na(describedBy)) |> 
-  slt(year, theme, title, describedBy)
-
-dict_urls
-```
-
-
-```{r}
-dict_list <- dict_urls |> 
-  fastplyr::f_filter(theme == "Summary") |> 
-  fastplyr::f_pull(describedBy) |> 
-  httr2::request() |> 
-  httr2::req_perform() |> 
-  httr2::resp_body_json() |> 
+  _[["describedBy"]] |> 
+  request() |> 
+  req_perform() |> 
+  resp_body_json() |> 
   fastplyr::as_tbl() |> 
-  fastplyr::f_pull(data)
+  _[["data"]]
 
-dict_list$title
-
-dict_list$fields
-
+dict_covered_recipient$title
 
 fastplyr::new_tbl(
-  field = delist(collapse::get_elem(dict_list$fields, "name")),
-  description = delist(collapse::get_elem(dict_list$fields, "description"))
-)
+  field = delist(get_elem(dict_covered_recipient$fields, "name")),
+  description = delist(get_elem(dict_covered_recipient$fields, "description")))
+```
+
+### General Payment File
+
+```{r}
+#| label: dict_general_payments
+dict_general <- dataset$General |> 
+  sbt(year == "2023") |> 
+  _[["describedBy"]] |> 
+  request() |> 
+  req_perform() |> 
+  resp_body_json() |> 
+  fastplyr::as_tbl() |> 
+  _[["data"]]
+
+dict_general$title
+
+fastplyr::new_tbl(
+  field = delist(get_elem(dict_general$fields, "name")),
+  description = delist(get_elem(dict_general$fields, "description")))
+```
+
+### Ownership Payment File
+
+```{r}
+#| label: dict_ownership
+dict_owner <- dataset$Ownership |> 
+  sbt(year == "2023") |> 
+  _[["describedBy"]] |> 
+  request() |> 
+  req_perform() |> 
+  resp_body_json() |> 
+  fastplyr::as_tbl() |> 
+  _[["data"]]
+
+dict_owner$title
+
+fastplyr::new_tbl(
+  field = delist(get_elem(dict_owner$fields, "name")),
+  description = delist(get_elem(dict_owner$fields, "description")))
+```
+
+### Ownership Payment File
+
+```{r}
+#| label: dict_research
+dict_research <- dataset$Research |> 
+  sbt(year == "2023") |> 
+  _[["describedBy"]] |> 
+  request() |> 
+  req_perform() |> 
+  resp_body_json() |> 
+  fastplyr::as_tbl() |> 
+  _[["data"]]
+
+dict_research$title
+
+fastplyr::new_tbl(
+  field = delist(get_elem(dict_research$fields, "name")),
+  description = delist(get_elem(dict_research$fields, "description")))
 ```
 
 ## New Function

@@ -6,6 +6,30 @@
 source("includes/_common.R")
 ```
 
+## Provider Data
+
+```{r}
+prov <- providertwo::load_provider() |> collapse::colorder(theme, title)
+
+prov <- collapse::rsplit(prov, ~ theme)
+
+prov
+```
+
+
+```{r}
+dialysis_facilities <- prov$`Dialysis facilities`
+
+dialysis_facilities
+```
+
+
+```{r}
+doctors_and_clinicians <- prov$`Doctors and clinicians`
+
+doctors_and_clinicians
+```
+
 ## Open Payments
 
 ```{r}
@@ -47,28 +71,6 @@ open_general
 open_ownership <- collapse::mtt(open$`Ownership Payments`, year = as.integer(year))
 
 open_ownership
-```
-
-## Provider Data
-
-```{r}
-prov <- providertwo::load_provider() |> collapse::colorder(theme, title)
-
-prov <- collapse::rsplit(prov, ~ theme, keep.by = TRUE)
-```
-
-
-```{r}
-dialysis_facilities <- prov$`Dialysis facilities`
-
-dialysis_facilities
-```
-
-
-```{r}
-doctors_and_clinicians <- prov$`Doctors and clinicians`
-
-doctors_and_clinicians
 ```
 
 ## Main Data
