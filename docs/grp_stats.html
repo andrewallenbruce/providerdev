@@ -317,8 +317,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#open-payments" id="toc-open-payments" class="nav-link active" data-scroll-target="#open-payments"><span class="header-section-number">15.1</span> Open Payments</a></li>
-  <li><a href="#provider-data" id="toc-provider-data" class="nav-link" data-scroll-target="#provider-data"><span class="header-section-number">15.2</span> Provider Data</a></li>
+  <li><a href="#provider-data" id="toc-provider-data" class="nav-link active" data-scroll-target="#provider-data"><span class="header-section-number">15.1</span> Provider Data</a></li>
+  <li><a href="#open-payments" id="toc-open-payments" class="nav-link" data-scroll-target="#open-payments"><span class="header-section-number">15.2</span> Open Payments</a></li>
   <li><a href="#main-data" id="toc-main-data" class="nav-link" data-scroll-target="#main-data"><span class="header-section-number">15.3</span> Main Data</a></li>
   </ul>
 <div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li></ul></div></nav>
@@ -345,17 +345,229 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="open-payments" class="level2" data-number="15.1">
-<h2 data-number="15.1" class="anchored" data-anchor-id="open-payments"><span class="header-section-number">15.1</span> Open Payments</h2>
+<section id="provider-data" class="level2" data-number="15.1">
+<h2 data-number="15.1" class="anchored" data-anchor-id="provider-data"><span class="header-section-number">15.1</span> Provider Data</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>open <span class="ot">&lt;-</span> providertwo<span class="sc">::</span><span class="fu">load_openpayments</span>()</span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>prov <span class="ot">&lt;-</span> providertwo<span class="sc">::</span><span class="fu">load_provider</span>() <span class="sc">|&gt;</span> collapse<span class="sc">::</span><span class="fu">colorder</span>(theme, title)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>open <span class="ot">&lt;-</span> collapse<span class="sc">::</span><span class="fu">rsplit</span>(open, <span class="sc">~</span> theme, <span class="at">keep.by =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>prov <span class="ot">&lt;-</span> collapse<span class="sc">::</span><span class="fu">rsplit</span>(prov, <span class="sc">~</span> theme)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>prov</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$`Dialysis facilities`
+# A tibble: 23 × 11
+   title       landingPage issued     modified   released   keyword contactPoint
+   &lt;chr&gt;       &lt;chr&gt;       &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;   &lt;list&gt;      
+ 1 Dialysis F… https://da… 2020-03-14 2024-12-21 2025-01-15 Qualit… &lt;named list&gt;
+ 2 Dialysis F… https://da… 2020-03-14 2024-12-21 2025-01-15 Qualit… &lt;named list&gt;
+ 3 Dialysis F… https://da… 2020-03-14 2024-12-21 2025-01-15 Qualit… &lt;named list&gt;
+ 4 Patient su… https://da… 2020-03-14 2024-12-21 2025-01-15 Patien… &lt;named list&gt;
+ 5 Patient su… https://da… 2020-03-14 2024-12-21 2025-01-15 Patien… &lt;named list&gt;
+ 6 Patient su… https://da… 2020-03-14 2024-12-21 2025-01-15 Patien… &lt;named list&gt;
+ 7 ESRD QIP -… https://da… 2021-01-20 2024-12-03 2025-01-15 Linkin… &lt;named list&gt;
+ 8 ESRD QIP -… https://da… 2021-01-20 2024-12-03 2025-01-15 Linkin… &lt;named list&gt;
+ 9 ESRD QIP -… https://da… 2021-01-20 2024-12-03 2025-01-15 Linkin… &lt;named list&gt;
+10 ESRD QIP -… https://da… 2021-01-20 2024-12-03 2025-01-15 Linkin… &lt;named list&gt;
+# ℹ 13 more rows
+# ℹ 4 more variables: identifier &lt;chr&gt;, description &lt;chr&gt;, describedBy &lt;chr&gt;,
+#   downloadURL &lt;chr&gt;
+
+$`Doctors and clinicians`
+# A tibble: 8 × 11
+  title        landingPage issued     modified   released   keyword contactPoint
+  &lt;chr&gt;        &lt;chr&gt;       &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;   &lt;list&gt;      
+1 National Do… https://da… 2023-08-17 2025-01-31 2025-02-13 Clinic… &lt;named list&gt;
+2 PY 2022 Gro… https://da… 2023-08-17 2024-05-16 2024-05-30 Perfor… &lt;named list&gt;
+3 PY 2022 Gro… https://da… 2023-08-17 2024-05-16 2024-05-30 Patien… &lt;named list&gt;
+4 PY 2022 Cli… https://da… 2020-11-30 2024-05-16 2024-05-30 Clinic… &lt;named list&gt;
+5 PY 2022 Cli… https://da… 2023-08-17 2024-07-25 2024-08-01 MIPS, … &lt;named list&gt;
+6 PY 2022 Vir… https://da… 2021-06-04 2024-05-16 2024-05-30 Clinic… &lt;named list&gt;
+7 Facility Af… https://da… 2023-08-17 2025-01-31 2025-02-13 Clinic… &lt;named list&gt;
+8 Utilization… https://da… 2024-01-04 2025-01-31 2025-02-13 Clinic… &lt;named list&gt;
+# ℹ 4 more variables: identifier &lt;chr&gt;, description &lt;chr&gt;, describedBy &lt;chr&gt;,
+#   downloadURL &lt;chr&gt;
+
+$`Home health services`
+# A tibble: 11 × 11
+   title       landingPage issued     modified   released   keyword contactPoint
+   &lt;chr&gt;       &lt;chr&gt;       &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;   &lt;list&gt;      
+ 1 Home Healt… https://da… 2024-12-02 2024-12-02 2025-01-15 Genera… &lt;named list&gt;
+ 2 Home Healt… https://da… 2024-12-02 2024-12-02 2025-01-15 Addres… &lt;named list&gt;
+ 3 Home Healt… https://da… 2024-12-02 2024-12-02 2025-01-15 Genera… &lt;named list&gt;
+ 4 Home Healt… https://da… 2024-12-11 2024-12-11 2025-01-15 Patien… &lt;named list&gt;
+ 5 Home Healt… https://da… 2024-12-11 2024-12-11 2025-01-15 Patien… &lt;named list&gt;
+ 6 Home Healt… https://da… 2024-12-11 2024-12-11 2025-01-15 Patien… &lt;named list&gt;
+ 7 Home Healt… https://da… 2024-12-11 2024-12-11 2025-01-15 Patien… &lt;named list&gt;
+ 8 Home Healt… https://da… 2024-12-02 2024-12-02 2025-01-15 Genera… &lt;named list&gt;
+ 9 Home Healt… https://da… 2024-12-11 2024-12-11 2025-01-15 Genera… &lt;named list&gt;
+10 Expanded H… https://da… 2024-12-19 2025-01-07 2025-01-15 Home H… &lt;named list&gt;
+11 Expanded H… https://da… 2024-12-19 2025-01-07 2025-01-15 Home H… &lt;named list&gt;
+# ℹ 4 more variables: identifier &lt;chr&gt;, description &lt;chr&gt;, describedBy &lt;chr&gt;,
+#   downloadURL &lt;chr&gt;
+
+$`Hospice care`
+# A tibble: 8 × 11
+  title        landingPage issued     modified   released   keyword contactPoint
+  &lt;chr&gt;        &lt;chr&gt;       &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;   &lt;list&gt;      
+1 Hospice - Z… https://da… 2025-01-13 2025-01-13 2025-02-19 Locati… &lt;named list&gt;
+2 Hospice - G… https://da… 2025-01-13 2025-01-13 2025-02-19 Genera… &lt;named list&gt;
+3 Hospice - P… https://da… 2025-01-13 2025-01-13 2025-02-19 Measur… &lt;named list&gt;
+4 Hospice car… https://da… 2025-01-13 2025-01-13 2025-02-19 Averag… &lt;named list&gt;
+5 Hospice car… https://da… 2025-01-13 2025-01-13 2025-02-19 Nation… &lt;named list&gt;
+6 Hospice car… https://da… 2025-01-13 2025-01-13 2025-02-19 State,… &lt;named list&gt;
+7 Hospice - S… https://da… 2025-01-13 2025-01-13 2025-02-19 State,… &lt;named list&gt;
+8 Hospice-Nat… https://da… 2025-01-13 2025-01-13 2025-02-19 Nation… &lt;named list&gt;
+# ℹ 4 more variables: identifier &lt;chr&gt;, description &lt;chr&gt;, describedBy &lt;chr&gt;,
+#   downloadURL &lt;chr&gt;
+
+$Hospitals
+# A tibble: 74 × 11
+   title       landingPage issued     modified   released   keyword contactPoint
+   &lt;chr&gt;       &lt;chr&gt;       &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;   &lt;list&gt;      
+ 1 Outpatient… https://da… 2023-07-05 2025-01-08 2025-02-19 Ambula… &lt;named list&gt;
+ 2 Ambulatory… https://da… 2024-10-10 2025-01-15 2025-02-19 Ambula… &lt;named list&gt;
+ 3 Ambulatory… https://da… 2024-10-10 2025-01-15 2025-02-19 Ambula… &lt;named list&gt;
+ 4 Outpatient… https://da… 2020-12-10 2025-01-08 2025-02-19 Ambula… &lt;named list&gt;
+ 5 Ambulatory… https://da… 2024-10-10 2025-01-15 2025-02-19 Ambula… &lt;named list&gt;
+ 6 Outpatient… https://da… 2020-12-10 2025-01-08 2025-02-19 Ambula… &lt;named list&gt;
+ 7 Comprehens… https://da… 2020-12-10 2025-01-08 2025-02-19 Compre… &lt;named list&gt;
+ 8 CMS Medica… https://da… 2020-12-10 2025-01-08 2025-02-19 Compli… &lt;named list&gt;
+ 9 Complicati… https://da… 2023-07-05 2025-01-08 2025-02-19 Compli… &lt;named list&gt;
+10 Complicati… https://da… 2020-12-10 2025-01-08 2025-02-19 Compli… &lt;named list&gt;
+# ℹ 64 more rows
+# ℹ 4 more variables: identifier &lt;chr&gt;, description &lt;chr&gt;, describedBy &lt;chr&gt;,
+#   downloadURL &lt;chr&gt;
+
+$`Inpatient rehabilitation facilities`
+# A tibble: 4 × 11
+  title        landingPage issued     modified   released   keyword contactPoint
+  &lt;chr&gt;        &lt;chr&gt;       &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;   &lt;list&gt;      
+1 Inpatient R… https://da… 2024-10-24 2024-12-05 2024-12-18 Rehabi… &lt;named list&gt;
+2 Inpatient R… https://da… 2024-10-24 2024-12-05 2024-12-18 Qualit… &lt;named list&gt;
+3 Inpatient R… https://da… 2024-10-24 2024-12-05 2024-12-18 Rehabi… &lt;named list&gt;
+4 Inpatient R… https://da… 2024-10-24 2024-12-05 2024-12-18 Rehabi… &lt;named list&gt;
+# ℹ 4 more variables: identifier &lt;chr&gt;, description &lt;chr&gt;, describedBy &lt;chr&gt;,
+#   downloadURL &lt;chr&gt;
+
+$`Long-term care hospitals`
+# A tibble: 3 × 11
+  title        landingPage issued     modified   released   keyword contactPoint
+  &lt;chr&gt;        &lt;chr&gt;       &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;   &lt;list&gt;      
+1 Long-Term C… https://da… 2024-10-24 2024-12-05 2024-12-18 Qualit… &lt;named list&gt;
+2 Long-Term C… https://da… 2024-10-24 2024-12-05 2024-12-18 Qualit… &lt;named list&gt;
+3 Long-Term C… https://da… 2024-10-24 2024-12-05 2024-12-18 Nation… &lt;named list&gt;
+# ℹ 4 more variables: identifier &lt;chr&gt;, description &lt;chr&gt;, describedBy &lt;chr&gt;,
+#   downloadURL &lt;chr&gt;
+
+$`Nursing homes including rehab services`
+# A tibble: 20 × 11
+   title       landingPage issued     modified   released   keyword contactPoint
+   &lt;chr&gt;       &lt;chr&gt;       &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;   &lt;list&gt;      
+ 1 Fire Safet… https://da… 2023-06-01 2025-01-01 2025-01-29 Compla… &lt;named list&gt;
+ 2 Health Def… https://da… 2023-06-01 2025-01-01 2025-01-29 Compla… &lt;named list&gt;
+ 3 MDS Qualit… https://da… 2023-06-01 2025-01-01 2025-01-29 Qualit… &lt;named list&gt;
+ 4 Medicare C… https://da… 2023-06-01 2025-01-01 2025-01-29 Qualit… &lt;named list&gt;
+ 5 Ownership   https://da… 2023-06-01 2025-01-01 2025-01-29 Owners… &lt;named list&gt;
+ 6 Penalties   https://da… 2023-06-01 2025-01-01 2025-01-29 Penalt… &lt;named list&gt;
+ 7 Provider I… https://da… 2024-07-01 2025-01-01 2025-01-29 Genera… &lt;named list&gt;
+ 8 Skilled Nu… https://da… 2024-10-01 2025-01-01 2025-01-29 Skille… &lt;named list&gt;
+ 9 Skilled Nu… https://da… 2024-10-01 2025-01-01 2025-01-29 Skille… &lt;named list&gt;
+10 State US A… https://da… 2025-01-01 2025-01-01 2025-01-29 Averag… &lt;named list&gt;
+11 Survey Sum… https://da… 2023-06-01 2025-01-01 2025-01-29 Compla… &lt;named list&gt;
+12 FY 2025 SN… https://da… 2024-11-01 2024-11-01 2025-01-29 Value … &lt;named list&gt;
+13 FY 2025 SN… https://da… 2024-11-01 2024-11-01 2025-01-29 Value … &lt;named list&gt;
+14 Nursing Ho… https://da… 2024-10-01 2025-01-01 2025-01-29 Qualit… &lt;named list&gt;
+15 Citation C… https://da… 2020-09-01 2025-01-01 2025-01-29 Compla… &lt;named list&gt;
+16 Inspection… https://da… 2023-06-01 2025-01-01 2025-01-29 Compla… &lt;named list&gt;
+17 State-Leve… https://da… 2021-04-01 2025-01-01 2025-01-29 Defici… &lt;named list&gt;
+18 COVID-19 V… https://da… 2023-07-06 2025-01-19 2025-01-30 COVID   &lt;named list&gt;
+19 COVID-19 V… https://da… 2023-07-06 2025-01-19 2025-01-30 COVID,… &lt;named list&gt;
+20 Skilled Nu… https://da… 2024-10-01 2025-01-01 2025-01-29 Skille… &lt;named list&gt;
+# ℹ 4 more variables: identifier &lt;chr&gt;, description &lt;chr&gt;, describedBy &lt;chr&gt;,
+#   downloadURL &lt;chr&gt;
+
+$`Physician office visit costs`
+# A tibble: 85 × 11
+   title       landingPage issued     modified   released   keyword contactPoint
+   &lt;chr&gt;       &lt;chr&gt;       &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;   &lt;list&gt;      
+ 1 Addiction … https://da… 2024-08-05 2024-08-05 2024-08-08 Addict… &lt;named list&gt;
+ 2 Advanced H… https://da… 2024-08-05 2024-08-05 2024-08-08 Advanc… &lt;named list&gt;
+ 3 Allergy/ I… https://da… 2024-08-05 2024-08-05 2024-08-08 Allerg… &lt;named list&gt;
+ 4 Anesthesio… https://da… 2024-08-05 2024-08-05 2024-08-08 Anesth… &lt;named list&gt;
+ 5 Cardiac Su… https://da… 2024-08-05 2024-08-05 2024-08-08 Cardia… &lt;named list&gt;
+ 6 Cardiology… https://da… 2024-08-05 2024-08-05 2024-08-08 Cardio… &lt;named list&gt;
+ 7 Certified … https://da… 2024-08-05 2024-08-05 2024-08-08 Certif… &lt;named list&gt;
+ 8 Certified … https://da… 2024-08-05 2024-08-05 2024-08-08 Certif… &lt;named list&gt;
+ 9 Certified … https://da… 2024-08-05 2024-08-05 2024-08-08 Certif… &lt;named list&gt;
+10 Clinic or … https://da… 2024-08-05 2024-08-05 2024-08-08 Clinic… &lt;named list&gt;
+# ℹ 75 more rows
+# ℹ 4 more variables: identifier &lt;chr&gt;, description &lt;chr&gt;, describedBy &lt;chr&gt;,
+#   downloadURL &lt;chr&gt;
+
+$`Supplier directory`
+# A tibble: 1 × 11
+  title        landingPage issued     modified   released   keyword contactPoint
+  &lt;chr&gt;        &lt;chr&gt;       &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;   &lt;list&gt;      
+1 Medical Equ… https://da… 2020-12-17 2025-01-20 2025-01-20 Medica… &lt;named list&gt;
+# ℹ 4 more variables: identifier &lt;chr&gt;, description &lt;chr&gt;, describedBy &lt;chr&gt;,
+#   downloadURL &lt;chr&gt;</code></pre>
+</div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>open_summary_all <span class="ot">&lt;-</span> collapse<span class="sc">::</span><span class="fu">sbt</span>(open<span class="sc">$</span>Summary, year <span class="sc">==</span> <span class="st">"All"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>open_summary_all</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>dialysis_facilities <span class="ot">&lt;-</span> prov<span class="sc">$</span><span class="st">`</span><span class="at">Dialysis facilities</span><span class="st">`</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>dialysis_facilities</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 23 × 11
+   title       landingPage issued     modified   released   keyword contactPoint
+   &lt;chr&gt;       &lt;chr&gt;       &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;   &lt;list&gt;      
+ 1 Dialysis F… https://da… 2020-03-14 2024-12-21 2025-01-15 Qualit… &lt;named list&gt;
+ 2 Dialysis F… https://da… 2020-03-14 2024-12-21 2025-01-15 Qualit… &lt;named list&gt;
+ 3 Dialysis F… https://da… 2020-03-14 2024-12-21 2025-01-15 Qualit… &lt;named list&gt;
+ 4 Patient su… https://da… 2020-03-14 2024-12-21 2025-01-15 Patien… &lt;named list&gt;
+ 5 Patient su… https://da… 2020-03-14 2024-12-21 2025-01-15 Patien… &lt;named list&gt;
+ 6 Patient su… https://da… 2020-03-14 2024-12-21 2025-01-15 Patien… &lt;named list&gt;
+ 7 ESRD QIP -… https://da… 2021-01-20 2024-12-03 2025-01-15 Linkin… &lt;named list&gt;
+ 8 ESRD QIP -… https://da… 2021-01-20 2024-12-03 2025-01-15 Linkin… &lt;named list&gt;
+ 9 ESRD QIP -… https://da… 2021-01-20 2024-12-03 2025-01-15 Linkin… &lt;named list&gt;
+10 ESRD QIP -… https://da… 2021-01-20 2024-12-03 2025-01-15 Linkin… &lt;named list&gt;
+# ℹ 13 more rows
+# ℹ 4 more variables: identifier &lt;chr&gt;, description &lt;chr&gt;, describedBy &lt;chr&gt;,
+#   downloadURL &lt;chr&gt;</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>doctors_and_clinicians <span class="ot">&lt;-</span> prov<span class="sc">$</span><span class="st">`</span><span class="at">Doctors and clinicians</span><span class="st">`</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>doctors_and_clinicians</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 8 × 11
+  title        landingPage issued     modified   released   keyword contactPoint
+  &lt;chr&gt;        &lt;chr&gt;       &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;   &lt;list&gt;      
+1 National Do… https://da… 2023-08-17 2025-01-31 2025-02-13 Clinic… &lt;named list&gt;
+2 PY 2022 Gro… https://da… 2023-08-17 2024-05-16 2024-05-30 Perfor… &lt;named list&gt;
+3 PY 2022 Gro… https://da… 2023-08-17 2024-05-16 2024-05-30 Patien… &lt;named list&gt;
+4 PY 2022 Cli… https://da… 2020-11-30 2024-05-16 2024-05-30 Clinic… &lt;named list&gt;
+5 PY 2022 Cli… https://da… 2023-08-17 2024-07-25 2024-08-01 MIPS, … &lt;named list&gt;
+6 PY 2022 Vir… https://da… 2021-06-04 2024-05-16 2024-05-30 Clinic… &lt;named list&gt;
+7 Facility Af… https://da… 2023-08-17 2025-01-31 2025-02-13 Clinic… &lt;named list&gt;
+8 Utilization… https://da… 2024-01-04 2025-01-31 2025-02-13 Clinic… &lt;named list&gt;
+# ℹ 4 more variables: identifier &lt;chr&gt;, description &lt;chr&gt;, describedBy &lt;chr&gt;,
+#   downloadURL &lt;chr&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="open-payments" class="level2" data-number="15.2">
+<h2 data-number="15.2" class="anchored" data-anchor-id="open-payments"><span class="header-section-number">15.2</span> Open Payments</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>open <span class="ot">&lt;-</span> providertwo<span class="sc">::</span><span class="fu">load_openpayments</span>()</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>open <span class="ot">&lt;-</span> collapse<span class="sc">::</span><span class="fu">rsplit</span>(open, <span class="sc">~</span> theme, <span class="at">keep.by =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>open_summary_all <span class="ot">&lt;-</span> collapse<span class="sc">::</span><span class="fu">sbt</span>(open<span class="sc">$</span>Summary, year <span class="sc">==</span> <span class="st">"All"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>open_summary_all</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 17 × 9
    year  theme   title    description modified   temporal identifier downloadURL
@@ -381,9 +593,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>open_summary_years <span class="ot">&lt;-</span> collapse<span class="sc">::</span><span class="fu">sbt</span>(open<span class="sc">$</span>Summary, year <span class="sc">!=</span> <span class="st">"All"</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>open_summary_years</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>open_summary_years <span class="ot">&lt;-</span> collapse<span class="sc">::</span><span class="fu">sbt</span>(open<span class="sc">$</span>Summary, year <span class="sc">!=</span> <span class="st">"All"</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>open_summary_years</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 36 × 9
    year  theme   title    description modified   temporal identifier downloadURL
@@ -403,9 +615,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>open_research <span class="ot">&lt;-</span> collapse<span class="sc">::</span><span class="fu">mtt</span>(open<span class="sc">$</span><span class="st">`</span><span class="at">Research Payments</span><span class="st">`</span>, <span class="at">year =</span> <span class="fu">as.integer</span>(year))</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>open_research</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>open_research <span class="ot">&lt;-</span> collapse<span class="sc">::</span><span class="fu">mtt</span>(open<span class="sc">$</span><span class="st">`</span><span class="at">Research Payments</span><span class="st">`</span>, <span class="at">year =</span> <span class="fu">as.integer</span>(year))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>open_research</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 7 × 9
    year theme       title description modified   temporal identifier downloadURL
@@ -421,9 +633,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>open_general <span class="ot">&lt;-</span> collapse<span class="sc">::</span><span class="fu">mtt</span>(open<span class="sc">$</span><span class="st">`</span><span class="at">General Payments</span><span class="st">`</span>, <span class="at">year =</span> <span class="fu">as.integer</span>(year))</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>open_general</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>open_general <span class="ot">&lt;-</span> collapse<span class="sc">::</span><span class="fu">mtt</span>(open<span class="sc">$</span><span class="st">`</span><span class="at">General Payments</span><span class="st">`</span>, <span class="at">year =</span> <span class="fu">as.integer</span>(year))</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>open_general</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 7 × 9
    year theme       title description modified   temporal identifier downloadURL
@@ -439,9 +651,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>open_ownership <span class="ot">&lt;-</span> collapse<span class="sc">::</span><span class="fu">mtt</span>(open<span class="sc">$</span><span class="st">`</span><span class="at">Ownership Payments</span><span class="st">`</span>, <span class="at">year =</span> <span class="fu">as.integer</span>(year))</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>open_ownership</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>open_ownership <span class="ot">&lt;-</span> collapse<span class="sc">::</span><span class="fu">mtt</span>(open<span class="sc">$</span><span class="st">`</span><span class="at">Ownership Payments</span><span class="st">`</span>, <span class="at">year =</span> <span class="fu">as.integer</span>(year))</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>open_ownership</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 7 × 9
    year theme       title description modified   temporal identifier downloadURL
@@ -457,63 +669,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="provider-data" class="level2" data-number="15.2">
-<h2 data-number="15.2" class="anchored" data-anchor-id="provider-data"><span class="header-section-number">15.2</span> Provider Data</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>prov <span class="ot">&lt;-</span> providertwo<span class="sc">::</span><span class="fu">load_provider</span>() <span class="sc">|&gt;</span> collapse<span class="sc">::</span><span class="fu">colorder</span>(theme, title)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>prov <span class="ot">&lt;-</span> collapse<span class="sc">::</span><span class="fu">rsplit</span>(prov, <span class="sc">~</span> theme, <span class="at">keep.by =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>dialysis_facilities <span class="ot">&lt;-</span> prov<span class="sc">$</span><span class="st">`</span><span class="at">Dialysis facilities</span><span class="st">`</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>dialysis_facilities</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 23 × 12
-   theme title landingPage issued     modified   released   keyword contactPoint
-   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;       &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;   &lt;list&gt;      
- 1 Dial… Dial… https://da… 2020-03-14 2024-12-21 2025-01-15 Qualit… &lt;named list&gt;
- 2 Dial… Dial… https://da… 2020-03-14 2024-12-21 2025-01-15 Qualit… &lt;named list&gt;
- 3 Dial… Dial… https://da… 2020-03-14 2024-12-21 2025-01-15 Qualit… &lt;named list&gt;
- 4 Dial… Pati… https://da… 2020-03-14 2024-12-21 2025-01-15 Patien… &lt;named list&gt;
- 5 Dial… Pati… https://da… 2020-03-14 2024-12-21 2025-01-15 Patien… &lt;named list&gt;
- 6 Dial… Pati… https://da… 2020-03-14 2024-12-21 2025-01-15 Patien… &lt;named list&gt;
- 7 Dial… ESRD… https://da… 2021-01-20 2024-12-03 2025-01-15 Linkin… &lt;named list&gt;
- 8 Dial… ESRD… https://da… 2021-01-20 2024-12-03 2025-01-15 Linkin… &lt;named list&gt;
- 9 Dial… ESRD… https://da… 2021-01-20 2024-12-03 2025-01-15 Linkin… &lt;named list&gt;
-10 Dial… ESRD… https://da… 2021-01-20 2024-12-03 2025-01-15 Linkin… &lt;named list&gt;
-# ℹ 13 more rows
-# ℹ 4 more variables: identifier &lt;chr&gt;, description &lt;chr&gt;, describedBy &lt;chr&gt;,
-#   downloadURL &lt;chr&gt;</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>doctors_and_clinicians <span class="ot">&lt;-</span> prov<span class="sc">$</span><span class="st">`</span><span class="at">Doctors and clinicians</span><span class="st">`</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>doctors_and_clinicians</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 8 × 12
-  theme  title landingPage issued     modified   released   keyword contactPoint
-  &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;       &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;   &lt;list&gt;      
-1 Docto… Nati… https://da… 2023-08-17 2025-01-31 2025-02-13 Clinic… &lt;named list&gt;
-2 Docto… PY 2… https://da… 2023-08-17 2024-05-16 2024-05-30 Perfor… &lt;named list&gt;
-3 Docto… PY 2… https://da… 2023-08-17 2024-05-16 2024-05-30 Patien… &lt;named list&gt;
-4 Docto… PY 2… https://da… 2020-11-30 2024-05-16 2024-05-30 Clinic… &lt;named list&gt;
-5 Docto… PY 2… https://da… 2023-08-17 2024-07-25 2024-08-01 MIPS, … &lt;named list&gt;
-6 Docto… PY 2… https://da… 2021-06-04 2024-05-16 2024-05-30 Clinic… &lt;named list&gt;
-7 Docto… Faci… https://da… 2023-08-17 2025-01-31 2025-02-13 Clinic… &lt;named list&gt;
-8 Docto… Util… https://da… 2024-01-04 2025-01-31 2025-02-13 Clinic… &lt;named list&gt;
-# ℹ 4 more variables: identifier &lt;chr&gt;, description &lt;chr&gt;, describedBy &lt;chr&gt;,
-#   downloadURL &lt;chr&gt;</code></pre>
-</div>
-</div>
-</section>
 <section id="main-data" class="level2" data-number="15.3">
 <h2 data-number="15.3" class="anchored" data-anchor-id="main-data"><span class="header-section-number">15.3</span> Main Data</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>pub <span class="ot">&lt;-</span> providertwo<span class="sc">::</span><span class="fu">load_public</span>()</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>pub</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>pub <span class="ot">&lt;-</span> providertwo<span class="sc">::</span><span class="fu">load_public</span>()</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>pub</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$dataset
 # A tibble: 139 × 12
