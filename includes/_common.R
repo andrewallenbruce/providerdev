@@ -1,6 +1,9 @@
 options(scipen = 999, digits = 3)
 
 library(collapse)
+library(fastplyr)
+library(cheapr)
+library(stringi)
 library(tidyverse)
 library(httr2)
 library(glue)
