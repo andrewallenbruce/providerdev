@@ -7,6 +7,8 @@ editor_options:
 #| label: setup-common-01
 #| include: false
 source("includes/_common.R")
+
+# "[^\\x00-\\x7F]"
 ```
 
 ## Dataset
@@ -19,7 +21,7 @@ source("includes/_common.R")
 
 ```{r}
 #| label: open_dataset
-get_describedby <- \(x) {
+open_describedby <- \(x) {
   
   x <- map(get_elem(
     get_elem(x$distribution, "data", DF.as.list = TRUE),
@@ -42,7 +44,7 @@ get_describedby <- \(x) {
     sbt(year == max(year, na.rm = TRUE), -year, -title)
 }
 
-add_downloadurl <- \(x) {
+open_downloadurl <- \(x) {
   add_vars(x, downloadURL = delist(get_elem(
     get_elem(x$distribution, "data", DF.as.list = TRUE),
     "downloadURL"
@@ -56,13 +58,16 @@ load_open <- \() {
   mtt(
     fload("https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids"), 
     modified    = as_date(modified), 
-    description = replace_fixed(description, c("\n", "\r. \r."), c(". ", "")),
+    description = replace_fixed(
+      description, 
+      c("\n", "\r. \r.", '"'), c(". ", "", "")),
     theme       = delist(map(theme, function(x) get_elem(as.list(x), "data"))), 
     year        = delist(map(keyword, function(x) get_elem(as.list(x), "data"))), 
     year        = replace_fixed(year, c("all years"), c("All")),
+    year        = cheapr_if_else(title == "Provider profile ID mapping table", "All", year),
     identifier  = paste0("https://openpaymentsdata.cms.gov/api/1/datastore/query/", identifier, "/0")))
   
-  x <- rsplit(slt(add_downloadurl(dataset),
+  x <- rsplit(slt(open_downloadurl(dataset),
       year,
       theme,
       title,
@@ -70,16 +75,17 @@ load_open <- \() {
       modified,
       temporal,
       identifier,
-      downloadURL) |>
-      roworder(-theme, -year, title), ~ theme)
+      downloadURL), ~ theme)
   
   list(
-    summary_all  = sbt(x$Summary, year == "All", -year),
-    summary_year = sbt(x$Summary, year != "All") |> mtt(year = as_int(year)),
-    general     = mtt(x$`General Payments`, year = as_int(year), title = NULL),
-    research    = mtt(x$`Research Payments`, year = as_int(year), title = NULL),
-    ownership   = mtt(x$`Ownership Payments`, year = as_int(year), title = NULL),
-    dictionary = get_describedby(dataset))
+    summary_all  = roworder(sbt(x$Summary, year == "All", -year), title),
+    summary_year = roworder(mtt(sbt(x$Summary, year != "All"), 
+                       year = as_int(year),
+                       title = stri_replace_all_regex(title, "^[0-9]{4} ", "")), title, -year),
+    general      = mtt(x$`General Payments`, year = as_int(year), title = NULL),
+    research     = mtt(x$`Research Payments`, year = as_int(year), title = NULL),
+    ownership    = mtt(x$`Ownership Payments`, year = as_int(year), title = NULL),
+    dictionary   = open_describedby(dataset))
   
 }
 
@@ -91,20 +97,12 @@ dataset
 ## Dictionaries
 
 ```{r}
-#| label: get_dictionary
-get_dictionary <- function(x, dataset) {
+#| label: open_dictionary
+open_dictionary <- function(x, dataset) {
   
-  dataset <- arg_match0(
-    dataset,
-    c(
-      "Covered Recipient Profile Supplement",
-      "Research Payment Data",
-      "Ownership Payment Data",
-      "General Payment Data"
-    )
-  )  
+  dataset <- arg_match0(dataset, c("Covered", "Research", "Ownership", "General"))  
   
-  x <- sbt(x$dictionary, dataset == name) |> 
+  x <- sbt(x$dictionary, stri_detect_regex(name, paste0("^", dataset))) |> 
     _[["describedBy"]] |> 
     request() |> 
     req_perform() |> 
@@ -112,10 +110,12 @@ get_dictionary <- function(x, dataset) {
     as_tbl() |> 
     _[["data"]]
   
-  new_tbl(
-    field       = delist(get_elem(x$fields, "name")),
-    description = delist(get_elem(x$fields, "description"))
-  )
+  roworder(
+    new_tbl(
+      field = delist(get_elem(x$fields, "name")),
+      description = delist(get_elem(x$fields, "description"))
+      ), 
+    field)
 }
 ```
 
@@ -123,34 +123,30 @@ get_dictionary <- function(x, dataset) {
 
 ```{r}
 #| label: dict_covered_recipient_profile
-get_dictionary(dataset, "Covered Recipient Profile Supplement") |> 
-  roworder(field) |> 
-  print(n = Inf)
+open_dictionary(dataset, "Covered") |> 
+  _[["description"]]
 ```
 
 ### General Payment File
 
 ```{r}
 #| label: dict_general_payments
-get_dictionary(dataset, "General Payment Data") |> 
-  roworder(field) |> 
-  print(n = Inf)
+open_dictionary(dataset, "General") |> 
+  _[["description"]]
 ```
 
 ### Ownership Payment File
 
 ```{r}
 #| label: dict_ownership
-get_dictionary(dataset, "Ownership Payment Data") |> 
-  roworder(field) |> 
-  print(n = Inf)
+open_dictionary(dataset, "Ownership") |> 
+  _[["description"]]
 ```
 
 ### Ownership Payment File
 
 ```{r}
 #| label: dict_research
-get_dictionary(dataset, "Research Payment Data") |> 
-  roworder(field) |> 
-  print(n = Inf)
+open_dictionary(dataset, "Research") |> 
+  _[["description"]]
 ```
