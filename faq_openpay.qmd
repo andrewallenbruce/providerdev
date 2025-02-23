@@ -28,9 +28,18 @@ get_describedby <- \(x) {
   ), function(x)
     x[not_null(names(x))])
   
-  new_df(
-    title = delist(get_elem(x, "title")), 
-    describedBy = delist(get_elem(x, "describedBy")))
+  new_df(title = delist(get_elem(x, "title")),
+         describedBy = delist(get_elem(x, "describedBy"))) |>
+    mtt(
+      year = as_int(stri_extract_all_regex(title, "[0-9]{4}")),
+      name = cheapr_if_else(
+        na(year),
+        title,
+        stri_extract_all_regex(title, "^.*(?=\\s.\\sDetailed Dataset [0-9]{4} Reporting Year)")
+      ),
+      year = cheapr_if_else(na(year), max(year, na.rm = TRUE), year)
+    ) |>
+    sbt(year == max(year, na.rm = TRUE), -year, -title)
 }
 
 add_downloadurl <- \(x) {
@@ -38,6 +47,7 @@ add_downloadurl <- \(x) {
     get_elem(x$distribution, "data", DF.as.list = TRUE),
     "downloadURL"
   )))
+  
 }
 
 load_open <- \() {
@@ -52,21 +62,7 @@ load_open <- \() {
     year        = replace_fixed(year, c("all years"), c("All")),
     identifier  = paste0("https://openpaymentsdata.cms.gov/api/1/datastore/query/", identifier, "/0")))
   
-  dataset <- roworder(
-    slt(
-      join(
-        add_downloadurl(dataset),
-        get_describedby(dataset) |>
-          mtt(
-            year = stri_extract_all_regex(title, "[0-9]{4}"),
-            name = stri_extract_all_regex(title, "^.*(?=\\s.\\sDetailed Dataset [0-9]{4} Reporting Year)"),
-            title = ifelse(na(name), title, glue("{year} {name}")),
-            year = NULL,
-            name = NULL
-          ),
-        on = "title",
-        verbose = 0
-      ),
+  x <- rsplit(slt(add_downloadurl(dataset),
       year,
       theme,
       title,
@@ -74,22 +70,16 @@ load_open <- \() {
       modified,
       temporal,
       identifier,
-      downloadURL,
-      describedBy
-    ),
-    -theme,
-    -year,
-    title
-  )
-  
-  dataset <- rsplit(dataset, ~ theme)
+      downloadURL) |>
+      roworder(-theme, -year, title), ~ theme)
   
   list(
-    SummaryAll  = sbt(dataset$Summary, year == "All", -year),
-    SummaryYear = sbt(dataset$Summary, year != "All", -describedBy) |> mtt(year = as_int(year)),
-    General     = mtt(dataset$`General Payments`, year = as_int(year)),
-    Research    = mtt(dataset$`Research Payments`, year = as_int(year)),
-    Ownership   = mtt(dataset$`Ownership Payments`, year = as_int(year)))
+    summary_all  = sbt(x$Summary, year == "All", -year),
+    summary_year = sbt(x$Summary, year != "All") |> mtt(year = as_int(year)),
+    general     = mtt(x$`General Payments`, year = as_int(year), title = NULL),
+    research    = mtt(x$`Research Payments`, year = as_int(year), title = NULL),
+    ownership   = mtt(x$`Ownership Payments`, year = as_int(year), title = NULL),
+    dictionary = get_describedby(dataset))
   
 }
 
@@ -102,9 +92,19 @@ dataset
 
 ```{r}
 #| label: get_dictionary
-get_dictionary <- function(x) {
+get_dictionary <- function(x, dataset) {
   
-  x <- x |> 
+  dataset <- arg_match0(
+    dataset,
+    c(
+      "Covered Recipient Profile Supplement",
+      "Research Payment Data",
+      "Ownership Payment Data",
+      "General Payment Data"
+    )
+  )  
+  
+  x <- sbt(x$dictionary, dataset == name) |> 
     _[["describedBy"]] |> 
     request() |> 
     req_perform() |> 
@@ -112,11 +112,9 @@ get_dictionary <- function(x) {
     as_tbl() |> 
     _[["data"]]
   
-  list(
-    title         = x$title,
-    dictionary    = new_tbl(
-      field       = delist(get_elem(x$fields, "name")),
-      description = delist(get_elem(x$fields, "description")))
+  new_tbl(
+    field       = delist(get_elem(x$fields, "name")),
+    description = delist(get_elem(x$fields, "description"))
   )
 }
 ```
@@ -125,42 +123,34 @@ get_dictionary <- function(x) {
 
 ```{r}
 #| label: dict_covered_recipient_profile
-dict_covered_recipient <- dataset$SummaryAll |> 
-  sbt(not_na(describedBy)) |> 
-  get_dictionary()
-
-dict_covered_recipient
+get_dictionary(dataset, "Covered Recipient Profile Supplement") |> 
+  roworder(field) |> 
+  print(n = Inf)
 ```
 
 ### General Payment File
 
 ```{r}
 #| label: dict_general_payments
-dict_general <- dataset$General |> 
-  sbt(year == "2023") |> 
-  get_dictionary()
-
-dict_general
+get_dictionary(dataset, "General Payment Data") |> 
+  roworder(field) |> 
+  print(n = Inf)
 ```
 
 ### Ownership Payment File
 
 ```{r}
 #| label: dict_ownership
-dict_owner <- dataset$Ownership |> 
-  sbt(year == "2023") |> 
-  get_dictionary()
-
-dict_owner
+get_dictionary(dataset, "Ownership Payment Data") |> 
+  roworder(field) |> 
+  print(n = Inf)
 ```
 
 ### Ownership Payment File
 
 ```{r}
 #| label: dict_research
-dict_research <- dataset$Research |> 
-  sbt(year == "2023") |> 
-  get_dictionary()
-
-dict_research
+get_dictionary(dataset, "Research Payment Data") |> 
+  roworder(field) |> 
+  print(n = Inf)
 ```
