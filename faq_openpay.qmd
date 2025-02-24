@@ -20,47 +20,63 @@ source("includes/_common.R")
    * limit = `500`
 
 ```{r}
-#| label: open_dataset
-open_describedby <- \(x) {
+#| label: open_describedby
+open_describedby <- function(x) {
   
-  x <- map(get_elem(
-    get_elem(x$distribution, "data", DF.as.list = TRUE),
-    "title|describedBy",
-    regex = TRUE
-  ), function(x)
-    x[not_null(names(x))])
+  x <- map(
+    get_elem(
+      get_elem(x$distribution, 
+               "data", 
+               DF.as.list = TRUE),
+      "title|describedBy",
+      regex = TRUE), 
+    function(x) x[not_null(names(x))]
+    )
   
-  new_df(title = delist(get_elem(x, "title")),
-         describedBy = delist(get_elem(x, "describedBy"))) |>
+  new_df(
+    title       = delist(get_elem(x, "title")),
+    describedBy = delist(get_elem(x, "describedBy"))) |>
     mtt(
       year = as_int(stri_extract_all_regex(title, "[0-9]{4}")),
-      name = cheapr_if_else(
-        na(year),
-        title,
-        stri_extract_all_regex(title, "^.*(?=\\s.\\sDetailed Dataset [0-9]{4} Reporting Year)")
-      ),
-      year = cheapr_if_else(na(year), max(year, na.rm = TRUE), year)
-    ) |>
-    sbt(year == max(year, na.rm = TRUE), -year, -title)
+      name = cheapr_if_else(na(year), title,
+                            stri_extract_all_regex(
+                              title, 
+                              "^.*(?=\\s.\\sDetailed Dataset [0-9]{4} Reporting Year)")),
+      year = cheapr_if_else(na(year), fmax(year), year)) |>
+    sbt(year == fmax(year), 
+        -year, 
+        -title)
 }
+```
 
-open_downloadurl <- \(x) {
-  add_vars(x, downloadURL = delist(get_elem(
-    get_elem(x$distribution, "data", DF.as.list = TRUE),
-    "downloadURL"
-  )))
+
+```{r}
+#| label: open_downloadurl
+open_downloadurl <- function(x) {
   
+  add_vars(x, 
+           downloadURL = delist(
+             get_elem(
+               get_elem(x$distribution, 
+                        "data", 
+                        DF.as.list = TRUE),
+               "downloadURL"
+               )
+             )
+           )
 }
+```
 
+
+```{r}
+#| label: load_open
 load_open <- \() {
   
   dataset <- as_tbl(
   mtt(
     fload("https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids"), 
     modified    = as_date(modified), 
-    description = replace_fixed(
-      description, 
-      c("\n", "\r. \r.", '"'), c(". ", "", "")),
+    description = replace_fixed(description, c("\n", "\r. \r.", '"'), c(". ", "", "")),
     theme       = delist(map(theme, function(x) get_elem(as.list(x), "data"))), 
     year        = delist(map(keyword, function(x) get_elem(as.list(x), "data"))), 
     year        = replace_fixed(year, c("all years"), c("All")),
@@ -89,6 +105,8 @@ load_open <- \() {
   
 }
 
+load_open <- memoise::memoise(load_open)
+
 dataset <- load_open()
 
 dataset
@@ -98,11 +116,11 @@ dataset
 
 ```{r}
 #| label: open_dictionary
-open_dictionary <- function(x, dataset) {
+open_dictionary <- function(x, nm) {
   
-  dataset <- arg_match0(dataset, c("Covered", "Research", "Ownership", "General"))  
+  nm <- arg_match0(nm, c("Covered", "Research", "Ownership", "General"))  
   
-  x <- sbt(x$dictionary, stri_detect_regex(name, paste0("^", dataset))) |> 
+  x <- sbt(x$dictionary, stri_detect_regex(name, paste0("^", nm))) |> 
     _[["describedBy"]] |> 
     request() |> 
     req_perform() |> 
@@ -113,25 +131,37 @@ open_dictionary <- function(x, dataset) {
   roworder(
     new_tbl(
       field = delist(get_elem(x$fields, "name")),
-      description = delist(get_elem(x$fields, "description"))
-      ), 
+      description = delist(get_elem(x$fields, "description"))), 
     field)
 }
+
+open_dictionary <- memoise::memoise(open_dictionary)
 ```
 
 ### Covered Recipient Profile Supplement
 
 ```{r}
-#| label: dict_covered_recipient_profile
-open_dictionary(dataset, "Covered") |> 
-  _[["description"]] |> 
-  cat(sep = "\n \n")
+#| label: dict_covered
+dict_covered <- open_dictionary(dataset, "Covered")
+
+dict_field <- cli::style_underline(dict_covered$field)
+
+dict_desc <- cli::ansi_strwrap(dict_covered$description, width = 50, indent = 2, exdent = 2)
+
+cli::cli_text("{dict_covered$field}: {dict_covered$description}\n\n")
+
+cli::cli_bullets(
+  c(
+    "*" = "{dict_covered$field}",
+    " " = "{dict_covered$description}"
+  )
+)
 ```
 
 ### General Payment File
 
 ```{r}
-#| label: dict_general_payments
+#| label: dict_general
 open_dictionary(dataset, "General") |> 
   _[["description"]] |> 
   cat(sep = "\n \n")

@@ -9,26 +9,72 @@ source("includes/_common.R")
 ## Provider Data
 
 ```{r}
-prov <- providertwo::load_provider() |> 
-  collapse::colorder(theme, title)
+catalog_provider <- \() {
+  
+  dataset <- as_tbl(
+    fload(
+      "https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items"
+    ) |>
+      mtt(
+        issued      = as_date(issued),
+        modified    = as_date(modified),
+        released    = as_date(released),
+        keyword     = flatten_column(keyword),
+        theme       = flatten_column(theme),
+        description = trimws(sf_remove(description, "\n")),
+        describedBy = paste0(
+          "https://data.cms.gov/provider-data/dataset/",
+          identifier,
+          "#data-dictionary"
+        ),
+        identifier  = paste0(
+          "https://data.cms.gov/provider-data/api/1/datastore/query/",
+          identifier,
+          "/0"
+        )
+      )
+  )
+    add_vars(
+      dataset,
+      downloadURL = delist(get_elem(dataset$distribution, "downloadURL", DF.as.list = TRUE)),
+      contact_fn = delist(get_elem(dataset$contactPoint, "fn")),
+      contact_pt = delist(get_elem(dataset$contactPoint, "^has", regex = TRUE))) |> 
+      slt(
+        title,
+        theme,
+        description,
+        keyword,
+        issued,
+        modified,
+        released,
+        identifier,
+        dictionary = describedBy,
+        downloadurl = downloadURL,
+        contact_fn,
+        contact_pt,
+        landing = landingPage
+      ) |> 
+      roworder(theme, title) |> 
+      rsplit(~ theme) |> 
+      set_names(
+        c(
+          "dialysis_facilities",
+          "doctors_and_clinicians",
+          "home_health_services",
+          "hospice_care",
+          "hospitals",
+          "inpatient_rehabilitation_facilities",
+          "long_term_care_hospitals",
+          "nursing_homes",
+          "physician_office_visit_costs",
+          "supplier_directory"
+        )
+      )
+}
 
-prov <- collapse::rsplit(prov, ~ theme)
+prov <- catalog_provider()
 
 prov
-```
-
-
-```{r}
-# dialysis_facilities <- prov$`Dialysis facilities`
-# 
-# dialysis_facilities
-```
-
-
-```{r}
-# doctors_and_clinicians <- prov$`Doctors and clinicians`
-# 
-# doctors_and_clinicians
 ```
 
 ## Main Data
@@ -60,7 +106,7 @@ dataset <- as_tbl(
         references = delist(references)
       )
   ) |>
-    colorder(title)
+    roworder(title)
 
 dataset |> 
   select(title, keyword) |> 
