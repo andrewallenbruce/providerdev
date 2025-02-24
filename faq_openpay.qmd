@@ -19,6 +19,8 @@ source("includes/_common.R")
    * `accessLevel`: `"public"`
    * limit = `500`
 
+## Load Catalog
+
 ```{r}
 #| label: open_describedby
 open_describedby <- function(x) {
@@ -54,23 +56,28 @@ open_describedby <- function(x) {
 #| label: open_downloadurl
 open_downloadurl <- function(x) {
   
-  add_vars(x, 
-           downloadURL = delist(
-             get_elem(
-               get_elem(x$distribution, 
-                        "data", 
-                        DF.as.list = TRUE),
-               "downloadURL"
-               )
-             )
-           )
+  add_vars(x, downloadURL = delist(get_elem(
+    get_elem(x$distribution, "data", DF.as.list = TRUE),
+    "downloadURL"
+  )))
 }
 ```
 
+```{r}
+#| label: open_identifier_url
+open_identifier_url <- function(x) {
+  
+  paste0(
+    "https://openpaymentsdata.cms.gov/",
+    "api/1/datastore/query/", 
+    x, 
+    "/0")
+}
+```
 
 ```{r}
-#| label: load_open
-load_open <- \() {
+#| label: catalog_open_payments
+catalog_open_payments <- \() {
   
   dataset <- as_tbl(
   mtt(
@@ -80,37 +87,71 @@ load_open <- \() {
     theme       = delist(map(theme, function(x) get_elem(as.list(x), "data"))), 
     year        = delist(map(keyword, function(x) get_elem(as.list(x), "data"))), 
     year        = replace_fixed(year, c("all years"), c("All")),
-    year        = cheapr_if_else(title == "Provider profile ID mapping table", "All", year),
-    identifier  = paste0("https://openpaymentsdata.cms.gov/api/1/datastore/query/", identifier, "/0")))
+    year        = cheapr_if_else(title == "Provider profile ID mapping table", "All", year)))
   
-  x <- rsplit(slt(open_downloadurl(dataset),
-      year,
-      theme,
-      title,
-      description,
-      modified,
-      temporal,
-      identifier,
-      downloadURL), ~ theme)
+  x <- slt(
+    open_downloadurl(dataset),
+    year,
+    theme,
+    title,
+    description,
+    modified,
+    temporal,
+    identifier,
+    downloadURL
+  ) |>
+    rsplit( ~ theme)
   
   list(
-    summary_all  = roworder(sbt(x$Summary, year == "All", -year), title),
-    summary_year = roworder(mtt(sbt(x$Summary, year != "All"), 
-                       year = as_int(year),
-                       title = stri_replace_all_regex(title, "^[0-9]{4} ", "")), title, -year),
-    general      = mtt(x$`General Payments`, year = as_int(year), title = NULL),
-    research     = mtt(x$`Research Payments`, year = as_int(year), title = NULL),
-    ownership    = mtt(x$`Ownership Payments`, year = as_int(year), title = NULL),
-    dictionary   = open_describedby(dataset))
+    summary_all  = sbt(x$Summary, year == "All", -year) |>
+      mtt(title = tools::toTitleCase(title)) |>
+      roworder(title),
+    summary_year = sbt(x$Summary, year != "All") |>
+      mtt(
+        year = as_int(year),
+        title = stri_replace_all_regex(title, "^[0-9]{4} ", ""),
+        title = tools::toTitleCase(title)
+      ) |>
+      roworder(title, -year),
+    general = mtt(
+      x$`General Payments`, 
+      year = as_int(year), 
+      title = "General Payment Data",
+      description = "All general (non-research, non-ownership related) payments from the program year"),
+    research = mtt(
+      x$`Research Payments`,
+      year = as_int(year),
+      title = "Research Payment Data",
+      description = "All research-related payments from the program year"
+    ),
+    ownership = mtt(
+      x$`Ownership Payments`,
+      year = as_int(year),
+      title = "Ownership Payment Data",
+      description = "All ownership and investment payments from the program year"
+    ),
+    dictionary = open_describedby(dataset)
+  )
   
 }
 
-load_open <- memoise::memoise(load_open)
+openpay <- catalog_open_payments()
 
-dataset <- load_open()
-
-dataset
+openpay
 ```
+
+### Summary Group
+
+```{r}
+openpay$summary_all |> 
+  print(n = Inf)
+```
+
+```{r}
+openpay$summary_year |> 
+  rsplit(~ title)
+```
+
 
 ## Dictionaries
 
@@ -120,7 +161,8 @@ open_dictionary <- function(x, nm) {
   
   nm <- arg_match0(nm, c("Covered", "Research", "Ownership", "General"))  
   
-  x <- sbt(x$dictionary, stri_detect_regex(name, paste0("^", nm))) |> 
+  x <- sbt(x$dictionary, 
+           stri_detect_regex(name, paste0("^", nm))) |> 
     _[["describedBy"]] |> 
     request() |> 
     req_perform() |> 
@@ -134,53 +176,32 @@ open_dictionary <- function(x, nm) {
       description = delist(get_elem(x$fields, "description"))), 
     field)
 }
-
-open_dictionary <- memoise::memoise(open_dictionary)
 ```
 
 ### Covered Recipient Profile Supplement
 
 ```{r}
 #| label: dict_covered
-dict_covered <- open_dictionary(dataset, "Covered")
-
-dict_field <- cli::style_underline(dict_covered$field)
-
-dict_desc <- cli::ansi_strwrap(dict_covered$description, width = 50, indent = 2, exdent = 2)
-
-cli::cli_text("{dict_covered$field}: {dict_covered$description}\n\n")
-
-cli::cli_bullets(
-  c(
-    "*" = "{dict_covered$field}",
-    " " = "{dict_covered$description}"
-  )
-)
+open_dictionary(openpay, "Covered")
 ```
 
 ### General Payment File
 
 ```{r}
 #| label: dict_general
-open_dictionary(dataset, "General") |> 
-  _[["description"]] |> 
-  cat(sep = "\n \n")
+open_dictionary(openpay, "General")
 ```
 
 ### Ownership Payment File
 
 ```{r}
 #| label: dict_ownership
-open_dictionary(dataset, "Ownership") |> 
-  _[["description"]] |> 
-  cat(sep = "\n \n")
+open_dictionary(openpay, "Ownership")
 ```
 
 ### Ownership Payment File
 
 ```{r}
 #| label: dict_research
-open_dictionary(dataset, "Research") |> 
-  _[["description"]] |> 
-  cat(sep = "\n \n")
+open_dictionary(openpay, "Research")
 ```

@@ -319,12 +319,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#dataset" id="toc-dataset" class="nav-link active" data-scroll-target="#dataset"><span class="header-section-number">3.1</span> Dataset</a></li>
-  <li><a href="#dictionaries" id="toc-dictionaries" class="nav-link" data-scroll-target="#dictionaries"><span class="header-section-number">3.2</span> Dictionaries</a>
+  <li><a href="#load-catalog" id="toc-load-catalog" class="nav-link" data-scroll-target="#load-catalog"><span class="header-section-number">3.2</span> Load Catalog</a>
   <ul class="collapse">
-  <li><a href="#covered-recipient-profile-supplement" id="toc-covered-recipient-profile-supplement" class="nav-link" data-scroll-target="#covered-recipient-profile-supplement"><span class="header-section-number">3.2.1</span> Covered Recipient Profile Supplement</a></li>
-  <li><a href="#general-payment-file" id="toc-general-payment-file" class="nav-link" data-scroll-target="#general-payment-file"><span class="header-section-number">3.2.2</span> General Payment File</a></li>
-  <li><a href="#ownership-payment-file" id="toc-ownership-payment-file" class="nav-link" data-scroll-target="#ownership-payment-file"><span class="header-section-number">3.2.3</span> Ownership Payment File</a></li>
-  <li><a href="#ownership-payment-file-1" id="toc-ownership-payment-file-1" class="nav-link" data-scroll-target="#ownership-payment-file-1"><span class="header-section-number">3.2.4</span> Ownership Payment File</a></li>
+  <li><a href="#summary-group" id="toc-summary-group" class="nav-link" data-scroll-target="#summary-group"><span class="header-section-number">3.2.1</span> Summary Group</a></li>
+  </ul></li>
+  <li><a href="#dictionaries" id="toc-dictionaries" class="nav-link" data-scroll-target="#dictionaries"><span class="header-section-number">3.3</span> Dictionaries</a>
+  <ul class="collapse">
+  <li><a href="#covered-recipient-profile-supplement" id="toc-covered-recipient-profile-supplement" class="nav-link" data-scroll-target="#covered-recipient-profile-supplement"><span class="header-section-number">3.3.1</span> Covered Recipient Profile Supplement</a></li>
+  <li><a href="#general-payment-file" id="toc-general-payment-file" class="nav-link" data-scroll-target="#general-payment-file"><span class="header-section-number">3.3.2</span> General Payment File</a></li>
+  <li><a href="#ownership-payment-file" id="toc-ownership-payment-file" class="nav-link" data-scroll-target="#ownership-payment-file"><span class="header-section-number">3.3.3</span> Ownership Payment File</a></li>
+  <li><a href="#ownership-payment-file-1" id="toc-ownership-payment-file-1" class="nav-link" data-scroll-target="#ownership-payment-file-1"><span class="header-section-number">3.3.4</span> Ownership Payment File</a></li>
   </ul></li>
   </ul>
 <div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li></ul></div></nav>
@@ -360,6 +364,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>accessLevel</code>: <code>"public"</code></li>
 <li>limit = <code>500</code></li>
 </ul>
+</section>
+<section id="load-catalog" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="load-catalog"><span class="header-section-number">3.2</span> Load Catalog</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>open_describedby <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  </span>
@@ -391,134 +398,159 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>open_downloadurl <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_vars</span>(x, </span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">downloadURL =</span> <span class="fu">delist</span>(</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>             <span class="fu">get_elem</span>(</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>               <span class="fu">get_elem</span>(x<span class="sc">$</span>distribution, </span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>                        <span class="st">"data"</span>, </span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>                        <span class="at">DF.as.list =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>               <span class="st">"downloadURL"</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>               )</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>             )</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>           )</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_vars</span>(x, <span class="at">downloadURL =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">get_elem</span>(x<span class="sc">$</span>distribution, <span class="st">"data"</span>, <span class="at">DF.as.list =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"downloadURL"</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  )))</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>load_open <span class="ot">&lt;-</span> \() {</span>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>open_identifier_url <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  dataset <span class="ot">&lt;-</span> <span class="fu">as_tbl</span>(</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fload</span>(<span class="st">"https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids"</span>), </span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">modified    =</span> <span class="fu">as_date</span>(modified), </span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">description =</span> <span class="fu">replace_fixed</span>(description, <span class="fu">c</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>, <span class="st">"</span><span class="sc">\r</span><span class="st">. </span><span class="sc">\r</span><span class="st">."</span>, <span class="st">'"'</span>), <span class="fu">c</span>(<span class="st">". "</span>, <span class="st">""</span>, <span class="st">""</span>)),</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">theme       =</span> <span class="fu">delist</span>(<span class="fu">map</span>(theme, <span class="cf">function</span>(x) <span class="fu">get_elem</span>(<span class="fu">as.list</span>(x), <span class="st">"data"</span>))), </span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">year        =</span> <span class="fu">delist</span>(<span class="fu">map</span>(keyword, <span class="cf">function</span>(x) <span class="fu">get_elem</span>(<span class="fu">as.list</span>(x), <span class="st">"data"</span>))), </span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">year        =</span> <span class="fu">replace_fixed</span>(year, <span class="fu">c</span>(<span class="st">"all years"</span>), <span class="fu">c</span>(<span class="st">"All"</span>)),</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">year        =</span> <span class="fu">cheapr_if_else</span>(title <span class="sc">==</span> <span class="st">"Provider profile ID mapping table"</span>, <span class="st">"All"</span>, year),</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">identifier  =</span> <span class="fu">paste0</span>(<span class="st">"https://openpaymentsdata.cms.gov/api/1/datastore/query/"</span>, identifier, <span class="st">"/0"</span>)))</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">rsplit</span>(<span class="fu">slt</span>(<span class="fu">open_downloadurl</span>(dataset),</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>      year,</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>      theme,</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>      title,</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>      description,</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>      modified,</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>      temporal,</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>      identifier,</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>      downloadURL), <span class="sc">~</span> theme)</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">summary_all  =</span> <span class="fu">roworder</span>(<span class="fu">sbt</span>(x<span class="sc">$</span>Summary, year <span class="sc">==</span> <span class="st">"All"</span>, <span class="sc">-</span>year), title),</span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">summary_year =</span> <span class="fu">roworder</span>(<span class="fu">mtt</span>(<span class="fu">sbt</span>(x<span class="sc">$</span>Summary, year <span class="sc">!=</span> <span class="st">"All"</span>), </span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>                       <span class="at">year =</span> <span class="fu">as_int</span>(year),</span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>                       <span class="at">title =</span> <span class="fu">stri_replace_all_regex</span>(title, <span class="st">"^[0-9]{4} "</span>, <span class="st">""</span>)), title, <span class="sc">-</span>year),</span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">general      =</span> <span class="fu">mtt</span>(x<span class="sc">$</span><span class="st">`</span><span class="at">General Payments</span><span class="st">`</span>, <span class="at">year =</span> <span class="fu">as_int</span>(year), <span class="at">title =</span> <span class="cn">NULL</span>),</span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">research     =</span> <span class="fu">mtt</span>(x<span class="sc">$</span><span class="st">`</span><span class="at">Research Payments</span><span class="st">`</span>, <span class="at">year =</span> <span class="fu">as_int</span>(year), <span class="at">title =</span> <span class="cn">NULL</span>),</span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">ownership    =</span> <span class="fu">mtt</span>(x<span class="sc">$</span><span class="st">`</span><span class="at">Ownership Payments</span><span class="st">`</span>, <span class="at">year =</span> <span class="fu">as_int</span>(year), <span class="at">title =</span> <span class="cn">NULL</span>),</span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">dictionary   =</span> <span class="fu">open_describedby</span>(dataset))</span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>load_open <span class="ot">&lt;-</span> memoise<span class="sc">::</span><span class="fu">memoise</span>(load_open)</span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>dataset <span class="ot">&lt;-</span> <span class="fu">load_open</span>()</span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>dataset</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://openpaymentsdata.cms.gov/"</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"api/1/datastore/query/"</span>, </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    x, </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"/0"</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>catalog_open_payments <span class="ot">&lt;-</span> \() {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  dataset <span class="ot">&lt;-</span> <span class="fu">as_tbl</span>(</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fload</span>(<span class="st">"https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids"</span>), </span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">modified    =</span> <span class="fu">as_date</span>(modified), </span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">description =</span> <span class="fu">replace_fixed</span>(description, <span class="fu">c</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>, <span class="st">"</span><span class="sc">\r</span><span class="st">. </span><span class="sc">\r</span><span class="st">."</span>, <span class="st">'"'</span>), <span class="fu">c</span>(<span class="st">". "</span>, <span class="st">""</span>, <span class="st">""</span>)),</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">theme       =</span> <span class="fu">delist</span>(<span class="fu">map</span>(theme, <span class="cf">function</span>(x) <span class="fu">get_elem</span>(<span class="fu">as.list</span>(x), <span class="st">"data"</span>))), </span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">year        =</span> <span class="fu">delist</span>(<span class="fu">map</span>(keyword, <span class="cf">function</span>(x) <span class="fu">get_elem</span>(<span class="fu">as.list</span>(x), <span class="st">"data"</span>))), </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">year        =</span> <span class="fu">replace_fixed</span>(year, <span class="fu">c</span>(<span class="st">"all years"</span>), <span class="fu">c</span>(<span class="st">"All"</span>)),</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">year        =</span> <span class="fu">cheapr_if_else</span>(title <span class="sc">==</span> <span class="st">"Provider profile ID mapping table"</span>, <span class="st">"All"</span>, year)))</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">slt</span>(</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">open_downloadurl</span>(dataset),</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    year,</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    theme,</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    title,</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    description,</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    modified,</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    temporal,</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    identifier,</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    downloadURL</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rsplit</span>( <span class="sc">~</span> theme)</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">summary_all  =</span> <span class="fu">sbt</span>(x<span class="sc">$</span>Summary, year <span class="sc">==</span> <span class="st">"All"</span>, <span class="sc">-</span>year) <span class="sc">|&gt;</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mtt</span>(<span class="at">title =</span> tools<span class="sc">::</span><span class="fu">toTitleCase</span>(title)) <span class="sc">|&gt;</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>      <span class="fu">roworder</span>(title),</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">summary_year =</span> <span class="fu">sbt</span>(x<span class="sc">$</span>Summary, year <span class="sc">!=</span> <span class="st">"All"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mtt</span>(</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>        <span class="at">year =</span> <span class="fu">as_int</span>(year),</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>        <span class="at">title =</span> <span class="fu">stri_replace_all_regex</span>(title, <span class="st">"^[0-9]{4} "</span>, <span class="st">""</span>),</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>        <span class="at">title =</span> tools<span class="sc">::</span><span class="fu">toTitleCase</span>(title)</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>      ) <span class="sc">|&gt;</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>      <span class="fu">roworder</span>(title, <span class="sc">-</span>year),</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">general =</span> <span class="fu">mtt</span>(</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>      x<span class="sc">$</span><span class="st">`</span><span class="at">General Payments</span><span class="st">`</span>, </span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>      <span class="at">year =</span> <span class="fu">as_int</span>(year), </span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">"General Payment Data"</span>,</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>      <span class="at">description =</span> <span class="st">"All general (non-research, non-ownership related) payments from the program year"</span>),</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">research =</span> <span class="fu">mtt</span>(</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>      x<span class="sc">$</span><span class="st">`</span><span class="at">Research Payments</span><span class="st">`</span>,</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>      <span class="at">year =</span> <span class="fu">as_int</span>(year),</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">"Research Payment Data"</span>,</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>      <span class="at">description =</span> <span class="st">"All research-related payments from the program year"</span></span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">ownership =</span> <span class="fu">mtt</span>(</span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>      x<span class="sc">$</span><span class="st">`</span><span class="at">Ownership Payments</span><span class="st">`</span>,</span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>      <span class="at">year =</span> <span class="fu">as_int</span>(year),</span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> <span class="st">"Ownership Payment Data"</span>,</span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>      <span class="at">description =</span> <span class="st">"All ownership and investment payments from the program year"</span></span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">dictionary =</span> <span class="fu">open_describedby</span>(dataset)</span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>openpay <span class="ot">&lt;-</span> <span class="fu">catalog_open_payments</span>()</span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>openpay</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$summary_all
 # A tibble: 18 × 6
    title                  description modified   temporal identifier downloadURL
    &lt;chr&gt;                  &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;    &lt;chr&gt;      &lt;chr&gt;      
- 1 Covered Recipient Pro… The Covere… 2025-01-30 2017-01… https://o… https://do…
- 2 National level paymen… This datas… 2025-01-30 2017-01… https://o… https://do…
- 3 National level paymen… This datas… 2025-01-30 2017-01… https://o… https://do…
- 4 Payments grouped by T… This datas… 2025-01-30 2017-01… https://o… https://do…
- 5 Payments grouped by c… This datas… 2025-01-30 2017-01… https://o… https://do…
- 6 Payments grouped by c… This datas… 2025-01-30 2017-01… https://o… https://do…
- 7 Payments grouped by p… This datas… 2025-01-30 2017-01… https://o… https://do…
- 8 Payments grouped by r… This datas… 2025-01-30 2017-01… https://o… https://do…
- 9 Payments grouped by r… This datas… 2025-01-30 2017-01… https://o… https://do…
-10 Payments grouped by r… This datas… 2025-01-30 2017-01… https://o… https://do…
-11 Physician (distinct) … This datas… 2025-01-30 &lt;NA&gt;     https://o… https://do…
-12 Profile Information    This datas… 2025-01-30 &lt;NA&gt;     https://o… https://do…
-13 Provider profile ID m… Maps secon… 2025-01-30 2017-01… https://o… https://do…
-14 Reporting entity prof… This datas… 2025-01-30 &lt;NA&gt;     https://o… https://do…
-15 State level payment t… This datas… 2025-01-30 2017-01… https://o… https://do…
-16 State payment totals … Groups pay… 2025-01-30 2022-01… https://o… https://do…
-17 Summary Dashboard - a… Summary da… 2025-01-30 2017-01… https://o… https://do…
-18 Teaching Hospital pro… This datas… 2025-01-30 &lt;NA&gt;     https://o… https://do…
+ 1 Covered Recipient Pro… The Covere… 2025-01-30 2017-01… 23160558-… https://do…
+ 2 National Level Paymen… This datas… 2025-01-30 2017-01… 04c3355f-… https://do…
+ 3 National Level Paymen… This datas… 2025-01-30 2017-01… aaaddc12-… https://do…
+ 4 Payments Grouped by C… This datas… 2025-01-30 2017-01… 8d4d1fa0-… https://do…
+ 5 Payments Grouped by C… This datas… 2025-01-30 2017-01… e49defac-… https://do…
+ 6 Payments Grouped by P… This datas… 2025-01-30 2017-01… 895260f5-… https://do…
+ 7 Payments Grouped by R… This datas… 2025-01-30 2017-01… d5762bed-… https://do…
+ 8 Payments Grouped by R… This datas… 2025-01-30 2017-01… 61efcbef-… https://do…
+ 9 Payments Grouped by R… This datas… 2025-01-30 2017-01… ea5eea39-… https://do…
+10 Payments Grouped by T… This datas… 2025-01-30 2017-01… 217ad1a7-… https://do…
+11 Physician (Distinct) … This datas… 2025-01-30 &lt;NA&gt;     6ed6ae76-… https://do…
+12 Profile Information    This datas… 2025-01-30 &lt;NA&gt;     f2ed17cc-… https://do…
+13 Provider Profile ID M… Maps secon… 2025-01-30 2017-01… d19e5be2-… https://do…
+14 Reporting Entity Prof… This datas… 2025-01-30 &lt;NA&gt;     1cf0c6c0-… https://do…
+15 State Level Payment T… This datas… 2025-01-30 2017-01… 02157882-… https://do…
+16 State Payment Totals … Groups pay… 2025-01-30 2022-01… 7c5144d9-… https://do…
+17 Summary Dashboard - a… Summary da… 2025-01-30 2017-01… e0d225fc-… https://do…
+18 Teaching Hospital Pro… This datas… 2025-01-30 &lt;NA&gt;     8219fcb3-… https://do…
 
 $summary_year
 # A tibble: 35 × 7
     year title            description modified   temporal identifier downloadURL
    &lt;int&gt; &lt;chr&gt;            &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;    &lt;chr&gt;      &lt;chr&gt;      
- 1  2023 payments groupe… This datas… 2025-01-30 2023-01… https://o… https://do…
- 2  2022 payments groupe… This datas… 2025-01-30 2022-01… https://o… https://do…
- 3  2021 payments groupe… This datas… 2025-01-30 2021-01… https://o… https://do…
- 4  2020 payments groupe… This datas… 2025-01-30 2020-01… https://o… https://do…
- 5  2019 payments groupe… This datas… 2025-01-30 2019-01… https://o… https://do…
- 6  2018 payments groupe… This datas… 2025-01-30 2018-01… https://o… https://do…
- 7  2017 payments groupe… This datas… 2025-01-30 2017-01… https://o… https://do…
- 8  2023 payments groupe… This datas… 2025-01-30 2023-01… https://o… https://do…
- 9  2022 payments groupe… This datas… 2025-01-30 2022-01… https://o… https://do…
-10  2021 payments groupe… This datas… 2025-01-30 2021-01… https://o… https://do…
+ 1  2023 Payments Groupe… This datas… 2025-01-30 2023-01… 4017acfa-… https://do…
+ 2  2022 Payments Groupe… This datas… 2025-01-30 2022-01… 686b765e-… https://do…
+ 3  2021 Payments Groupe… This datas… 2025-01-30 2021-01… d35243be-… https://do…
+ 4  2020 Payments Groupe… This datas… 2025-01-30 2020-01… 1fd2be47-… https://do…
+ 5  2019 Payments Groupe… This datas… 2025-01-30 2019-01… 0ff0961f-… https://do…
+ 6  2018 Payments Groupe… This datas… 2025-01-30 2018-01… 07c1e377-… https://do…
+ 7  2017 Payments Groupe… This datas… 2025-01-30 2017-01… 5aad28fa-… https://do…
+ 8  2023 Payments Groupe… This datas… 2025-01-30 2023-01… 4fbf0094-… https://do…
+ 9  2022 Payments Groupe… This datas… 2025-01-30 2022-01… d2d87f39-… https://do…
+10  2021 Payments Groupe… This datas… 2025-01-30 2021-01… 7c9ebb83-… https://do…
 # ℹ 25 more rows
 
 $general
-# A tibble: 7 × 6
-   year description                   modified   temporal identifier downloadURL
-  &lt;int&gt; &lt;chr&gt;                         &lt;date&gt;     &lt;chr&gt;    &lt;chr&gt;      &lt;chr&gt;      
-1  2017 All general (non-research, n… 2025-01-30 2017-01… https://o… https://do…
-2  2018 All general (non-research, n… 2025-01-30 2018-01… https://o… https://do…
-3  2019 All general (non-research, n… 2025-01-30 2019-01… https://o… https://do…
-4  2020 All general (non-research, n… 2025-01-30 2020-01… https://o… https://do…
-5  2021 All general (non-research, n… 2025-01-30 2021-01… https://o… https://do…
-6  2022 All general (non-research, n… 2025-01-30 2022-01… https://o… https://do…
-7  2023 All general (non-research, n… 2025-01-30 2023-01… https://o… https://do…
+# A tibble: 7 × 7
+   year title             description modified   temporal identifier downloadURL
+  &lt;int&gt; &lt;chr&gt;             &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;    &lt;chr&gt;      &lt;chr&gt;      
+1  2017 General Payment … All genera… 2025-01-30 2017-01… 74e3a32c-… https://do…
+2  2018 General Payment … All genera… 2025-01-30 2018-01… f003634c-… https://do…
+3  2019 General Payment … All genera… 2025-01-30 2019-01… 4e54dd6c-… https://do…
+4  2020 General Payment … All genera… 2025-01-30 2020-01… a08c4b30-… https://do…
+5  2021 General Payment … All genera… 2025-01-30 2021-01… 0380bbeb-… https://do…
+6  2022 General Payment … All genera… 2025-01-30 2022-01… df01c2f8-… https://do…
+7  2023 General Payment … All genera… 2025-01-30 2023-01… fb3a65aa-… https://do…
 
 $research
-# A tibble: 7 × 6
-   year description                   modified   temporal identifier downloadURL
-  &lt;int&gt; &lt;chr&gt;                         &lt;date&gt;     &lt;chr&gt;    &lt;chr&gt;      &lt;chr&gt;      
-1  2017 Research Payment Data – Deta… 2025-01-30 2017-01… https://o… https://do…
-2  2018 Research Payment Data – Deta… 2025-01-30 2018-01… https://o… https://do…
-3  2019 Research Payment Data – Deta… 2025-01-30 2019-01… https://o… https://do…
-4  2020 Research Payment Data – Deta… 2025-01-30 2020-01… https://o… https://do…
-5  2021 Research Payment Data – Deta… 2025-01-30 2021-01… https://o… https://do…
-6  2022 Research Payment Data – Deta… 2025-01-30 2022-01… https://o… https://do…
-7  2023 Research Payment Data – Deta… 2025-01-30 2023-01… https://o… https://do…
+# A tibble: 7 × 7
+   year title             description modified   temporal identifier downloadURL
+  &lt;int&gt; &lt;chr&gt;             &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;    &lt;chr&gt;      &lt;chr&gt;      
+1  2017 Research Payment… All resear… 2025-01-30 2017-01… 0e3977b9-… https://do…
+2  2018 Research Payment… All resear… 2025-01-30 2018-01… 7b82fb48-… https://do…
+3  2019 Research Payment… All resear… 2025-01-30 2019-01… 713a6016-… https://do…
+4  2020 Research Payment… All resear… 2025-01-30 2020-01… 9c248e7e-… https://do…
+5  2021 Research Payment… All resear… 2025-01-30 2021-01… ce1d28dd-… https://do…
+6  2022 Research Payment… All resear… 2025-01-30 2022-01… fdc3c773-… https://do…
+7  2023 Research Payment… All resear… 2025-01-30 2023-01… ec9521bf-… https://do…
 
 $ownership
-# A tibble: 7 × 6
-   year description                   modified   temporal identifier downloadURL
-  &lt;int&gt; &lt;chr&gt;                         &lt;date&gt;     &lt;chr&gt;    &lt;chr&gt;      &lt;chr&gt;      
-1  2017 Ownership Payment Data - Det… 2025-01-30 2017-01… https://o… https://do…
-2  2018 Ownership Payment Data - Det… 2025-01-30 2018-01… https://o… https://do…
-3  2019 Ownership Payment Data - Det… 2025-01-30 2019-01… https://o… https://do…
-4  2020 Ownership Payment Data - Det… 2025-01-30 2020-01… https://o… https://do…
-5  2021 Ownership Payment Data - Det… 2025-01-30 2021-01… https://o… https://do…
-6  2022 Ownership Payment Data - Det… 2025-01-30 2022-01… https://o… https://do…
-7  2023 Ownership Payment Data - Det… 2025-01-30 2023-01… https://o… https://do…
+# A tibble: 7 × 7
+   year title             description modified   temporal identifier downloadURL
+  &lt;int&gt; &lt;chr&gt;             &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;    &lt;chr&gt;      &lt;chr&gt;      
+1  2017 Ownership Paymen… All owners… 2025-01-30 2017-01… f90c33d1-… https://do…
+2  2018 Ownership Paymen… All owners… 2025-01-30 2018-01… de0087e0-… https://do…
+3  2019 Ownership Paymen… All owners… 2025-01-30 2019-01… 0b5c9710-… https://do…
+4  2020 Ownership Paymen… All owners… 2025-01-30 2020-01… a9a0bf48-… https://do…
+5  2021 Ownership Paymen… All owners… 2025-01-30 2021-01… b0c03b8d-… https://do…
+6  2022 Ownership Paymen… All owners… 2025-01-30 2022-01… 37792388-… https://do…
+7  2023 Ownership Paymen… All owners… 2025-01-30 2023-01… ac0bc85c-… https://do…
 
 $dictionary
                                                                                                           describedBy
@@ -533,867 +565,210 @@ $dictionary
 4 Covered Recipient Profile Supplement</code></pre>
 </div>
 </div>
-</section>
-<section id="dictionaries" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="dictionaries"><span class="header-section-number">3.2</span> Dictionaries</h2>
+<section id="summary-group" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1" class="anchored" data-anchor-id="summary-group"><span class="header-section-number">3.2.1</span> Summary Group</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>open_dictionary <span class="ot">&lt;-</span> <span class="cf">function</span>(x, nm) {</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  nm <span class="ot">&lt;-</span> <span class="fu">arg_match0</span>(nm, <span class="fu">c</span>(<span class="st">"Covered"</span>, <span class="st">"Research"</span>, <span class="st">"Ownership"</span>, <span class="st">"General"</span>))  </span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">sbt</span>(x<span class="sc">$</span>dictionary, <span class="fu">stri_detect_regex</span>(name, <span class="fu">paste0</span>(<span class="st">"^"</span>, nm))) <span class="sc">|&gt;</span> </span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    _[[<span class="st">"describedBy"</span>]] <span class="sc">|&gt;</span> </span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">request</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">resp_simple_json</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as_tbl</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    _[[<span class="st">"data"</span>]]</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roworder</span>(</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">new_tbl</span>(</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">field =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(x<span class="sc">$</span>fields, <span class="st">"name"</span>)),</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">description =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(x<span class="sc">$</span>fields, <span class="st">"description"</span>))), </span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    field)</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>open_dictionary <span class="ot">&lt;-</span> memoise<span class="sc">::</span><span class="fu">memoise</span>(open_dictionary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<section id="covered-recipient-profile-supplement" class="level3" data-number="3.2.1">
-<h3 data-number="3.2.1" class="anchored" data-anchor-id="covered-recipient-profile-supplement"><span class="header-section-number">3.2.1</span> Covered Recipient Profile Supplement</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>dict_covered <span class="ot">&lt;-</span> <span class="fu">open_dictionary</span>(dataset, <span class="st">"Covered"</span>)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>dict_field <span class="ot">&lt;-</span> cli<span class="sc">::</span><span class="fu">style_underline</span>(dict_covered<span class="sc">$</span>field)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>dict_desc <span class="ot">&lt;-</span> cli<span class="sc">::</span><span class="fu">ansi_strwrap</span>(dict_covered<span class="sc">$</span>description, <span class="at">width =</span> <span class="dv">50</span>, <span class="at">indent =</span> <span class="dv">2</span>, <span class="at">exdent =</span> <span class="dv">2</span>)</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>cli<span class="sc">::</span><span class="fu">cli_text</span>(<span class="st">"{dict_covered$field}: {dict_covered$description}</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>cli<span class="sc">::</span><span class="fu">cli_bullets</span>(</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"*"</span> <span class="ot">=</span> <span class="st">"{dict_covered$field}"</span>,</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">" "</span> <span class="ot">=</span> <span class="st">"{dict_covered$description}"</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="general-payment-file" class="level3" data-number="3.2.2">
-<h3 data-number="3.2.2" class="anchored" data-anchor-id="general-payment-file"><span class="header-section-number">3.2.2</span> General Payment File</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_dictionary</span>(dataset, <span class="st">"General"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"description"</span>]] <span class="sc">|&gt;</span> </span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="at">sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st"> </span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>openpay<span class="sc">$</span>summary_all <span class="sc">|&gt;</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="cn">Inf</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Country name of the Submitting Applicable Manufacturer or Submitting Applicable Group Purchasing Organization (GPO) as provided in Open Payments
- 
-System generated unique identifier of the Applicable Manufacturer or Applicable Group Purchasing Organization (GPO) Making a payment or other transfer of value
- 
-The textual proper name of the applicable manufacturer or applicable GPO making the payment or other transfer of value
- 
-State name of the submitting applicable manufacturer or submitting applicable GPO as provided in Open  Payments
- 
-The Primary Device Identifier, if any, of the covered device or covered medical supply associated with the payment or other transfer of values (if applicable); the record may report up to 5 codes.
-Note: OP Program began collecting PDI information during PY 2021.
- 
-The Primary Device Identifier, if any, of the covered device or covered medical supply associated with the payment or other transfer of values (if applicable); the record may report up to 5 codes.
-Note: OP Program began collecting PDI information during PY 2021.
- 
-The Primary Device Identifier, if any, of the covered device or covered medical supply associated with the payment or other transfer of values (if applicable); the record may report up to 5 codes.
-Note: OP Program began collecting PDI information during PY 2021.
- 
-The Primary Device Identifier, if any, of the covered device or covered medical supply associated with the payment or other transfer of values (if applicable); the record may report up to 5 codes.
-Note: OP Program began collecting PDI information during PY 2021.
- 
-The Primary Device Identifier, if any, of the covered device or covered medical supply associated with the payment or other transfer of values (if applicable); the record may report up to 5 codes.
-Note: OP Program began collecting PDI information during PY 2021.
- 
-The National Drug Code, if any, of the drug or biological associated with the payment or other transfer of value (if applicable); the record may report up to 5 codes
- 
-The National Drug Code, if any, of the drug or biological associated with the payment or other transfer of value (if applicable); the record may report up to 5 codes
- 
-The National Drug Code, if any, of the drug or biological associated with the payment or other transfer of value (if applicable); the record may report up to 5 codes
- 
-The National Drug Code, if any, of the drug or biological associated with the payment or other transfer of value (if applicable); the record may report up to 5 codes
- 
-The National Drug Code, if any, of the drug or biological associated with the payment or other transfer of value (if applicable); the record may report up to 5 codes
- 
-An indicator showing if the payment record is New, Added, Changed, or Unchanged in the current publication compared to the previous publication.
-NEW - To identify “new” records added from the end of the previous submission deadline until the current submission period deadline date
-ADDED - To identify records that were not eligible at the time of previous publication, which is eligible for current publication.
-CHANGED - To identify previously published records modified after the last publication.
-UNCHANGED - To identify previously published records that remain “unchanged” in current publication.
- 
-Indicates the third party entity that received the payment or other transfer of value is a charity.
- 
-For "Travel and Lodging" payments, destination city where covered recipient traveled.
- 
-Any free String, which the reporting entity deems helpful or appropriate regarding this payment or other transfer of value.
- 
-For "Travel and Lodging" payments, the destination country where the covered recipient traveled.
- 
-Each product listed in relation to the payment or other transfer of value, indicates if the product is a covered or non-covered product per the covered product definition in the Open Payments final rule.
- 
-For each product listed in relation to the payment or other transfer of value, indicates if the product is a covered or non- covered product per the covered product definition in the Open Payments final rule.
- 
-For each product listed in relation to the payment or other transfer of value, indicates if the product is a covered or non- covered product per the covered product definition in the Open Payments final rule.
- 
-For each product listed in relation to the payment or other transfer of value, indicates if the product is a covered or non- covered product per the covered product definition in the Open Payments final rule.
- 
-For each product listed in relation to the payment or other transfer of value, indicates if the product is a covered or non- covered product per the covered product definition in the Open Payments final rule.
- 
-First name of the covered recipient physician or covered recipient non-physician practitioner receiving the payment or transfer of value, as reported by the submitting entity.
- 
-Last name of the covered recipient physician or covered recipient non-physician practitioner receiving the payment or transfer of value, as reported by the submitting entity.
- 
-The state license number of the covered recipient physician or covered recipient non-physician practitioner, which is a 2- letter state abbreviation; the record may include up to 5 license states, if a physician is licensed in multiple states.
- 
-The state license number of the covered recipient physician or covered recipient non-physician practitioner, which is a 2- letter state abbreviation; the record may include up to 5 license states, if a physician is licensed in multiple states.
- 
-The state license number of the covered recipient physician or covered recipient non-physician practitioner, which is a 2- letter state abbreviation; the record may include up to 5 license states, if a physician is licensed in multiple states.
- 
-The state license number of the covered recipient physician or covered recipient non-physician practitioner, which is a 2- letter state abbreviation; the record may include up to 5 license states, if a physician is licensed in multiple states.
- 
-The state license number of the covered recipient physician or covered recipient non-physician practitioner, which is a 2- letter state abbreviation; the record may include up to 5 license states, if a physician is licensed in multiple states.
- 
-Middle name of the covered recipient physician or covered recipient non-physician practitioner receiving the payment or transfer of value, as reported by the submitting entity.
- 
-Name suffix of the covered recipient physician or covered recipient non-physician practitioner receiving the payment or transfer of value, as reported by the submitting entity.
- 
-National Provider Identifier is a unique identification number for covered recipient physician or covered recipient non- physician practitioner (and not the NPI of a group the physician/non-physician practitioner belongs to).
- 
-Primary type of medicine practiced by the physician or Non- Physician Practitioner (covered recipient).
- 
-Primary type of medicine practiced by the physician or Non- Physician Practitioner (covered recipient).
-Note: OP began accepting this field in PY2021.
- 
-Primary type of medicine practiced by the physician or Non- Physician Practitioner (covered recipient).
-Note: OP began accepting this field in PY2021.
- 
-Primary type of medicine practiced by the physician or Non- Physician Practitioner (covered recipient).
-Note: OP began accepting this field in PY2021.
- 
-Primary type of medicine practiced by the physician or Non- Physician Practitioner (covered recipient).
-Note: OP began accepting this field in PY2021.
- 
-Primary type of medicine practiced by the physician or Non- Physician Practitioner (covered recipient).
-Note: OP began accepting this field in PY2021.
- 
-System generated unique identifier for covered recipient physician or covered recipient non-physician practitioner profile receiving the payment or other transfer of value.
- 
-Physician's or non-physician practitioner’s specialty chosen from the standardized "provider taxonomy" code list.
-Note: OP began accepting this field in PY2021.
- 
-Physician's or non-physician practitioner’s specialty chosen from the standardized "provider taxonomy" code list.
-Note: OP began accepting this field in PY2021.
- 
-Physician's or non-physician practitioner’s specialty chosen from the standardized "provider taxonomy" code list.
-Note: OP began accepting this field in PY2021.
- 
-Physician's or non-physician practitioner’s specialty chosen from the standardized "provider taxonomy" code list.
-Note: OP began accepting this field in PY2021.
- 
-Physician's or non-physician practitioner’s specialty chosen from the standardized "provider taxonomy" code list.
-Note: OP began accepting this field in PY2021.
- 
-Physician's or non-physician practitioner’s specialty chosen from the standardized "provider taxonomy" code list.
-Note: OP began accepting this field in PY2021.
- 
-An indicator showing if the recipient of the payment or transfer of value is a physician-covered recipient or non- physician practitioner or a teaching hospital.
- 
-If a singular payment, then this is the actual date the payment was issued; if a series of payments or an aggregated set of payments, this is the date of the first payment to the covered recipient in this program year
- 
-An indicator showing if an Applicable Manufacturer/GPO is requesting a delay in the publication of a payment or other transfer of value
- 
-Indicates whether the payment or other transfer of value is disputed by the covered recipient or not
- 
-The method of payment used to pay the covered recipient or to make the transfer of value.
- 
-Each product listed in relation to the payment or other transfer of value, indicates if the product is a drug, device, biological, or medical supply.
- 
-For each product listed in relation to the payment or other transfer of value, indicates if the product is a drug, device, biological, or medical supply.
- 
-For each product listed in relation to the payment or other transfer of value, indicates if the product is a drug, device, biological, or medical supply.
- 
-For each product listed in relation to the payment or other transfer of value, indicates if the product is a drug, device, biological, or medical supply.
- 
-For each product listed in relation to the payment or other transfer of value, indicates if the product is a drug, device, biological, or medical supply.
- 
-The marketed name of the drug, device, biological, or medical supply. May report the marketed name of up to five products (drugs, devices, biologicals, or medical supplies) associated with the payment or other transfer of value.
- 
-The marketed name of the drug, device, biological, or medical supply. May report the marketed name of up to five products (drugs, devices, biologicals, or medical supplies) associated with the payment or other transfer of value.
- 
-The marketed name of the drug, device, biological, or medical supply. May report the marketed name of up to five products (drugs, devices, biologicals, or medical supplies) associated with the payment or other transfer of value.
- 
-The marketed name of the drug, device, biological, or medical supply. May report the marketed name of up to five products (drugs, devices, biologicals, or medical supplies) associated with the payment or other transfer of value.
- 
-The marketed name of the drug, device, biological, or medical supply. May report the marketed name of up to five products (drugs, devices, biologicals, or medical supplies) associated with the payment or other transfer of value.
- 
-The name of the entity that received the payment or other transfer of value.
- 
-The nature of payment used to pay the covered recipient or to make the transfer of value.
- 
-The number of discrete payments being reported in the "Total Amount of Payment".
- 
-The predefined date when the payment or other transfer of value is scheduled to be published
- 
-Indicates whether the physician holds an ownership or investment interest in the applicable manufacturer; this indicator is limited to physician's ownership, not the physician's family members' ownership
- 
-Provide the product category or therapeutic area for the covered drug, device, biological, or medical supply listed in relation to the payment or other transfer of value.
- 
-Provide the product category or therapeutic area for the covered drug, device, biological, or medical supply listed in relation to the payment or other transfer of value.
- 
-Provide the product category or therapeutic area for the covered drug, device, biological, or medical supply listed in relation to the payment or other transfer of value.
- 
-Provide the product category or therapeutic area for the covered drug, device, biological, or medical supply listed in relation to the payment or other transfer of value.
- 
-Provide the product category or therapeutic area for the covered drug, device, biological, or medical supply listed in relation to the payment or other transfer of value.
- 
-The year in which the payment occurred, as reported by submitting entity.
- 
-The primary practice/business city of the physician or teaching hospital (covered recipient) receiving the payment or other transfer of value.
- 
-The primary practice/business address country name of the physician or teaching hospital (covered recipient) receiving the payment or transfer of value.
- 
-The international postal code for the primary practice/business location of the physician (covered recipient) receiving the payment or other transfer of value, if the primary practice/business address is outside the United States
- 
-The first line of the primary practice/business street address of the physician or teaching hospital (covered recipient) receiving the payment or other transfer of value.
- 
-The second line of the primary practice/business street address of the physician or teaching hospital (covered recipient) receiving the payment or other transfer of value.
- 
-The primary practice/business province name of the physician (covered recipient) receiving the payment or other transfer of value, if the primary practice/business address is outside the United States, and if applicable.
- 
-The primary practice/business state or territory abbreviation of the physician or teaching hospital (covered recipient) receiving the payment or transfer of value, if the primary practice/business address is in United States.
- 
-The 9-digit zip code for the primary practice/business location of the physician or teaching hospital (covered recipient) receiving the payment or transfer of value.
- 
-System-assigned identifier to the general transaction at the time of submission
- 
-The indicator allows the applicable manufacturer or applicable GPO to select whether the payment or other transfer of value is related to one or more product(s) (drugs, devices, biologicals, or medical supplies). If the payment was not made in relation to a product, select "No". If the payment was related to one or more products, select "Yes".
- 
-For "Travel and Lodging" payments, the destination state where the covered recipient traveled.
- 
-The textual proper name of the submitting applicable manufacturer or submitting applicable GPO.
- 
-A unique identifying number (CMS Certification Number) of the Teaching Hospital receiving the payment or other transfer of value.
- 
-The system generated a unique identifier of the Teaching Hospital receiving the payment or other transfer of value.
- 
-The name of the Teaching Hospital receiving the payment or other transfer of value. The name displayed is as listed in CMS teaching hospital list under Hospital name.
- 
-An indicator showing the "Third Party" that received the payment or other transfer of value is a Covered Recipient.
- 
-Indicates if a payment or transfer of value was paid to a third party entity or individual at the request of or on behalf of a covered recipient (physician or teaching hospital).
- 
-U.S. dollar amount of payment or other transfer of value to the recipient (manufacturer must convert to dollar currency if necessary)</code></pre>
+<pre><code># A tibble: 18 × 6
+   title                  description modified   temporal identifier downloadURL
+   &lt;chr&gt;                  &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;    &lt;chr&gt;      &lt;chr&gt;      
+ 1 Covered Recipient Pro… The Covere… 2025-01-30 2017-01… 23160558-… https://do…
+ 2 National Level Paymen… This datas… 2025-01-30 2017-01… 04c3355f-… https://do…
+ 3 National Level Paymen… This datas… 2025-01-30 2017-01… aaaddc12-… https://do…
+ 4 Payments Grouped by C… This datas… 2025-01-30 2017-01… 8d4d1fa0-… https://do…
+ 5 Payments Grouped by C… This datas… 2025-01-30 2017-01… e49defac-… https://do…
+ 6 Payments Grouped by P… This datas… 2025-01-30 2017-01… 895260f5-… https://do…
+ 7 Payments Grouped by R… This datas… 2025-01-30 2017-01… d5762bed-… https://do…
+ 8 Payments Grouped by R… This datas… 2025-01-30 2017-01… 61efcbef-… https://do…
+ 9 Payments Grouped by R… This datas… 2025-01-30 2017-01… ea5eea39-… https://do…
+10 Payments Grouped by T… This datas… 2025-01-30 2017-01… 217ad1a7-… https://do…
+11 Physician (Distinct) … This datas… 2025-01-30 &lt;NA&gt;     6ed6ae76-… https://do…
+12 Profile Information    This datas… 2025-01-30 &lt;NA&gt;     f2ed17cc-… https://do…
+13 Provider Profile ID M… Maps secon… 2025-01-30 2017-01… d19e5be2-… https://do…
+14 Reporting Entity Prof… This datas… 2025-01-30 &lt;NA&gt;     1cf0c6c0-… https://do…
+15 State Level Payment T… This datas… 2025-01-30 2017-01… 02157882-… https://do…
+16 State Payment Totals … Groups pay… 2025-01-30 2022-01… 7c5144d9-… https://do…
+17 Summary Dashboard - a… Summary da… 2025-01-30 2017-01… e0d225fc-… https://do…
+18 Teaching Hospital Pro… This datas… 2025-01-30 &lt;NA&gt;     8219fcb3-… https://do…</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>openpay<span class="sc">$</span>summary_year <span class="sc">|&gt;</span> </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rsplit</span>(<span class="sc">~</span> title)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$`Payments Grouped by Covered Recipient and Nature of Payments`
+# A tibble: 7 × 6
+   year description                   modified   temporal identifier downloadURL
+  &lt;int&gt; &lt;chr&gt;                         &lt;date&gt;     &lt;chr&gt;    &lt;chr&gt;      &lt;chr&gt;      
+1  2023 This dataset is pre-filtered… 2025-01-30 2023-01… 4017acfa-… https://do…
+2  2022 This dataset is pre-filtered… 2025-01-30 2022-01… 686b765e-… https://do…
+3  2021 This dataset is pre-filtered… 2025-01-30 2021-01… d35243be-… https://do…
+4  2020 This dataset is pre-filtered… 2025-01-30 2020-01… 1fd2be47-… https://do…
+5  2019 This dataset is pre-filtered… 2025-01-30 2019-01… 0ff0961f-… https://do…
+6  2018 This dataset is pre-filtered… 2025-01-30 2018-01… 07c1e377-… https://do…
+7  2017 This dataset is pre-filtered… 2025-01-30 2017-01… 5aad28fa-… https://do…
+
+$`Payments Grouped by Covered Recipient and Reporting Entities`
+# A tibble: 7 × 6
+   year description                   modified   temporal identifier downloadURL
+  &lt;int&gt; &lt;chr&gt;                         &lt;date&gt;     &lt;chr&gt;    &lt;chr&gt;      &lt;chr&gt;      
+1  2023 This dataset is pre-filtered… 2025-01-30 2023-01… 4fbf0094-… https://do…
+2  2022 This dataset is pre-filtered… 2025-01-30 2022-01… d2d87f39-… https://do…
+3  2021 This dataset is pre-filtered… 2025-01-30 2021-01… 7c9ebb83-… https://do…
+4  2020 This dataset is pre-filtered… 2025-01-30 2020-01… 78ad9c8d-… https://do…
+5  2019 This dataset is pre-filtered… 2025-01-30 2019-01… 63c6fc23-… https://do…
+6  2018 This dataset is pre-filtered… 2025-01-30 2018-01… b6f534a9-… https://do…
+7  2017 This dataset is pre-filtered… 2025-01-30 2017-01… 120f42a3-… https://do…
+
+$`Payments Grouped by Reporting Entities and Nature of Payments`
+# A tibble: 7 × 6
+   year description                   modified   temporal identifier downloadURL
+  &lt;int&gt; &lt;chr&gt;                         &lt;date&gt;     &lt;chr&gt;    &lt;chr&gt;      &lt;chr&gt;      
+1  2023 This dataset is pre-filtered… 2025-01-30 2023-01… 72008dab-… https://do…
+2  2022 This dataset is pre-filtered… 2025-01-30 2022-01… cedcd327-… https://do…
+3  2021 This dataset is pre-filtered… 2025-01-30 2021-01… a2714020-… https://do…
+4  2020 This dataset is pre-filtered… 2025-01-30 2020-01… 7dfe6254-… https://do…
+5  2019 This dataset is pre-filtered… 2025-01-30 2019-01… 7f3bcc65-… https://do…
+6  2018 This dataset is pre-filtered… 2025-01-30 2018-01… 76d91818-… https://do…
+7  2017 This dataset is pre-filtered… 2025-01-30 2017-01… 8ab7b1de-… https://do…
+
+$`Payments Grouped by Reporting Entities, Covered Recipient, and Nature of Payments`
+# A tibble: 7 × 6
+   year description                   modified   temporal identifier downloadURL
+  &lt;int&gt; &lt;chr&gt;                         &lt;date&gt;     &lt;chr&gt;    &lt;chr&gt;      &lt;chr&gt;      
+1  2023 This dataset is pre-filtered… 2025-01-30 2023-01… 29c23b6a-… https://do…
+2  2022 This dataset is pre-filtered… 2025-01-30 2022-01… 171e369a-… https://do…
+3  2021 This dataset is pre-filtered… 2025-01-30 2021-01… f240c437-… https://do…
+4  2020 This dataset is pre-filtered… 2025-01-30 2020-01… 532df191-… https://do…
+5  2019 This dataset is pre-filtered… 2025-01-30 2019-01… 6c8251d4-… https://do…
+6  2018 This dataset is pre-filtered… 2025-01-30 2018-01… c1ce263b-… https://do…
+7  2017 This dataset is pre-filtered… 2025-01-30 2017-01… d3d4880a-… https://do…
+
+$`State Payment Totals Grouped by Nature of Payment for all Years`
+# A tibble: 7 × 6
+   year description                   modified   temporal identifier downloadURL
+  &lt;int&gt; &lt;chr&gt;                         &lt;date&gt;     &lt;chr&gt;    &lt;chr&gt;      &lt;chr&gt;      
+1  2023 Groups payment data by state… 2025-01-30 2023-01… f83aed3a-… https://do…
+2  2022 Groups payment data by state… 2025-01-30 2022-01… c64c40af-… https://do…
+3  2021 Groups payment data by state… 2025-01-30 2021-01… 7fad5b56-… https://do…
+4  2020 Groups payment data by state… 2025-01-30 2020-01… 7f3055b6-… https://do…
+5  2019 Groups payment data by state… 2025-01-30 2019-01… 37fba404-… https://do…
+6  2018 Groups payment data by state… 2025-01-30 2018-01… 6dd14c90-… https://do…
+7  2017 Groups payment data by state… 2025-01-30 2017-01… 4013f179-… https://do…</code></pre>
 </div>
 </div>
 </section>
-<section id="ownership-payment-file" class="level3" data-number="3.2.3">
-<h3 data-number="3.2.3" class="anchored" data-anchor-id="ownership-payment-file"><span class="header-section-number">3.2.3</span> Ownership Payment File</h3>
+</section>
+<section id="dictionaries" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="dictionaries"><span class="header-section-number">3.3</span> Dictionaries</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_dictionary</span>(dataset, <span class="st">"Ownership"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"description"</span>]] <span class="sc">|&gt;</span> </span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="at">sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st"> </span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>open_dictionary <span class="ot">&lt;-</span> <span class="cf">function</span>(x, nm) {</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  nm <span class="ot">&lt;-</span> <span class="fu">arg_match0</span>(nm, <span class="fu">c</span>(<span class="st">"Covered"</span>, <span class="st">"Research"</span>, <span class="st">"Ownership"</span>, <span class="st">"General"</span>))  </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">sbt</span>(x<span class="sc">$</span>dictionary, </span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>           <span class="fu">stri_detect_regex</span>(name, <span class="fu">paste0</span>(<span class="st">"^"</span>, nm))) <span class="sc">|&gt;</span> </span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    _[[<span class="st">"describedBy"</span>]] <span class="sc">|&gt;</span> </span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">request</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">resp_simple_json</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as_tbl</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    _[[<span class="st">"data"</span>]]</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roworder</span>(</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">new_tbl</span>(</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">field =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(x<span class="sc">$</span>fields, <span class="st">"name"</span>)),</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">description =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(x<span class="sc">$</span>fields, <span class="st">"description"</span>))), </span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    field)</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="covered-recipient-profile-supplement" class="level3" data-number="3.3.1">
+<h3 data-number="3.3.1" class="anchored" data-anchor-id="covered-recipient-profile-supplement"><span class="header-section-number">3.3.1</span> Covered Recipient Profile Supplement</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_dictionary</span>(openpay, <span class="st">"Covered"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Country name of the submitting applicable manufacturer or applicable GPO
- 
-Open Payments ID of either the submitting applicable manufacturer or applicable GPO
- 
-The textual proper name of either the submitting applicable manufacturer or applicable GPO
- 
-State name of either the submitting applicable manufacturer or applicable GPO
- 
-An indicator showing if the payment record is New, Added,
-Changed, or Unchanged in the current publication compared to the previous publication.
-NEW - To identify “new” records added from the end of the previous submission deadline until the current submission period deadline date
-ADDED - To identify records that were not eligible at the time of previous publication, which is eligible for current publication.
-CHANGED - To identify previously published records modified after the last publication.
-UNCHANGED - To identify previously published records that remain “unchanged” in current publication.
- 
-Indicates whether the ownership or investment interest is disputed by the physician
- 
-An indicator showing if the ownership or investment interest is held by the physician or by an immediate family member
- 
-The predefined date when the ownership or investment interest is scheduled to be published
- 
-First name of the physician (covered recipient) with the ownership or investment interest being reported
- 
-Last name of the physician (covered recipient) with the ownership or investment interest being reported
- 
-Middle name of the physician (covered recipient) with the ownership or investment interest being reported
- 
-Name suffix of the physician (covered recipient) with the ownership or investment interest being reported
- 
-National Provider Identifier is a unique identification number for covered recipient physician (and not the NPI of a group the physician belongs to).
- 
-The primary type of medicine practiced by the physician covered recipient with the ownership or investment interest being reported
- 
-Open Payments system-generated unique identifier for physician profile with the ownership or investment interest being reported
- 
-Physician's single-specialty chosen from the standardized "provider taxonomy" code list
- 
-The year in which the ownership/investment interest occurred
- 
-The primary practice city of the physician with the ownership or investment interest being reported
- 
-The primary practice/business address country name of the physician with the ownership or investment interest being reported
- 
-The international postal code for the primary practice/business location of the physician with the ownership or investment interest being reported, if the primary practice/business address is outside the United States
- 
-The first line of the primary practice street address of the physician with the ownership or investment interest being reported
- 
-The second line of the primary practice street address of the physician with the ownership or investment interest being reported
- 
-The primary practice/business province name of the physician with the ownership or investment interest being reported, if the primary practice/business address is outside the United States, and if applicable
- 
-The primary practice/business state or territory abbreviation of the physician with the ownership or investment interest being reported, if the primary practice/business address is in the United States
- 
-The 9-digit zip code for the primary practice location of the physician with the ownership or investment interest being reported, if the primary practice address is in the United States
- 
-Open Payments system-generated unique identifier for the ownership payment record
- 
-The textual proper name of either the submitting applicable manufacturer or applicable GPO
- 
-Description of any applicable terms of the ownership or investment interest
- 
-The dollar amount the physician or immediate family member has invested in the applicable manufacturer or applicable GPO during the program year, in US dollars
- 
-The cumulative value of ownership or investment interest held by the physician or immediate family member in the applicable manufacturer or applicable GPO, in US dollars</code></pre>
+<pre><code># A tibble: 32 × 2
+   field                                           description                  
+   &lt;chr&gt;                                           &lt;chr&gt;                        
+ 1 associated_covered_recipient_profile_id_1       "Covered_Recipient_Profile_I…
+ 2 associated_covered_recipient_profile_id_2       "Covered_Recipient_Profile_I…
+ 3 covered_recipient_npi                           "National Provider Identifie…
+ 4 covered_recipient_profile_address_line_1        "The first line of latest “P…
+ 5 covered_recipient_profile_address_line_2        "The second line of latest “…
+ 6 covered_recipient_profile_alternate_first_name  "The alternate first name as…
+ 7 covered_recipient_profile_alternate_last_name   "The alternate last name as …
+ 8 covered_recipient_profile_alternate_middle_name "The alternate middle name a…
+ 9 covered_recipient_profile_alternate_suffix      "The alternate suffix as ava…
+10 covered_recipient_profile_city                  "The city of the latest “Pro…
+# ℹ 22 more rows</code></pre>
 </div>
 </div>
 </section>
-<section id="ownership-payment-file-1" class="level3" data-number="3.2.4">
-<h3 data-number="3.2.4" class="anchored" data-anchor-id="ownership-payment-file-1"><span class="header-section-number">3.2.4</span> Ownership Payment File</h3>
+<section id="general-payment-file" class="level3" data-number="3.3.2">
+<h3 data-number="3.3.2" class="anchored" data-anchor-id="general-payment-file"><span class="header-section-number">3.3.2</span> General Payment File</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_dictionary</span>(dataset, <span class="st">"Research"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"description"</span>]] <span class="sc">|&gt;</span> </span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="at">sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st"> </span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_dictionary</span>(openpay, <span class="st">"General"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Country name of the Submitting Applicable Manufacturer or
-Submitting Applicable Group Purchasing Organization (GPO) as provided in Open Payments
- 
-System generated unique identifier of the Applicable Manufacturer or Applicable Group Purchasing Organization (GPO) Making payment or other transfer of value
- 
-Textual proper name of the applicable manufacturer or applicable GPO making the payment or other transfer of value
- 
-State name of the submitting applicable manufacturer or submitting applicable GPO as provided in Open&nbsp; Payments
- 
-The Primary Device Identifier, if any, of the covered device or covered medical supply associated with the payment or other transfer of values (if applicable); the record may report up to 5 codes.
-Note: OP Program began collecting PDI information during PY 2021.
- 
-The Primary Device Identifier, if any, of the covered device or covered medical supply associated with the payment or other transfer of values (if applicable); the record may report up to 5 codes.
-Note: OP Program began collecting PDI information during PY 2021.
- 
-The Primary Device Identifier, if any, of the covered device or covered medical supply associated with the payment or other transfer of values (if applicable); the record may report up to 5 codes.
-Note: OP Program began collecting PDI information during PY 2021.
- 
-The Primary Device Identifier, if any, of the covered device or covered medical supply associated with the payment or other transfer of values (if applicable); the record may report up to 5 codes.
-Note: OP Program began collecting PDI information during PY 2021.
- 
-The Primary Device Identifier, if any, of the covered device or covered medical supply associated with the payment or other transfer of values (if applicable); the record may report up to 5 codes.
-Note: OP Program began collecting PDI information during PY 2021.
- 
-The National Drug Code, if any, of the drug or biological associated with the payment or other transfer of value (if applicable); the record may report up to 5 codes
- 
-The National Drug Code, if any, of the drug or biological associated with the payment or other transfer of value (if applicable); the record may report up to 5 codes
- 
-The National Drug Code, if any, of the drug or biological associated with the payment or other transfer of value (if applicable); the record may report up to 5 codes
- 
-The National Drug Code, if any, of the drug or biological associated with the payment or other transfer of value (if applicable); the record may report up to 5 codes
- 
-The National Drug Code, if any, of the drug or biological associated with the payment or other transfer of value (if applicable); the record may report up to 5 codes
- 
-An indicator showing if the payment record is New, Added, Changed, or Unchanged in the current publication compared to the previous publication.
-·&nbsp;&nbsp;&nbsp;&nbsp; NEW - To identify “new” records added from the end of the previous submission deadline until the current submission period deadline date
-·&nbsp;&nbsp;&nbsp;&nbsp; ADDED - To identify records that were not eligible at the time of previous publication, which is eligible for current publication.
-·&nbsp;&nbsp;&nbsp;&nbsp; CHANGED - To identify previously published records modified after the last publication.
-·&nbsp;&nbsp;&nbsp;&nbsp; UNCHANGED - To identify previously published records that remain “unchanged” in current publication.
- 
-Identifier assigned if research study is registered on
-clinicaltrials.gov
- 
-Textual description of research context or research objectives
- 
-For each product listed in relation to the payment or other transfer of value, indicates if the product is a covered or non-covered product per the covered product definition in the Open Payments final rule.
- 
-For each product listed in relation to the payment or other transfer of value, indicates if the product is a covered or non-covered product per the covered product definition in the Open Payments final rule.
- 
-For each product listed in relation to the payment or other transfer of value, indicates if the product is a covered or non-covered product per the covered product definition in the Open Payments final rule.
- 
-For each product listed in relation to the payment or other transfer of value, indicates if the product is a covered or non-covered product per the covered product definition in the Open Payments final rule.
- 
-For each product listed in relation to the payment or other transfer of value, indicates if the product is a covered or non-covered product per the covered product definition in the Open Payments final rule.
- 
-First name of the physician (covered recipient) or covered recipient non-physician practitioner receiving the payment or transfer of value, as reported by the submitting entity.
- 
-Last name of the covered recipient physician or covered recipient non-physician practitioner receiving the payment or transfer of value, as reported by the submitting entity.
- 
-The state license number of the covered recipient physician or covered recipient non-physician practitioner, which is a 2-letter state abbreviation; the record may include up to 5 physician license states, if a physician or non-physician practitioner is licensed in multiple states.
- 
-The state license number of the covered recipient physician or covered recipient non-physician practitioner, which is a 2-letter state abbreviation; the record may include up to 5 physician license states, if a physician or non-physician practitioner is licensed in multiple states.
- 
-The state license number of the covered recipient physician or covered recipient non-physician practitioner, which is a 2-letter state abbreviation; the record may include up to 5 physician license states, if a physician or non-physician practitioner is licensed in multiple states.
- 
-The state license number of the covered recipient physician or covered recipient non-physician practitioner, which is a 2-letter state abbreviation; the record may include up to 5 physician license states, if a physician or non-physician practitioner is licensed in multiple states.
- 
-The state license number of the covered recipient physician or covered recipient non-physician practitioner, which is a 2-letter state abbreviation; the record may include up to 5 physician license states, if a physician or non-physician practitioner is licensed in multiple states.
- 
-Middle name of the covered recipient physician or covered recipient non-physician practitioner receiving the payment or transfer of value, as reported by the submitting entity.
- 
-Name suffix of the covered recipient physician or covered recipient non-physician practitioner receiving the payment or transfer of value, as reported by the submitting entity.
- 
-National Provider Identifier is a unique identification number for covered recipient physician or non-physician practitioner (and not the NPI of a group the physician/non- physician practitioner belongs to).
- 
-Primary type of medicine practiced by the physician or Non-Physician Practitioner (covered recipient).
- 
-Primary type of medicine practiced by the physician or Non-Physician Practitioner (covered recipient).
-Note: OP began accepting this field in PY2021.
- 
-Primary type of medicine practiced by the physician or Non-Physician Practitioner (covered recipient).
-Note: OP began accepting this field in PY2021.
- 
-Primary type of medicine practiced by the physician or Non-Physician Practitioner (covered recipient).
-Note: OP began accepting this field in PY2021.
- 
-Primary type of medicine practiced by the physician or Non-Physician Practitioner (covered recipient).
-Note: OP began accepting this field in PY2021.
- 
-Primary type of medicine practiced by the physician or Non-Physician Practitioner (covered recipient).
- 
-System generated unique identifier for covered recipient physician profile or covered recipient non-physician practitioner profile receiving the payment or other transfer of value.
- 
-Physician's or non-physician practitioner’s specialty chosen from the standardized "provider taxonomy" code list.
- 
-Physician's or non-physician practitioner’s specialty chosen from the standardized "provider taxonomy" code list.
-Note: OP began accepting this field in PY2021.
- 
-Physician's or non-physician practitioner’s specialty chosen from the standardized "provider taxonomy" code list.
-Note: OP began accepting this field in PY2021.
- 
-Physician's or non-physician practitioner’s specialty chosen from the standardized "provider taxonomy" code list.
-Note: OP began accepting this field in PY2021.
- 
-Physician's or non-physician practitioner’s specialty chosen from the standardized "provider taxonomy" code list.
-Note: OP began accepting this field in PY2021.
- 
-Physician's or non-physician practitioner’s specialty chosen from the standardized "provider taxonomy" code list.
-Note: OP began accepting this field in PY2021.
- 
-An indicator showing if the recipient of the payment or other transfer of value is a physician covered recipient, or non-physician practitioner, teaching hospital covered recipient, non-covered recipient entity, or non-covered recipient individual
- 
-If a singular payment, then this is the actual date the payment was issued; if a series of payments or an aggregated set of payments, this is the date of the first payment to the covered recipient in this program year
- 
-An indicator showing if an applicable manufacturer or applicable GPO is requesting a delay in publication of a payment or other transfer of value when the payment or other transfer of value is made in connection with: (1) research on or development of a new product (drug, device, biological, or medical supply) or (2) clinical investigation regarding a new product (drug, device, biological, or medical supply)
- 
-Indicates whether the payment or other transfer of value is disputed by the covered recipient or not
- 
-Contextual category for this research payment or other transfer of value
- 
-Contextual category for this research payment or other transfer of value
- 
-Contextual category for this research payment or other transfer of value
- 
-Contextual category for this research payment or other transfer of value
- 
-Contextual category for this research payment or other transfer of value
- 
-Contextual category for this research payment or other transfer of value
- 
-The method of payment used to pay the covered recipient or to make the transfer of value.
- 
-For each product listed in relation to the payment or other transfer of value, indicates if the product is a drug, device, biological, or medical supply.
- 
-For each product listed in relation to the payment or other transfer of value, indicates if the product is a drug, device, biological, or medical supply.
- 
-For each product listed in relation to the payment or other transfer of value, indicates if the product is a drug, device, biological, or medical supply.
- 
-For each product listed in relation to the payment or other transfer of value, indicates if the product is a drug, device, biological, or medical supply.
- 
-For each product listed in relation to the payment or other transfer of value, indicates if the product is a drug, device, biological, or medical supply.
- 
-The marketed name of the drug, device, biological, or medical supply. May report the marketed name of up to five products (drugs, devices, biologicals, or medical supplies) associated with the payment or other transfer of value.
- 
-The marketed name of the drug, device, biological, or medical supply. May report the marketed name of up to five products (drugs, devices, biologicals, or medical supplies) associated with the payment or other transfer of value.
- 
-The marketed name of the drug, device, biological, or medical supply. May report the marketed name of up to five products (drugs, devices, biologicals, or medical supplies) associated with the payment or other transfer of value.
- 
-The marketed name of the drug, device, biological, or medical supply. May report the marketed name of up to five products (drugs, devices, biologicals, or medical supplies) associated with the payment or other transfer of value.
- 
-The marketed name of the drug, device, biological, or medical supply. May report the marketed name of up to five products (drugs, devices, biologicals, or medical supplies) associated with the payment or other transfer of value.
- 
-The textual name of the study for which the covered recipient is receiving this payment or other transfer of value. The textual name of the study for which the covered recipient is receiving this payment or other transfer of value
- 
-The name of the non-covered recipient entity receiving the payment or other transfer of value
- 
-The predefined date when the payment or other transfer of value is scheduled to be published
- 
-An indicator showing if payment or other transfer of value is related to research, which is pre-clinical
- 
-The first line of the primary practice/business street address of the Principal Investigator associated with the payment or other transfer of value.
- 
-The second line of the primary practice/business street address of the Principal Investigator associated with the payment or other transfer of value.
- 
-The primary practice/business city of the Principal Investigator associated with the payment or other transfer of value if the primary practice address is in the United States.
- 
-The primary practice/business address country name of the Principal Investigator associated with the payment or other transfer of value if the primary practice address is in the United States
- 
-An indicator showing if the recipient of the payment or other transfer of value is a physician covered recipient, or non-physician practitioner, teaching hospital covered recipient, non-covered recipient entity, or non-covered recipient individual
- 
-The first name of the Principal Investigator associated with the payment or transfer of value, as reported by the submitting entity.
- 
-Last name of the Principal Investigator associated with the payment or transfer of value, as reported by the submitting entity.
- 
-The state license number of the principal investigator, which is a 2-letter state abbreviation; the record may include up to 5 physician license states if a physician is licensed in multiple states.
- 
-The state license number of the principal investigator, which is a 2-letter state abbreviation; the record may include up to 5 physician license states if a physician is licensed in multiple states.
- 
-The state license number of the principal investigator, which is a 2-letter state abbreviation; the record may include up to 5 physician license states if a physician is licensed in multiple states.
- 
-The state license number of the principal investigator, which is a 2-letter state abbreviation; the record may include up to 5 physician license states if a physician is licensed in multiple states.
- 
-The state license number of the principal investigator, which is a 2-letter state abbreviation; the record may include up to 5 physician license states if a physician is licensed in multiple states.
- 
-The middle name of the Principal Investigator associated with the payment or transfer of value, as reported by the submitting entity.
- 
-Name suffix of the Principal Investigator associated with the payment or transfer of value, as reported by the submitting entity.
- 
-National Provider Identifier is a unique identification number for principal investigator, if available.
- 
-The international postal code for the primary practice/business location of the principal investigator associated with the payment or other transfer of value, if the primary practice/business address is outside the United States
- 
-Primary type name of medicine practiced by the principal investigator
- 
-Primary type name of medicine practiced by the principal investigator
- 
-Primary type name of medicine practiced by the principal investigator
- 
-Primary type name of medicine practiced by the principal investigator
- 
-Primary type name of medicine practiced by the principal investigator
- 
-Primary type name of medicine practiced by the principal investigator
- 
-An identifier for Principal Investigator profile after validation
- 
-The primary practice/business province name of the Principal Investigator associated with the payment or other transfer of value, if the primary practice/business address is outside the United States, and if applicable.
- 
-Principal Investigator's single-specialty chosen from the standardized "provider taxonomy" code list.
- 
-Principal Investigator's single-specialty chosen from the standardized "provider taxonomy" code list.
- 
-Principal Investigator's single-specialty chosen from the standardized "provider taxonomy" code list.
- 
-Principal Investigator's single-specialty chosen from the standardized "provider taxonomy" code list.
- 
-Principal Investigator's single-specialty chosen from the standardized "provider taxonomy" code list.
- 
-Principal Investigator's single-specialty chosen from the standardized "provider taxonomy" code list.
- 
-The primary practice/business state or territory abbreviation of the Principal Investigator associated with the payment or other transfer of value if the primary practice address is in the United States.
- 
-The 9-digit zip code for the primary business location of the Principal Investigator associated with the payment or other transfer of value if the primary practice address is in the United States
- 
-The first line of the primary practice/business street address of the Principal Investigator associated with the payment or other transfer of value.
- 
-The second line of the primary practice/business street address of the Principal Investigator associated with the payment or other transfer of value.
- 
-The primary practice/business city of the Principal Investigator associated with the payment or other transfer of value if the primary practice address is in the United States.
- 
-The primary practice/business address country name of the Principal Investigator associated with the payment or other transfer of value if the primary practice address is in the United States
- 
-An indicator showing if the recipient of the payment or other transfer of value is a physician covered recipient, or non-physician practitioner, teaching hospital covered recipient, non-covered recipient entity, or non-covered recipient individual
- 
-The first name of the Principal Investigator associated with the payment or transfer of value, as reported by the submitting entity.
- 
-The last name of the Principal Investigator associated with the payment or transfer of value, as reported by the submitting entity.
- 
-The state license number of the principal investigator, which is a 2-letter state abbreviation; the record may include up to 5 physician license states if a physician is licensed in multiple states.
- 
-The state license number of the principal investigator, which is a 2-letter state abbreviation; the record may include up to 5 physician license states if a physician is licensed in multiple states.
- 
-The state license number of the principal investigator, which is a 2-letter state abbreviation; the record may include up to 5 physician license states if a physician is licensed in multiple states.
- 
-The state license number of the principal investigator, which is a 2-letter state abbreviation; the record may include up to 5 physician license states if a physician is licensed in multiple states.
- 
-The state license number of the principal investigator, which is a 2-letter state abbreviation; the record may include up to 5 physician license states if a physician is licensed in multiple states.
- 
-The middle name of the Principal Investigator associated with the payment or transfer of value, as reported by the submitting entity.
- 
-Name suffix of the Principal Investigator associated with the payment or transfer of value, as reported by the submitting entity.
- 
-National Provider Identifier is a unique identification number for principal investigator, if available.
- 
-The international postal code for the primary practice/business location of the principal Investigator associated with the payment or other transfer of value if the primary practice/business address is outside the United States
- 
-Primary type name of medicine practiced by the principal investigator
- 
-Primary type name of medicine practiced by the principal investigator
- 
-Primary type name of medicine practiced by the principal investigator
- 
-Primary type name of medicine practiced by the principal investigator
- 
-Primary type name of medicine practiced by the principal investigator
- 
-Primary type name of medicine practiced by the principal investigator
- 
-An identifier for Principal Investigator profile after validation
- 
-The primary practice/business province name of the Principal Investigator associated with the payment or other transfer of value, if the primary practice/business address is outside the United States, and if applicable.
- 
-Principal Investigator's single-specialty chosen from the standardized "provider taxonomy" code list.
- 
-Principal Investigator's single-specialty chosen from the standardized "provider taxonomy" code list.
- 
-Principal Investigator's single-specialty chosen from the standardized "provider taxonomy" code list.
- 
-Principal Investigator's single-specialty chosen from the standardized "provider taxonomy" code list.
- 
-Principal Investigator's single-specialty chosen from the standardized "provider taxonomy" code list.
- 
-Principal Investigator's single-specialty chosen from the standardized "provider taxonomy" code list.
- 
-The primary practice/business state or territory abbreviation of the Principal Investigator associated with the payment or other transfer of value if the primary practice address is in the United States.
- 
-The 9-digit zip code for the primary business location of the Principal Investigator associated with the payment or other transfer of value if the primary practice address is in the United States
- 
-The first line of the primary practice/business street address of the Principal Investigator associated with the payment or other transfer of value.
- 
-The second line of the primary practice/business street address of the Principal Investigator associated with the payment or other transfer of value.
- 
-The primary practice/business city of the Principal Investigator associated with the payment or other transfer of value if the primary practice address is in the United States.
- 
-The primary practice/business address country name of the Principal Investigator associated with the payment or other transfer of value if the primary practice address is in the United States
- 
-An indicator showing if the recipient of the payment or other transfer of value is a physician covered recipient, or non-physician practitioner, teaching hospital covered recipient, non-covered recipient entity, or non-covered recipient individual
- 
-The first name of the Principal Investigator associated with the payment or transfer of value, as reported by the submitting entity.
- 
-The last name of the Principal Investigator associated with the payment or transfer of value, as reported by the submitting entity.
- 
-The state license number of the principal investigator, which is a 2-letter state abbreviation; the record may include up to 5 physician license states if a physician is licensed in multiple states.
- 
-The state license number of the principal investigator, which is a 2-letter state abbreviation; the record may include up to 5 physician license states if a physician is licensed in multiple states.
- 
-The state license number of the principal investigator, which is a 2-letter state abbreviation; the record may include up to 5 physician license states if a physician is licensed in multiple states.
- 
-The state license number of the principal investigator, which is a 2-letter state abbreviation; the record may include up to 5 physician license states if a physician is licensed in multiple states.
- 
-The state license number of the principal investigator, which is a 2-letter state abbreviation; the record may include up to 5 physician license states if a physician is licensed in multiple states.
- 
-The middle name of the Principal Investigator associated with the payment or transfer of value, as reported by the submitting entity.
- 
-Name suffix of the Principal Investigator associated with the payment or transfer of value, as reported by the submitting entity.
- 
-National Provider Identifier is a unique identification number for principal investigator, if available.
- 
-The international postal code for the primary practice/business location of the principal Investigator associated with the payment or other transfer of value, if the primary practice/business address is outside the United States
- 
-Primary type name of medicine practiced by the principal investigator
- 
-Primary type name of medicine practiced by the principal investigator
- 
-Primary type name of medicine practiced by the principal investigator
- 
-Primary type name of medicine practiced by the principal investigator
- 
-Primary type name of medicine practiced by the principal investigator
- 
-Primary type name of medicine practiced by the principal investigator
- 
-An identifier for Principal Investigator profile after validation
- 
-The primary practice/business province name of the Principal Investigator associated with the payment or other transfer of value, if the primary practice/business address is outside the United States, and if applicable.
- 
-Principal Investigator's single-specialty chosen from the standardized "provider taxonomy" code list.
- 
-Principal Investigator's single-specialty chosen from the standardized "provider taxonomy" code list.
- 
-Principal Investigator's single-specialty chosen from the standardized "provider taxonomy" code list.
- 
-Principal Investigator's single-specialty chosen from the standardized "provider taxonomy" code list.
- 
-Principal Investigator's single-specialty chosen from the standardized "provider taxonomy" code list.
- 
-Principal Investigator's single-specialty chosen from the standardized "provider taxonomy" code list.
- 
-The primary practice/business state or territory abbreviation of the Principal Investigator associated with the payment or other transfer of value if the primary practice address is in the United States.
- 
-The 9-digit zip code for the primary business location of the Principal Investigator associated with the payment or other transfer of value if the primary practice address is in the United States
- 
-The first line of the primary practice/business street address of the Principal Investigator associated with the payment or other transfer of value.
- 
-The second line of the primary practice/business street address of the Principal Investigator associated with the payment or other transfer of value.
- 
-The primary practice/business city of the Principal Investigator associated with the payment or other transfer of value if the primary practice address is in the United States.
- 
-The primary practice/business address country name of the Principal Investigator associated with the payment or other transfer of value if the primary practice address is in the United States
- 
-An indicator showing if the recipient of the payment or other transfer of value is a physician covered recipient, or non-physician practitioner, teaching hospital covered recipient, non-covered recipient entity, or non-covered recipient individual
- 
-The first name of the Principal Investigator associated with the payment or transfer of value, as reported by the submitting entity.
- 
-The last name of the Principal Investigator associated with the payment or transfer of value, as reported by the submitting entity.
- 
-The state license number of the principal investigator, which is a 2-letter state abbreviation; the record may include up to 5 physician license states if a physician is licensed in multiple states.
- 
-The state license number of the principal investigator, which is a 2-letter state abbreviation; the record may include up to 5 physician license states if a physician is licensed in multiple states.
- 
-The state license number of the principal investigator, which is a 2-letter state abbreviation; the record may include up to 5 physician license states if a physician is licensed in multiple states.
- 
-The state license number of the principal investigator, which is a 2-letter state abbreviation; the record may include up to 5 physician license states if a physician is licensed in multiple states.
- 
-The state license number of the principal investigator, which is a 2-letter state abbreviation; the record may include up to 5 physician license states if a physician is licensed in multiple states.
- 
-The middle name of the Principal Investigator associated with the payment or transfer of value, as reported by the submitting entity.
- 
-Name suffix of the Principal Investigator associated with the payment or transfer of value, as reported by the submitting entity.
- 
-National Provider Identifier is a unique identification number for principal investigator, if available.
- 
-The international postal code for the primary practice/business location of the principal Investigator associated with the payment or other transfer of value, if the primary practice/business address is outside the United States
- 
-Primary type name of medicine practiced by the principal investigator
- 
-Primary type name of medicine practiced by the principal investigator
- 
-Primary type name of medicine practiced by the principal investigator
- 
-Primary type name of medicine practiced by the principal investigator
- 
-Primary type name of medicine practiced by the principal investigator
- 
-Primary type name of medicine practiced by the principal investigator
- 
-An identifier for Principal Investigator profile after validation
- 
-The primary practice/business province name of the Principal Investigator associated with the payment or other transfer of value, if the primary practice/business address is outside the United States, and if applicable.
- 
-Principal Investigator's single-specialty chosen from the standardized "provider taxonomy" code list.
- 
-Principal Investigator's single-specialty chosen from the standardized "provider taxonomy" code list.
- 
-Principal Investigator's single-specialty chosen from the standardized "provider taxonomy" code list.
- 
-Principal Investigator's single-specialty chosen from the standardized "provider taxonomy" code list.
- 
-Principal Investigator's single-specialty chosen from the standardized "provider taxonomy" code list.
- 
-Principal Investigator's single-specialty chosen from the standardized "provider taxonomy" code list.
- 
-The primary practice/business state or territory abbreviation of the Principal Investigator associated with the payment or other transfer of value if the primary practice address is in the United States.
- 
-The 9-digit zip code for the primary business location of the Principal Investigator associated with the payment or other transfer of value if the primary practice address is in the United States
- 
-The first line of the primary practice/business street address of the Principal Investigator associated with the payment or other transfer of value.
- 
-The second line of the primary practice/business street address of the Principal Investigator associated with the payment or other transfer of value.
- 
-The primary practice/business city of the Principal Investigator associated with the payment or other transfer of value if the primary practice address is in the United States.
- 
-The primary practice/business address country name of the Principal Investigator associated with the payment or other transfer of value if the primary practice address is in the United States
- 
-An indicator showing if the recipient of the payment or other transfer of value is a physician covered recipient, or non-physician practitioner, teaching hospital covered recipient, non-covered recipient entity, or non-covered recipient individual
- 
-The first name of the Principal Investigator associated with the payment or transfer of value, as reported by the submitting entity.
- 
-Last name of the Principal Investigator associated with the payment or transfer of value, as reported by the submitting entity.
- 
-The state license number of the principal investigator, which is a 2-letter state abbreviation; the record may include up to 5 physician license states if a physician is licensed in multiple states.
- 
-The state license number of the principal investigator, which is a 2-letter state abbreviation; the record may include up to 5 physician license states if a physician is licensed in multiple states.
- 
-The state license number of the principal investigator, which is a 2-letter state abbreviation; the record may include up to 5 physician license states if a physician is licensed in multiple states.
- 
-The state license number of the principal investigator, which is a 2-letter state abbreviation; the record may include up to 5 physician license states if a physician is licensed in multiple states.
- 
-The state license number of the principal investigator, which is a 2-letter state abbreviation; the record may include up to 5 physician license states if a physician is licensed in multiple states.
- 
-Middle name of the Principal Investigator associated with the payment or transfer of value, as reported by the submitting entity.
- 
-Name suffix of the Principal Investigator associated with the payment or transfer of value, as reported by the submitting entity.
- 
-National Provider Identifier is a unique identification number for principal investigator, if available.
- 
-The international postal code for the primary practice/business location of the principal Investigator associated with the payment or other transfer of value, if the primary practice/business address is outside the United States
- 
-Primary type name of medicine practiced by the principal investigator
- 
-Primary type name of medicine practiced by the principal investigator
- 
-Primary type name of medicine practiced by the principal investigator
- 
-Primary type name of medicine practiced by the principal investigator
- 
-Primary type name of medicine practiced by the principal investigator
- 
-Primary type name of medicine practiced by the principal investigator
- 
-An identifier for Principal Investigator profile after validation
- 
-The primary practice/business province name of the Principal Investigator associated with the payment or other transfer of value, if the primary practice/business address is outside the United States, and if applicable.
- 
-Principal Investigator's single-specialty chosen from the standardized "provider taxonomy" code list.
- 
-Principal Investigator's single-specialty chosen from the standardized "provider taxonomy" code list.
- 
-Principal Investigator's single-specialty chosen from the standardized "provider taxonomy" code list.
- 
-Principal Investigator's single-specialty chosen from the standardized "provider taxonomy" code list.
- 
-Principal Investigator's single-specialty chosen from the standardized "provider taxonomy" code list.
- 
-Principal Investigator's single-specialty chosen from the standardized "provider taxonomy" code list.
- 
-The primary practice/business state or territory abbreviation of the Principal Investigator associated with the payment or other transfer of value if the primary practice address is in the United States.
- 
-The 9-digit zip code for the primary business location of the Principal Investigator associated with the payment or other transfer of value if the primary practice address is in the United States
- 
-Provide the product category or therapeutic area for the covered drug, device, biological, or medical supply listed in relation to the payment or other transfer of value.
- 
-Provide the product category or therapeutic area for the covered drug, device, biological, or medical supply listed in relation to the payment or other transfer of value.
- 
-Provide the product category or therapeutic area for the covered drug, device, biological, or medical supply listed in relation to the payment or other transfer of value.
- 
-Provide the product category or therapeutic area for the covered drug, device, biological, or medical supply listed in relation to the payment or other transfer of value.
- 
-Provide the product category or therapeutic area for the covered drug, device, biological, or medical supply listed in relation to the payment or other transfer of value.
- 
-The year in which the payment occurred, as reported by submitting entity.
- 
-The primary practice/business address city of the physician or teaching hospital or non-covered recipient entity receiving the payment or other transfer of value
- 
-The primary practice/business address country of the physician or teaching hospital or non-covered recipient entity receiving the payment or other transfer of value if the primary practice address is in the United States
- 
-The international postal code for the primary business location of the physician or teaching hospital or non- covered recipient entity receiving the payment or other transfer of value if the primary business address is outside
-the United States
- 
-The first line of the primary business street address of the physician or non-physician practitioner or teaching hospital or non-covered recipient entity receiving the payment or other transfer of value
- 
-The second line of the primary business street address of the physician or teaching hospital or non-covered recipient entity receiving the payment or other transfer of value
- 
-The primary practice/business province name of the physician or teaching hospital or non-covered recipient entity receiving the payment or other transfer of value, if the primary practice/business address is outside the United
-States, and if applicable.
- 
-The state or territory abbreviation of the primary business address of the physician or teaching hospital or non-covered recipient entity receiving the payment or other transfer of value if the primary business address is in the United States.
- 
-The 9-digit zip code for the primary business location of the physician or teaching hospital or non-covered recipient entity receiving the payment or other transfer of value if the primary practice address is in the United States
- 
-System assigned identifier to the research transaction at the time of submission
- 
-Indicator allows the applicable manufacturer or applicable GPO to select whether the payment or other transfer of value is related to one or more product(s) (drugs, devices, biologicals, or medical supplies). If the payment was not made in relation to a product, select "No". If the payment was related to one or more product, select "Yes".
- 
-Optional link to information relevant to the research study for which this payment or other transfer of value is being reported (there can be a maximum of five links reported)
- 
-Textual proper name of either the Submitting Applicable Manufacturer or Submitting Applicable Group Purchasing Organization (GPO).
- 
-A unique identifying number (CMS Certification Number) of the Teaching Hospital receiving the payment or other transfer of value.
- 
-System generated unique identifier of the Teaching Hospital receiving the payment or other transfer of value.
- 
-The name of the Teaching Hospital receiving the payment or other transfer of value. The name displayed is as listed in CMS teaching hospital list under Hospital name.
- 
-U.S. dollar amount of payment or transfer of value to recipient (manufacturer must convert to dollar currency if necessary).</code></pre>
+<pre><code># A tibble: 91 × 2
+   field                                                            description 
+   &lt;chr&gt;                                                            &lt;chr&gt;       
+ 1 applicable_manufacturer_or_applicable_gpo_making_payment_country "Country na…
+ 2 applicable_manufacturer_or_applicable_gpo_making_payment_id      "System gen…
+ 3 applicable_manufacturer_or_applicable_gpo_making_payment_name    "The textua…
+ 4 applicable_manufacturer_or_applicable_gpo_making_payment_state   "State name…
+ 5 associated_device_or_medical_supply_pdi_1                        "The Primar…
+ 6 associated_device_or_medical_supply_pdi_2                        "The Primar…
+ 7 associated_device_or_medical_supply_pdi_3                        "The Primar…
+ 8 associated_device_or_medical_supply_pdi_4                        "The Primar…
+ 9 associated_device_or_medical_supply_pdi_5                        "The Primar…
+10 associated_drug_or_biological_ndc_1                              "The Nation…
+# ℹ 81 more rows</code></pre>
+</div>
+</div>
+</section>
+<section id="ownership-payment-file" class="level3" data-number="3.3.3">
+<h3 data-number="3.3.3" class="anchored" data-anchor-id="ownership-payment-file"><span class="header-section-number">3.3.3</span> Ownership Payment File</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_dictionary</span>(openpay, <span class="st">"Ownership"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 30 × 2
+   field                                                            description 
+   &lt;chr&gt;                                                            &lt;chr&gt;       
+ 1 applicable_manufacturer_or_applicable_gpo_making_payment_country "Country na…
+ 2 applicable_manufacturer_or_applicable_gpo_making_payment_id      "Open Payme…
+ 3 applicable_manufacturer_or_applicable_gpo_making_payment_name    "The textua…
+ 4 applicable_manufacturer_or_applicable_gpo_making_payment_state   "State name…
+ 5 change_type                                                      "An indicat…
+ 6 dispute_status_for_publication                                   "Indicates …
+ 7 interest_held_by_physician_or_an_immediate_family_member         "An indicat…
+ 8 payment_publication_date                                         "The predef…
+ 9 physician_first_name                                             "First name…
+10 physician_last_name                                              "Last name …
+# ℹ 20 more rows</code></pre>
+</div>
+</div>
+</section>
+<section id="ownership-payment-file-1" class="level3" data-number="3.3.4">
+<h3 data-number="3.3.4" class="anchored" data-anchor-id="ownership-payment-file-1"><span class="header-section-number">3.3.4</span> Ownership Payment File</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_dictionary</span>(openpay, <span class="st">"Research"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 252 × 2
+   field                                                            description 
+   &lt;chr&gt;                                                            &lt;chr&gt;       
+ 1 applicable_manufacturer_or_applicable_gpo_making_payment_country "Country na…
+ 2 applicable_manufacturer_or_applicable_gpo_making_payment_id      "System gen…
+ 3 applicable_manufacturer_or_applicable_gpo_making_payment_name    "Textual pr…
+ 4 applicable_manufacturer_or_applicable_gpo_making_payment_state   "State name…
+ 5 associated_device_or_medical_supply_pdi_1                        "The Primar…
+ 6 associated_device_or_medical_supply_pdi_2                        "The Primar…
+ 7 associated_device_or_medical_supply_pdi_3                        "The Primar…
+ 8 associated_device_or_medical_supply_pdi_4                        "The Primar…
+ 9 associated_device_or_medical_supply_pdi_5                        "The Primar…
+10 associated_drug_or_biological_ndc_1                              "The Nation…
+# ℹ 242 more rows</code></pre>
 </div>
 </div>
 

@@ -9,6 +9,18 @@ source("includes/_common.R")
 ## Provider Data
 
 ```{r}
+#| label: provider_identifier_url
+prov_identifier_url <- function(x) {
+  
+  paste0(
+    "https://data.cms.gov/provider-data/",
+    "api/1/datastore/query/", 
+    x, 
+    "/0")
+}
+```
+
+```{r}
 catalog_provider <- \() {
   
   dataset <- as_tbl(
@@ -26,19 +38,18 @@ catalog_provider <- \() {
           "https://data.cms.gov/provider-data/dataset/",
           identifier,
           "#data-dictionary"
-        ),
-        identifier  = paste0(
-          "https://data.cms.gov/provider-data/api/1/datastore/query/",
-          identifier,
-          "/0"
         )
       )
   )
     add_vars(
       dataset,
       downloadURL = delist(get_elem(dataset$distribution, "downloadURL", DF.as.list = TRUE)),
-      contact_fn = delist(get_elem(dataset$contactPoint, "fn")),
-      contact_pt = delist(get_elem(dataset$contactPoint, "^has", regex = TRUE))) |> 
+      contact = glue(
+        '{delist(get_elem(dataset$contactPoint, "fn"))} ',
+        '({delist(get_elem(dataset$contactPoint, "^has", regex = TRUE))})')
+      # contact_fn = delist(get_elem(dataset$contactPoint, "fn")),
+      # contact_pt = delist(get_elem(dataset$contactPoint, "^has", regex = TRUE))
+      ) |> 
       slt(
         title,
         theme,
@@ -50,8 +61,7 @@ catalog_provider <- \() {
         identifier,
         dictionary = describedBy,
         downloadurl = downloadURL,
-        contact_fn,
-        contact_pt,
+        contact,
         landing = landingPage
       ) |> 
       roworder(theme, title) |> 
@@ -76,6 +86,76 @@ prov <- catalog_provider()
 
 prov
 ```
+
+### Hospitals
+
+```{r}
+prov$hospitals |> 
+  pull(title) |> 
+  utils::formatOL() |> 
+  writeLines()
+```
+
+#### Possible Subgroups
+
+```{r}
+filter(
+  prov$hospitals, 
+  stri_detect_regex(
+    title, 
+    "Quality Measures - |Quality Measure Data - "
+    ))
+
+filter(
+  prov$hospitals, 
+  stri_detect_regex(
+    title, 
+    "^Hospital Value-Based Purchasing"
+    ))
+
+filter(
+  prov$hospitals, 
+  stri_detect_regex(
+    title, 
+    "^(Medicare Spending Per Beneficiary|Medicare Hospital|Payment)"
+    ))
+
+filter(
+  prov$hospitals, 
+  stri_detect_regex(
+    title, 
+    "^(Complications|Hospital Readmissions|Hospital-Acquired|Safety and Healthcare|Unplanned|Timely|Healthcare Associated)"
+    ))
+
+filter(
+  prov$hospitals, 
+  stri_detect_regex(
+    title, 
+    "^Veterans Health Administration"
+    ))
+
+filter(
+  prov$hospitals, 
+  stri_detect_regex(
+    title, 
+    "^Patient [Ss]urvey"
+    ))
+
+filter(
+  prov$hospitals, 
+  stri_detect_regex(
+    title, 
+    "OAS CAHPS"
+    ))
+
+filter(
+  prov$hospitals, 
+  stri_detect_regex(
+    title, 
+    "^Table"
+    ))
+```
+
 
 ## Main Data
 
@@ -108,32 +188,35 @@ dataset <- as_tbl(
   ) |>
     roworder(title)
 
-dataset |> 
-  select(title, keyword) |> 
-  print(n = 139)
+dataset
 ```
 
+### Possible Groups
 
 ```{r}
 dataset |> 
   filter(stri_detect_regex(
     title, 
-    "Provider of Services File"))
+    "Provider of Services File"
+    ))
 
 dataset |> 
   filter(stri_detect_regex(
     title, 
-    "by Geography|by Provider|by Referring|by Drug|Physician/Supplier Procedure Summary|Hospital Provider Cost Report"))
+    "by Geography|by Provider|by Referring|by Drug|Physician/Supplier Procedure Summary|Hospital Provider Cost Report"
+    ))
 
 dataset |> 
   filter(stri_detect_regex(
     title, 
-    "Accountable Care Organization|ACO Realizing Equity|Pioneer ACO Model"))
+    "Accountable Care Organization|ACO Realizing Equity|Pioneer ACO Model"
+    ))
 
 dataset |> 
   filter(stri_detect_regex(
     title, 
-    "CMS Program Statistics"))
+    "CMS Program Statistics"
+    ))
 
 dataset |> 
   filter(stri_detect_regex(
@@ -144,11 +227,15 @@ dataset |>
 dataset |> 
   filter(stri_detect_regex(
     title, 
-    "Innovation Center"))
+    "Innovation Center"
+    ))
 
-dataset |> filter(stri_detect_regex(
-  title, 
-  "Market Saturation & Utilization"))
+dataset |> 
+  filter(
+    stri_detect_regex(
+      title, 
+      "Market Saturation & Utilization"
+      ))
 
 dataset |> 
   filter(stri_detect_regex(
@@ -174,8 +261,8 @@ dataset |>
 
 
 ```{r}
-pub <- providertwo::load_public()
-
-pub
+# pub <- providertwo::load_public()
+# 
+# pub
 ```
 
