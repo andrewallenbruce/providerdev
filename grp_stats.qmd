@@ -9,14 +9,21 @@ source("includes/_common.R")
 ## Provider Data
 
 ```{r}
-#| label: provider_identifier_url
-prov_identifier_url <- function(x) {
-  
-  paste0(
-    "https://data.cms.gov/provider-data/",
-    "api/1/datastore/query/", 
-    x, 
-    "/0")
+#| label: provider_urls
+provider_urls <- function(x, nm) {
+  switch(
+    nm,
+    identifier = paste0(
+      "https://data.cms.gov/provider-data/api/1/datastore/query/",
+      x,
+      "/0"
+    ),
+    describedBy = paste0(
+      "https://data.cms.gov/provider-data/dataset/",
+      x,
+      "#data-dictionary"
+    )
+  )
 }
 ```
 
@@ -33,23 +40,15 @@ catalog_provider <- \() {
         released    = as_date(released),
         keyword     = flatten_column(keyword),
         theme       = flatten_column(theme),
-        description = trimws(sf_remove(description, "\n")),
-        describedBy = paste0(
-          "https://data.cms.gov/provider-data/dataset/",
-          identifier,
-          "#data-dictionary"
-        )
+        description = trimws(sf_remove(description, "\n"))
       )
   )
     add_vars(
       dataset,
       downloadURL = delist(get_elem(dataset$distribution, "downloadURL", DF.as.list = TRUE)),
-      contact = glue(
+      contact = as_chr(glue(
         '{delist(get_elem(dataset$contactPoint, "fn"))} ',
-        '({delist(get_elem(dataset$contactPoint, "^has", regex = TRUE))})')
-      # contact_fn = delist(get_elem(dataset$contactPoint, "fn")),
-      # contact_pt = delist(get_elem(dataset$contactPoint, "^has", regex = TRUE))
-      ) |> 
+        '({delist(get_elem(dataset$contactPoint, "^has", regex = TRUE))})'))) |> 
       slt(
         title,
         theme,
@@ -59,9 +58,8 @@ catalog_provider <- \() {
         modified,
         released,
         identifier,
-        dictionary = describedBy,
-        downloadurl = downloadURL,
         contact,
+        downloadurl = downloadURL,
         landing = landingPage
       ) |> 
       roworder(theme, title) |> 

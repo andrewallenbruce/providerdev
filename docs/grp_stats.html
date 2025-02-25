@@ -353,14 +353,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="provider-data" class="level2" data-number="15.1">
 <h2 data-number="15.1" class="anchored" data-anchor-id="provider-data"><span class="header-section-number">15.1</span> Provider Data</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>prov_identifier_url <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"https://data.cms.gov/provider-data/"</span>,</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"api/1/datastore/query/"</span>, </span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    x, </span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"/0"</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>provider_urls <span class="ot">&lt;-</span> <span class="cf">function</span>(x, nm) {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">switch</span>(</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    nm,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">identifier =</span> <span class="fu">paste0</span>(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>      <span class="st">"https://data.cms.gov/provider-data/api/1/datastore/query/"</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>      x,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>      <span class="st">"/0"</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">describedBy =</span> <span class="fu">paste0</span>(</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>      <span class="st">"https://data.cms.gov/provider-data/dataset/"</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>      x,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>      <span class="st">"#data-dictionary"</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>catalog_provider <span class="ot">&lt;-</span> \() {</span>
@@ -375,216 +382,197 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">released    =</span> <span class="fu">as_date</span>(released),</span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">keyword     =</span> <span class="fu">flatten_column</span>(keyword),</span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">theme       =</span> <span class="fu">flatten_column</span>(theme),</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">description =</span> <span class="fu">trimws</span>(<span class="fu">sf_remove</span>(description, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)),</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">describedBy =</span> <span class="fu">paste0</span>(</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>          <span class="st">"https://data.cms.gov/provider-data/dataset/"</span>,</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>          identifier,</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>          <span class="st">"#data-dictionary"</span></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_vars</span>(</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>      dataset,</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>      <span class="at">downloadURL =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(dataset<span class="sc">$</span>distribution, <span class="st">"downloadURL"</span>, <span class="at">DF.as.list =</span> <span class="cn">TRUE</span>)),</span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">contact =</span> <span class="fu">glue</span>(</span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>        <span class="st">'{delist(get_elem(dataset$contactPoint, "fn"))} '</span>,</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>        <span class="st">'({delist(get_elem(dataset$contactPoint, "^has", regex = TRUE))})'</span>)</span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>      <span class="co"># contact_fn = delist(get_elem(dataset$contactPoint, "fn")),</span></span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>      <span class="co"># contact_pt = delist(get_elem(dataset$contactPoint, "^has", regex = TRUE))</span></span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>      ) <span class="sc">|&gt;</span> </span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>      <span class="fu">slt</span>(</span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>        title,</span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>        theme,</span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>        description,</span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>        keyword,</span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>        issued,</span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>        modified,</span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>        released,</span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>        identifier,</span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>        <span class="at">dictionary =</span> describedBy,</span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>        <span class="at">downloadurl =</span> downloadURL,</span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>        contact,</span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>        <span class="at">landing =</span> landingPage</span>
-<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>      ) <span class="sc">|&gt;</span> </span>
-<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>      <span class="fu">roworder</span>(theme, title) <span class="sc">|&gt;</span> </span>
-<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rsplit</span>(<span class="sc">~</span> theme) <span class="sc">|&gt;</span> </span>
-<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>      <span class="fu">set_names</span>(</span>
-<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>        <span class="fu">c</span>(</span>
-<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>          <span class="st">"dialysis_facilities"</span>,</span>
-<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>          <span class="st">"doctors_and_clinicians"</span>,</span>
-<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>          <span class="st">"home_health_services"</span>,</span>
-<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>          <span class="st">"hospice_care"</span>,</span>
-<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>          <span class="st">"hospitals"</span>,</span>
-<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>          <span class="st">"inpatient_rehabilitation_facilities"</span>,</span>
-<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>          <span class="st">"long_term_care_hospitals"</span>,</span>
-<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>          <span class="st">"nursing_homes"</span>,</span>
-<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>          <span class="st">"physician_office_visit_costs"</span>,</span>
-<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>          <span class="st">"supplier_directory"</span></span>
-<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>prov <span class="ot">&lt;-</span> <span class="fu">catalog_provider</span>()</span>
-<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>prov</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">description =</span> <span class="fu">trimws</span>(<span class="fu">sf_remove</span>(description, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>))</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_vars</span>(</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>      dataset,</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">downloadURL =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(dataset<span class="sc">$</span>distribution, <span class="st">"downloadURL"</span>, <span class="at">DF.as.list =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">contact =</span> <span class="fu">as_chr</span>(<span class="fu">glue</span>(</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">'{delist(get_elem(dataset$contactPoint, "fn"))} '</span>,</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        <span class="st">'({delist(get_elem(dataset$contactPoint, "^has", regex = TRUE))})'</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>      <span class="fu">slt</span>(</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>        title,</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>        theme,</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>        description,</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>        keyword,</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>        issued,</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>        modified,</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>        released,</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>        identifier,</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>        contact,</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>        <span class="at">downloadurl =</span> downloadURL,</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>        <span class="at">landing =</span> landingPage</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>      ) <span class="sc">|&gt;</span> </span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>      <span class="fu">roworder</span>(theme, title) <span class="sc">|&gt;</span> </span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rsplit</span>(<span class="sc">~</span> theme) <span class="sc">|&gt;</span> </span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>      <span class="fu">set_names</span>(</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>        <span class="fu">c</span>(</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>          <span class="st">"dialysis_facilities"</span>,</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>          <span class="st">"doctors_and_clinicians"</span>,</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>          <span class="st">"home_health_services"</span>,</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>          <span class="st">"hospice_care"</span>,</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>          <span class="st">"hospitals"</span>,</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>          <span class="st">"inpatient_rehabilitation_facilities"</span>,</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>          <span class="st">"long_term_care_hospitals"</span>,</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>          <span class="st">"nursing_homes"</span>,</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>          <span class="st">"physician_office_visit_costs"</span>,</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>          <span class="st">"supplier_directory"</span></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>prov <span class="ot">&lt;-</span> <span class="fu">catalog_provider</span>()</span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>prov</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$dialysis_facilities
-# A tibble: 23 × 11
-   title         description keyword issued     modified   released   identifier
-   &lt;chr&gt;         &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;     
- 1 Dialysis Fac… A list of … Qualit… 2020-03-14 2024-12-21 2025-01-15 23ew-n7w9 
- 2 Dialysis Fac… National a… Qualit… 2020-03-14 2024-12-21 2025-01-15 2rkq-ygai 
- 3 Dialysis Fac… State aver… Qualit… 2020-03-14 2024-12-21 2025-01-15 2fpu-cgbb 
- 4 ESRD QIP - C… This datas… Linkin… 2021-01-20 2024-12-03 2025-01-15 clinical_…
- 5 ESRD QIP - C… This datas… Linkin… 2021-01-20 2024-12-03 2025-01-15 complete_…
- 6 ESRD QIP - C… This datas… Linkin… 2025-01-15 2024-12-03 2025-01-15 covid-19_…
- 7 ESRD QIP - D… This datas… Linkin… 2021-01-20 2024-12-03 2025-01-15 ktv_compr…
- 8 ESRD QIP - F… This table… Linkin… 2021-01-20 2024-12-03 2025-01-15 footnotes 
- 9 ESRD QIP - H… This datas… Linkin… 2021-01-20 2024-12-03 2025-01-15 hypercalc…
-10 ESRD QIP - I… This datas… Linkin… 2021-01-20 2024-12-03 2025-01-15 qip_ich_c…
+# A tibble: 23 × 10
+   title description keyword issued     modified   released   identifier contact
+   &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+ 1 Dial… A list of … Qualit… 2020-03-14 2024-12-21 2025-01-15 23ew-n7w9  Dialys…
+ 2 Dial… National a… Qualit… 2020-03-14 2024-12-21 2025-01-15 2rkq-ygai  Dialys…
+ 3 Dial… State aver… Qualit… 2020-03-14 2024-12-21 2025-01-15 2fpu-cgbb  Dialys…
+ 4 ESRD… This datas… Linkin… 2021-01-20 2024-12-03 2025-01-15 clinical_… ESRD Q…
+ 5 ESRD… This datas… Linkin… 2021-01-20 2024-12-03 2025-01-15 complete_… ESRD Q…
+ 6 ESRD… This datas… Linkin… 2025-01-15 2024-12-03 2025-01-15 covid-19_… ESRD Q…
+ 7 ESRD… This datas… Linkin… 2021-01-20 2024-12-03 2025-01-15 ktv_compr… ESRD Q…
+ 8 ESRD… This table… Linkin… 2021-01-20 2024-12-03 2025-01-15 footnotes  ESRD Q…
+ 9 ESRD… This datas… Linkin… 2021-01-20 2024-12-03 2025-01-15 hypercalc… ESRD Q…
+10 ESRD… This datas… Linkin… 2021-01-20 2024-12-03 2025-01-15 qip_ich_c… ESRD Q…
 # ℹ 13 more rows
-# ℹ 4 more variables: dictionary &lt;chr&gt;, downloadurl &lt;chr&gt;, contact &lt;glue&gt;,
-#   landing &lt;chr&gt;
+# ℹ 2 more variables: downloadurl &lt;chr&gt;, landing &lt;chr&gt;
 
 $doctors_and_clinicians
-# A tibble: 8 × 11
-  title          description keyword issued     modified   released   identifier
-  &lt;chr&gt;          &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;     
-1 Facility Affi… This is th… Clinic… 2023-08-17 2025-01-31 2025-02-13 27ea-46a8 
-2 National Down… The Doctor… Clinic… 2023-08-17 2025-01-31 2025-02-13 mj5m-pzi6 
-3 PY 2022 Clini… This file … Clinic… 2020-11-30 2024-05-16 2024-05-30 7d6a-e7a6 
-4 PY 2022 Clini… This file … MIPS, … 2023-08-17 2024-07-25 2024-08-01 a174-a962 
-5 PY 2022 Group… This file … Perfor… 2023-08-17 2024-05-16 2024-05-30 0ba7-2cb0 
-6 PY 2022 Group… This file … Patien… 2023-08-17 2024-05-16 2024-05-30 8c70-d353 
-7 PY 2022 Virtu… This file … Clinic… 2021-06-04 2024-05-16 2024-05-30 46dc-a66c 
-8 Utilization D… The Doctor… Clinic… 2024-01-04 2025-01-31 2025-02-13 n0yb-util 
-# ℹ 4 more variables: dictionary &lt;chr&gt;, downloadurl &lt;chr&gt;, contact &lt;glue&gt;,
-#   landing &lt;chr&gt;
+# A tibble: 8 × 10
+  title  description keyword issued     modified   released   identifier contact
+  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+1 Facil… This is th… Clinic… 2023-08-17 2025-01-31 2025-02-13 27ea-46a8  CMS (m…
+2 Natio… The Doctor… Clinic… 2023-08-17 2025-01-31 2025-02-13 mj5m-pzi6  CMS (m…
+3 PY 20… This file … Clinic… 2020-11-30 2024-05-16 2024-05-30 7d6a-e7a6  CMS (m…
+4 PY 20… This file … MIPS, … 2023-08-17 2024-07-25 2024-08-01 a174-a962  CMS (m…
+5 PY 20… This file … Perfor… 2023-08-17 2024-05-16 2024-05-30 0ba7-2cb0  CMS (m…
+6 PY 20… This file … Patien… 2023-08-17 2024-05-16 2024-05-30 8c70-d353  CMS (m…
+7 PY 20… This file … Clinic… 2021-06-04 2024-05-16 2024-05-30 46dc-a66c  CMS (m…
+8 Utili… The Doctor… Clinic… 2024-01-04 2025-01-31 2025-02-13 n0yb-util  CMS (m…
+# ℹ 2 more variables: downloadurl &lt;chr&gt;, landing &lt;chr&gt;
 
 $home_health_services
-# A tibble: 11 × 11
-   title         description keyword issued     modified   released   identifier
-   &lt;chr&gt;         &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;     
- 1 Expanded Hom… A list of … Home H… 2024-12-19 2025-01-07 2025-01-15 56d7-4994 
- 2 Expanded Hom… Cohort dat… Home H… 2024-12-19 2025-01-07 2025-01-15 4c74-462e 
- 3 Home Health … Home Healt… Genera… 2024-12-11 2024-12-11 2025-01-15 c886-nwpj 
- 4 Home Health … The nation… Genera… 2024-12-02 2024-12-02 2025-01-15 97z8-de96 
- 5 Home Health … Patient Da… Patien… 2024-12-11 2024-12-11 2025-01-15 ccn4-8vby 
- 6 Home Health … Measure Da… Patien… 2024-12-11 2024-12-11 2025-01-15 fa88-6ff2 
- 7 Home Health … National D… Patien… 2024-12-11 2024-12-11 2025-01-15 vxub-6swi 
- 8 Home Health … State Data… Patien… 2024-12-11 2024-12-11 2025-01-15 m5jg-jg7i 
- 9 Home Health … State aver… Genera… 2024-12-02 2024-12-02 2025-01-15 tee5-ixt5 
-10 Home Health … Home Healt… Genera… 2024-12-02 2024-12-02 2025-01-15 m5eg-upu5 
-11 Home Health … A list of … Addres… 2024-12-02 2024-12-02 2025-01-15 6jpm-sxkc 
-# ℹ 4 more variables: dictionary &lt;chr&gt;, downloadurl &lt;chr&gt;, contact &lt;glue&gt;,
-#   landing &lt;chr&gt;
+# A tibble: 11 × 10
+   title description keyword issued     modified   released   identifier contact
+   &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+ 1 Expa… A list of … Home H… 2024-12-19 2025-01-07 2025-01-15 56d7-4994  HHVBP …
+ 2 Expa… Cohort dat… Home H… 2024-12-19 2025-01-07 2025-01-15 4c74-462e  HHVBP …
+ 3 Home… Home Healt… Genera… 2024-12-11 2024-12-11 2025-01-15 c886-nwpj  CMS (m…
+ 4 Home… The nation… Genera… 2024-12-02 2024-12-02 2025-01-15 97z8-de96  CMS (m…
+ 5 Home… Patient Da… Patien… 2024-12-11 2024-12-11 2025-01-15 ccn4-8vby  Home H…
+ 6 Home… Measure Da… Patien… 2024-12-11 2024-12-11 2025-01-15 fa88-6ff2  Home H…
+ 7 Home… National D… Patien… 2024-12-11 2024-12-11 2025-01-15 vxub-6swi  Home H…
+ 8 Home… State Data… Patien… 2024-12-11 2024-12-11 2025-01-15 m5jg-jg7i  Home H…
+ 9 Home… State aver… Genera… 2024-12-02 2024-12-02 2025-01-15 tee5-ixt5  CMS (m…
+10 Home… Home Healt… Genera… 2024-12-02 2024-12-02 2025-01-15 m5eg-upu5  CMS (m…
+11 Home… A list of … Addres… 2024-12-02 2024-12-02 2025-01-15 6jpm-sxkc  CMS (m…
+# ℹ 2 more variables: downloadurl &lt;chr&gt;, landing &lt;chr&gt;
 
 $hospice_care
-# A tibble: 8 × 11
-  title          description keyword issued     modified   released   identifier
-  &lt;chr&gt;          &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;     
-1 Hospice - Gen… This datas… Genera… 2025-01-13 2025-01-13 2025-02-19 yc9t-dgbk 
-2 Hospice - Pro… A list of … Measur… 2025-01-13 2025-01-13 2025-02-19 252m-zfp9 
-3 Hospice - Sta… State data… State,… 2025-01-13 2025-01-13 2025-02-19 eda0-92f0 
-4 Hospice - Zip… A list of … Locati… 2025-01-13 2025-01-13 2025-02-19 95rg-2usp 
-5 Hospice care … This data … Nation… 2025-01-13 2025-01-13 2025-02-19 7cv8-v37d 
-6 Hospice care … This data … Averag… 2025-01-13 2025-01-13 2025-02-19 gxki-hrr8 
-7 Hospice care … This data … State,… 2025-01-13 2025-01-13 2025-02-19 a55e-5b88 
-8 Hospice-Natio… National d… Nation… 2025-01-13 2025-01-13 2025-02-19 3xeb-u9wp 
-# ℹ 4 more variables: dictionary &lt;chr&gt;, downloadurl &lt;chr&gt;, contact &lt;glue&gt;,
-#   landing &lt;chr&gt;
+# A tibble: 8 × 10
+  title  description keyword issued     modified   released   identifier contact
+  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+1 Hospi… This datas… Genera… 2025-01-13 2025-01-13 2025-02-19 yc9t-dgbk  Hospic…
+2 Hospi… A list of … Measur… 2025-01-13 2025-01-13 2025-02-19 252m-zfp9  Hospic…
+3 Hospi… State data… State,… 2025-01-13 2025-01-13 2025-02-19 eda0-92f0  Hospic…
+4 Hospi… A list of … Locati… 2025-01-13 2025-01-13 2025-02-19 95rg-2usp  Hospic…
+5 Hospi… This data … Nation… 2025-01-13 2025-01-13 2025-02-19 7cv8-v37d  CMS (m…
+6 Hospi… This data … Averag… 2025-01-13 2025-01-13 2025-02-19 gxki-hrr8  CMS (m…
+7 Hospi… This data … State,… 2025-01-13 2025-01-13 2025-02-19 a55e-5b88  CMS (m…
+8 Hospi… National d… Nation… 2025-01-13 2025-01-13 2025-02-19 3xeb-u9wp  Hospic…
+# ℹ 2 more variables: downloadurl &lt;chr&gt;, landing &lt;chr&gt;
 
 $hospitals
-# A tibble: 74 × 11
-   title         description keyword issued     modified   released   identifier
-   &lt;chr&gt;         &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;     
- 1 Ambulatory S… A list of … Ambula… 2024-10-10 2025-01-15 2025-02-19 4jcv-atw7 
- 2 Ambulatory S… This file … Ambula… 2024-10-10 2025-01-15 2025-02-19 wue8-3vwe 
- 3 Ambulatory S… This file … Ambula… 2024-10-10 2025-01-15 2025-02-19 axe7-s95e 
- 4 CMS Medicare… This data … Compli… 2020-12-10 2025-01-08 2025-02-19 muwa-iene 
- 5 Complication… Complicati… Compli… 2023-07-05 2025-01-08 2025-02-19 ynj2-r877 
- 6 Complication… Complicati… Compli… 2020-12-10 2025-01-08 2025-02-19 qqw3-t4ie 
- 7 Complication… Complicati… Compli… 2020-12-10 2025-01-08 2025-02-19 bs2r-24vh 
- 8 Complication… Prospectiv… Cancer… 2024-07-31 2025-01-08 2025-02-19 z8ax-x9j1 
- 9 Complication… Prospectiv… Nation… 2024-07-31 2025-01-08 2025-02-19 jfnd-nl7s 
-10 Comprehensiv… Comprehens… Compre… 2020-12-10 2025-01-08 2025-02-19 tqkv-mgxq 
+# A tibble: 74 × 10
+   title description keyword issued     modified   released   identifier contact
+   &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+ 1 Ambu… A list of … Ambula… 2024-10-10 2025-01-15 2025-02-19 4jcv-atw7  Hospit…
+ 2 Ambu… This file … Ambula… 2024-10-10 2025-01-15 2025-02-19 wue8-3vwe  Hospit…
+ 3 Ambu… This file … Ambula… 2024-10-10 2025-01-15 2025-02-19 axe7-s95e  Hospit…
+ 4 CMS … This data … Compli… 2020-12-10 2025-01-08 2025-02-19 muwa-iene  Hospit…
+ 5 Comp… Complicati… Compli… 2023-07-05 2025-01-08 2025-02-19 ynj2-r877  Hospit…
+ 6 Comp… Complicati… Compli… 2020-12-10 2025-01-08 2025-02-19 qqw3-t4ie  Hospit…
+ 7 Comp… Complicati… Compli… 2020-12-10 2025-01-08 2025-02-19 bs2r-24vh  Hospit…
+ 8 Comp… Prospectiv… Cancer… 2024-07-31 2025-01-08 2025-02-19 z8ax-x9j1  Hospit…
+ 9 Comp… Prospectiv… Nation… 2024-07-31 2025-01-08 2025-02-19 jfnd-nl7s  Hospit…
+10 Comp… Comprehens… Compre… 2020-12-10 2025-01-08 2025-02-19 tqkv-mgxq  Hospit…
 # ℹ 64 more rows
-# ℹ 4 more variables: dictionary &lt;chr&gt;, downloadurl &lt;chr&gt;, contact &lt;glue&gt;,
-#   landing &lt;chr&gt;
+# ℹ 2 more variables: downloadurl &lt;chr&gt;, landing &lt;chr&gt;
 
 $inpatient_rehabilitation_facilities
-# A tibble: 4 × 11
-  title          description keyword issued     modified   released   identifier
-  &lt;chr&gt;          &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;     
-1 Inpatient Reh… A list of … Rehabi… 2024-10-24 2024-12-05 2024-12-18 ka5z-ibe3 
-2 Inpatient Reh… This datas… Rehabi… 2024-10-24 2024-12-05 2024-12-18 7t8x-u3ir 
-3 Inpatient Reh… National d… Rehabi… 2024-10-24 2024-12-05 2024-12-18 nasn-k89k 
-4 Inpatient Reh… A list of … Qualit… 2024-10-24 2024-12-05 2024-12-18 v9e4-nwhh 
-# ℹ 4 more variables: dictionary &lt;chr&gt;, downloadurl &lt;chr&gt;, contact &lt;glue&gt;,
-#   landing &lt;chr&gt;
+# A tibble: 4 × 10
+  title  description keyword issued     modified   released   identifier contact
+  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+1 Inpat… A list of … Rehabi… 2024-10-24 2024-12-05 2024-12-18 ka5z-ibe3  CMS (m…
+2 Inpat… This datas… Rehabi… 2024-10-24 2024-12-05 2024-12-18 7t8x-u3ir  CMS (m…
+3 Inpat… National d… Rehabi… 2024-10-24 2024-12-05 2024-12-18 nasn-k89k  CMS (m…
+4 Inpat… A list of … Qualit… 2024-10-24 2024-12-05 2024-12-18 v9e4-nwhh  CMS (m…
+# ℹ 2 more variables: downloadurl &lt;chr&gt;, landing &lt;chr&gt;
 
 $long_term_care_hospitals
-# A tibble: 3 × 11
-  title          description keyword issued     modified   released   identifier
-  &lt;chr&gt;          &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;     
-1 Long-Term Car… A list of … Qualit… 2024-10-24 2024-12-05 2024-12-18 azum-44iv 
-2 Long-Term Car… National d… Nation… 2024-10-24 2024-12-05 2024-12-18 5zdx-ny2x 
-3 Long-Term Car… A list of … Qualit… 2024-10-24 2024-12-05 2024-12-18 fp6g-2gsn 
-# ℹ 4 more variables: dictionary &lt;chr&gt;, downloadurl &lt;chr&gt;, contact &lt;glue&gt;,
-#   landing &lt;chr&gt;
+# A tibble: 3 × 10
+  title  description keyword issued     modified   released   identifier contact
+  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+1 Long-… A list of … Qualit… 2024-10-24 2024-12-05 2024-12-18 azum-44iv  CMS (m…
+2 Long-… National d… Nation… 2024-10-24 2024-12-05 2024-12-18 5zdx-ny2x  CMS (m…
+3 Long-… A list of … Qualit… 2024-10-24 2024-12-05 2024-12-18 fp6g-2gsn  CMS (m…
+# ℹ 2 more variables: downloadurl &lt;chr&gt;, landing &lt;chr&gt;
 
 $nursing_homes
-# A tibble: 20 × 11
-   title         description keyword issued     modified   released   identifier
-   &lt;chr&gt;         &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;     
- 1 COVID-19 Vac… Current re… COVID   2023-07-06 2025-01-19 2025-01-30 pvax-cv19 
- 2 COVID-19 Vac… State and … COVID,… 2023-07-06 2025-01-19 2025-01-30 avax-cv19 
- 3 Citation Cod… This is a … Compla… 2020-09-01 2025-01-01 2025-01-29 tagd-9999 
- 4 FY 2025 SNF … This table… Value … 2024-11-01 2024-11-01 2025-01-29 ujcx-uaut 
- 5 FY 2025 SNF … This datas… Value … 2024-11-01 2024-11-01 2025-01-29 284v-j9fz 
- 6 Fire Safety … A list of … Compla… 2023-06-01 2025-01-01 2025-01-29 ifjz-ge4w 
- 7 Health Defic… A list of … Compla… 2023-06-01 2025-01-01 2025-01-29 r5ix-sfxw 
- 8 Inspection D… A list of … Compla… 2023-06-01 2025-01-01 2025-01-29 svdt-c123 
- 9 MDS Quality … Quality me… Qualit… 2023-06-01 2025-01-01 2025-01-29 djen-97ju 
-10 Medicare Cla… Quality me… Qualit… 2023-06-01 2025-01-01 2025-01-29 ijh5-nb2v 
-11 Nursing Home… This table… Qualit… 2024-10-01 2025-01-01 2025-01-29 qmdc-9999 
-12 Ownership     A list of … Owners… 2023-06-01 2025-01-01 2025-01-29 y2hd-n93e 
-13 Penalties     A list of … Penalt… 2023-06-01 2025-01-01 2025-01-29 g6vv-u9sr 
-14 Provider Inf… General in… Genera… 2024-07-01 2025-01-01 2025-01-29 4pq5-n9py 
-15 Skilled Nurs… Skilled Nu… Skille… 2024-10-01 2025-01-01 2025-01-29 5sqm-2qku 
-16 Skilled Nurs… Skilled Nu… Skille… 2024-10-01 2025-01-01 2025-01-29 fykj-qjee 
-17 Skilled Nurs… Non-Critic… Skille… 2024-10-01 2025-01-01 2025-01-29 6uyb-waub 
-18 State US Ave… A list of … Averag… 2025-01-01 2025-01-01 2025-01-29 xcdc-v8bm 
-19 State-Level … State-spec… Defici… 2021-04-01 2025-01-01 2025-01-29 hicp-9999 
-20 Survey Summa… Nursing ho… Compla… 2023-06-01 2025-01-01 2025-01-29 tbry-pc2d 
-# ℹ 4 more variables: dictionary &lt;chr&gt;, downloadurl &lt;chr&gt;, contact &lt;glue&gt;,
-#   landing &lt;chr&gt;
+# A tibble: 20 × 10
+   title description keyword issued     modified   released   identifier contact
+   &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+ 1 COVI… Current re… COVID   2023-07-06 2025-01-19 2025-01-30 pvax-cv19  Nursin…
+ 2 COVI… State and … COVID,… 2023-07-06 2025-01-19 2025-01-30 avax-cv19  Nursin…
+ 3 Cita… This is a … Compla… 2020-09-01 2025-01-01 2025-01-29 tagd-9999  Nursin…
+ 4 FY 2… This table… Value … 2024-11-01 2024-11-01 2025-01-29 ujcx-uaut  Nursin…
+ 5 FY 2… This datas… Value … 2024-11-01 2024-11-01 2025-01-29 284v-j9fz  Nursin…
+ 6 Fire… A list of … Compla… 2023-06-01 2025-01-01 2025-01-29 ifjz-ge4w  Nursin…
+ 7 Heal… A list of … Compla… 2023-06-01 2025-01-01 2025-01-29 r5ix-sfxw  Nursin…
+ 8 Insp… A list of … Compla… 2023-06-01 2025-01-01 2025-01-29 svdt-c123  Nursin…
+ 9 MDS … Quality me… Qualit… 2023-06-01 2025-01-01 2025-01-29 djen-97ju  Nursin…
+10 Medi… Quality me… Qualit… 2023-06-01 2025-01-01 2025-01-29 ijh5-nb2v  Nursin…
+11 Nurs… This table… Qualit… 2024-10-01 2025-01-01 2025-01-29 qmdc-9999  Nursin…
+12 Owne… A list of … Owners… 2023-06-01 2025-01-01 2025-01-29 y2hd-n93e  Nursin…
+13 Pena… A list of … Penalt… 2023-06-01 2025-01-01 2025-01-29 g6vv-u9sr  Nursin…
+14 Prov… General in… Genera… 2024-07-01 2025-01-01 2025-01-29 4pq5-n9py  Nursin…
+15 Skil… Skilled Nu… Skille… 2024-10-01 2025-01-01 2025-01-29 5sqm-2qku  Nursin…
+16 Skil… Skilled Nu… Skille… 2024-10-01 2025-01-01 2025-01-29 fykj-qjee  Nursin…
+17 Skil… Non-Critic… Skille… 2024-10-01 2025-01-01 2025-01-29 6uyb-waub  Nursin…
+18 Stat… A list of … Averag… 2025-01-01 2025-01-01 2025-01-29 xcdc-v8bm  Nursin…
+19 Stat… State-spec… Defici… 2021-04-01 2025-01-01 2025-01-29 hicp-9999  Nursin…
+20 Surv… Nursing ho… Compla… 2023-06-01 2025-01-01 2025-01-29 tbry-pc2d  Nursin…
+# ℹ 2 more variables: downloadurl &lt;chr&gt;, landing &lt;chr&gt;
 
 $physician_office_visit_costs
-# A tibble: 85 × 11
-   title         description keyword issued     modified   released   identifier
-   &lt;chr&gt;         &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;     
- 1 Addiction Me… Returns ad… Addict… 2024-08-05 2024-08-05 2024-08-08 3614-1eef 
- 2 Advanced Hea… Returns ad… Advanc… 2024-08-05 2024-08-05 2024-08-08 bdd5-4a04 
- 3 Allergy/ Imm… Returns al… Allerg… 2024-08-05 2024-08-05 2024-08-08 4269-8a74 
- 4 Anesthesiolo… Returns an… Anesth… 2024-08-05 2024-08-05 2024-08-08 2fbd-6172 
- 5 Audiologist … Returns au… Audiol… 2024-08-05 2024-08-05 2024-08-08 e491-a466 
- 6 Cardiac Surg… Returns ca… Cardia… 2024-08-05 2024-08-05 2024-08-08 075a-d487 
- 7 Cardiology O… Returns ca… Cardio… 2024-08-05 2024-08-05 2024-08-08 3f64-129e 
- 8 Certified Cl… Returns ce… Certif… 2024-08-05 2024-08-05 2024-08-08 ea2d-9467 
- 9 Certified Nu… Returns ce… Certif… 2024-08-05 2024-08-05 2024-08-08 9873-722a 
-10 Certified Re… Returns ce… Certif… 2024-08-05 2024-08-05 2024-08-08 3a83-ee2d 
+# A tibble: 85 × 10
+   title description keyword issued     modified   released   identifier contact
+   &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+ 1 Addi… Returns ad… Addict… 2024-08-05 2024-08-05 2024-08-08 3614-1eef  PPL Da…
+ 2 Adva… Returns ad… Advanc… 2024-08-05 2024-08-05 2024-08-08 bdd5-4a04  PPL Da…
+ 3 Alle… Returns al… Allerg… 2024-08-05 2024-08-05 2024-08-08 4269-8a74  PPL Da…
+ 4 Anes… Returns an… Anesth… 2024-08-05 2024-08-05 2024-08-08 2fbd-6172  PPL Da…
+ 5 Audi… Returns au… Audiol… 2024-08-05 2024-08-05 2024-08-08 e491-a466  PPL Da…
+ 6 Card… Returns ca… Cardia… 2024-08-05 2024-08-05 2024-08-08 075a-d487  PPL Da…
+ 7 Card… Returns ca… Cardio… 2024-08-05 2024-08-05 2024-08-08 3f64-129e  PPL Da…
+ 8 Cert… Returns ce… Certif… 2024-08-05 2024-08-05 2024-08-08 ea2d-9467  PPL Da…
+ 9 Cert… Returns ce… Certif… 2024-08-05 2024-08-05 2024-08-08 9873-722a  PPL Da…
+10 Cert… Returns ce… Certif… 2024-08-05 2024-08-05 2024-08-08 3a83-ee2d  PPL Da…
 # ℹ 75 more rows
-# ℹ 4 more variables: dictionary &lt;chr&gt;, downloadurl &lt;chr&gt;, contact &lt;glue&gt;,
-#   landing &lt;chr&gt;
+# ℹ 2 more variables: downloadurl &lt;chr&gt;, landing &lt;chr&gt;
 
 $supplier_directory
-# A tibble: 1 × 11
-  title          description keyword issued     modified   released   identifier
-  &lt;chr&gt;          &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;     
-1 Medical Equip… A list of … Medica… 2020-12-17 2025-01-20 2025-01-20 ct36-nrcq 
-# ℹ 4 more variables: dictionary &lt;chr&gt;, downloadurl &lt;chr&gt;, contact &lt;glue&gt;,
-#   landing &lt;chr&gt;</code></pre>
+# A tibble: 1 × 10
+  title  description keyword issued     modified   released   identifier contact
+  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+1 Medic… A list of … Medica… 2020-12-17 2025-01-20 2025-01-20 ct36-nrcq  Suppli…
+# ℹ 2 more variables: downloadurl &lt;chr&gt;, landing &lt;chr&gt;</code></pre>
 </div>
 </div>
 <section id="hospitals" class="level3" data-number="15.1.1">
@@ -702,17 +690,16 @@ $supplier_directory
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Quality Measures - |Quality Measure Data - "</span></span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 11
-  title          description keyword issued     modified   released   identifier
-  &lt;chr&gt;          &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;     
-1 Ambulatory Su… A list of … Ambula… 2024-10-10 2025-01-15 2025-02-19 4jcv-atw7 
-2 Ambulatory Su… This file … Ambula… 2024-10-10 2025-01-15 2025-02-19 wue8-3vwe 
-3 Ambulatory Su… This file … Ambula… 2024-10-10 2025-01-15 2025-02-19 axe7-s95e 
-4 Inpatient Psy… This datas… Inpati… 2025-01-08 2025-01-08 2025-02-19 s5xg-sys6 
-5 Inpatient Psy… This datas… Inpati… 2025-01-08 2025-01-08 2025-02-19 q9vs-r7wp 
-6 Inpatient Psy… This datas… Inpati… 2025-01-08 2025-01-08 2025-02-19 dc76-gh7x 
-# ℹ 4 more variables: dictionary &lt;chr&gt;, downloadurl &lt;chr&gt;, contact &lt;glue&gt;,
-#   landing &lt;chr&gt;</code></pre>
+<pre><code># A tibble: 6 × 10
+  title  description keyword issued     modified   released   identifier contact
+  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+1 Ambul… A list of … Ambula… 2024-10-10 2025-01-15 2025-02-19 4jcv-atw7  Hospit…
+2 Ambul… This file … Ambula… 2024-10-10 2025-01-15 2025-02-19 wue8-3vwe  Hospit…
+3 Ambul… This file … Ambula… 2024-10-10 2025-01-15 2025-02-19 axe7-s95e  Hospit…
+4 Inpat… This datas… Inpati… 2025-01-08 2025-01-08 2025-02-19 s5xg-sys6  Hospit…
+5 Inpat… This datas… Inpati… 2025-01-08 2025-01-08 2025-02-19 q9vs-r7wp  Hospit…
+6 Inpat… This datas… Inpati… 2025-01-08 2025-01-08 2025-02-19 dc76-gh7x  Hospit…
+# ℹ 2 more variables: downloadurl &lt;chr&gt;, landing &lt;chr&gt;</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  prov<span class="sc">$</span>hospitals, </span>
@@ -721,16 +708,15 @@ $supplier_directory
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"^Hospital Value-Based Purchasing"</span></span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 5 × 11
-  title          description keyword issued     modified   released   identifier
-  &lt;chr&gt;          &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;     
-1 Hospital Valu… A list of … Value … 2023-07-05 2025-01-17 2025-02-19 pudb-wetr 
-2 Hospital Valu… A list of … Value … 2023-07-05 2025-01-17 2025-02-19 su9h-3pvj 
-3 Hospital Valu… A list of … Value … 2023-07-05 2025-01-17 2025-02-19 avtz-f2ge 
-4 Hospital Valu… A list of … Value … 2023-07-05 2025-01-17 2025-02-19 dgmq-aat3 
-5 Hospital Valu… A list of … Value … 2023-07-05 2025-01-17 2025-02-19 ypbt-wvdk 
-# ℹ 4 more variables: dictionary &lt;chr&gt;, downloadurl &lt;chr&gt;, contact &lt;glue&gt;,
-#   landing &lt;chr&gt;</code></pre>
+<pre><code># A tibble: 5 × 10
+  title  description keyword issued     modified   released   identifier contact
+  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+1 Hospi… A list of … Value … 2023-07-05 2025-01-17 2025-02-19 pudb-wetr  Hospit…
+2 Hospi… A list of … Value … 2023-07-05 2025-01-17 2025-02-19 su9h-3pvj  Hospit…
+3 Hospi… A list of … Value … 2023-07-05 2025-01-17 2025-02-19 avtz-f2ge  Hospit…
+4 Hospi… A list of … Value … 2023-07-05 2025-01-17 2025-02-19 dgmq-aat3  Hospit…
+5 Hospi… A list of … Value … 2023-07-05 2025-01-17 2025-02-19 ypbt-wvdk  Hospit…
+# ℹ 2 more variables: downloadurl &lt;chr&gt;, landing &lt;chr&gt;</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  prov<span class="sc">$</span>hospitals, </span>
@@ -739,19 +725,18 @@ $supplier_directory
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"^(Medicare Spending Per Beneficiary|Medicare Hospital|Payment)"</span></span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 8 × 11
-  title          description keyword issued     modified   released   identifier
-  &lt;chr&gt;          &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;     
-1 Medicare Hosp… The data d… Medica… 2020-12-10 2025-01-08 2025-02-19 nrth-mfg3 
-2 Medicare Spen… The Medica… Medica… 2020-12-10 2025-01-08 2025-02-19 rrqw-56er 
-3 Medicare Spen… The Medica… Medica… 2020-12-10 2025-01-08 2025-02-19 5hk7-b79m 
-4 Medicare Spen… The Medica… Medica… 2020-12-10 2025-01-08 2025-02-19 3n5g-6b7f 
-5 Medicare Spen… The Medica… Medica… 2023-07-05 2025-01-08 2025-02-19 rs6n-9qwg 
-6 Payment - Nat… Payment me… Nation… 2020-12-10 2025-01-08 2025-02-19 ygty-mm5a 
-7 Payment - Sta… Payment me… State,… 2020-12-10 2025-01-08 2025-02-19 98ix-2iqy 
-8 Payment and v… Payment me… Pneumo… 2023-07-05 2025-01-08 2025-02-19 c7us-v4mf 
-# ℹ 4 more variables: dictionary &lt;chr&gt;, downloadurl &lt;chr&gt;, contact &lt;glue&gt;,
-#   landing &lt;chr&gt;</code></pre>
+<pre><code># A tibble: 8 × 10
+  title  description keyword issued     modified   released   identifier contact
+  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+1 Medic… The data d… Medica… 2020-12-10 2025-01-08 2025-02-19 nrth-mfg3  Hospit…
+2 Medic… The Medica… Medica… 2020-12-10 2025-01-08 2025-02-19 rrqw-56er  Hospit…
+3 Medic… The Medica… Medica… 2020-12-10 2025-01-08 2025-02-19 5hk7-b79m  Hospit…
+4 Medic… The Medica… Medica… 2020-12-10 2025-01-08 2025-02-19 3n5g-6b7f  Hospit…
+5 Medic… The Medica… Medica… 2023-07-05 2025-01-08 2025-02-19 rs6n-9qwg  Hospit…
+6 Payme… Payment me… Nation… 2020-12-10 2025-01-08 2025-02-19 ygty-mm5a  Hospit…
+7 Payme… Payment me… State,… 2020-12-10 2025-01-08 2025-02-19 98ix-2iqy  Hospit…
+8 Payme… Payment me… Pneumo… 2023-07-05 2025-01-08 2025-02-19 c7us-v4mf  Hospit…
+# ℹ 2 more variables: downloadurl &lt;chr&gt;, landing &lt;chr&gt;</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  prov<span class="sc">$</span>hospitals, </span>
@@ -760,28 +745,27 @@ $supplier_directory
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"^(Complications|Hospital Readmissions|Hospital-Acquired|Safety and Healthcare|Unplanned|Timely|Healthcare Associated)"</span></span>
 <span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 17 × 11
-   title         description keyword issued     modified   released   identifier
-   &lt;chr&gt;         &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;     
- 1 Complication… Complicati… Compli… 2023-07-05 2025-01-08 2025-02-19 ynj2-r877 
- 2 Complication… Complicati… Compli… 2020-12-10 2025-01-08 2025-02-19 qqw3-t4ie 
- 3 Complication… Complicati… Compli… 2020-12-10 2025-01-08 2025-02-19 bs2r-24vh 
- 4 Complication… Prospectiv… Cancer… 2024-07-31 2025-01-08 2025-02-19 z8ax-x9j1 
- 5 Complication… Prospectiv… Nation… 2024-07-31 2025-01-08 2025-02-19 jfnd-nl7s 
- 6 Healthcare A… The Health… Health… 2023-07-05 2025-01-08 2025-02-19 77hc-ibv8 
- 7 Healthcare A… The Health… Health… 2020-12-10 2025-01-08 2025-02-19 yd3s-jyhd 
- 8 Healthcare A… The Health… Health… 2020-12-10 2025-01-08 2025-02-19 k2ze-bqvw 
- 9 Hospital Rea… In October… Hospit… 2020-12-10 2025-01-08 2025-02-19 9n3s-kdb3 
-10 Hospital-Acq… Hospital-A… PSI, C… 2024-01-08 2025-01-08 2025-02-19 yq43-i98g 
-11 Safety and H… Prospectiv… Cancer… 2023-07-12 2025-01-08 2025-02-19 k653-4ka8 
-12 Timely and E… Timely and… Timely… 2023-07-05 2025-01-08 2025-02-19 yv7e-xc69 
-13 Timely and E… Timely and… Timely… 2020-12-10 2025-01-08 2025-02-19 isrn-hqyy 
-14 Timely and E… Timely and… Timely… 2020-12-10 2025-01-08 2025-02-19 apyc-v239 
-15 Unplanned Ho… Unplanned … Unplan… 2023-07-05 2025-01-08 2025-02-19 632h-zaca 
-16 Unplanned Ho… Unplanned … Unplan… 2020-12-10 2025-01-08 2025-02-19 cvcs-xecj 
-17 Unplanned Ho… Unplanned … Unplan… 2020-12-10 2025-01-08 2025-02-19 4gkm-5ypv 
-# ℹ 4 more variables: dictionary &lt;chr&gt;, downloadurl &lt;chr&gt;, contact &lt;glue&gt;,
-#   landing &lt;chr&gt;</code></pre>
+<pre><code># A tibble: 17 × 10
+   title description keyword issued     modified   released   identifier contact
+   &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+ 1 Comp… Complicati… Compli… 2023-07-05 2025-01-08 2025-02-19 ynj2-r877  Hospit…
+ 2 Comp… Complicati… Compli… 2020-12-10 2025-01-08 2025-02-19 qqw3-t4ie  Hospit…
+ 3 Comp… Complicati… Compli… 2020-12-10 2025-01-08 2025-02-19 bs2r-24vh  Hospit…
+ 4 Comp… Prospectiv… Cancer… 2024-07-31 2025-01-08 2025-02-19 z8ax-x9j1  Hospit…
+ 5 Comp… Prospectiv… Nation… 2024-07-31 2025-01-08 2025-02-19 jfnd-nl7s  Hospit…
+ 6 Heal… The Health… Health… 2023-07-05 2025-01-08 2025-02-19 77hc-ibv8  Hospit…
+ 7 Heal… The Health… Health… 2020-12-10 2025-01-08 2025-02-19 yd3s-jyhd  Hospit…
+ 8 Heal… The Health… Health… 2020-12-10 2025-01-08 2025-02-19 k2ze-bqvw  Hospit…
+ 9 Hosp… In October… Hospit… 2020-12-10 2025-01-08 2025-02-19 9n3s-kdb3  Hospit…
+10 Hosp… Hospital-A… PSI, C… 2024-01-08 2025-01-08 2025-02-19 yq43-i98g  Hospit…
+11 Safe… Prospectiv… Cancer… 2023-07-12 2025-01-08 2025-02-19 k653-4ka8  Hospit…
+12 Time… Timely and… Timely… 2023-07-05 2025-01-08 2025-02-19 yv7e-xc69  Hospit…
+13 Time… Timely and… Timely… 2020-12-10 2025-01-08 2025-02-19 isrn-hqyy  Hospit…
+14 Time… Timely and… Timely… 2020-12-10 2025-01-08 2025-02-19 apyc-v239  Hospit…
+15 Unpl… Unplanned … Unplan… 2023-07-05 2025-01-08 2025-02-19 632h-zaca  Hospit…
+16 Unpl… Unplanned … Unplan… 2020-12-10 2025-01-08 2025-02-19 cvcs-xecj  Hospit…
+17 Unpl… Unplanned … Unplan… 2020-12-10 2025-01-08 2025-02-19 4gkm-5ypv  Hospit…
+# ℹ 2 more variables: downloadurl &lt;chr&gt;, landing &lt;chr&gt;</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  prov<span class="sc">$</span>hospitals, </span>
@@ -790,14 +774,13 @@ $supplier_directory
 <span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"^Veterans Health Administration"</span></span>
 <span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 3 × 11
-  title          description keyword issued     modified   released   identifier
-  &lt;chr&gt;          &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;     
-1 Veterans Heal… A list of … Vetera… 2023-07-05 2025-01-08 2025-02-19 6qxe-iqz8 
-2 Veterans Heal… A list of … Vetera… 2023-07-12 2025-01-08 2025-02-19 uyx4-5s7f 
-3 Veterans Heal… A list of … Vetera… 2023-07-05 2025-01-08 2025-02-19 ptds-r8im 
-# ℹ 4 more variables: dictionary &lt;chr&gt;, downloadurl &lt;chr&gt;, contact &lt;glue&gt;,
-#   landing &lt;chr&gt;</code></pre>
+<pre><code># A tibble: 3 × 10
+  title  description keyword issued     modified   released   identifier contact
+  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+1 Veter… A list of … Vetera… 2023-07-05 2025-01-08 2025-02-19 6qxe-iqz8  Hospit…
+2 Veter… A list of … Vetera… 2023-07-12 2025-01-08 2025-02-19 uyx4-5s7f  Hospit…
+3 Veter… A list of … Vetera… 2023-07-05 2025-01-08 2025-02-19 ptds-r8im  Hospit…
+# ℹ 2 more variables: downloadurl &lt;chr&gt;, landing &lt;chr&gt;</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  prov<span class="sc">$</span>hospitals, </span>
@@ -806,17 +789,16 @@ $supplier_directory
 <span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"^Patient [Ss]urvey"</span></span>
 <span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 11
-  title          description keyword issued     modified   released   identifier
-  &lt;chr&gt;          &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;     
-1 Patient Surve… A list of … CAHPS,… 2023-07-12 2025-01-08 2025-02-19 iy27-wz37 
-2 Patient Surve… The nation… CAHPS,… 2020-12-10 2025-01-08 2025-02-19 9g7e-btyt 
-3 Patient Surve… A list of … CAHPS,… 2020-12-10 2025-01-08 2025-02-19 qatj-nmws 
-4 Patient surve… A list of … CAHPS,… 2023-07-05 2025-01-08 2025-02-19 dgck-syfz 
-5 Patient surve… The nation… CAHPS,… 2020-12-10 2025-01-08 2025-02-19 99ue-w85f 
-6 Patient surve… A list of … CAHPS,… 2020-12-10 2025-01-08 2025-02-19 84jm-wiui 
-# ℹ 4 more variables: dictionary &lt;chr&gt;, downloadurl &lt;chr&gt;, contact &lt;glue&gt;,
-#   landing &lt;chr&gt;</code></pre>
+<pre><code># A tibble: 6 × 10
+  title  description keyword issued     modified   released   identifier contact
+  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+1 Patie… A list of … CAHPS,… 2023-07-12 2025-01-08 2025-02-19 iy27-wz37  Hospit…
+2 Patie… The nation… CAHPS,… 2020-12-10 2025-01-08 2025-02-19 9g7e-btyt  Hospit…
+3 Patie… A list of … CAHPS,… 2020-12-10 2025-01-08 2025-02-19 qatj-nmws  Hospit…
+4 Patie… A list of … CAHPS,… 2023-07-05 2025-01-08 2025-02-19 dgck-syfz  Hospit…
+5 Patie… The nation… CAHPS,… 2020-12-10 2025-01-08 2025-02-19 99ue-w85f  Hospit…
+6 Patie… A list of … CAHPS,… 2020-12-10 2025-01-08 2025-02-19 84jm-wiui  Hospit…
+# ℹ 2 more variables: downloadurl &lt;chr&gt;, landing &lt;chr&gt;</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  prov<span class="sc">$</span>hospitals, </span>
@@ -825,18 +807,17 @@ $supplier_directory
 <span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"OAS CAHPS"</span></span>
 <span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 7 × 11
-  title          description keyword issued     modified   released   identifier
-  &lt;chr&gt;          &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;     
-1 Outpatient an… This file … Ambula… 2020-12-10 2025-01-08 2025-02-19 e6hj-umam 
-2 Outpatient an… A list of … Ambula… 2023-07-05 2025-01-08 2025-02-19 48nr-hqxx 
-3 Outpatient an… The file c… Ambula… 2020-12-10 2025-01-08 2025-02-19 tf3h-mrrs 
-4 Outpatient an… A list of … Ambula… 2020-12-10 2025-01-08 2025-02-19 x663-bwbj 
-5 Outpatient an… A list of … Ambula… 2023-07-05 2025-01-08 2025-02-19 yizn-abxn 
-6 Outpatient an… The file c… Ambula… 2020-12-10 2025-01-08 2025-02-19 s5pj-hua3 
-7 Outpatient an… A list of … Ambula… 2020-12-10 2025-01-08 2025-02-19 6pfg-whmx 
-# ℹ 4 more variables: dictionary &lt;chr&gt;, downloadurl &lt;chr&gt;, contact &lt;glue&gt;,
-#   landing &lt;chr&gt;</code></pre>
+<pre><code># A tibble: 7 × 10
+  title  description keyword issued     modified   released   identifier contact
+  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+1 Outpa… This file … Ambula… 2020-12-10 2025-01-08 2025-02-19 e6hj-umam  Hospit…
+2 Outpa… A list of … Ambula… 2023-07-05 2025-01-08 2025-02-19 48nr-hqxx  Hospit…
+3 Outpa… The file c… Ambula… 2020-12-10 2025-01-08 2025-02-19 tf3h-mrrs  Hospit…
+4 Outpa… A list of … Ambula… 2020-12-10 2025-01-08 2025-02-19 x663-bwbj  Hospit…
+5 Outpa… A list of … Ambula… 2023-07-05 2025-01-08 2025-02-19 yizn-abxn  Hospit…
+6 Outpa… The file c… Ambula… 2020-12-10 2025-01-08 2025-02-19 s5pj-hua3  Hospit…
+7 Outpa… A list of … Ambula… 2020-12-10 2025-01-08 2025-02-19 6pfg-whmx  Hospit…
+# ℹ 2 more variables: downloadurl &lt;chr&gt;, landing &lt;chr&gt;</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  prov<span class="sc">$</span>hospitals, </span>
@@ -845,15 +826,14 @@ $supplier_directory
 <span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"^Table"</span></span>
 <span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 4 × 11
-  title          description keyword issued     modified   released   identifier
-  &lt;chr&gt;          &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;     
-1 Table 1: FY20… Net Change… Value … 2020-12-10 2023-01-06 2025-02-19 5gv4-jwyv 
-2 Table 2: FY20… Distributi… Value … 2020-12-10 2023-01-06 2025-02-19 xrgf-x36b 
-3 Table 3: FY20… Percent Ch… Value … 2020-12-10 2023-01-06 2025-02-19 u625-zae7 
-4 Table 4: FY20… Value-Base… Value … 2020-12-10 2023-01-06 2025-02-19 vtqa-m4zn 
-# ℹ 4 more variables: dictionary &lt;chr&gt;, downloadurl &lt;chr&gt;, contact &lt;glue&gt;,
-#   landing &lt;chr&gt;</code></pre>
+<pre><code># A tibble: 4 × 10
+  title  description keyword issued     modified   released   identifier contact
+  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+1 Table… Net Change… Value … 2020-12-10 2023-01-06 2025-02-19 5gv4-jwyv  Hospit…
+2 Table… Distributi… Value … 2020-12-10 2023-01-06 2025-02-19 xrgf-x36b  Hospit…
+3 Table… Percent Ch… Value … 2020-12-10 2023-01-06 2025-02-19 u625-zae7  Hospit…
+4 Table… Value-Base… Value … 2020-12-10 2023-01-06 2025-02-19 vtqa-m4zn  Hospit…
+# ℹ 2 more variables: downloadurl &lt;chr&gt;, landing &lt;chr&gt;</code></pre>
 </div>
 </div>
 </section>
