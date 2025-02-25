@@ -323,11 +323,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">3.2.1</span> Summary</a></li>
   <li><a href="#grouped-payment-summaries" id="toc-grouped-payment-summaries" class="nav-link" data-scroll-target="#grouped-payment-summaries"><span class="header-section-number">3.2.2</span> Grouped Payment Summaries</a></li>
-  <li><a href="#general-payment-data" id="toc-general-payment-data" class="nav-link" data-scroll-target="#general-payment-data"><span class="header-section-number">3.2.3</span> General Payment Data</a></li>
-  <li><a href="#research-payment-data" id="toc-research-payment-data" class="nav-link" data-scroll-target="#research-payment-data"><span class="header-section-number">3.2.4</span> Research Payment Data</a></li>
-  <li><a href="#ownership-payment-data" id="toc-ownership-payment-data" class="nav-link" data-scroll-target="#ownership-payment-data"><span class="header-section-number">3.2.5</span> Ownership Payment Data</a></li>
+  <li><a href="#payment-data-by-yearcategory" id="toc-payment-data-by-yearcategory" class="nav-link" data-scroll-target="#payment-data-by-yearcategory"><span class="header-section-number">3.2.3</span> Payment Data by Year/Category</a></li>
   </ul></li>
-  <li><a href="#dictionaries" id="toc-dictionaries" class="nav-link" data-scroll-target="#dictionaries"><span class="header-section-number">3.3</span> Dictionaries</a></li>
+  <li><a href="#dictionary" id="toc-dictionary" class="nav-link" data-scroll-target="#dictionary"><span class="header-section-number">3.3</span> Dictionary</a></li>
   </ul>
 <div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li></ul></div></nav>
     </div>
@@ -366,62 +364,72 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="load-catalog" class="level2" data-number="3.2">
 <h2 data-number="3.2" class="anchored" data-anchor-id="load-catalog"><span class="header-section-number">3.2</span> Load Catalog</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>open_downloadurl <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_vars</span>(x, <span class="at">downloadURL =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">get_elem</span>(x<span class="sc">$</span>distribution, <span class="st">"data"</span>, <span class="at">DF.as.list =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"downloadURL"</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  )))</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>add_downloadurl <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_vars</span>(x, <span class="at">downloadurl =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">get_elem</span>(x<span class="sc">$</span>distribution, <span class="st">"data"</span>, <span class="at">DF.as.list =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"downloadURL"</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  )))</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>clean_temp <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(<span class="fu">mtt</span>(x, <span class="at">year =</span> <span class="fu">as_int</span>(year)), <span class="sc">-</span>title, <span class="sc">-</span>description) <span class="sc">|&gt;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">roworder</span>(<span class="sc">-</span>year)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>get_data_elem <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">delist</span>(<span class="fu">map</span>(x, <span class="cf">function</span>(i)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">get_elem</span>(<span class="fu">as.list</span>(i), <span class="st">"data"</span>)))</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>open_identifier_url <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">"https://openpaymentsdata.cms.gov/api/1/datastore/query/"</span>,</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>         x,</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>         <span class="st">"/0"</span>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>clean_temp <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(<span class="fu">mtt</span>(x, <span class="at">year =</span> <span class="fu">as_int</span>(year)), <span class="sc">-</span>title, <span class="sc">-</span>description) <span class="sc">|&gt;</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">roworder</span>(<span class="sc">-</span>year)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>catalog_open_payments <span class="ot">&lt;-</span> \() {</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">as_tbl</span>(</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(<span class="fu">fload</span>(<span class="st">"https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids"</span>), </span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">modified    =</span> <span class="fu">as_date</span>(modified), </span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">description =</span> <span class="fu">replace_fixed</span>(description, <span class="fu">c</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>, <span class="st">"</span><span class="sc">\r</span><span class="st">. </span><span class="sc">\r</span><span class="st">."</span>, <span class="st">'"'</span>), <span class="fu">c</span>(<span class="st">". "</span>, <span class="st">""</span>, <span class="st">""</span>)),</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">theme       =</span> <span class="fu">delist</span>(<span class="fu">map</span>(theme, <span class="cf">function</span>(x) <span class="fu">get_elem</span>(<span class="fu">as.list</span>(x), <span class="st">"data"</span>))), </span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">year        =</span> <span class="fu">delist</span>(<span class="fu">map</span>(keyword, <span class="cf">function</span>(x) <span class="fu">get_elem</span>(<span class="fu">as.list</span>(x), <span class="st">"data"</span>))), </span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">year        =</span> <span class="fu">replace_fixed</span>(year, <span class="fu">c</span>(<span class="st">"all years"</span>), <span class="fu">c</span>(<span class="st">"All"</span>)),</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">year        =</span> <span class="fu">cheapr_if_else</span>(title <span class="sc">==</span> <span class="st">"Provider profile ID mapping table"</span>, <span class="st">"All"</span>, year),</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">title       =</span> tools<span class="sc">::</span><span class="fu">toTitleCase</span>(title)))</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">slt</span>(</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">open_downloadurl</span>(x),</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    year,</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    theme,</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    title,</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    description,</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    modified,</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    identifier,</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">downloadurl =</span> downloadURL) <span class="sc">|&gt;</span></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rsplit</span>( <span class="sc">~</span> theme)</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">summary_all  =</span> <span class="fu">roworder</span>(<span class="fu">sbt</span>(x<span class="sc">$</span>Summary, year <span class="sc">==</span> <span class="st">"All"</span>, <span class="sc">-</span>year), title),</span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">summary_year =</span> <span class="fu">sbt</span>(x<span class="sc">$</span>Summary, year <span class="sc">!=</span> <span class="st">"All"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mtt</span>(<span class="at">year =</span> <span class="fu">as_int</span>(year), </span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="fu">stri_replace_all_regex</span>(title, <span class="st">"^[0-9]{4} "</span>, <span class="st">""</span>),</span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>          <span class="at">description =</span> <span class="cn">NULL</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>      <span class="fu">roworder</span>(title, <span class="sc">-</span>year),</span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">general =</span> <span class="fu">clean_temp</span>(x<span class="sc">$</span><span class="st">`</span><span class="at">General Payments</span><span class="st">`</span>),</span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">research =</span> <span class="fu">clean_temp</span>(x<span class="sc">$</span><span class="st">`</span><span class="at">Research Payments</span><span class="st">`</span>),</span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">ownership =</span> <span class="fu">clean_temp</span>(x<span class="sc">$</span><span class="st">`</span><span class="at">Ownership Payments</span><span class="st">`</span>)</span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>open <span class="ot">&lt;-</span> <span class="fu">catalog_open_payments</span>()</span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>open</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>catalog_open_payments <span class="ot">&lt;-</span> \() {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">as_tbl</span>(</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(<span class="fu">fload</span>(<span class="st">"https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids"</span>), </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">modified    =</span> <span class="fu">as_date</span>(modified), </span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">description =</span> <span class="fu">replace_fixed</span>(description, <span class="fu">c</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>, <span class="st">"</span><span class="sc">\r</span><span class="st">. </span><span class="sc">\r</span><span class="st">."</span>, <span class="st">'"'</span>), <span class="fu">c</span>(<span class="st">". "</span>, <span class="st">""</span>, <span class="st">""</span>)),</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">theme       =</span> <span class="fu">get_data_elem</span>(theme),</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">year        =</span> <span class="fu">get_data_elem</span>(keyword),</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">year        =</span> <span class="fu">replace_fixed</span>(year, <span class="fu">c</span>(<span class="st">"all years"</span>), <span class="fu">c</span>(<span class="st">"All"</span>)),</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">year        =</span> <span class="fu">cheapr_if_else</span>(title <span class="sc">==</span> <span class="st">"Provider profile ID mapping table"</span>, <span class="st">"All"</span>, year),</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">title       =</span> tools<span class="sc">::</span><span class="fu">toTitleCase</span>(title)))</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">slt</span>(</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_downloadurl</span>(x),</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    year,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    theme,</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    title,</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    description,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    modified,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    identifier,</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    downloadurl) <span class="sc">|&gt;</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rsplit</span>( <span class="sc">~</span> theme)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">summary  =</span> <span class="fu">roworder</span>(<span class="fu">sbt</span>(x<span class="sc">$</span>Summary, year <span class="sc">==</span> <span class="st">"All"</span>, <span class="sc">-</span>year), title),</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">grouped =</span> <span class="fu">sbt</span>(x<span class="sc">$</span>Summary, year <span class="sc">!=</span> <span class="st">"All"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mtt</span>(<span class="at">year =</span> <span class="fu">as_int</span>(year), </span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="fu">stri_replace_all_regex</span>(title, <span class="st">"^[0-9]{4} "</span>, <span class="st">""</span>),</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>          <span class="at">description =</span> <span class="cn">NULL</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>      <span class="fu">roworder</span>(title, <span class="sc">-</span>year),</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">general =</span> <span class="fu">clean_temp</span>(x<span class="sc">$</span><span class="st">`</span><span class="at">General Payments</span><span class="st">`</span>),</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">research =</span> <span class="fu">clean_temp</span>(x<span class="sc">$</span><span class="st">`</span><span class="at">Research Payments</span><span class="st">`</span>),</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">ownership =</span> <span class="fu">clean_temp</span>(x<span class="sc">$</span><span class="st">`</span><span class="at">Ownership Payments</span><span class="st">`</span>)</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>open <span class="ot">&lt;-</span> <span class="fu">catalog_open_payments</span>()</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>open</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>$summary_all
+<pre><code>$summary
 # A tibble: 18 × 5
    title                           description modified   identifier downloadurl
    &lt;chr&gt;                           &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;      &lt;chr&gt;      
@@ -444,7 +452,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 17 Summary Dashboard - all Years   Summary da… 2025-01-30 e0d225fc-… https://do…
 18 Teaching Hospital Profile Info… This datas… 2025-01-30 8219fcb3-… https://do…
 
-$summary_year
+$grouped
 # A tibble: 35 × 5
     year title                                 modified   identifier downloadurl
    &lt;int&gt; &lt;chr&gt;                                 &lt;date&gt;     &lt;chr&gt;      &lt;chr&gt;      
@@ -500,8 +508,8 @@ $ownership
 <section id="summary" class="level3" data-number="3.2.1">
 <h3 data-number="3.2.1" class="anchored" data-anchor-id="summary"><span class="header-section-number">3.2.1</span> Summary</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>open<span class="sc">$</span>summary_all <span class="sc">|&gt;</span> </span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="cn">Inf</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>open<span class="sc">$</span>summary <span class="sc">|&gt;</span> </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="cn">Inf</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 18 × 5
    title                           description modified   identifier downloadurl
@@ -530,256 +538,258 @@ $ownership
 <section id="grouped-payment-summaries" class="level3" data-number="3.2.2">
 <h3 data-number="3.2.2" class="anchored" data-anchor-id="grouped-payment-summaries"><span class="header-section-number">3.2.2</span> Grouped Payment Summaries</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>open_payments_grouped <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> x<span class="sc">$</span>summary_year <span class="sc">|&gt;</span> <span class="fu">rsplit</span>(<span class="sc">~</span> title)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">recipient_nature_of_payment =</span> x<span class="sc">$</span><span class="st">`</span><span class="at">Payments Grouped by Covered Recipient and Nature of Payments</span><span class="st">`</span>,</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">recipient_reporting_entity =</span> x<span class="sc">$</span><span class="st">`</span><span class="at">Payments Grouped by Covered Recipient and Reporting Entities</span><span class="st">`</span>,</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">reporting_entity_nature_of_payment =</span> x<span class="sc">$</span><span class="st">`</span><span class="at">Payments Grouped by Reporting Entities and Nature of Payments</span><span class="st">`</span>,</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">recipient_reporting_entity_nature_of_payment =</span> x<span class="sc">$</span><span class="st">`</span><span class="at">Payments Grouped by Reporting Entities, Covered Recipient, and Nature of Payments</span><span class="st">`</span>,</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">recipient_state_nature_of_payment =</span> x<span class="sc">$</span><span class="st">`</span><span class="at">State Payment Totals Grouped by Nature of Payment for all Years</span><span class="st">`</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="fu">open_payments_grouped</span>(open)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>open_payments_grouped <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">&lt;-</span> <span class="fu">fmax</span>(x<span class="sc">$</span>grouped<span class="sc">$</span>modified)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">slt</span>(x<span class="sc">$</span>grouped, <span class="sc">-</span>modified) <span class="sc">|&gt;</span> <span class="fu">rsplit</span>(<span class="sc">~</span> title)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">modified =</span> m,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">recipient_nature =</span> x<span class="sc">$</span><span class="st">`</span><span class="at">Payments Grouped by Covered Recipient and Nature of Payments</span><span class="st">`</span>,</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">recipient_entity =</span> x<span class="sc">$</span><span class="st">`</span><span class="at">Payments Grouped by Covered Recipient and Reporting Entities</span><span class="st">`</span>,</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">entity_nature =</span> x<span class="sc">$</span><span class="st">`</span><span class="at">Payments Grouped by Reporting Entities and Nature of Payments</span><span class="st">`</span>,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">entity_recipient_nature =</span> x<span class="sc">$</span><span class="st">`</span><span class="at">Payments Grouped by Reporting Entities, Covered Recipient, and Nature of Payments</span><span class="st">`</span>,</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">recipient_nature_state =</span> x<span class="sc">$</span><span class="st">`</span><span class="at">State Payment Totals Grouped by Nature of Payment for all Years</span><span class="st">`</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="fu">open_payments_grouped</span>(open)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>$recipient_nature_of_payment
-# A tibble: 7 × 4
-   year modified   identifier                           downloadurl             
-  &lt;int&gt; &lt;date&gt;     &lt;chr&gt;                                &lt;chr&gt;                   
-1  2023 2025-01-30 4017acfa-0eeb-4b8a-b68c-3b41e779c4a2 https://download.cms.go…
-2  2022 2025-01-30 686b765e-f4b7-4d35-a050-fb5af926dbbe https://download.cms.go…
-3  2021 2025-01-30 d35243be-55cb-5087-931e-a294e0e0917f https://download.cms.go…
-4  2020 2025-01-30 1fd2be47-cb72-435a-b2df-142f38e99a05 https://download.cms.go…
-5  2019 2025-01-30 0ff0961f-8295-477c-8044-85b9a0753893 https://download.cms.go…
-6  2018 2025-01-30 07c1e377-eb5b-4830-ad9b-61f04258036e https://download.cms.go…
-7  2017 2025-01-30 5aad28fa-9785-492e-9a92-8d7b595bc43b https://download.cms.go…
+<pre><code>$modified
+[1] "2025-01-30"
 
-$recipient_reporting_entity
-# A tibble: 7 × 4
-   year modified   identifier                           downloadurl             
-  &lt;int&gt; &lt;date&gt;     &lt;chr&gt;                                &lt;chr&gt;                   
-1  2023 2025-01-30 4fbf0094-3c7b-425a-aabe-5778052559ad https://download.cms.go…
-2  2022 2025-01-30 d2d87f39-b117-4ac8-9f36-a088fb22a25b https://download.cms.go…
-3  2021 2025-01-30 7c9ebb83-8f88-5462-ab7d-1925b0113cfc https://download.cms.go…
-4  2020 2025-01-30 78ad9c8d-d7ae-4066-bf2d-a66e3c9d6e3b https://download.cms.go…
-5  2019 2025-01-30 63c6fc23-1744-4040-babe-1af39a57c598 https://download.cms.go…
-6  2018 2025-01-30 b6f534a9-ae05-4e78-9acf-c48b79fcee13 https://download.cms.go…
-7  2017 2025-01-30 120f42a3-4f3c-48b2-bf32-4c852390c41a https://download.cms.go…
+$recipient_nature
+# A tibble: 7 × 3
+   year identifier                           downloadurl                        
+  &lt;int&gt; &lt;chr&gt;                                &lt;chr&gt;                              
+1  2023 4017acfa-0eeb-4b8a-b68c-3b41e779c4a2 https://download.cms.gov/openpayme…
+2  2022 686b765e-f4b7-4d35-a050-fb5af926dbbe https://download.cms.gov/openpayme…
+3  2021 d35243be-55cb-5087-931e-a294e0e0917f https://download.cms.gov/openpayme…
+4  2020 1fd2be47-cb72-435a-b2df-142f38e99a05 https://download.cms.gov/openpayme…
+5  2019 0ff0961f-8295-477c-8044-85b9a0753893 https://download.cms.gov/openpayme…
+6  2018 07c1e377-eb5b-4830-ad9b-61f04258036e https://download.cms.gov/openpayme…
+7  2017 5aad28fa-9785-492e-9a92-8d7b595bc43b https://download.cms.gov/openpayme…
 
-$reporting_entity_nature_of_payment
-# A tibble: 7 × 4
-   year modified   identifier                           downloadurl             
-  &lt;int&gt; &lt;date&gt;     &lt;chr&gt;                                &lt;chr&gt;                   
-1  2023 2025-01-30 72008dab-0953-4226-a4cd-9f1872e8170d https://download.cms.go…
-2  2022 2025-01-30 cedcd327-4e5d-43f9-8eb1-c11850fa7c66 https://download.cms.go…
-3  2021 2025-01-30 a2714020-f599-52b0-b12b-8f5b510e547a https://download.cms.go…
-4  2020 2025-01-30 7dfe6254-2aee-454f-9ea5-df611a9a7b55 https://download.cms.go…
-5  2019 2025-01-30 7f3bcc65-6f34-42de-8e63-7611e0a6f67b https://download.cms.go…
-6  2018 2025-01-30 76d91818-7015-4f94-a5b8-6f0dbf4fe206 https://download.cms.go…
-7  2017 2025-01-30 8ab7b1de-c6da-4613-929e-5fbd27ea1032 https://download.cms.go…
+$recipient_entity
+# A tibble: 7 × 3
+   year identifier                           downloadurl                        
+  &lt;int&gt; &lt;chr&gt;                                &lt;chr&gt;                              
+1  2023 4fbf0094-3c7b-425a-aabe-5778052559ad https://download.cms.gov/openpayme…
+2  2022 d2d87f39-b117-4ac8-9f36-a088fb22a25b https://download.cms.gov/openpayme…
+3  2021 7c9ebb83-8f88-5462-ab7d-1925b0113cfc https://download.cms.gov/openpayme…
+4  2020 78ad9c8d-d7ae-4066-bf2d-a66e3c9d6e3b https://download.cms.gov/openpayme…
+5  2019 63c6fc23-1744-4040-babe-1af39a57c598 https://download.cms.gov/openpayme…
+6  2018 b6f534a9-ae05-4e78-9acf-c48b79fcee13 https://download.cms.gov/openpayme…
+7  2017 120f42a3-4f3c-48b2-bf32-4c852390c41a https://download.cms.gov/openpayme…
 
-$recipient_reporting_entity_nature_of_payment
-# A tibble: 7 × 4
-   year modified   identifier                           downloadurl             
-  &lt;int&gt; &lt;date&gt;     &lt;chr&gt;                                &lt;chr&gt;                   
-1  2023 2025-01-30 29c23b6a-dd1e-4d82-a606-8d792c7f229e https://download.cms.go…
-2  2022 2025-01-30 171e369a-6f25-49eb-aa36-37f0a497e5ca https://download.cms.go…
-3  2021 2025-01-30 f240c437-9d8a-5be7-95a5-8ce8e0d970bf https://download.cms.go…
-4  2020 2025-01-30 532df191-473f-4bcc-9056-a6260b9437b5 https://download.cms.go…
-5  2019 2025-01-30 6c8251d4-3839-444b-810b-5bf035a23326 https://download.cms.go…
-6  2018 2025-01-30 c1ce263b-0625-4ce6-9e81-62a7b3708f4b https://download.cms.go…
-7  2017 2025-01-30 d3d4880a-be30-48ca-9a9b-6d8828f9c852 https://download.cms.go…
+$entity_nature
+# A tibble: 7 × 3
+   year identifier                           downloadurl                        
+  &lt;int&gt; &lt;chr&gt;                                &lt;chr&gt;                              
+1  2023 72008dab-0953-4226-a4cd-9f1872e8170d https://download.cms.gov/openpayme…
+2  2022 cedcd327-4e5d-43f9-8eb1-c11850fa7c66 https://download.cms.gov/openpayme…
+3  2021 a2714020-f599-52b0-b12b-8f5b510e547a https://download.cms.gov/openpayme…
+4  2020 7dfe6254-2aee-454f-9ea5-df611a9a7b55 https://download.cms.gov/openpayme…
+5  2019 7f3bcc65-6f34-42de-8e63-7611e0a6f67b https://download.cms.gov/openpayme…
+6  2018 76d91818-7015-4f94-a5b8-6f0dbf4fe206 https://download.cms.gov/openpayme…
+7  2017 8ab7b1de-c6da-4613-929e-5fbd27ea1032 https://download.cms.gov/openpayme…
 
-$recipient_state_nature_of_payment
-# A tibble: 7 × 4
-   year modified   identifier                           downloadurl             
-  &lt;int&gt; &lt;date&gt;     &lt;chr&gt;                                &lt;chr&gt;                   
-1  2023 2025-01-30 f83aed3a-7504-4fca-aabb-ac0338c79688 https://download.cms.go…
-2  2022 2025-01-30 c64c40af-23a5-4419-8b64-692684483664 https://download.cms.go…
-3  2021 2025-01-30 7fad5b56-2cfe-52ab-ac4d-3200780287d4 https://download.cms.go…
-4  2020 2025-01-30 7f3055b6-73d8-5aff-be15-55873552e2cd https://download.cms.go…
-5  2019 2025-01-30 37fba404-224d-5bad-9c62-527d9316e516 https://download.cms.go…
-6  2018 2025-01-30 6dd14c90-a6bd-52f8-9629-4d27fc02096d https://download.cms.go…
-7  2017 2025-01-30 4013f179-6692-5ae8-8c51-ed7cc4b9bd17 https://download.cms.go…</code></pre>
+$entity_recipient_nature
+# A tibble: 7 × 3
+   year identifier                           downloadurl                        
+  &lt;int&gt; &lt;chr&gt;                                &lt;chr&gt;                              
+1  2023 29c23b6a-dd1e-4d82-a606-8d792c7f229e https://download.cms.gov/openpayme…
+2  2022 171e369a-6f25-49eb-aa36-37f0a497e5ca https://download.cms.gov/openpayme…
+3  2021 f240c437-9d8a-5be7-95a5-8ce8e0d970bf https://download.cms.gov/openpayme…
+4  2020 532df191-473f-4bcc-9056-a6260b9437b5 https://download.cms.gov/openpayme…
+5  2019 6c8251d4-3839-444b-810b-5bf035a23326 https://download.cms.gov/openpayme…
+6  2018 c1ce263b-0625-4ce6-9e81-62a7b3708f4b https://download.cms.gov/openpayme…
+7  2017 d3d4880a-be30-48ca-9a9b-6d8828f9c852 https://download.cms.gov/openpayme…
+
+$recipient_nature_state
+# A tibble: 7 × 3
+   year identifier                           downloadurl                        
+  &lt;int&gt; &lt;chr&gt;                                &lt;chr&gt;                              
+1  2023 f83aed3a-7504-4fca-aabb-ac0338c79688 https://download.cms.gov/openpayme…
+2  2022 c64c40af-23a5-4419-8b64-692684483664 https://download.cms.gov/openpayme…
+3  2021 7fad5b56-2cfe-52ab-ac4d-3200780287d4 https://download.cms.gov/openpayme…
+4  2020 7f3055b6-73d8-5aff-be15-55873552e2cd https://download.cms.gov/openpayme…
+5  2019 37fba404-224d-5bad-9c62-527d9316e516 https://download.cms.gov/openpayme…
+6  2018 6dd14c90-a6bd-52f8-9629-4d27fc02096d https://download.cms.gov/openpayme…
+7  2017 4013f179-6692-5ae8-8c51-ed7cc4b9bd17 https://download.cms.gov/openpayme…</code></pre>
 </div>
 </div>
 </section>
-<section id="general-payment-data" class="level3" data-number="3.2.3">
-<h3 data-number="3.2.3" class="anchored" data-anchor-id="general-payment-data"><span class="header-section-number">3.2.3</span> General Payment Data</h3>
+<section id="payment-data-by-yearcategory" class="level3" data-number="3.2.3">
+<h3 data-number="3.2.3" class="anchored" data-anchor-id="payment-data-by-yearcategory"><span class="header-section-number">3.2.3</span> Payment Data by Year/Category</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>open_payments_general <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"General Payment Data"</span>,</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">description =</span> <span class="st">"All general (non-research, non-ownership related) payments from the program year"</span>,</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">endpoints =</span> x<span class="sc">$</span>general</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">open_payments_general</span>(open)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>open_payments_general <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">modified =</span> <span class="fu">fmax</span>(x<span class="sc">$</span>general<span class="sc">$</span>modified),</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"General Payment Data"</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">description =</span> <span class="st">"All general (non-research, non-ownership related) payments from the program year"</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">endpoints =</span> <span class="fu">slt</span>(x<span class="sc">$</span>general, <span class="sc">-</span>modified)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>open_payments_research <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">modified =</span> <span class="fu">fmax</span>(x<span class="sc">$</span>research<span class="sc">$</span>modified),</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Research Payment Data"</span>,</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">description =</span> <span class="st">"All research-related payments from the program year"</span>,</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">endpoints =</span> <span class="fu">slt</span>(x<span class="sc">$</span>research, <span class="sc">-</span>modified)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>open_payments_ownership <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">modified =</span> <span class="fu">fmax</span>(x<span class="sc">$</span>ownership<span class="sc">$</span>modified),</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Ownership Payment Data"</span>,</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">description =</span> <span class="st">"All ownership and investment payments from the program year"</span>,</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">endpoints =</span> <span class="fu">slt</span>(x<span class="sc">$</span>ownership, <span class="sc">-</span>modified)</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a><span class="fu">open_payments_general</span>(open)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>$title
+<pre><code>$modified
+[1] "2025-01-30"
+
+$title
 [1] "General Payment Data"
 
 $description
 [1] "All general (non-research, non-ownership related) payments from the program year"
 
 $endpoints
-# A tibble: 7 × 4
-   year modified   identifier                           downloadurl             
-  &lt;int&gt; &lt;date&gt;     &lt;chr&gt;                                &lt;chr&gt;                   
-1  2023 2025-01-30 fb3a65aa-c901-4a38-a813-b04b00dfa2a9 https://download.cms.go…
-2  2022 2025-01-30 df01c2f8-dc1f-4e79-96cb-8208beaf143c https://download.cms.go…
-3  2021 2025-01-30 0380bbeb-aea1-58b6-b708-829f92a48202 https://download.cms.go…
-4  2020 2025-01-30 a08c4b30-5cf3-4948-ad40-36f404619019 https://download.cms.go…
-5  2019 2025-01-30 4e54dd6c-30f8-4f86-86a7-3c109a89528e https://download.cms.go…
-6  2018 2025-01-30 f003634c-c103-568f-876c-73017fa83be0 https://download.cms.go…
-7  2017 2025-01-30 74e3a32c-e8f8-595c-899c-35f9bffa828f https://download.cms.go…</code></pre>
+# A tibble: 7 × 3
+   year identifier                           downloadurl                        
+  &lt;int&gt; &lt;chr&gt;                                &lt;chr&gt;                              
+1  2023 fb3a65aa-c901-4a38-a813-b04b00dfa2a9 https://download.cms.gov/openpayme…
+2  2022 df01c2f8-dc1f-4e79-96cb-8208beaf143c https://download.cms.gov/openpayme…
+3  2021 0380bbeb-aea1-58b6-b708-829f92a48202 https://download.cms.gov/openpayme…
+4  2020 a08c4b30-5cf3-4948-ad40-36f404619019 https://download.cms.gov/openpayme…
+5  2019 4e54dd6c-30f8-4f86-86a7-3c109a89528e https://download.cms.gov/openpayme…
+6  2018 f003634c-c103-568f-876c-73017fa83be0 https://download.cms.gov/openpayme…
+7  2017 74e3a32c-e8f8-595c-899c-35f9bffa828f https://download.cms.gov/openpayme…</code></pre>
 </div>
-</div>
-</section>
-<section id="research-payment-data" class="level3" data-number="3.2.4">
-<h3 data-number="3.2.4" class="anchored" data-anchor-id="research-payment-data"><span class="header-section-number">3.2.4</span> Research Payment Data</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>open_payments_research <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Research Payment Data"</span>,</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">description =</span> <span class="st">"All research-related payments from the program year"</span>,</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">endpoints =</span> x<span class="sc">$</span>research</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="fu">open_payments_research</span>(open)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_payments_research</span>(open)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>$title
+<pre><code>$modified
+[1] "2025-01-30"
+
+$title
 [1] "Research Payment Data"
 
 $description
 [1] "All research-related payments from the program year"
 
 $endpoints
-# A tibble: 7 × 4
-   year modified   identifier                           downloadurl             
-  &lt;int&gt; &lt;date&gt;     &lt;chr&gt;                                &lt;chr&gt;                   
-1  2023 2025-01-30 ec9521bf-9d97-4603-814c-f4132d34bc4f https://download.cms.go…
-2  2022 2025-01-30 fdc3c773-018a-412c-8a81-d7b8a13a037b https://download.cms.go…
-3  2021 2025-01-30 ce1d28dd-0094-5060-a036-580329439600 https://download.cms.go…
-4  2020 2025-01-30 9c248e7e-7c7f-478b-ab84-ce0919d72c1c https://download.cms.go…
-5  2019 2025-01-30 713a6016-1930-4a0c-b7c2-3e3de4f244c5 https://download.cms.go…
-6  2018 2025-01-30 7b82fb48-2bec-45f0-b40e-aed5f1d1eba0 https://download.cms.go…
-7  2017 2025-01-30 0e3977b9-a5d6-427e-bc02-480481edd6e0 https://download.cms.go…</code></pre>
+# A tibble: 7 × 3
+   year identifier                           downloadurl                        
+  &lt;int&gt; &lt;chr&gt;                                &lt;chr&gt;                              
+1  2023 ec9521bf-9d97-4603-814c-f4132d34bc4f https://download.cms.gov/openpayme…
+2  2022 fdc3c773-018a-412c-8a81-d7b8a13a037b https://download.cms.gov/openpayme…
+3  2021 ce1d28dd-0094-5060-a036-580329439600 https://download.cms.gov/openpayme…
+4  2020 9c248e7e-7c7f-478b-ab84-ce0919d72c1c https://download.cms.gov/openpayme…
+5  2019 713a6016-1930-4a0c-b7c2-3e3de4f244c5 https://download.cms.gov/openpayme…
+6  2018 7b82fb48-2bec-45f0-b40e-aed5f1d1eba0 https://download.cms.gov/openpayme…
+7  2017 0e3977b9-a5d6-427e-bc02-480481edd6e0 https://download.cms.gov/openpayme…</code></pre>
 </div>
-</div>
-</section>
-<section id="ownership-payment-data" class="level3" data-number="3.2.5">
-<h3 data-number="3.2.5" class="anchored" data-anchor-id="ownership-payment-data"><span class="header-section-number">3.2.5</span> Ownership Payment Data</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>open_payments_ownership <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Ownership Payment Data"</span>,</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">description =</span> <span class="st">"All ownership and investment payments from the program year"</span>,</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">endpoints =</span> x<span class="sc">$</span>ownership</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="fu">open_payments_ownership</span>(open)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_payments_ownership</span>(open)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>$title
+<pre><code>$modified
+[1] "2025-01-30"
+
+$title
 [1] "Ownership Payment Data"
 
 $description
 [1] "All ownership and investment payments from the program year"
 
 $endpoints
-# A tibble: 7 × 4
-   year modified   identifier                           downloadurl             
-  &lt;int&gt; &lt;date&gt;     &lt;chr&gt;                                &lt;chr&gt;                   
-1  2023 2025-01-30 ac0bc85c-02e3-45d9-89e8-2ff43da85df7 https://download.cms.go…
-2  2022 2025-01-30 37792388-800f-427a-9e02-b11601454eeb https://download.cms.go…
-3  2021 2025-01-30 b0c03b8d-06df-58f2-8ce2-4daeffee147e https://download.cms.go…
-4  2020 2025-01-30 a9a0bf48-6b96-4589-b4c2-3c5dcfbeaca2 https://download.cms.go…
-5  2019 2025-01-30 0b5c9710-7edb-484e-abc8-39293849ccb2 https://download.cms.go…
-6  2018 2025-01-30 de0087e0-101b-43c1-acdf-69986a4c166b https://download.cms.go…
-7  2017 2025-01-30 f90c33d1-cfd8-4b15-8cf5-b3db2f214cdf https://download.cms.go…</code></pre>
+# A tibble: 7 × 3
+   year identifier                           downloadurl                        
+  &lt;int&gt; &lt;chr&gt;                                &lt;chr&gt;                              
+1  2023 ac0bc85c-02e3-45d9-89e8-2ff43da85df7 https://download.cms.gov/openpayme…
+2  2022 37792388-800f-427a-9e02-b11601454eeb https://download.cms.gov/openpayme…
+3  2021 b0c03b8d-06df-58f2-8ce2-4daeffee147e https://download.cms.gov/openpayme…
+4  2020 a9a0bf48-6b96-4589-b4c2-3c5dcfbeaca2 https://download.cms.gov/openpayme…
+5  2019 0b5c9710-7edb-484e-abc8-39293849ccb2 https://download.cms.gov/openpayme…
+6  2018 de0087e0-101b-43c1-acdf-69986a4c166b https://download.cms.gov/openpayme…
+7  2017 f90c33d1-cfd8-4b15-8cf5-b3db2f214cdf https://download.cms.gov/openpayme…</code></pre>
 </div>
 </div>
 </section>
 </section>
-<section id="dictionaries" class="level2" data-number="3.3">
-<h2 data-number="3.3" class="anchored" data-anchor-id="dictionaries"><span class="header-section-number">3.3</span> Dictionaries</h2>
+<section id="dictionary" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="dictionary"><span class="header-section-number">3.3</span> Dictionary</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>open_identifier_url <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">"https://openpaymentsdata.cms.gov/api/1/datastore/query/"</span>, x, <span class="st">"/0"</span>)</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>open_dictionary <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">map</span>(</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">get_elem</span>(</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">get_elem</span>(</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>        <span class="fu">as_tbl</span>(</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>          <span class="fu">fload</span>(</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>            <span class="fu">paste0</span>(</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>              <span class="st">"https://openpaymentsdata.cms.gov/"</span>,</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>              <span class="st">"api/1/metastore/schemas/dataset/"</span>,</span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>              <span class="st">"items?show-reference-ids"</span></span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>              ))), </span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">"data"</span>, </span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">DF.as.list =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>      <span class="st">"title|describedBy"</span>,</span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">regex =</span> <span class="cn">TRUE</span>), </span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) x[<span class="fu">not_null</span>(<span class="fu">names</span>(x))]</span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">new_df</span>(</span>
-<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(x, <span class="st">"title"</span>)),</span>
-<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">dictionary =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(x, <span class="st">"describedBy"</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mtt</span>(</span>
-<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">year =</span> <span class="fu">as_int</span>(<span class="fu">stri_extract_all_regex</span>(name, <span class="st">"[0-9]{4}"</span>)),</span>
-<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">name =</span> <span class="fu">cheapr_if_else</span>(</span>
-<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>        <span class="fu">na</span>(year),</span>
-<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>        name,</span>
-<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>        <span class="fu">stri_extract_all_regex</span>(</span>
-<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>          name, </span>
-<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>          <span class="st">"^.*(?=</span><span class="sc">\\</span><span class="st">s.</span><span class="sc">\\</span><span class="st">sDetailed Dataset [0-9]{4} Reporting Year)"</span></span>
-<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>          )),</span>
-<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>      <span class="at">year =</span> <span class="fu">cheapr_if_else</span>(</span>
-<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>        <span class="fu">na</span>(year), </span>
-<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>        <span class="fu">fmax</span>(year), </span>
-<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>        year</span>
-<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>        )) <span class="sc">|&gt;</span></span>
-<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sbt</span>(year <span class="sc">==</span> <span class="fu">fmax</span>(year), <span class="sc">-</span>year)</span>
-<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> x[[<span class="st">"dictionary"</span>]] <span class="sc">|&gt;</span> </span>
-<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map</span>(request) <span class="sc">|&gt;</span> </span>
-<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">req_perform_parallel</span>(<span class="at">on_error =</span> <span class="st">"continue"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">resps_successes</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">resps_data</span>(\(resp) <span class="fu">resp_body_string</span>(resp)) <span class="sc">|&gt;</span> </span>
-<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fparse</span>(<span class="at">query =</span> <span class="st">"/data"</span>)</span>
-<span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">funique</span>(</span>
-<span id="cb16-47"><a href="#cb16-47" aria-hidden="true" tabindex="-1"></a>    <span class="fu">new_tbl</span>(</span>
-<span id="cb16-48"><a href="#cb16-48" aria-hidden="true" tabindex="-1"></a>      <span class="at">field =</span> <span class="fu">delist</span>(</span>
-<span id="cb16-49"><a href="#cb16-49" aria-hidden="true" tabindex="-1"></a>        <span class="fu">map</span>(</span>
-<span id="cb16-50"><a href="#cb16-50" aria-hidden="true" tabindex="-1"></a>          <span class="fu">get_elem</span>(x, <span class="st">"fields"</span>), </span>
-<span id="cb16-51"><a href="#cb16-51" aria-hidden="true" tabindex="-1"></a>          <span class="cf">function</span>(x) </span>
-<span id="cb16-52"><a href="#cb16-52" aria-hidden="true" tabindex="-1"></a>            <span class="fu">get_elem</span>(x, <span class="st">"name"</span>)</span>
-<span id="cb16-53"><a href="#cb16-53" aria-hidden="true" tabindex="-1"></a>          )),</span>
-<span id="cb16-54"><a href="#cb16-54" aria-hidden="true" tabindex="-1"></a>      <span class="at">description =</span> <span class="fu">delist</span>(</span>
-<span id="cb16-55"><a href="#cb16-55" aria-hidden="true" tabindex="-1"></a>        <span class="fu">map</span>(</span>
-<span id="cb16-56"><a href="#cb16-56" aria-hidden="true" tabindex="-1"></a>          <span class="fu">get_elem</span>(x, <span class="st">"fields"</span>), </span>
-<span id="cb16-57"><a href="#cb16-57" aria-hidden="true" tabindex="-1"></a>          <span class="cf">function</span>(x) </span>
-<span id="cb16-58"><a href="#cb16-58" aria-hidden="true" tabindex="-1"></a>            <span class="fu">get_elem</span>(x, <span class="st">"description"</span>))</span>
-<span id="cb16-59"><a href="#cb16-59" aria-hidden="true" tabindex="-1"></a>        ) <span class="sc">|&gt;</span> <span class="fu">replace_fixed</span>(<span class="fu">c</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>, <span class="st">'"'</span>), <span class="fu">c</span>(<span class="st">" "</span>, <span class="st">""</span>))), </span>
-<span id="cb16-60"><a href="#cb16-60" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="st">"field"</span>, </span>
-<span id="cb16-61"><a href="#cb16-61" aria-hidden="true" tabindex="-1"></a>    <span class="at">sort =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb16-62"><a href="#cb16-62" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb16-63"><a href="#cb16-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-64"><a href="#cb16-64" aria-hidden="true" tabindex="-1"></a><span class="fu">open_dictionary</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb16-65"><a href="#cb16-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="cn">Inf</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>open_dictionary <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">map</span>(</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">get_elem</span>(</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">get_elem</span>(</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>        <span class="fu">as_tbl</span>(</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>          <span class="fu">fload</span>(</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>            <span class="fu">paste0</span>(</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>              <span class="st">"https://openpaymentsdata.cms.gov/"</span>,</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>              <span class="st">"api/1/metastore/schemas/dataset/"</span>,</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>              <span class="st">"items?show-reference-ids"</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>              ))), </span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">"data"</span>, </span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">DF.as.list =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>      <span class="st">"title|describedBy"</span>,</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">regex =</span> <span class="cn">TRUE</span>), </span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) x[<span class="fu">not_null</span>(<span class="fu">names</span>(x))]</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">new_df</span>(</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(x, <span class="st">"title"</span>)),</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">dictionary =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(x, <span class="st">"describedBy"</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mtt</span>(</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">year =</span> <span class="fu">as_int</span>(<span class="fu">stri_extract_all_regex</span>(name, <span class="st">"[0-9]{4}"</span>)),</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">name =</span> <span class="fu">cheapr_if_else</span>(</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>        <span class="fu">na</span>(year),</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>        name,</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>        <span class="fu">stri_extract_all_regex</span>(</span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>          name, </span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>          <span class="st">"^.*(?=</span><span class="sc">\\</span><span class="st">s.</span><span class="sc">\\</span><span class="st">sDetailed Dataset [0-9]{4} Reporting Year)"</span></span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>          )),</span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>      <span class="at">year =</span> <span class="fu">cheapr_if_else</span>(</span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>        <span class="fu">na</span>(year), </span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>        <span class="fu">fmax</span>(year), </span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>        year</span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>        )) <span class="sc">|&gt;</span></span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sbt</span>(year <span class="sc">==</span> <span class="fu">fmax</span>(year), <span class="sc">-</span>year)</span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> x[[<span class="st">"dictionary"</span>]] <span class="sc">|&gt;</span> </span>
+<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map</span>(request) <span class="sc">|&gt;</span> </span>
+<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">req_perform_parallel</span>(<span class="at">on_error =</span> <span class="st">"continue"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">resps_successes</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">resps_data</span>(\(resp) <span class="fu">resp_body_string</span>(resp)) <span class="sc">|&gt;</span> </span>
+<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fparse</span>(<span class="at">query =</span> <span class="st">"/data"</span>)</span>
+<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">funique</span>(</span>
+<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a>    <span class="fu">new_tbl</span>(</span>
+<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a>      <span class="at">field =</span> <span class="fu">delist</span>(</span>
+<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a>        <span class="fu">map</span>(</span>
+<span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a>          <span class="fu">get_elem</span>(x, <span class="st">"fields"</span>), </span>
+<span id="cb14-51"><a href="#cb14-51" aria-hidden="true" tabindex="-1"></a>          <span class="cf">function</span>(x) </span>
+<span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a>            <span class="fu">get_elem</span>(x, <span class="st">"name"</span>)</span>
+<span id="cb14-53"><a href="#cb14-53" aria-hidden="true" tabindex="-1"></a>          )),</span>
+<span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a>      <span class="at">description =</span> <span class="fu">delist</span>(</span>
+<span id="cb14-55"><a href="#cb14-55" aria-hidden="true" tabindex="-1"></a>        <span class="fu">map</span>(</span>
+<span id="cb14-56"><a href="#cb14-56" aria-hidden="true" tabindex="-1"></a>          <span class="fu">get_elem</span>(x, <span class="st">"fields"</span>), </span>
+<span id="cb14-57"><a href="#cb14-57" aria-hidden="true" tabindex="-1"></a>          <span class="cf">function</span>(x) </span>
+<span id="cb14-58"><a href="#cb14-58" aria-hidden="true" tabindex="-1"></a>            <span class="fu">get_elem</span>(x, <span class="st">"description"</span>))</span>
+<span id="cb14-59"><a href="#cb14-59" aria-hidden="true" tabindex="-1"></a>        ) <span class="sc">|&gt;</span> <span class="fu">replace_fixed</span>(<span class="fu">c</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>, <span class="st">'"'</span>), <span class="fu">c</span>(<span class="st">" "</span>, <span class="st">""</span>))), </span>
+<span id="cb14-60"><a href="#cb14-60" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="st">"field"</span>, </span>
+<span id="cb14-61"><a href="#cb14-61" aria-hidden="true" tabindex="-1"></a>    <span class="at">sort =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb14-62"><a href="#cb14-62" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-63"><a href="#cb14-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-64"><a href="#cb14-64" aria-hidden="true" tabindex="-1"></a><span class="fu">open_dictionary</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb14-65"><a href="#cb14-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="cn">Inf</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 305 × 2
     field                                                            description

@@ -22,23 +22,32 @@ source("includes/_common.R")
 ## Load Catalog
 
 ```{r}
-#| label: open_downloadurl
-open_downloadurl <- function(x) {
-  
-  add_vars(x, downloadURL = delist(get_elem(
+#| label: open_helpers
+add_downloadurl <- function(x) {
+  add_vars(x, downloadurl = delist(get_elem(
     get_elem(x$distribution, "data", DF.as.list = TRUE),
     "downloadURL"
   )))
 }
-```
 
-```{r}
-#| label: clean_temporal
 clean_temp <- function(x) {
   slt(mtt(x, year = as_int(year)), -title, -description) |>
     roworder(-year)
 }
+
+get_data_elem <- function(x) {
+  delist(map(x, function(i)
+    get_elem(as.list(i), "data")))
+  
+}
+
+open_identifier_url <- function(x) {
+  paste0("https://openpaymentsdata.cms.gov/api/1/datastore/query/",
+         x,
+         "/0")
+}
 ```
+
 
 ```{r}
 #| label: catalog_open_payments
@@ -48,26 +57,26 @@ catalog_open_payments <- \() {
   mtt(fload("https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids"), 
     modified    = as_date(modified), 
     description = replace_fixed(description, c("\n", "\r. \r.", '"'), c(". ", "", "")),
-    theme       = delist(map(theme, function(x) get_elem(as.list(x), "data"))), 
-    year        = delist(map(keyword, function(x) get_elem(as.list(x), "data"))), 
+    theme       = get_data_elem(theme),
+    year        = get_data_elem(keyword),
     year        = replace_fixed(year, c("all years"), c("All")),
     year        = cheapr_if_else(title == "Provider profile ID mapping table", "All", year),
     title       = tools::toTitleCase(title)))
   
   x <- slt(
-    open_downloadurl(x),
+    add_downloadurl(x),
     year,
     theme,
     title,
     description,
     modified,
     identifier,
-    downloadurl = downloadURL) |>
+    downloadurl) |>
     rsplit( ~ theme)
   
   list(
-    summary_all  = roworder(sbt(x$Summary, year == "All", -year), title),
-    summary_year = sbt(x$Summary, year != "All") |> 
+    summary  = roworder(sbt(x$Summary, year == "All", -year), title),
+    grouped = sbt(x$Summary, year != "All") |> 
       mtt(year = as_int(year), 
           title = stri_replace_all_regex(title, "^[0-9]{4} ", ""),
           description = NULL) |> 
@@ -86,7 +95,7 @@ open
 ### Summary
 
 ```{r}
-open$summary_all |> 
+open$summary |> 
   print(n = Inf)
 ```
 
@@ -96,73 +105,59 @@ open$summary_all |>
 #| label: open_payments_grouped
 open_payments_grouped <- function(x) {
   
-  x <- x$summary_year |> rsplit(~ title)
+  m <- fmax(x$grouped$modified)
+  x <- slt(x$grouped, -modified) |> rsplit(~ title)
   
   list(
-    recipient_nature_of_payment = x$`Payments Grouped by Covered Recipient and Nature of Payments`,
-    recipient_reporting_entity = x$`Payments Grouped by Covered Recipient and Reporting Entities`,
-    reporting_entity_nature_of_payment = x$`Payments Grouped by Reporting Entities and Nature of Payments`,
-    recipient_reporting_entity_nature_of_payment = x$`Payments Grouped by Reporting Entities, Covered Recipient, and Nature of Payments`,
-    recipient_state_nature_of_payment = x$`State Payment Totals Grouped by Nature of Payment for all Years`
+    modified = m,
+    recipient_nature = x$`Payments Grouped by Covered Recipient and Nature of Payments`,
+    recipient_entity = x$`Payments Grouped by Covered Recipient and Reporting Entities`,
+    entity_nature = x$`Payments Grouped by Reporting Entities and Nature of Payments`,
+    entity_recipient_nature = x$`Payments Grouped by Reporting Entities, Covered Recipient, and Nature of Payments`,
+    recipient_nature_state = x$`State Payment Totals Grouped by Nature of Payment for all Years`
   )
 }
 
 open_payments_grouped(open)
 ```
 
-### General Payment Data
+### Payment Data by Year/Category
 
 ```{r}
 #| label: open_payments_general
 open_payments_general <- function(x) {
   list(
+    modified = fmax(x$general$modified),
     title = "General Payment Data",
     description = "All general (non-research, non-ownership related) payments from the program year",
-    endpoints = x$general
+    endpoints = slt(x$general, -modified)
+  )
+}
+
+open_payments_research <- function(x) {
+  list(
+    modified = fmax(x$research$modified),
+    title = "Research Payment Data",
+    description = "All research-related payments from the program year",
+    endpoints = slt(x$research, -modified)
+  )
+}
+
+open_payments_ownership <- function(x) {
+  list(
+    modified = fmax(x$ownership$modified),
+    title = "Ownership Payment Data",
+    description = "All ownership and investment payments from the program year",
+    endpoints = slt(x$ownership, -modified)
   )
 }
 
 open_payments_general(open)
-```
-
-### Research Payment Data
-
-```{r}
-#| label: open_payments_research
-open_payments_research <- function(x) {
-  list(
-    title = "Research Payment Data",
-    description = "All research-related payments from the program year",
-    endpoints = x$research
-  )
-}
-
 open_payments_research(open)
-```
-
-### Ownership Payment Data
-
-```{r}
-#| label: open_payments_ownership
-open_payments_ownership <- function(x) {
-  list(
-    title = "Ownership Payment Data",
-    description = "All ownership and investment payments from the program year",
-    endpoints = x$ownership
-  )
-}
-
 open_payments_ownership(open)
 ```
 
-## Dictionaries
-
-```{r}
-#| label: open_identifier_url
-open_identifier_url <- function(x) {
-  paste0("https://openpaymentsdata.cms.gov/api/1/datastore/query/", x, "/0")
-}
-```
+## Dictionary
 
 ```{r}
 #| label: open_dictionary
