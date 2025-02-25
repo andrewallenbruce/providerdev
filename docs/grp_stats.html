@@ -319,7 +319,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#provider-data" id="toc-provider-data" class="nav-link active" data-scroll-target="#provider-data"><span class="header-section-number">15.1</span> Provider Data</a>
   <ul class="collapse">
-  <li><a href="#hospitals" id="toc-hospitals" class="nav-link" data-scroll-target="#hospitals"><span class="header-section-number">15.1.1</span> Hospitals</a></li>
+  <li><a href="#hospitals-subgroups" id="toc-hospitals-subgroups" class="nav-link" data-scroll-target="#hospitals-subgroups"><span class="header-section-number">15.1.1</span> Hospitals Subgroups</a></li>
   </ul></li>
   <li><a href="#main-data" id="toc-main-data" class="nav-link" data-scroll-target="#main-data"><span class="header-section-number">15.2</span> Main Data</a>
   <ul class="collapse">
@@ -382,15 +382,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">released    =</span> <span class="fu">as_date</span>(released),</span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">keyword     =</span> <span class="fu">flatten_column</span>(keyword),</span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">theme       =</span> <span class="fu">flatten_column</span>(theme),</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">description =</span> <span class="fu">trimws</span>(<span class="fu">sf_remove</span>(description, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>))</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_vars</span>(</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>      dataset,</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">downloadURL =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(dataset<span class="sc">$</span>distribution, <span class="st">"downloadURL"</span>, <span class="at">DF.as.list =</span> <span class="cn">TRUE</span>)),</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">contact =</span> <span class="fu">as_chr</span>(<span class="fu">glue</span>(</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">'{delist(get_elem(dataset$contactPoint, "fn"))} '</span>,</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        <span class="st">'({delist(get_elem(dataset$contactPoint, "^has", regex = TRUE))})'</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">description =</span> <span class="fu">trimws</span>(<span class="fu">sf_remove</span>(description, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>))))</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_vars</span>(</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>      dataset,</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">downloadURL =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(dataset<span class="sc">$</span>distribution, <span class="st">"downloadURL"</span>, <span class="at">DF.as.list =</span> <span class="cn">TRUE</span>)),</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">contact =</span> <span class="fu">glue</span>(<span class="st">'{delist(get_elem(dataset$contactPoint, "fn"))} '</span>,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>                     <span class="st">'({delist(get_elem(dataset$contactPoint, "^has", regex = TRUE))})'</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>        <span class="fu">as.character</span>()</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>      ) <span class="sc">|&gt;</span> </span>
 <span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>      <span class="fu">slt</span>(</span>
 <span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>        title,</span>
 <span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>        theme,</span>
@@ -429,7 +429,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>$dialysis_facilities
 # A tibble: 23 × 10
    title description keyword issued     modified   released   identifier contact
-   &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+   &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;chr&gt;  
  1 Dial… A list of … Qualit… 2020-03-14 2024-12-21 2025-01-15 23ew-n7w9  Dialys…
  2 Dial… National a… Qualit… 2020-03-14 2024-12-21 2025-01-15 2rkq-ygai  Dialys…
  3 Dial… State aver… Qualit… 2020-03-14 2024-12-21 2025-01-15 2fpu-cgbb  Dialys…
@@ -446,7 +446,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 $doctors_and_clinicians
 # A tibble: 8 × 10
   title  description keyword issued     modified   released   identifier contact
-  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;chr&gt;  
 1 Facil… This is th… Clinic… 2023-08-17 2025-01-31 2025-02-13 27ea-46a8  CMS (m…
 2 Natio… The Doctor… Clinic… 2023-08-17 2025-01-31 2025-02-13 mj5m-pzi6  CMS (m…
 3 PY 20… This file … Clinic… 2020-11-30 2024-05-16 2024-05-30 7d6a-e7a6  CMS (m…
@@ -460,7 +460,7 @@ $doctors_and_clinicians
 $home_health_services
 # A tibble: 11 × 10
    title description keyword issued     modified   released   identifier contact
-   &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+   &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;chr&gt;  
  1 Expa… A list of … Home H… 2024-12-19 2025-01-07 2025-01-15 56d7-4994  HHVBP …
  2 Expa… Cohort dat… Home H… 2024-12-19 2025-01-07 2025-01-15 4c74-462e  HHVBP …
  3 Home… Home Healt… Genera… 2024-12-11 2024-12-11 2025-01-15 c886-nwpj  CMS (m…
@@ -477,7 +477,7 @@ $home_health_services
 $hospice_care
 # A tibble: 8 × 10
   title  description keyword issued     modified   released   identifier contact
-  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;chr&gt;  
 1 Hospi… This datas… Genera… 2025-01-13 2025-01-13 2025-02-19 yc9t-dgbk  Hospic…
 2 Hospi… A list of … Measur… 2025-01-13 2025-01-13 2025-02-19 252m-zfp9  Hospic…
 3 Hospi… State data… State,… 2025-01-13 2025-01-13 2025-02-19 eda0-92f0  Hospic…
@@ -491,7 +491,7 @@ $hospice_care
 $hospitals
 # A tibble: 74 × 10
    title description keyword issued     modified   released   identifier contact
-   &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+   &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;chr&gt;  
  1 Ambu… A list of … Ambula… 2024-10-10 2025-01-15 2025-02-19 4jcv-atw7  Hospit…
  2 Ambu… This file … Ambula… 2024-10-10 2025-01-15 2025-02-19 wue8-3vwe  Hospit…
  3 Ambu… This file … Ambula… 2024-10-10 2025-01-15 2025-02-19 axe7-s95e  Hospit…
@@ -508,7 +508,7 @@ $hospitals
 $inpatient_rehabilitation_facilities
 # A tibble: 4 × 10
   title  description keyword issued     modified   released   identifier contact
-  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;chr&gt;  
 1 Inpat… A list of … Rehabi… 2024-10-24 2024-12-05 2024-12-18 ka5z-ibe3  CMS (m…
 2 Inpat… This datas… Rehabi… 2024-10-24 2024-12-05 2024-12-18 7t8x-u3ir  CMS (m…
 3 Inpat… National d… Rehabi… 2024-10-24 2024-12-05 2024-12-18 nasn-k89k  CMS (m…
@@ -518,7 +518,7 @@ $inpatient_rehabilitation_facilities
 $long_term_care_hospitals
 # A tibble: 3 × 10
   title  description keyword issued     modified   released   identifier contact
-  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;chr&gt;  
 1 Long-… A list of … Qualit… 2024-10-24 2024-12-05 2024-12-18 azum-44iv  CMS (m…
 2 Long-… National d… Nation… 2024-10-24 2024-12-05 2024-12-18 5zdx-ny2x  CMS (m…
 3 Long-… A list of … Qualit… 2024-10-24 2024-12-05 2024-12-18 fp6g-2gsn  CMS (m…
@@ -527,7 +527,7 @@ $long_term_care_hospitals
 $nursing_homes
 # A tibble: 20 × 10
    title description keyword issued     modified   released   identifier contact
-   &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+   &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;chr&gt;  
  1 COVI… Current re… COVID   2023-07-06 2025-01-19 2025-01-30 pvax-cv19  Nursin…
  2 COVI… State and … COVID,… 2023-07-06 2025-01-19 2025-01-30 avax-cv19  Nursin…
  3 Cita… This is a … Compla… 2020-09-01 2025-01-01 2025-01-29 tagd-9999  Nursin…
@@ -553,7 +553,7 @@ $nursing_homes
 $physician_office_visit_costs
 # A tibble: 85 × 10
    title description keyword issued     modified   released   identifier contact
-   &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+   &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;chr&gt;  
  1 Addi… Returns ad… Addict… 2024-08-05 2024-08-05 2024-08-08 3614-1eef  PPL Da…
  2 Adva… Returns ad… Advanc… 2024-08-05 2024-08-05 2024-08-08 bdd5-4a04  PPL Da…
  3 Alle… Returns al… Allerg… 2024-08-05 2024-08-05 2024-08-08 4269-8a74  PPL Da…
@@ -570,129 +570,24 @@ $physician_office_visit_costs
 $supplier_directory
 # A tibble: 1 × 10
   title  description keyword issued     modified   released   identifier contact
-  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;chr&gt;  
 1 Medic… A list of … Medica… 2020-12-17 2025-01-20 2025-01-20 ct36-nrcq  Suppli…
 # ℹ 2 more variables: downloadurl &lt;chr&gt;, landing &lt;chr&gt;</code></pre>
 </div>
 </div>
-<section id="hospitals" class="level3" data-number="15.1.1">
-<h3 data-number="15.1.1" class="anchored" data-anchor-id="hospitals"><span class="header-section-number">15.1.1</span> Hospitals</h3>
+<section id="hospitals-subgroups" class="level3" data-number="15.1.1">
+<h3 data-number="15.1.1" class="anchored" data-anchor-id="hospitals-subgroups"><span class="header-section-number">15.1.1</span> Hospitals Subgroups</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>prov<span class="sc">$</span>hospitals <span class="sc">|&gt;</span> </span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(title) <span class="sc">|&gt;</span> </span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  utils<span class="sc">::</span><span class="fu">formatOL</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> 1. Ambulatory Surgical Center Quality Measures - Facility
- 2. Ambulatory Surgical Center Quality Measures - National
- 3. Ambulatory Surgical Center Quality Measures - State
- 4. CMS Medicare PSI-90 and component measures - six-digit estimate
-    dataset
- 5. Complications and Deaths - Hospital
- 6. Complications and Deaths - National
- 7. Complications and Deaths - State
- 8. Complications and Unplanned Hospital Visits - PPS-Exempt Cancer
-    Hospital - Hospital
- 9. Complications and Unplanned Hospital Visits - PPS-Exempt Cancer
-    Hospital - National
-10. Comprehensive Care For Joint Replacement Model - Provider Data
-11. Data Updates
-12. Footnote Crosswalk
-13. Health Equity - Hospital
-14. Health Equity - National
-15. Health Equity - State
-16. Healthcare Associated Infections - Hospital
-17. Healthcare Associated Infections - National
-18. Healthcare Associated Infections - State
-19. Hospital General Information
-20. Hospital Readmissions Reduction Program
-21. Hospital Value-Based Purchasing (HVBP) - Clinical Outcomes Domain
-    Scores
-22. Hospital Value-Based Purchasing (HVBP) - Efficiency Scores
-23. Hospital Value-Based Purchasing (HVBP) - Person and Community
-    Engagement Domain Scores (HCAHPS)
-24. Hospital Value-Based Purchasing (HVBP) - Safety
-25. Hospital Value-Based Purchasing (HVBP) - Total Performance Score
-26. Hospital-Acquired Condition (HAC) Reduction Program
-27. Inpatient Psychiatric Facility Quality Measure Data - National
-28. Inpatient Psychiatric Facility Quality Measure Data - by Facility
-29. Inpatient Psychiatric Facility Quality Measure Data - by State
-30. Maternal Health - Hospital
-31. Measure Dates
-32. Medicare Hospital Spending by Claim
-33. Medicare Spending Per Beneficiary - Hospital
-34. Medicare Spending Per Beneficiary - Hospital Additional Decimal
-    Places
-35. Medicare Spending Per Beneficiary - National
-36. Medicare Spending Per Beneficiary - State
-37. Outpatient Imaging Efficiency - Hospital
-38. Outpatient Imaging Efficiency - National
-39. Outpatient Imaging Efficiency - State
-40. Outpatient and Ambulatory Surgery Consumer Assessment of Healthcare
-    Providers and Systems (OAS CAHPS) survey - Footnotes
-41. Outpatient and Ambulatory Surgery Consumer Assessment of Healthcare
-    Providers and Systems (OAS CAHPS) survey for ambulatory surgical
-    centers - Facility
-42. Outpatient and Ambulatory Surgery Consumer Assessment of Healthcare
-    Providers and Systems (OAS CAHPS) survey for ambulatory surgical
-    centers - National
-43. Outpatient and Ambulatory Surgery Consumer Assessment of Healthcare
-    Providers and Systems (OAS CAHPS) survey for ambulatory surgical
-    centers - State
-44. Outpatient and Ambulatory Surgery Consumer Assessment of Healthcare
-    Providers and Systems (OAS CAHPS) survey for hospital outpatient
-    departments - Facility
-45. Outpatient and Ambulatory Surgery Consumer Assessment of Healthcare
-    Providers and Systems (OAS CAHPS) survey for hospital outpatient
-    departments - National
-46. Outpatient and Ambulatory Surgery Consumer Assessment of Healthcare
-    Providers and Systems (OAS CAHPS) survey for hospital outpatient
-    departments - State
-47. Palliative Care - PPS-Exempt Cancer Hospital - Hospital
-48. Palliative Care - PPS-Exempt Cancer Hospital - National
-49. Patient Survey (PCH - HCAHPS) PPS-Exempt Cancer Hospital - Hospital
-50. Patient Survey (PCH - HCAHPS) PPS-Exempt Cancer Hospital - National
-51. Patient Survey (PCH - HCAHPS) PPS-Exempt Cancer Hospital - State
-52. Patient survey (HCAHPS) - Hospital
-53. Patient survey (HCAHPS) - National
-54. Patient survey (HCAHPS) - State
-55. Patient-Reported Outcomes - Hospital
-56. Payment - National
-57. Payment - State
-58. Payment and value of care - Hospital
-59. Promoting Interoperability - Hospital
-60. Safety and Healthcare-Associated Infection Measures - PPS-Exempt
-    Cancer Hospital
-61. Table 1: FY2021 Net Change in Base Operating DRG Payment Amount
-62. Table 2: FY2021 Distribution of Net Change in Base Operating DRG
-    Payment Amount
-63. Table 3: FY2021 Percent Change in Medicare Payments
-64. Table 4: FY2021 Value-Based Incentive Payment Amount
-65. Timely and Effective Care - Hospital
-66. Timely and Effective Care - National
-67. Timely and Effective Care - State
-68. Unplanned Hospital Visits - Hospital
-69. Unplanned Hospital Visits - National
-70. Unplanned Hospital Visits - State
-71. Value of care - National
-72. Veterans Health Administration Behavioral Health Data
-73. Veterans Health Administration Provider Level Data
-74. Veterans Health Administration Timely and Effective Care Data</code></pre>
-</div>
-</div>
-<section id="possible-subgroups" class="level4" data-number="15.1.1.1">
-<h4 data-number="15.1.1.1" class="anchored" data-anchor-id="possible-subgroups"><span class="header-section-number">15.1.1.1</span> Possible Subgroups</h4>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  prov<span class="sc">$</span>hospitals, </span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stri_detect_regex</span>(</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    title, </span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Quality Measures - |Quality Measure Data - "</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  prov<span class="sc">$</span>hospitals, </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stri_detect_regex</span>(</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    title, </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Quality Measures - |Quality Measure Data - "</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 10
   title  description keyword issued     modified   released   identifier contact
-  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;chr&gt;  
 1 Ambul… A list of … Ambula… 2024-10-10 2025-01-15 2025-02-19 4jcv-atw7  Hospit…
 2 Ambul… This file … Ambula… 2024-10-10 2025-01-15 2025-02-19 wue8-3vwe  Hospit…
 3 Ambul… This file … Ambula… 2024-10-10 2025-01-15 2025-02-19 axe7-s95e  Hospit…
@@ -701,16 +596,16 @@ $supplier_directory
 6 Inpat… This datas… Inpati… 2025-01-08 2025-01-08 2025-02-19 dc76-gh7x  Hospit…
 # ℹ 2 more variables: downloadurl &lt;chr&gt;, landing &lt;chr&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  prov<span class="sc">$</span>hospitals, </span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stri_detect_regex</span>(</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    title, </span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"^Hospital Value-Based Purchasing"</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  prov<span class="sc">$</span>hospitals, </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stri_detect_regex</span>(</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    title, </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"^Hospital Value-Based Purchasing"</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 10
   title  description keyword issued     modified   released   identifier contact
-  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;chr&gt;  
 1 Hospi… A list of … Value … 2023-07-05 2025-01-17 2025-02-19 pudb-wetr  Hospit…
 2 Hospi… A list of … Value … 2023-07-05 2025-01-17 2025-02-19 su9h-3pvj  Hospit…
 3 Hospi… A list of … Value … 2023-07-05 2025-01-17 2025-02-19 avtz-f2ge  Hospit…
@@ -718,16 +613,16 @@ $supplier_directory
 5 Hospi… A list of … Value … 2023-07-05 2025-01-17 2025-02-19 ypbt-wvdk  Hospit…
 # ℹ 2 more variables: downloadurl &lt;chr&gt;, landing &lt;chr&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  prov<span class="sc">$</span>hospitals, </span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stri_detect_regex</span>(</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    title, </span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"^(Medicare Spending Per Beneficiary|Medicare Hospital|Payment)"</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  prov<span class="sc">$</span>hospitals, </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stri_detect_regex</span>(</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    title, </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"^(Medicare Spending Per Beneficiary|Medicare Hospital|Payment)"</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 8 × 10
   title  description keyword issued     modified   released   identifier contact
-  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;chr&gt;  
 1 Medic… The data d… Medica… 2020-12-10 2025-01-08 2025-02-19 nrth-mfg3  Hospit…
 2 Medic… The Medica… Medica… 2020-12-10 2025-01-08 2025-02-19 rrqw-56er  Hospit…
 3 Medic… The Medica… Medica… 2020-12-10 2025-01-08 2025-02-19 5hk7-b79m  Hospit…
@@ -738,16 +633,16 @@ $supplier_directory
 8 Payme… Payment me… Pneumo… 2023-07-05 2025-01-08 2025-02-19 c7us-v4mf  Hospit…
 # ℹ 2 more variables: downloadurl &lt;chr&gt;, landing &lt;chr&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  prov<span class="sc">$</span>hospitals, </span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stri_detect_regex</span>(</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    title, </span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"^(Complications|Hospital Readmissions|Hospital-Acquired|Safety and Healthcare|Unplanned|Timely|Healthcare Associated)"</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  prov<span class="sc">$</span>hospitals, </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stri_detect_regex</span>(</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    title, </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"^(Complications|Hospital Readmissions|Hospital-Acquired|Safety and Healthcare|Unplanned|Timely|Healthcare Associated)"</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 17 × 10
    title description keyword issued     modified   released   identifier contact
-   &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+   &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;chr&gt;  
  1 Comp… Complicati… Compli… 2023-07-05 2025-01-08 2025-02-19 ynj2-r877  Hospit…
  2 Comp… Complicati… Compli… 2020-12-10 2025-01-08 2025-02-19 qqw3-t4ie  Hospit…
  3 Comp… Complicati… Compli… 2020-12-10 2025-01-08 2025-02-19 bs2r-24vh  Hospit…
@@ -767,31 +662,31 @@ $supplier_directory
 17 Unpl… Unplanned … Unplan… 2020-12-10 2025-01-08 2025-02-19 4gkm-5ypv  Hospit…
 # ℹ 2 more variables: downloadurl &lt;chr&gt;, landing &lt;chr&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  prov<span class="sc">$</span>hospitals, </span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stri_detect_regex</span>(</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    title, </span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"^Veterans Health Administration"</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  prov<span class="sc">$</span>hospitals, </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stri_detect_regex</span>(</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    title, </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"^Veterans Health Administration"</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 10
   title  description keyword issued     modified   released   identifier contact
-  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;chr&gt;  
 1 Veter… A list of … Vetera… 2023-07-05 2025-01-08 2025-02-19 6qxe-iqz8  Hospit…
 2 Veter… A list of … Vetera… 2023-07-12 2025-01-08 2025-02-19 uyx4-5s7f  Hospit…
 3 Veter… A list of … Vetera… 2023-07-05 2025-01-08 2025-02-19 ptds-r8im  Hospit…
 # ℹ 2 more variables: downloadurl &lt;chr&gt;, landing &lt;chr&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  prov<span class="sc">$</span>hospitals, </span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stri_detect_regex</span>(</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    title, </span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"^Patient [Ss]urvey"</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  prov<span class="sc">$</span>hospitals, </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stri_detect_regex</span>(</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    title, </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"^Patient [Ss]urvey"</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 10
   title  description keyword issued     modified   released   identifier contact
-  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;chr&gt;  
 1 Patie… A list of … CAHPS,… 2023-07-12 2025-01-08 2025-02-19 iy27-wz37  Hospit…
 2 Patie… The nation… CAHPS,… 2020-12-10 2025-01-08 2025-02-19 9g7e-btyt  Hospit…
 3 Patie… A list of … CAHPS,… 2020-12-10 2025-01-08 2025-02-19 qatj-nmws  Hospit…
@@ -800,16 +695,16 @@ $supplier_directory
 6 Patie… A list of … CAHPS,… 2020-12-10 2025-01-08 2025-02-19 84jm-wiui  Hospit…
 # ℹ 2 more variables: downloadurl &lt;chr&gt;, landing &lt;chr&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  prov<span class="sc">$</span>hospitals, </span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stri_detect_regex</span>(</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    title, </span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"OAS CAHPS"</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  prov<span class="sc">$</span>hospitals, </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stri_detect_regex</span>(</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    title, </span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"OAS CAHPS"</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 7 × 10
   title  description keyword issued     modified   released   identifier contact
-  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;chr&gt;  
 1 Outpa… This file … Ambula… 2020-12-10 2025-01-08 2025-02-19 e6hj-umam  Hospit…
 2 Outpa… A list of … Ambula… 2023-07-05 2025-01-08 2025-02-19 48nr-hqxx  Hospit…
 3 Outpa… The file c… Ambula… 2020-12-10 2025-01-08 2025-02-19 tf3h-mrrs  Hospit…
@@ -819,16 +714,16 @@ $supplier_directory
 7 Outpa… A list of … Ambula… 2020-12-10 2025-01-08 2025-02-19 6pfg-whmx  Hospit…
 # ℹ 2 more variables: downloadurl &lt;chr&gt;, landing &lt;chr&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  prov<span class="sc">$</span>hospitals, </span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stri_detect_regex</span>(</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    title, </span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"^Table"</span></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  prov<span class="sc">$</span>hospitals, </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stri_detect_regex</span>(</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    title, </span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"^Table"</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 10
   title  description keyword issued     modified   released   identifier contact
-  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;glue&gt; 
+  &lt;chr&gt;  &lt;chr&gt;       &lt;chr&gt;   &lt;date&gt;     &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;chr&gt;  
 1 Table… Net Change… Value … 2020-12-10 2023-01-06 2025-02-19 5gv4-jwyv  Hospit…
 2 Table… Distributi… Value … 2020-12-10 2023-01-06 2025-02-19 xrgf-x36b  Hospit…
 3 Table… Percent Ch… Value … 2020-12-10 2023-01-06 2025-02-19 u625-zae7  Hospit…
@@ -838,233 +733,316 @@ $supplier_directory
 </div>
 </section>
 </section>
-</section>
 <section id="main-data" class="level2" data-number="15.2">
 <h2 data-number="15.2" class="anchored" data-anchor-id="main-data"><span class="header-section-number">15.2</span> Main Data</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>dataset <span class="ot">&lt;-</span> <span class="fu">as_tbl</span>(</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fload</span>(<span class="st">"https://data.cms.gov/data.json"</span>, <span class="at">query =</span> <span class="st">"/dataset"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>      <span class="fu">slt</span>(</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>        title,</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>        theme,</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>        keyword,</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>        description,</span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">periodicity =</span> accrualPeriodicity,</span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>        modified,</span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>        temporal,</span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>        distribution,</span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>        identifier,</span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">contact =</span> contactPoint,</span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">dictionary =</span> describedBy,</span>
-<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>        landingPage,</span>
-<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>        references</span>
-<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>      ) <span class="sc">|&gt;</span></span>
-<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mtt</span>(</span>
-<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>        <span class="at">modified =</span> <span class="fu">as_date</span>(modified),</span>
-<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>        <span class="at">periodicity =</span> <span class="fu">recode_iso8601</span>(periodicity),</span>
-<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>        <span class="at">keyword =</span> <span class="fu">flatten_column</span>(keyword),</span>
-<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">theme =</span> <span class="fu">flatten_column</span>(theme),</span>
-<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>        <span class="at">description =</span> <span class="fu">trimws</span>(<span class="fu">sf_remove</span>(description, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)),</span>
-<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">references =</span> <span class="fu">delist</span>(references)</span>
-<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>      )</span>
-<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">roworder</span>(title)</span>
-<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a>dataset</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>main <span class="ot">&lt;-</span> <span class="fu">as_tbl</span>(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fload</span>(</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>      <span class="st">"https://data.cms.gov/data.json"</span>, </span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">query =</span> <span class="st">"/dataset"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">slt</span>(</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>        title,</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>        keyword,</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>        description,</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">periodicity =</span> accrualPeriodicity,</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>        modified,</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>        temporal,</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>        distribution,</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>        identifier,</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>        contactPoint,</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>        <span class="at">dictionary =</span> describedBy,</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">landing =</span> landingPage,</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>        references</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>      ) <span class="sc">|&gt;</span></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mtt</span>(</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>        <span class="at">modified =</span> <span class="fu">as_date</span>(modified),</span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>        <span class="at">periodicity =</span> <span class="fu">recode_iso8601</span>(periodicity),</span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">keyword =</span> <span class="fu">flatten_column</span>(keyword),</span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>        <span class="at">description =</span> <span class="fu">trimws</span>(<span class="fu">sf_remove</span>(description, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)),</span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">references =</span> <span class="fu">delist</span>(references)</span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">roworder</span>(title)</span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>main <span class="ot">&lt;-</span> <span class="fu">add_vars</span>(</span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>  main,</span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">contact =</span> <span class="fu">glue</span>(<span class="st">'{delist(get_elem(main$contactPoint, "fn"))} '</span>,</span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>                 <span class="st">'({delist(get_elem(main$contactPoint, "^has", regex = TRUE))})'</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a>        <span class="fu">as.character</span>()</span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>      ) <span class="sc">|&gt;</span> </span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(<span class="sc">-</span>contactPoint)</span>
+<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a>main <span class="sc">|&gt;</span> </span>
+<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rsplit</span>(<span class="sc">~</span> periodicity)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 139 × 13
-   title  theme keyword description periodicity modified   temporal distribution
-   &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;    &lt;list&gt;      
- 1 ACO R… Medi… Medica… "The Accou… Annually [… 2024-01-12 2021-01… &lt;df&gt;        
- 2 ACO R… Medi… Medica… "Accountab… Annually [… 2024-01-12 2021-01… &lt;df&gt;        
- 3 ACO R… Medi… Medica… "The Accou… Annually [… 2024-01-12 2021-01… &lt;df&gt;        
- 4 ACO R… Medi… Medica… "The Accou… Annually [… 2024-01-12 2021-01… &lt;df&gt;        
- 5 Accou… Medi… Medica… "The Accou… Annually [… 2025-01-15 2014-01… &lt;df&gt;        
- 6 Accou… Medi… Medica… "The Accou… Annually [… 2025-01-15 2017-01… &lt;df&gt;        
- 7 Accou… Medi… Medica… "The&nbsp;Accou… Annually [… 2025-01-15 2014-01… &lt;df&gt;        
- 8 Advan… Medi… Medica… "The Advan… Annually [… 2024-01-29 2024-01… &lt;df&gt;        
- 9 Agenc… Medi… Medica… "The Agenc… Annually [… 2020-12-08 2015-01… &lt;df&gt;        
-10 CMS P… Medi… Nation… "The CMS P… Annually [… 2023-03-06 2013-01… &lt;df [9 × 7]&gt;
-# ℹ 129 more rows
-# ℹ 5 more variables: identifier &lt;chr&gt;, contact &lt;list&gt;, dictionary &lt;chr&gt;,
-#   landingPage &lt;chr&gt;, references &lt;chr&gt;</code></pre>
+<pre><code>$`Annually [R/P1Y]`
+# A tibble: 84 × 11
+   title         keyword description modified   temporal distribution identifier
+   &lt;chr&gt;         &lt;chr&gt;   &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;    &lt;list&gt;       &lt;chr&gt;     
+ 1 ACO Realizin… Medica… "The Accou… 2024-01-12 2021-01… &lt;df&gt;         https://d…
+ 2 ACO Realizin… Medica… "Accountab… 2024-01-12 2021-01… &lt;df&gt;         https://d…
+ 3 ACO Realizin… Medica… "The Accou… 2024-01-12 2021-01… &lt;df&gt;         https://d…
+ 4 ACO Realizin… Medica… "The Accou… 2024-01-12 2021-01… &lt;df&gt;         https://d…
+ 5 Accountable … Medica… "The Accou… 2025-01-15 2014-01… &lt;df&gt;         https://d…
+ 6 Accountable … Medica… "The Accou… 2025-01-15 2017-01… &lt;df&gt;         https://d…
+ 7 Accountable … Medica… "The&nbsp;Accou… 2025-01-15 2014-01… &lt;df&gt;         https://d…
+ 8 Advance Inve… Medica… "The Advan… 2024-01-29 2024-01… &lt;df&gt;         https://d…
+ 9 Agency for H… Medica… "The Agenc… 2020-12-08 2015-01… &lt;df&gt;         https://d…
+10 CMS Program … Nation… "The CMS P… 2023-03-06 2013-01… &lt;df [9 × 7]&gt; https://d…
+# ℹ 74 more rows
+# ℹ 4 more variables: dictionary &lt;chr&gt;, landing &lt;chr&gt;, references &lt;chr&gt;,
+#   contact &lt;chr&gt;
+
+$`Biannually [R/P6M]`
+# A tibble: 1 × 11
+  title          keyword description modified   temporal distribution identifier
+  &lt;chr&gt;          &lt;chr&gt;   &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;    &lt;list&gt;       &lt;chr&gt;     
+1 Medicare Prov… Medica… The Medica… 2025-01-17 2021-07… &lt;df&gt;         https://d…
+# ℹ 4 more variables: dictionary &lt;chr&gt;, landing &lt;chr&gt;, references &lt;chr&gt;,
+#   contact &lt;chr&gt;
+
+$`Biweekly [R/P2W]`
+# A tibble: 1 × 11
+  title          keyword description modified   temporal distribution identifier
+  &lt;chr&gt;          &lt;chr&gt;   &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;    &lt;list&gt;       &lt;chr&gt;     
+1 Home Infusion… States… The Home I… 2025-01-07 2023-05… &lt;df&gt;         https://d…
+# ℹ 4 more variables: dictionary &lt;chr&gt;, landing &lt;chr&gt;, references &lt;chr&gt;,
+#   contact &lt;chr&gt;
+
+$`Monthly [R/P1M]`
+# A tibble: 16 × 11
+   title         keyword description modified   temporal distribution identifier
+   &lt;chr&gt;         &lt;chr&gt;   &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;    &lt;list&gt;       &lt;chr&gt;     
+ 1 End-Stage Re… Medica… "The End-S… 2024-08-09 2021-12… &lt;df&gt;         https://d…
+ 2 Hospital All… Medica… "The Hospi… 2025-01-15 2022-11… &lt;df&gt;         https://d…
+ 3 Hospital Enr… Medica… "The Hospi… 2025-01-15 2022-11… &lt;df&gt;         https://d…
+ 4 Innovation C… Medica… "The Innov… 2024-12-20 2024-12… &lt;df&gt;         https://d…
+ 5 Innovation C… Medica… "The Innov… 2025-01-17 2025-01… &lt;df&gt;         https://d…
+ 6 Innovation C… Medica… "The Innov… 2024-06-21 2024-06… &lt;df&gt;         https://d…
+ 7 Managing Cli… Medica… "The&nbsp;Manag… 2024-08-09 2021-12… &lt;df&gt;         https://d…
+ 8 Medicare Mon… Nation… "The Medic… 2024-12-27 2024-09… &lt;df&gt;         https://d…
+ 9 Monthly Pres… Medica… "The Month… 2025-02-05 2019-01… &lt;df&gt;         https://d…
+10 Nursing Home… Medica… "The Nursi… 2024-12-11 2023-06… &lt;df&gt;         https://d…
+11 Opt Out Affi… Medica… "ATTENTION… 2025-01-22 2023-04… &lt;df&gt;         https://d…
+12 Revalidation… Medica… "The Reval… 2025-01-02 2022-01… &lt;df&gt;         https://d…
+13 Revalidation… Medica… "The Reval… 2025-01-02 2022-02… &lt;df&gt;         https://d…
+14 Revalidation… States… "The Reval… 2025-01-02 2022-02… &lt;df&gt;         https://d…
+15 Skilled Nurs… Medica… "The Skill… 2025-01-15 2022-09… &lt;df&gt;         https://d…
+16 Skilled Nurs… Medica… "The Skill… 2025-01-15 2022-09… &lt;df&gt;         https://d…
+# ℹ 4 more variables: dictionary &lt;chr&gt;, landing &lt;chr&gt;, references &lt;chr&gt;,
+#   contact &lt;chr&gt;
+
+$`Quarterly [R/P3M]`
+# A tibble: 29 × 11
+   title         keyword description modified   temporal distribution identifier
+   &lt;chr&gt;         &lt;chr&gt;   &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;    &lt;list&gt;       &lt;chr&gt;     
+ 1 Facility-Lev… Medica… The Facili… 2024-11-04 2023-10… &lt;df&gt;         https://d…
+ 2 Federally Qu… Medica… The&nbsp;Federa… 2025-01-15 2023-10… &lt;df&gt;         https://d…
+ 3 Federally Qu… Medica… The Federa… 2025-01-15 2023-10… &lt;df&gt;         https://d…
+ 4 Home Health … Medica… The Home H… 2025-01-15 2023-04… &lt;df&gt;         https://d…
+ 5 Home Health … Medica… The Home H… 2025-01-15 2023-04… &lt;df&gt;         https://d…
+ 6 Hospice All … Medica… The &nbsp;Hospi… 2025-01-15 2023-04… &lt;df&gt;         https://d…
+ 7 Hospice Enro… Medica… The Hospic… 2025-01-15 2023-04… &lt;df&gt;         https://d…
+ 8 Hospital Cha… Medica… The Hospit… 2025-01-15 2022-01… &lt;df&gt;         https://d…
+ 9 Hospital Cha… Medica… The Hospit… 2025-01-15 2022-01… &lt;df&gt;         https://d…
+10 Hospital Pri… Medica… The Hospit… 2025-02-06 2023-10… &lt;df&gt;         https://d…
+# ℹ 19 more rows
+# ℹ 4 more variables: dictionary &lt;chr&gt;, landing &lt;chr&gt;, references &lt;chr&gt;,
+#   contact &lt;chr&gt;
+
+$`Twice a Week [R/P3.5D]`
+# A tibble: 4 × 11
+  title          keyword description modified   temporal distribution identifier
+  &lt;chr&gt;          &lt;chr&gt;   &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;    &lt;list&gt;       &lt;chr&gt;     
+1 Fiscal Interm… Medica… The Fiscal… 2025-01-21 2023-05… &lt;df&gt;         https://d…
+2 Order and Ref… Medica… The Order … 2025-01-21 2023-05… &lt;df&gt;         https://d…
+3 Pending Initi… Medica… The Pendin… 2025-01-21 2023-05… &lt;df&gt;         https://d…
+4 Pending Initi… Medica… The Pendin… 2025-01-21 2023-05… &lt;df&gt;         https://d…
+# ℹ 4 more variables: dictionary &lt;chr&gt;, landing &lt;chr&gt;, references &lt;chr&gt;,
+#   contact &lt;chr&gt;
+
+$`Weekly [R/P1W]`
+# A tibble: 4 × 11
+  title          keyword description modified   temporal distribution identifier
+  &lt;chr&gt;          &lt;chr&gt;   &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;    &lt;list&gt;       &lt;chr&gt;     
+1 COVID-19 Nurs… Medica… Submitted … 2025-01-16 2020-05… &lt;df&gt;         https://d…
+2 Innovation Ce… Medica… The Innova… 2025-01-15 2025-01… &lt;df&gt;         https://d…
+3 Innovation Ce… Medica… The Innova… 2025-01-17 2025-01… &lt;df&gt;         https://d…
+4 Opioid Treatm… Medica… The Opioid… 2025-01-21 2023-05… &lt;df&gt;         https://d…
+# ℹ 4 more variables: dictionary &lt;chr&gt;, landing &lt;chr&gt;, references &lt;chr&gt;,
+#   contact &lt;chr&gt;</code></pre>
 </div>
 </div>
 <section id="possible-groups" class="level3" data-number="15.2.1">
 <h3 data-number="15.2.1" class="anchored" data-anchor-id="possible-groups"><span class="header-section-number">15.2.1</span> Possible Groups</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>dataset <span class="sc">|&gt;</span> </span>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>main <span class="sc">|&gt;</span> </span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">stri_detect_regex</span>(</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    title, </span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Provider of Services File"</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 12
+  title         keyword description periodicity modified   temporal distribution
+  &lt;chr&gt;         &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;    &lt;list&gt;      
+1 Provider of … Medica… The Provid… Quarterly … 2025-01-16 2011-10… &lt;df&gt;        
+2 Provider of … Medica… Please be … Quarterly … 2025-01-31 2011-10… &lt;df&gt;        
+3 Provider of … Medica… The Provid… Quarterly … 2025-01-16 2023-10… &lt;df&gt;        
+# ℹ 5 more variables: identifier &lt;chr&gt;, dictionary &lt;chr&gt;, landing &lt;chr&gt;,
+#   references &lt;chr&gt;, contact &lt;chr&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>main <span class="sc">|&gt;</span> </span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">stri_detect_regex</span>(</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    title, </span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Provider of Services File"</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"by Geography|by Provider|by Referring|by Drug|Physician/Supplier Procedure Summary|Hospital Provider Cost Report"</span></span>
 <span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 3 × 13
-  title   theme keyword description periodicity modified   temporal distribution
-  &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;    &lt;list&gt;      
-1 Provid… Medi… Medica… The Provid… Quarterly … 2025-01-16 2011-10… &lt;df&gt;        
-2 Provid… Medi… Medica… Please be … Quarterly … 2025-01-31 2011-10… &lt;df&gt;        
-3 Provid… Medi… Medica… The Provid… Quarterly … 2025-01-16 2023-10… &lt;df&gt;        
-# ℹ 5 more variables: identifier &lt;chr&gt;, contact &lt;list&gt;, dictionary &lt;chr&gt;,
-#   landingPage &lt;chr&gt;, references &lt;chr&gt;</code></pre>
+<pre><code># A tibble: 22 × 12
+   title        keyword description periodicity modified   temporal distribution
+   &lt;chr&gt;        &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;    &lt;list&gt;      
+ 1 Hospital Pr… Medica… The Hospit… Annually [… 2024-10-23 2011-01… &lt;df&gt;        
+ 2 Medicaid Op… Nation… The Medica… Annually [… 2024-10-11 2022-01… &lt;df&gt;        
+ 3 Medicaid Sp… Medica… The Medica… Annually [… 2024-06-13 2022-01… &lt;df&gt;        
+ 4 Medicare Du… Nation… The Medica… Annually [… 2024-06-04 2014-01… &lt;df&gt;        
+ 5 Medicare Du… Medica… The Medica… Annually [… 2024-06-04 2014-01… &lt;df&gt;        
+ 6 Medicare Du… Medica… The Medica… Annually [… 2024-06-04 2014-01… &lt;df&gt;        
+ 7 Medicare In… Nation… The Medica… Annually [… 2024-06-04 2013-01… &lt;df&gt;        
+ 8 Medicare In… Medica… The Medica… Annually [… 2024-06-04 2013-01… &lt;df&gt;        
+ 9 Medicare In… Medica… The Medica… Annually [… 2024-06-04 2013-01… &lt;df&gt;        
+10 Medicare Ou… Nation… The Medica… Annually [… 2024-06-04 2015-01… &lt;df&gt;        
+# ℹ 12 more rows
+# ℹ 5 more variables: identifier &lt;chr&gt;, dictionary &lt;chr&gt;, landing &lt;chr&gt;,
+#   references &lt;chr&gt;, contact &lt;chr&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>dataset <span class="sc">|&gt;</span> </span>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>main <span class="sc">|&gt;</span> </span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">stri_detect_regex</span>(</span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    title, </span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"by Geography|by Provider|by Referring|by Drug|Physician/Supplier Procedure Summary|Hospital Provider Cost Report"</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Accountable Care Organization|ACO Realizing Equity|Pioneer ACO Model"</span></span>
 <span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 22 × 13
-   title  theme keyword description periodicity modified   temporal distribution
-   &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;    &lt;list&gt;      
- 1 Hospi… Medi… Medica… The Hospit… Annually [… 2024-10-23 2011-01… &lt;df&gt;        
- 2 Medic… Medi… Nation… The Medica… Annually [… 2024-10-11 2022-01… &lt;df&gt;        
- 3 Medic… Medi… Medica… The Medica… Annually [… 2024-06-13 2022-01… &lt;df&gt;        
- 4 Medic… Medi… Nation… The Medica… Annually [… 2024-06-04 2014-01… &lt;df&gt;        
- 5 Medic… Medi… Medica… The Medica… Annually [… 2024-06-04 2014-01… &lt;df&gt;        
- 6 Medic… Medi… Medica… The Medica… Annually [… 2024-06-04 2014-01… &lt;df&gt;        
- 7 Medic… Medi… Nation… The Medica… Annually [… 2024-06-04 2013-01… &lt;df&gt;        
- 8 Medic… Medi… Medica… The Medica… Annually [… 2024-06-04 2013-01… &lt;df&gt;        
- 9 Medic… Medi… Medica… The Medica… Annually [… 2024-06-04 2013-01… &lt;df&gt;        
-10 Medic… Medi… Nation… The Medica… Annually [… 2024-06-04 2015-01… &lt;df&gt;        
-# ℹ 12 more rows
-# ℹ 5 more variables: identifier &lt;chr&gt;, contact &lt;list&gt;, dictionary &lt;chr&gt;,
-#   landingPage &lt;chr&gt;, references &lt;chr&gt;</code></pre>
+<pre><code># A tibble: 9 × 12
+  title         keyword description periodicity modified   temporal distribution
+  &lt;chr&gt;         &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;    &lt;list&gt;      
+1 ACO Realizin… Medica… The Accoun… Annually [… 2024-01-12 2021-01… &lt;df&gt;        
+2 ACO Realizin… Medica… Accountabl… Annually [… 2024-01-12 2021-01… &lt;df&gt;        
+3 ACO Realizin… Medica… The Accoun… Annually [… 2024-01-12 2021-01… &lt;df&gt;        
+4 ACO Realizin… Medica… The Accoun… Annually [… 2024-01-12 2021-01… &lt;df&gt;        
+5 Accountable … Medica… The Accoun… Annually [… 2025-01-15 2014-01… &lt;df&gt;        
+6 Accountable … Medica… The Accoun… Annually [… 2025-01-15 2017-01… &lt;df&gt;        
+7 Accountable … Medica… The&nbsp;Accoun… Annually [… 2025-01-15 2014-01… &lt;df&gt;        
+8 Number of Ac… Medica… The Shared… Annually [… 2024-11-21 2016-01… &lt;df&gt;        
+9 Pioneer ACO … Medica… The Pionee… Annually [… 2023-05-25 2012-01… &lt;df&gt;        
+# ℹ 5 more variables: identifier &lt;chr&gt;, dictionary &lt;chr&gt;, landing &lt;chr&gt;,
+#   references &lt;chr&gt;, contact &lt;chr&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>dataset <span class="sc">|&gt;</span> </span>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>main <span class="sc">|&gt;</span> </span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">stri_detect_regex</span>(</span>
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    title, </span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Accountable Care Organization|ACO Realizing Equity|Pioneer ACO Model"</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"CMS Program Statistics"</span></span>
 <span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 9 × 13
-  title   theme keyword description periodicity modified   temporal distribution
-  &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;    &lt;list&gt;      
-1 ACO Re… Medi… Medica… The Accoun… Annually [… 2024-01-12 2021-01… &lt;df&gt;        
-2 ACO Re… Medi… Medica… Accountabl… Annually [… 2024-01-12 2021-01… &lt;df&gt;        
-3 ACO Re… Medi… Medica… The Accoun… Annually [… 2024-01-12 2021-01… &lt;df&gt;        
-4 ACO Re… Medi… Medica… The Accoun… Annually [… 2024-01-12 2021-01… &lt;df&gt;        
-5 Accoun… Medi… Medica… The Accoun… Annually [… 2025-01-15 2014-01… &lt;df&gt;        
-6 Accoun… Medi… Medica… The Accoun… Annually [… 2025-01-15 2017-01… &lt;df&gt;        
-7 Accoun… Medi… Medica… The&nbsp;Accoun… Annually [… 2025-01-15 2014-01… &lt;df&gt;        
-8 Number… Medi… Medica… The Shared… Annually [… 2024-11-21 2016-01… &lt;df&gt;        
-9 Pionee… Medi… Medica… The Pionee… Annually [… 2023-05-25 2012-01… &lt;df&gt;        
-# ℹ 5 more variables: identifier &lt;chr&gt;, contact &lt;list&gt;, dictionary &lt;chr&gt;,
-#   landingPage &lt;chr&gt;, references &lt;chr&gt;</code></pre>
+<pre><code># A tibble: 21 × 12
+   title        keyword description periodicity modified   temporal distribution
+   &lt;chr&gt;        &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;    &lt;list&gt;      
+ 1 CMS Program… Nation… "The CMS P… Annually [… 2023-03-06 2013-01… &lt;df [9 × 7]&gt;
+ 2 CMS Program… Nation… "The CMS P… Annually [… 2024-05-16 2016-01… &lt;df [6 × 7]&gt;
+ 3 CMS Program… Nation… "The CMS P… Annually [… 2024-05-16 2016-01… &lt;df [6 × 7]&gt;
+ 4 CMS Program… Nation… "The CMS P… Annually [… 2024-05-24 2016-01… &lt;df [6 × 7]&gt;
+ 5 CMS Program… Nation… "The CMS P… Annually [… 2024-05-16 2016-01… &lt;df [6 × 7]&gt;
+ 6 CMS Program… Nation… "The CMS P… Annually [… 2023-03-06 2013-01… &lt;df [9 × 7]&gt;
+ 7 CMS Program… Nation… "The Medic… Annually [… 2023-06-12 2013-01… &lt;df [9 × 7]&gt;
+ 8 CMS Program… Nation… "The CMS P… Annually [… 2023-03-06 2013-01… &lt;df [9 × 7]&gt;
+ 9 CMS Program… Nation… "The CMS P… Annually [… 2023-03-06 2013-01… &lt;df [9 × 7]&gt;
+10 CMS Program… Nation… "The CMS P… Annually [… 2023-03-06 2013-01… &lt;df [9 × 7]&gt;
+# ℹ 11 more rows
+# ℹ 5 more variables: identifier &lt;chr&gt;, dictionary &lt;chr&gt;, landing &lt;chr&gt;,
+#   references &lt;chr&gt;, contact &lt;chr&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>dataset <span class="sc">|&gt;</span> </span>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>main <span class="sc">|&gt;</span> </span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">stri_detect_regex</span>(</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    title, </span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"CMS Program Statistics"</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"^(Federally Qualified Health Center|Rural Health Clinic|Home Health Agency|Hospice|Skilled Nursing Facility|Long-Term Care Facility|Hospital|Home Infusion)"</span></span>
 <span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 21 × 13
-   title  theme keyword description periodicity modified   temporal distribution
-   &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;    &lt;list&gt;      
- 1 CMS P… Medi… Nation… "The CMS P… Annually [… 2023-03-06 2013-01… &lt;df [9 × 7]&gt;
- 2 CMS P… Medi… Nation… "The CMS P… Annually [… 2024-05-16 2016-01… &lt;df [6 × 7]&gt;
- 3 CMS P… Medi… Nation… "The CMS P… Annually [… 2024-05-16 2016-01… &lt;df [6 × 7]&gt;
- 4 CMS P… Medi… Nation… "The CMS P… Annually [… 2024-05-24 2016-01… &lt;df [6 × 7]&gt;
- 5 CMS P… Medi… Nation… "The CMS P… Annually [… 2024-05-16 2016-01… &lt;df [6 × 7]&gt;
- 6 CMS P… Medi… Nation… "The CMS P… Annually [… 2023-03-06 2013-01… &lt;df [9 × 7]&gt;
- 7 CMS P… Medi… Nation… "The Medic… Annually [… 2023-06-12 2013-01… &lt;df [9 × 7]&gt;
- 8 CMS P… Medi… Nation… "The CMS P… Annually [… 2023-03-06 2013-01… &lt;df [9 × 7]&gt;
- 9 CMS P… Medi… Nation… "The CMS P… Annually [… 2023-03-06 2013-01… &lt;df [9 × 7]&gt;
-10 CMS P… Medi… Nation… "The CMS P… Annually [… 2023-03-06 2013-01… &lt;df [9 × 7]&gt;
-# ℹ 11 more rows
-# ℹ 5 more variables: identifier &lt;chr&gt;, contact &lt;list&gt;, dictionary &lt;chr&gt;,
-#   landingPage &lt;chr&gt;, references &lt;chr&gt;</code></pre>
+<pre><code># A tibble: 23 × 12
+   title        keyword description periodicity modified   temporal distribution
+   &lt;chr&gt;        &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;    &lt;list&gt;      
+ 1 Federally Q… Medica… The&nbsp;Federa… Quarterly … 2025-01-15 2023-10… &lt;df&gt;        
+ 2 Federally Q… Medica… The Federa… Quarterly … 2025-01-15 2023-10… &lt;df&gt;        
+ 3 Home Health… Medica… The Home H… Quarterly … 2025-01-15 2023-04… &lt;df&gt;        
+ 4 Home Health… Medica… The Home H… Annually [… 2024-10-25 2020-01… &lt;df&gt;        
+ 5 Home Health… Medica… The Home H… Quarterly … 2025-01-15 2023-04… &lt;df&gt;        
+ 6 Home Infusi… States… The Home I… Biweekly [… 2025-01-07 2023-05… &lt;df&gt;        
+ 7 Hospice All… Medica… The &nbsp;Hospi… Quarterly … 2025-01-15 2023-04… &lt;df&gt;        
+ 8 Hospice Enr… Medica… The Hospic… Quarterly … 2025-01-15 2023-04… &lt;df&gt;        
+ 9 Hospital Al… Medica… The Hospit… Monthly [R… 2025-01-15 2022-11… &lt;df&gt;        
+10 Hospital Ch… Medica… The Hospit… Quarterly … 2025-01-15 2022-01… &lt;df&gt;        
+# ℹ 13 more rows
+# ℹ 5 more variables: identifier &lt;chr&gt;, dictionary &lt;chr&gt;, landing &lt;chr&gt;,
+#   references &lt;chr&gt;, contact &lt;chr&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>dataset <span class="sc">|&gt;</span> </span>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>main <span class="sc">|&gt;</span> </span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">stri_detect_regex</span>(</span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    title, </span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"^(Federally Qualified Health Center|Rural Health Clinic|Home Health Agency|Hospice|Skilled Nursing Facility|Long-Term Care Facility|Hospital|Home Infusion)"</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Innovation Center"</span></span>
 <span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 23 × 13
-   title  theme keyword description periodicity modified   temporal distribution
-   &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;    &lt;list&gt;      
- 1 Feder… Medi… Medica… The&nbsp;Federa… Quarterly … 2025-01-15 2023-10… &lt;df&gt;        
- 2 Feder… Medi… Medica… The Federa… Quarterly … 2025-01-15 2023-10… &lt;df&gt;        
- 3 Home … Medi… Medica… The Home H… Quarterly … 2025-01-15 2023-04… &lt;df&gt;        
- 4 Home … Medi… Medica… The Home H… Annually [… 2024-10-25 2020-01… &lt;df&gt;        
- 5 Home … Medi… Medica… The Home H… Quarterly … 2025-01-15 2023-04… &lt;df&gt;        
- 6 Home … Medi… States… The Home I… Biweekly [… 2025-01-07 2023-05… &lt;df&gt;        
- 7 Hospi… Medi… Medica… The &nbsp;Hospi… Quarterly … 2025-01-15 2023-04… &lt;df&gt;        
- 8 Hospi… Medi… Medica… The Hospic… Quarterly … 2025-01-15 2023-04… &lt;df&gt;        
- 9 Hospi… Medi… Medica… The Hospit… Monthly [R… 2025-01-15 2022-11… &lt;df&gt;        
-10 Hospi… Medi… Medica… The Hospit… Quarterly … 2025-01-15 2022-01… &lt;df&gt;        
-# ℹ 13 more rows
-# ℹ 5 more variables: identifier &lt;chr&gt;, contact &lt;list&gt;, dictionary &lt;chr&gt;,
-#   landingPage &lt;chr&gt;, references &lt;chr&gt;</code></pre>
+<pre><code># A tibble: 7 × 12
+  title         keyword description periodicity modified   temporal distribution
+  &lt;chr&gt;         &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;    &lt;list&gt;      
+1 Innovation C… Medica… The Innova… Monthly [R… 2024-12-20 2024-12… &lt;df&gt;        
+2 Innovation C… Medica… The CMS In… Annually [… 2022-01-19 2015-01… &lt;df&gt;        
+3 Innovation C… Medica… The Innova… Weekly [R/… 2025-01-15 2025-01… &lt;df&gt;        
+4 Innovation C… Medica… The Innova… Annually [… 2021-06-22 2017-01… &lt;df&gt;        
+5 Innovation C… Medica… The Innova… Weekly [R/… 2025-01-17 2025-01… &lt;df&gt;        
+6 Innovation C… Medica… The Innova… Monthly [R… 2025-01-17 2025-01… &lt;df&gt;        
+7 Innovation C… Medica… The Innova… Monthly [R… 2024-06-21 2024-06… &lt;df&gt;        
+# ℹ 5 more variables: identifier &lt;chr&gt;, dictionary &lt;chr&gt;, landing &lt;chr&gt;,
+#   references &lt;chr&gt;, contact &lt;chr&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>dataset <span class="sc">|&gt;</span> </span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">stri_detect_regex</span>(</span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    title, </span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Innovation Center"</span></span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>main <span class="sc">|&gt;</span> </span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stri_detect_regex</span>(</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>      title, </span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Market Saturation &amp; Utilization"</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>      ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 7 × 13
-  title   theme keyword description periodicity modified   temporal distribution
-  &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;    &lt;list&gt;      
-1 Innova… Medi… Medica… The Innova… Monthly [R… 2024-12-20 2024-12… &lt;df&gt;        
-2 Innova… Medi… Medica… The CMS In… Annually [… 2022-01-19 2015-01… &lt;df&gt;        
-3 Innova… Medi… Medica… The Innova… Weekly [R/… 2025-01-15 2025-01… &lt;df&gt;        
-4 Innova… Medi… Medica… The Innova… Annually [… 2021-06-22 2017-01… &lt;df&gt;        
-5 Innova… Medi… Medica… The Innova… Weekly [R/… 2025-01-17 2025-01… &lt;df&gt;        
-6 Innova… Medi… Medica… The Innova… Monthly [R… 2025-01-17 2025-01… &lt;df&gt;        
-7 Innova… Medi… Medica… The Innova… Monthly [R… 2024-06-21 2024-06… &lt;df&gt;        
-# ℹ 5 more variables: identifier &lt;chr&gt;, contact &lt;list&gt;, dictionary &lt;chr&gt;,
-#   landingPage &lt;chr&gt;, references &lt;chr&gt;</code></pre>
+<pre><code># A tibble: 2 × 12
+  title         keyword description periodicity modified   temporal distribution
+  &lt;chr&gt;         &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;    &lt;list&gt;      
+1 Market Satur… States… The Market… Annually [… 2024-10-31 2023-01… &lt;df&gt;        
+2 Market Satur… Nation… The Market… Annually [… 2024-10-31 2023-01… &lt;df&gt;        
+# ℹ 5 more variables: identifier &lt;chr&gt;, dictionary &lt;chr&gt;, landing &lt;chr&gt;,
+#   references &lt;chr&gt;, contact &lt;chr&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>dataset <span class="sc">|&gt;</span> </span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stri_detect_regex</span>(</span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>      title, </span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Market Saturation &amp; Utilization"</span></span>
-<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>      ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>main <span class="sc">|&gt;</span> </span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">stri_detect_regex</span>(</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    title, </span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"End-Stage Renal Disease Facility Aggregation Group Performance|Medicare Dialysis Facilities"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 13
-  title   theme keyword description periodicity modified   temporal distribution
-  &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;    &lt;list&gt;      
-1 Market… Medi… States… The Market… Annually [… 2024-10-31 2023-01… &lt;df&gt;        
-2 Market… Medi… Nation… The Market… Annually [… 2024-10-31 2023-01… &lt;df&gt;        
-# ℹ 5 more variables: identifier &lt;chr&gt;, contact &lt;list&gt;, dictionary &lt;chr&gt;,
-#   landingPage &lt;chr&gt;, references &lt;chr&gt;</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>dataset <span class="sc">|&gt;</span> </span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">stri_detect_regex</span>(</span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>    title, </span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"End-Stage Renal Disease Facility Aggregation Group Performance|Medicare Dialysis Facilities"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 2 × 13
-  title   theme keyword description periodicity modified   temporal distribution
-  &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;    &lt;list&gt;      
-1 End-St… Medi… Medica… The End-St… Monthly [R… 2024-08-09 2021-12… &lt;df&gt;        
-2 Medica… Medi… Medica… The Medica… Annually [… 2024-02-29 2009-01… &lt;df&gt;        
-# ℹ 5 more variables: identifier &lt;chr&gt;, contact &lt;list&gt;, dictionary &lt;chr&gt;,
-#   landingPage &lt;chr&gt;, references &lt;chr&gt;</code></pre>
+<pre><code># A tibble: 2 × 12
+  title         keyword description periodicity modified   temporal distribution
+  &lt;chr&gt;         &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;    &lt;list&gt;      
+1 End-Stage Re… Medica… The End-St… Monthly [R… 2024-08-09 2021-12… &lt;df&gt;        
+2 Medicare Dia… Medica… The Medica… Annually [… 2024-02-29 2009-01… &lt;df&gt;        
+# ℹ 5 more variables: identifier &lt;chr&gt;, dictionary &lt;chr&gt;, landing &lt;chr&gt;,
+#   references &lt;chr&gt;, contact &lt;chr&gt;</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># distribution &lt;- as_tbl(rowbind(get_elem(dataset, "distribution"), fill = TRUE)) |&gt;</span></span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="co">#     mtt(modified    = as_date(modified),</span></span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="co">#         format      = cheapr_if_else(not_na(description), paste0(format, "-", description), format),</span></span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a><span class="co">#         `@type`     = NULL,</span></span>
-<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="co">#         description = NULL) |&gt;</span></span>
-<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a><span class="co">#     colorder(title)</span></span>
-<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a><span class="co">#   list(</span></span>
-<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a><span class="co">#     dataset = slt(dataset, title, theme, keyword, description, accrualPeriodicity, contactPoint, describedBy, identifier, modified, landingPage, temporal, references) |&gt; uniq(),</span></span>
-<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a><span class="co">#     download = sbt(distribution, not_na(mediaType), title, mediaType, downloadURL, modified, temporal) |&gt; uniq(),</span></span>
-<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a><span class="co">#     distribution = sbt(distribution, not_na(format), title, format, accessURL, modified, temporal) |&gt; uniq(),</span></span>
-<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a><span class="co">#     resources = slt(distribution, title, resourcesAPI, modified, temporal) |&gt; uniq()</span></span>
-<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a><span class="co">#   )</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pub &lt;- providertwo::load_public()</span></span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="co"># pub</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># distribution &lt;- as_tbl(rowbind(get_elem(dataset, "distribution"), fill = TRUE)) |&gt;</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="co">#     mtt(modified    = as_date(modified),</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="co">#         format      = cheapr_if_else(not_na(description), paste0(format, "-", description), format),</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="co">#         `@type`     = NULL,</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="co">#         description = NULL) |&gt;</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="co">#     colorder(title)</span></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a><span class="co">#   list(</span></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a><span class="co">#     dataset = slt(dataset, title, theme, keyword, description, accrualPeriodicity, contactPoint, describedBy, identifier, modified, landingPage, temporal, references) |&gt; uniq(),</span></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a><span class="co">#     download = sbt(distribution, not_na(mediaType), title, mediaType, downloadURL, modified, temporal) |&gt; uniq(),</span></span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a><span class="co">#     distribution = sbt(distribution, not_na(format), title, format, accessURL, modified, temporal) |&gt; uniq(),</span></span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a><span class="co">#     resources = slt(distribution, title, resourcesAPI, modified, temporal) |&gt; uniq()</span></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a><span class="co">#   )</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 

@@ -40,15 +40,15 @@ catalog_provider <- \() {
         released    = as_date(released),
         keyword     = flatten_column(keyword),
         theme       = flatten_column(theme),
-        description = trimws(sf_remove(description, "\n"))
-      )
-  )
+        description = trimws(sf_remove(description, "\n"))))
+  
     add_vars(
       dataset,
       downloadURL = delist(get_elem(dataset$distribution, "downloadURL", DF.as.list = TRUE)),
-      contact = as_chr(glue(
-        '{delist(get_elem(dataset$contactPoint, "fn"))} ',
-        '({delist(get_elem(dataset$contactPoint, "^has", regex = TRUE))})'))) |> 
+      contact = glue('{delist(get_elem(dataset$contactPoint, "fn"))} ',
+                     '({delist(get_elem(dataset$contactPoint, "^has", regex = TRUE))})') |> 
+        as.character()
+      ) |> 
       slt(
         title,
         theme,
@@ -85,16 +85,7 @@ prov <- catalog_provider()
 prov
 ```
 
-### Hospitals
-
-```{r}
-prov$hospitals |> 
-  pull(title) |> 
-  utils::formatOL() |> 
-  writeLines()
-```
-
-#### Possible Subgroups
+### Hospitals Subgroups
 
 ```{r}
 filter(
@@ -158,11 +149,12 @@ filter(
 ## Main Data
 
 ```{r}
-dataset <- as_tbl(
-    fload("https://data.cms.gov/data.json", query = "/dataset") |>
+main <- as_tbl(
+    fload(
+      "https://data.cms.gov/data.json", 
+      query = "/dataset") |>
       slt(
         title,
-        theme,
         keyword,
         description,
         periodicity = accrualPeriodicity,
@@ -170,72 +162,80 @@ dataset <- as_tbl(
         temporal,
         distribution,
         identifier,
-        contact = contactPoint,
+        contactPoint,
         dictionary = describedBy,
-        landingPage,
+        landing = landingPage,
         references
       ) |>
       mtt(
         modified = as_date(modified),
         periodicity = recode_iso8601(periodicity),
         keyword = flatten_column(keyword),
-        theme = flatten_column(theme),
         description = trimws(sf_remove(description, "\n")),
         references = delist(references)
       )
   ) |>
     roworder(title)
 
-dataset
+main <- add_vars(
+  main,
+  contact = glue('{delist(get_elem(main$contactPoint, "fn"))} ',
+                 '({delist(get_elem(main$contactPoint, "^has", regex = TRUE))})') |> 
+        as.character()
+      ) |> 
+  slt(-contactPoint)
+
+main |> 
+  rsplit(~ periodicity)
 ```
 
 ### Possible Groups
 
 ```{r}
-dataset |> 
+main |> 
   filter(stri_detect_regex(
     title, 
     "Provider of Services File"
     ))
 
-dataset |> 
+main |> 
   filter(stri_detect_regex(
     title, 
     "by Geography|by Provider|by Referring|by Drug|Physician/Supplier Procedure Summary|Hospital Provider Cost Report"
     ))
 
-dataset |> 
+main |> 
   filter(stri_detect_regex(
     title, 
     "Accountable Care Organization|ACO Realizing Equity|Pioneer ACO Model"
     ))
 
-dataset |> 
+main |> 
   filter(stri_detect_regex(
     title, 
     "CMS Program Statistics"
     ))
 
-dataset |> 
+main |> 
   filter(stri_detect_regex(
     title, 
     "^(Federally Qualified Health Center|Rural Health Clinic|Home Health Agency|Hospice|Skilled Nursing Facility|Long-Term Care Facility|Hospital|Home Infusion)"
     ))
 
-dataset |> 
+main |> 
   filter(stri_detect_regex(
     title, 
     "Innovation Center"
     ))
 
-dataset |> 
+main |> 
   filter(
     stri_detect_regex(
       title, 
       "Market Saturation & Utilization"
       ))
 
-dataset |> 
+main |> 
   filter(stri_detect_regex(
     title, 
     "End-Stage Renal Disease Facility Aggregation Group Performance|Medicare Dialysis Facilities"))
@@ -256,11 +256,3 @@ dataset |>
 #     resources = slt(distribution, title, resourcesAPI, modified, temporal) |> uniq()
 #   )
 ```
-
-
-```{r}
-# pub <- providertwo::load_public()
-# 
-# pub
-```
-
