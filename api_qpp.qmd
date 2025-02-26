@@ -14,23 +14,59 @@ source("includes/_common.R")
 
 ```{r}
 #| label: stats_endpoint
-request("https://qpp.cms.gov/api/eligibility/stats/?year=2024") |>
-  req_headers(Accept = "application/vnd.qpp.cms.gov.v6+json") |>
-  req_perform() |>
-  resp_body_json(simplifyVector = TRUE)
+qpp_stats <- function(year) {
+  
+  x <- glue(
+    "https://qpp.cms.gov/api/eligibility/stats/?year={year}"
+    ) |> 
+    request() |>
+    req_headers(Accept = "application/vnd.qpp.cms.gov.v6+json") |>
+    req_perform() |>
+    resp_simple_json() |> 
+    _[["data"]]
+  
+  new_df(
+    year = as_int(year),
+    ind_hcc_risk_avg  = x$individual$hccRiskScoreAverage,
+    ind_dual_elig_avg = x$individual$dualEligibilityAverage,
+    grp_hcc_risk_avg  = x$group$hccRiskScoreAverage,
+    grp_dual_elig_avg = x$group$dualEligibilityAverage
+    )
+}
+
+map(2018:2025, qpp_stats) |> 
+  rowbind()
 ```
 
 ## Main Endpoint
 
 ```{r}
 #| label: main_endpoint
-request("https://qpp.cms.gov/api/eligibility/npis/1043477615/?year=2024") |>
+qpp_elig <- function(npi, year) {
+  
+  glue("https://qpp.cms.gov/api/eligibility/npis/{npi}/?year={year}") |> 
+  request() |>
   req_headers(Accept = "application/vnd.qpp.cms.gov.v6+json") |>
   req_error(body = \(resp) resp_body_json(resp)$error$message) |>
   req_perform() |>
-  resp_body_json(simplifyVector = TRUE) |> 
+  resp_simple_json() |> 
   _[["data"]] |> 
-  as_tbl() |> 
+  as_tbl()
+  
+}
+
+qpp_elig(npi = 1043477615, year = 2024)
+
+qpp_elig(npi = 1144544834, year = 2024)
+
+qpp_elig(npi = 1932365699, year = 2024)
+```
+
+
+```{r}
+# qpp_elig(npi = 1932365699, year = 2024) |> 
+# qpp_elig(npi = 1144544834, year = 2024) |> 
+qpp_elig(npi = 1043477615, year = 2024) |>
   unnest_wider(specialty, names_sep = "_") |>
   unnest_wider(organizations, names_sep = "_") |>
   unnest_wider(organizations_apms, names_sep = "_") |>

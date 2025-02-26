@@ -8,7 +8,7 @@
 
 <meta name="description" content="This is a personal, informal guide to rewriting an R package. It is a work in progress and will be updated as I learn more about the process.">
 
-<title>6&nbsp; NPPES Registry – Refactoring Provider</title>
+<title>16&nbsp; Geospatial – Refactoring Provider</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -65,8 +65,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./faq_schema.html" rel="next">
-<link href="./api_ndc.html" rel="prev">
+<link href="./end_enrollees.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -118,7 +117,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./api_main.html">APIs</a></li><li class="breadcrumb-item"><a href="./api_nppes.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">NPPES Registry</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./demo_geo.html">Demonstrations</a></li><li class="breadcrumb-item"><a href="./demo_geo.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Geospatial</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -204,7 +203,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./api_nppes.html" class="sidebar-item-text sidebar-link active">
+  <a href="./api_nppes.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">NPPES Registry</span></span></a>
   </div>
 </li>
@@ -308,7 +307,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./demo_geo.html" class="sidebar-item-text sidebar-link">
+  <a href="./demo_geo.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Geospatial</span></span></a>
   </div>
 </li>
@@ -324,17 +323,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#links" id="toc-links" class="nav-link active" data-scroll-target="#links"><span class="header-section-number">6.1</span> Links</a></li>
-  <li><a href="#catalog" id="toc-catalog" class="nav-link" data-scroll-target="#catalog"><span class="header-section-number">6.2</span> Catalog</a></li>
+  <li><a href="#load-packages" id="toc-load-packages" class="nav-link active" data-scroll-target="#load-packages"><span class="header-section-number">16.1</span> Load Packages</a></li>
+  <li><a href="#retrieve-addresses-of-all-rhcs-in-georgia" id="toc-retrieve-addresses-of-all-rhcs-in-georgia" class="nav-link" data-scroll-target="#retrieve-addresses-of-all-rhcs-in-georgia"><span class="header-section-number">16.2</span> Retrieve Addresses of all RHCs in Georgia</a></li>
+  <li><a href="#geocode-with-tidygeocoder" id="toc-geocode-with-tidygeocoder" class="nav-link" data-scroll-target="#geocode-with-tidygeocoder"><span class="header-section-number">16.3</span> Geocode with {tidygeocoder}</a></li>
+  <li><a href="#retrieve-georgia-counties-shapefile-from-tigris" id="toc-retrieve-georgia-counties-shapefile-from-tigris" class="nav-link" data-scroll-target="#retrieve-georgia-counties-shapefile-from-tigris"><span class="header-section-number">16.4</span> Retrieve Georgia counties shapefile from {tigris}</a></li>
+  <li><a href="#map-with-ggplot" id="toc-map-with-ggplot" class="nav-link" data-scroll-target="#map-with-ggplot"><span class="header-section-number">16.5</span> Map with {ggplot}</a></li>
   </ul>
 <div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./api_main.html">APIs</a></li><li class="breadcrumb-item"><a href="./api_nppes.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">NPPES Registry</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./demo_geo.html">Demonstrations</a></li><li class="breadcrumb-item"><a href="./demo_geo.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Geospatial</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span id="sec-nppesapi" class="quarto-section-identifier"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">NPPES Registry</span></span></h1>
+<h1 class="title"><span id="sec-demogeo" class="quarto-section-identifier"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Geospatial</span></span></h1>
 </div>
 
 
@@ -351,71 +353,275 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="links" class="level2" data-number="6.1">
-<h2 data-number="6.1" class="anchored" data-anchor-id="links"><span class="header-section-number">6.1</span> Links</h2>
-<ul>
-<li><a href="https://clinicaltables.nlm.nih.gov/apidoc/npi_idv/v3/doc.html">NLM: NPI Registry</a></li>
-<li><a href="https://clinicaltables.nlm.nih.gov/api/npi_idv/v3">NLM: NPI API</a></li>
-</ul>
-</section>
-<section id="catalog" class="level2" data-number="6.2">
-<h2 data-number="6.2" class="anchored" data-anchor-id="catalog"><span class="header-section-number">6.2</span> Catalog</h2>
+<section id="load-packages" class="level2" data-number="16.1">
+<h2 data-number="16.1" class="anchored" data-anchor-id="load-packages"><span class="header-section-number">16.1</span> Load Packages</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>nppes_nlm <span class="ot">&lt;-</span> <span class="cf">function</span>(terms) {</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  req <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://clinicaltables.nlm.nih.gov/api/npi_idv/v3/search?"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">req_url_query</span>(</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">terms   =</span> terms,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">maxList =</span> <span class="dv">500</span>,</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">count   =</span> <span class="dv">500</span>,</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">offset  =</span> <span class="dv">0</span>L,</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">.space =</span> <span class="st">"form"</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  resp <span class="ot">&lt;-</span> <span class="fu">req_perform</span>(req) <span class="sc">|&gt;</span> <span class="fu">resp_simple_json</span>()</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> resp[[<span class="dv">1</span>]]</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (n <span class="sc">&gt;</span> <span class="dv">7500</span>L) {</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    cli<span class="sc">::</span><span class="fu">cli_abort</span>(<span class="fu">c</span>(</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Your search returned {.strong {.val {n}}} results."</span>,</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>      <span class="st">"x"</span> <span class="ot">=</span> <span class="st">"The NLM API limit is {.strong {.emph 7,500}}."</span>))</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  results <span class="ot">&lt;-</span> resp[[<span class="dv">4</span>]] <span class="sc">|&gt;</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set_names</span>(<span class="fu">c</span>(<span class="st">"name"</span>, <span class="st">"npi"</span>, <span class="st">"specialty"</span>, <span class="st">"address"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as_tbl</span>()</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  nreq <span class="ot">&lt;-</span> <span class="fu">offset_length</span>(n, <span class="dv">500</span>) <span class="sc">&gt;</span> <span class="dv">1</span></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cli_n_results_requests</span>(n, <span class="dv">500</span>)</span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">false</span>(nreq)) {</span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(results)</span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>      results2 <span class="ot">&lt;-</span> <span class="fu">req_perform_iterative</span>(</span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>      req,</span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>      <span class="at">next_req        =</span> <span class="fu">iterate_with_offset</span>(</span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>        <span class="at">param_name    =</span> <span class="st">"offset"</span>,</span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>        <span class="at">start         =</span> <span class="dv">500</span>,</span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>        <span class="at">offset        =</span> <span class="dv">500</span>,</span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>        <span class="at">resp_complete =</span> <span class="fu">is_complete_with_limit</span>(<span class="dv">500</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>      <span class="fu">map</span>(</span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>        <span class="cf">function</span>(x) {</span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>          x <span class="ot">&lt;-</span> <span class="fu">resp_simple_json</span>(x)</span>
-<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>          x[[<span class="dv">4</span>]] <span class="sc">|&gt;</span></span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>            <span class="fu">as.data.frame</span>() <span class="sc">|&gt;</span></span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>            <span class="fu">set_names</span>(<span class="fu">c</span>(<span class="st">"name"</span>, <span class="st">"npi"</span>, <span class="st">"specialty"</span>, <span class="st">"address"</span>))</span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>        }) <span class="sc">|&gt;</span></span>
-<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rowbind</span>()</span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as_tbl</span>(<span class="fu">rowbind</span>(results, results2))</span>
-<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(provider)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidygeocoder)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tigris)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rmapshaper)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">tigris_use_cache =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="retrieve-addresses-of-all-rhcs-in-georgia" class="level2" data-number="16.2">
+<h2 data-number="16.2" class="anchored" data-anchor-id="retrieve-addresses-of-all-rhcs-in-georgia"><span class="header-section-number">16.2</span> Retrieve Addresses of all RHCs in Georgia</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>rhcs <span class="ot">&lt;-</span> provider<span class="sc">::</span><span class="fu">providers</span>(<span class="at">state =</span> <span class="st">"GA"</span>, <span class="at">specialty_code =</span> <span class="st">"00-17"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(npi) <span class="sc">|&gt;</span> </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dfr</span>(\(x) provider<span class="sc">::</span><span class="fu">nppes</span>(<span class="at">npi =</span> x)) <span class="sc">|&gt;</span> </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(organization, address<span class="sc">:</span>zip) <span class="sc">|&gt;</span> </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">address =</span> <span class="fu">paste0</span>(address, <span class="st">" "</span>, city, <span class="st">", "</span>, state)) <span class="sc">|&gt;</span> </span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>()</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>rhcs_ga <span class="ot">&lt;-</span> <span class="fu">sbt</span>(rhcs, state <span class="sc">!=</span> <span class="st">"FL"</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>rhcs_ga</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 84 × 5
+   organization                                  address       city  state zip  
+   &lt;chr&gt;                                         &lt;chr&gt;         &lt;chr&gt; &lt;ord&gt; &lt;chr&gt;
+ 1 TMC HARALSON FAMILY HEALTHCARE CENTER         204 ALLEN ME… BREM… GA    3011…
+ 2 TMC TALLAPOOSA FAMILY HEALTHCARE CENTER       25 W LYON ST… TALL… GA    3017…
+ 3 HIAWASSEE FAMILY PRACTICE P C                 56 HOSPITAL … HIAW… GA    3054…
+ 4 TMC WEST CARROLL FAMILY HEALTHCARE CENTER INC 1125 E HIGHW… BOWD… GA    3010…
+ 5 BACON COUNTY HEALTH SERVICES, INC             204 E 15TH S… ALMA  GA    3151…
+ 6 BOWDON- MT. ZION PRIMARY HEALTH CENTER ,INC.  41 WELLINGTO… WHIT… GA    3018…
+ 7 HOSPITAL AUTHORITY OF MITCHELL COUNTY         25 PERRY ST … CAMI… GA    3173…
+ 8 THE MEDICAL CENTER OF ELBERTON, LLP           109 COLLEGE … ELBE… GA    3063…
+ 9 UNION COUNTY HOSPITAL AUTHORITY               162 HOSPITAL… BLAI… GA    3051…
+10 HOSPITAL AUTHORITY OF MITCHELL COUNTY         259 US HIGHW… CAMI… GA    3173…
+# ℹ 74 more rows</code></pre>
+</div>
+</div>
+</section>
+<section id="geocode-with-tidygeocoder" class="level2" data-number="16.3">
+<h2 data-number="16.3" class="anchored" data-anchor-id="geocode-with-tidygeocoder"><span class="header-section-number">16.3</span> Geocode with {tidygeocoder}</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>geo_add <span class="ot">&lt;-</span> tidygeocoder<span class="sc">::</span><span class="fu">geocode</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  rhcs_ga,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">address =</span> address,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">'mapbox'</span>, </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">full_results =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>geo_add</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 84 × 24
+   organization     address city  state zip     lat  long id    type  place_type
+   &lt;chr&gt;            &lt;chr&gt;   &lt;chr&gt; &lt;ord&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;list&gt;    
+ 1 TMC HARALSON FA… 204 AL… BREM… GA    3011…  33.7 -85.1 addr… Feat… &lt;chr [1]&gt; 
+ 2 TMC TALLAPOOSA … 25 W L… TALL… GA    3017…  33.7 -85.3 addr… Feat… &lt;chr [1]&gt; 
+ 3 HIAWASSEE FAMIL… 56 HOS… HIAW… GA    3054… -26.3  28.2 addr… Feat… &lt;chr [1]&gt; 
+ 4 TMC WEST CARROL… 1125 E… BOWD… GA    3010…  33.6 -85.2 addr… Feat… &lt;chr [1]&gt; 
+ 5 BACON COUNTY HE… 204 E … ALMA  GA    3151…  31.5 -82.5 addr… Feat… &lt;chr [1]&gt; 
+ 6 BOWDON- MT. ZIO… 41 WEL… WHIT… GA    3018…  33.5 -84.9 addr… Feat… &lt;chr [1]&gt; 
+ 7 HOSPITAL AUTHOR… 25 PER… CAMI… GA    3173…  31.2 -84.2 addr… Feat… &lt;chr [1]&gt; 
+ 8 THE MEDICAL CEN… 109 CO… ELBE… GA    3063…  34.1 -82.9 addr… Feat… &lt;chr [1]&gt; 
+ 9 UNION COUNTY HO… 162 HO… BLAI… GA    3051…  34.9 -84.0 addr… Feat… &lt;chr [1]&gt; 
+10 HOSPITAL AUTHOR… 259 US… CAMI… GA    3173…  31.2 -84.2 addr… Feat… &lt;chr [1]&gt; 
+# ℹ 74 more rows
+# ℹ 14 more variables: relevance &lt;dbl&gt;, text &lt;chr&gt;, place_name &lt;chr&gt;,
+#   center &lt;list&gt;, mapbox_address &lt;chr&gt;, context &lt;list&gt;,
+#   properties.accuracy &lt;chr&gt;, properties.mapbox_id &lt;chr&gt;, geometry.type &lt;chr&gt;,
+#   geometry.coordinates &lt;list&gt;, `properties.override:postcode` &lt;chr&gt;,
+#   geometry.interpolated &lt;lgl&gt;, matching_text &lt;chr&gt;, matching_place_name &lt;chr&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>mapbox <span class="ot">&lt;-</span> geo_add <span class="sc">|&gt;</span> <span class="fu">select</span>(organization<span class="sc">:</span>long)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>mapbox</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 84 × 7
+   organization                            address city  state zip     lat  long
+   &lt;chr&gt;                                   &lt;chr&gt;   &lt;chr&gt; &lt;ord&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt;
+ 1 TMC HARALSON FAMILY HEALTHCARE CENTER   204 AL… BREM… GA    3011…  33.7 -85.1
+ 2 TMC TALLAPOOSA FAMILY HEALTHCARE CENTER 25 W L… TALL… GA    3017…  33.7 -85.3
+ 3 HIAWASSEE FAMILY PRACTICE P C           56 HOS… HIAW… GA    3054… -26.3  28.2
+ 4 TMC WEST CARROLL FAMILY HEALTHCARE CEN… 1125 E… BOWD… GA    3010…  33.6 -85.2
+ 5 BACON COUNTY HEALTH SERVICES, INC       204 E … ALMA  GA    3151…  31.5 -82.5
+ 6 BOWDON- MT. ZION PRIMARY HEALTH CENTER… 41 WEL… WHIT… GA    3018…  33.5 -84.9
+ 7 HOSPITAL AUTHORITY OF MITCHELL COUNTY   25 PER… CAMI… GA    3173…  31.2 -84.2
+ 8 THE MEDICAL CENTER OF ELBERTON, LLP     109 CO… ELBE… GA    3063…  34.1 -82.9
+ 9 UNION COUNTY HOSPITAL AUTHORITY         162 HO… BLAI… GA    3051…  34.9 -84.0
+10 HOSPITAL AUTHORITY OF MITCHELL COUNTY   259 US… CAMI… GA    3173…  31.2 -84.2
+# ℹ 74 more rows</code></pre>
+</div>
+</div>
+</section>
+<section id="retrieve-georgia-counties-shapefile-from-tigris" class="level2" data-number="16.4">
+<h2 data-number="16.4" class="anchored" data-anchor-id="retrieve-georgia-counties-shapefile-from-tigris"><span class="header-section-number">16.4</span> Retrieve Georgia counties shapefile from {tigris}</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>tig_cnt <span class="ot">&lt;-</span> tigris<span class="sc">::</span><span class="fu">counties</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">state =</span> <span class="st">"GA"</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">year =</span> <span class="dv">2022</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">progress_bar =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>tig_cnt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 159 features and 17 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: -85.6 ymin: 30.4 xmax: -80.8 ymax: 35
+Geodetic CRS:  NAD83
+First 10 features:
+    STATEFP COUNTYFP COUNTYNS GEOID     NAME        NAMELSAD LSAD CLASSFP MTFCC
+16       13      189 00348794 13189 McDuffie McDuffie County   06      H1 G4020
+53       13      025 00351605 13025 Brantley Brantley County   06      H1 G4020
+54       13      171 00326713 13171    Lamar    Lamar County   06      H1 G4020
+83       13      115 00353665 13115    Floyd    Floyd County   06      H1 G4020
+101      13      273 00352238 13273  Terrell  Terrell County   06      H1 G4020
+102      13      063 01672399 13063  Clayton  Clayton County   06      H1 G4020
+105      13      073 00348865 13073 Columbia Columbia County   06      H1 G4020
+126      13      193 00346957 13193    Macon    Macon County   06      H1 G4020
+146      13      049 00357747 13049 Charlton Charlton County   06      H1 G4020
+147      13      233 00343585 13233     Polk     Polk County   06      H1 G4020
+    CSAFP CBSAFP METDIVFP FUNCSTAT      ALAND   AWATER    INTPTLAT     INTPTLON
+16   &lt;NA&gt;   &lt;NA&gt;     &lt;NA&gt;        A  666591525 23112523 +33.4806126 -082.4795333
+53   &lt;NA&gt;   &lt;NA&gt;     &lt;NA&gt;        A 1147972258 10291563 +31.1973339 -081.9829779
+54   &lt;NA&gt;   &lt;NA&gt;     &lt;NA&gt;        A  475264405  6044329 +33.0744405 -084.1466893
+83   &lt;NA&gt;   &lt;NA&gt;     &lt;NA&gt;        A 1320431515 22387093 +34.2636901 -085.2136849
+101  &lt;NA&gt;   &lt;NA&gt;     &lt;NA&gt;        A  869695791  4951325 +31.7771909 -084.4394464
+102  &lt;NA&gt;   &lt;NA&gt;     &lt;NA&gt;        A  367145192  6928044 +33.5516027 -084.4128678
+105  &lt;NA&gt;   &lt;NA&gt;     &lt;NA&gt;        A  751598754 45345677 +33.5520746 -082.2496077
+126  &lt;NA&gt;   &lt;NA&gt;     &lt;NA&gt;        A 1037709945 13841916 +32.3626859 -084.0512306
+146  &lt;NA&gt;   &lt;NA&gt;     &lt;NA&gt;        A 2020415648  5963237 +30.7799036 -082.1396442
+147  &lt;NA&gt;   &lt;NA&gt;     &lt;NA&gt;        A  803775591  4664760 +33.9960153 -085.1883384
+                          geometry
+16  MULTIPOLYGON (((-82.6 33.6,...
+53  MULTIPOLYGON (((-81.9 31.1,...
+54  MULTIPOLYGON (((-84.2 33.1,...
+83  MULTIPOLYGON (((-85 34.3, -...
+101 MULTIPOLYGON (((-84.3 31.7,...
+102 MULTIPOLYGON (((-84.5 33.6,...
+105 MULTIPOLYGON (((-82.4 33.6,...
+126 MULTIPOLYGON (((-83.8 32.4,...
+146 MULTIPOLYGON (((-82.4 30.8,...
+147 MULTIPOLYGON (((-85.2 33.9,...</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>sf_cnt <span class="ot">&lt;-</span> <span class="fu">ms_simplify</span>(tig_cnt)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>sf_cnt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 159 features and 17 fields
+Geometry type: GEOMETRY
+Dimension:     XY
+Bounding box:  xmin: -85.6 ymin: 30.4 xmax: -80.8 ymax: 35
+Geodetic CRS:  NAD83
+First 10 features:
+   FUNCSTAT GEOID COUNTYFP    INTPTLAT CBSAFP CSAFP COUNTYNS CLASSFP METDIVFP
+1         A 13189      189 +33.4806126   &lt;NA&gt;  &lt;NA&gt; 00348794      H1     &lt;NA&gt;
+2         A 13025      025 +31.1973339   &lt;NA&gt;  &lt;NA&gt; 00351605      H1     &lt;NA&gt;
+3         A 13171      171 +33.0744405   &lt;NA&gt;  &lt;NA&gt; 00326713      H1     &lt;NA&gt;
+4         A 13115      115 +34.2636901   &lt;NA&gt;  &lt;NA&gt; 00353665      H1     &lt;NA&gt;
+5         A 13273      273 +31.7771909   &lt;NA&gt;  &lt;NA&gt; 00352238      H1     &lt;NA&gt;
+6         A 13063      063 +33.5516027   &lt;NA&gt;  &lt;NA&gt; 01672399      H1     &lt;NA&gt;
+7         A 13073      073 +33.5520746   &lt;NA&gt;  &lt;NA&gt; 00348865      H1     &lt;NA&gt;
+8         A 13193      193 +32.3626859   &lt;NA&gt;  &lt;NA&gt; 00346957      H1     &lt;NA&gt;
+9         A 13049      049 +30.7799036   &lt;NA&gt;  &lt;NA&gt; 00357747      H1     &lt;NA&gt;
+10        A 13233      233 +33.9960153   &lt;NA&gt;  &lt;NA&gt; 00343585      H1     &lt;NA&gt;
+       NAME        NAMELSAD LSAD MTFCC STATEFP      ALAND   AWATER     INTPTLON
+1  McDuffie McDuffie County   06 G4020      13  666591525 23112523 -082.4795333
+2  Brantley Brantley County   06 G4020      13 1147972258 10291563 -081.9829779
+3     Lamar    Lamar County   06 G4020      13  475264405  6044329 -084.1466893
+4     Floyd    Floyd County   06 G4020      13 1320431515 22387093 -085.2136849
+5   Terrell  Terrell County   06 G4020      13  869695791  4951325 -084.4394464
+6   Clayton  Clayton County   06 G4020      13  367145192  6928044 -084.4128678
+7  Columbia Columbia County   06 G4020      13  751598754 45345677 -082.2496077
+8     Macon    Macon County   06 G4020      13 1037709945 13841916 -084.0512306
+9  Charlton Charlton County   06 G4020      13 2020415648  5963237 -082.1396442
+10     Polk     Polk County   06 G4020      13  803775591  4664760 -085.1883384
+                         geometry
+1  POLYGON ((-82.6 33.6, -82.6...
+2  POLYGON ((-81.9 31, -81.9 3...
+3  POLYGON ((-84.2 33.2, -84.2...
+4  POLYGON ((-85 34.1, -85 34....
+5  POLYGON ((-84.3 31.7, -84.3...
+6  POLYGON ((-84.4 33.6, -84.4...
+7  POLYGON ((-82.4 33.7, -82.4...
+8  MULTIPOLYGON (((-83.8 32.3,...
+9  POLYGON ((-82.1 31, -82.2 3...
+10 POLYGON ((-85.4 33.9, -85.3...</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>sf_cnt<span class="sc">$</span>mid <span class="ot">&lt;-</span> <span class="fu">st_centroid</span>(sf_cnt<span class="sc">$</span>geometry)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>sf_cnt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 159 features and 17 fields
+Active geometry column: geometry
+Geometry type: GEOMETRY
+Dimension:     XY
+Bounding box:  xmin: -85.6 ymin: 30.4 xmax: -80.8 ymax: 35
+Geodetic CRS:  NAD83
+First 10 features:
+   FUNCSTAT GEOID COUNTYFP    INTPTLAT CBSAFP CSAFP COUNTYNS CLASSFP METDIVFP
+1         A 13189      189 +33.4806126   &lt;NA&gt;  &lt;NA&gt; 00348794      H1     &lt;NA&gt;
+2         A 13025      025 +31.1973339   &lt;NA&gt;  &lt;NA&gt; 00351605      H1     &lt;NA&gt;
+3         A 13171      171 +33.0744405   &lt;NA&gt;  &lt;NA&gt; 00326713      H1     &lt;NA&gt;
+4         A 13115      115 +34.2636901   &lt;NA&gt;  &lt;NA&gt; 00353665      H1     &lt;NA&gt;
+5         A 13273      273 +31.7771909   &lt;NA&gt;  &lt;NA&gt; 00352238      H1     &lt;NA&gt;
+6         A 13063      063 +33.5516027   &lt;NA&gt;  &lt;NA&gt; 01672399      H1     &lt;NA&gt;
+7         A 13073      073 +33.5520746   &lt;NA&gt;  &lt;NA&gt; 00348865      H1     &lt;NA&gt;
+8         A 13193      193 +32.3626859   &lt;NA&gt;  &lt;NA&gt; 00346957      H1     &lt;NA&gt;
+9         A 13049      049 +30.7799036   &lt;NA&gt;  &lt;NA&gt; 00357747      H1     &lt;NA&gt;
+10        A 13233      233 +33.9960153   &lt;NA&gt;  &lt;NA&gt; 00343585      H1     &lt;NA&gt;
+       NAME        NAMELSAD LSAD MTFCC STATEFP      ALAND   AWATER     INTPTLON
+1  McDuffie McDuffie County   06 G4020      13  666591525 23112523 -082.4795333
+2  Brantley Brantley County   06 G4020      13 1147972258 10291563 -081.9829779
+3     Lamar    Lamar County   06 G4020      13  475264405  6044329 -084.1466893
+4     Floyd    Floyd County   06 G4020      13 1320431515 22387093 -085.2136849
+5   Terrell  Terrell County   06 G4020      13  869695791  4951325 -084.4394464
+6   Clayton  Clayton County   06 G4020      13  367145192  6928044 -084.4128678
+7  Columbia Columbia County   06 G4020      13  751598754 45345677 -082.2496077
+8     Macon    Macon County   06 G4020      13 1037709945 13841916 -084.0512306
+9  Charlton Charlton County   06 G4020      13 2020415648  5963237 -082.1396442
+10     Polk     Polk County   06 G4020      13  803775591  4664760 -085.1883384
+                         geometry                mid
+1  POLYGON ((-82.6 33.6, -82.6... POINT (-82.5 33.5)
+2  POLYGON ((-81.9 31, -81.9 3...   POINT (-82 31.2)
+3  POLYGON ((-84.2 33.2, -84.2... POINT (-84.1 33.1)
+4  POLYGON ((-85 34.1, -85 34.... POINT (-85.2 34.3)
+5  POLYGON ((-84.3 31.7, -84.3... POINT (-84.4 31.8)
+6  POLYGON ((-84.4 33.6, -84.4... POINT (-84.4 33.5)
+7  POLYGON ((-82.4 33.7, -82.4... POINT (-82.3 33.5)
+8  MULTIPOLYGON (((-83.8 32.3,...   POINT (-84 32.4)
+9  POLYGON ((-82.1 31, -82.2 3... POINT (-82.1 30.8)
+10 POLYGON ((-85.4 33.9, -85.3...   POINT (-85.2 34)</code></pre>
+</div>
+</div>
+</section>
+<section id="map-with-ggplot" class="level2" data-number="16.5">
+<h2 data-number="16.5" class="anchored" data-anchor-id="map-with-ggplot"><span class="header-section-number">16.5</span> Map with {ggplot}</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sf_cnt) <span class="sc">+</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"skyblue"</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">colour =</span> <span class="st">"white"</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf_text</span>(</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">geometry =</span> geometry, </span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">label =</span> NAME),</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">check_overlap =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> <span class="fu">sbt</span>(mapbox, city <span class="sc">!=</span> <span class="st">"HIAWASSEE"</span>),</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">mapping =</span> <span class="fu">aes</span>(long, lat),</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"yellow"</span>,</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"darkred"</span>,</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.75</span>,</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">4</span>,</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape =</span> <span class="dv">21</span>,</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">stroke =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="demo_geo_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
 </div>
 
 
@@ -841,14 +1047,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./api_ndc.html" class="pagination-link" aria-label="National Drug Codes">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">National Drug Codes</span></span>
+      <a href="./end_enrollees.html" class="pagination-link" aria-label="`enrollees`">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title"><code>enrollees</code></span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./faq_schema.html" class="pagination-link" aria-label="DCAT Metadata Schema">
-        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">DCAT Metadata Schema</span></span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->
