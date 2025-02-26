@@ -1,23 +1,9 @@
----
-title: "QPP API"
-editor_options: 
-   chunk_output_type: console
----
+# QPP Eligibility {#sec-qppapi}
 
 ```{r}
 #| label: setup-common-01
 #| include: false
 source("includes/_common.R")
-
-htmltools::tagList(
-  btn_link(
-    "https://andrewallenbruce.github.io/provider/reference/quality_eligibility.html", 
-    "Documentation"
-    ),
-  btn_link(
-    "https://github.com/andrewallenbruce/provider/blob/main/R/quality_eligibility.R", 
-    "Source"
-    ))
 ```
 
    * [QPP Eligibility API Documentation](https://cmsgov.github.io/qpp-eligibility-docs/)
@@ -28,7 +14,7 @@ htmltools::tagList(
 
 ```{r}
 #| label: stats_endpoint
-request("https://qpp.cms.gov/api/eligibility/stats/?year=2025") |>
+request("https://qpp.cms.gov/api/eligibility/stats/?year=2024") |>
   req_headers(Accept = "application/vnd.qpp.cms.gov.v6+json") |>
   req_perform() |>
   resp_body_json(simplifyVector = TRUE)
@@ -38,13 +24,13 @@ request("https://qpp.cms.gov/api/eligibility/stats/?year=2025") |>
 
 ```{r}
 #| label: main_endpoint
-request("https://qpp.cms.gov/api/eligibility/npis/1043477615/?year=2025") |>
+request("https://qpp.cms.gov/api/eligibility/npis/1043477615/?year=2024") |>
   req_headers(Accept = "application/vnd.qpp.cms.gov.v6+json") |>
   req_error(body = \(resp) resp_body_json(resp)$error$message) |>
   req_perform() |>
   resp_body_json(simplifyVector = TRUE) |> 
-  pluck(1) |> 
-  tibble() |> 
+  _[["data"]] |> 
+  as_tbl() |> 
   unnest_wider(specialty, names_sep = "_") |>
   unnest_wider(organizations, names_sep = "_") |>
   unnest_wider(organizations_apms, names_sep = "_") |>
@@ -73,7 +59,7 @@ request("https://qpp.cms.gov/api/eligibility/npis/1043477615/?year=2025") |>
 
 ```{r}
 #| label: dict_base
-c(
+list(
   year                     = 'Year',
   npi                      = 'National Provider Identifier (NPI) is a unique 10-digit identification number issued to health care providers by CMS',
   npi_type                 = 'Numeric code describing the type of provider that is is represented by the National Provider Identifier (NPI)',
@@ -100,14 +86,15 @@ c(
   state                    = 'Nine digit zip code',
   zip                      = 'Uppercased state abbreviation',
   hospitalVbpName          = 'Facility name within the Hospital Value-Based Purchasing Program'
-)
+) |> 
+  fuimus::print_ls()
 ```
 
 ### Individual Scenario
 
 ```{r}
 #| label: dict_individual_scenario
-c(
+list(
   aciHardship              = 'True if there is an approved ACI Hardship Exemption application',
   aciReweighting           = 'True if the group meets the conditions necessary for ACI Reweighting',
   aggregationLevel         = 'Allowed values: 1, 2',
@@ -147,14 +134,15 @@ c(
   optInDecisionDate        = 'The date of the opt-in decision.',
   ruralClinician           = 'True if clinician has at least one claim with a zip code designated as rural',
   smallGroupPractitioner   = 'True if 15 or fewer clinicians bill under the group'
-)
+) |> 
+  fuimus::print_ls()
 ```
 
 ### Group Scenario
 
 ```{r}
 #| label: dict_group_scenario
-c(
+list(
   aciHardship              = 'True if there is an approved ACI Hardship Exemption application',
   aciReweighting           = 'True if the group meets the conditions necessary for ACI Reweighting',
   aggregationLevel         = 'Allowed values: 1, 2',
@@ -192,14 +180,15 @@ c(
   optInDecisionDate        = 'The date of the opt-in decision.',
   ruralClinician           = 'True if clinician has at least one claim with a zip code designated as rural',
   smallGroupPractitioner   = 'True if 15 or fewer clinicians bill under the group'
-)
+) |> 
+  fuimus::print_ls()
 ```
 
 ### APM Scenario
 
 ```{r}
 #| label: dict_apm_scenario
-c(
+list(
   entityName               = 'Official name of the Organization',
   lvtFlag                  = 'Indicates if the APM Entity is below the low volume threshold',
   lvtPayments              = 'Total aggregated expenditures of the APM Entity',
@@ -226,14 +215,15 @@ c(
   extremeHardshipEventType = 'Type of extreme hardship event',
   extremeHardshipSources   = 'Extreme hardship reporting source. Allowed values: auto-fema, manual, auto-covid.',
   isOptedIn                = 'Whether the entity has opted in or opted out. Will be null if no decision has been made.'
-)
+) |> 
+  fuimus::print_ls()
 ```
 
 ### Virtual Group Scenario
 
 ```{r}
 #| label: dict_virtual_group_scenario
-c(
+list(
   virtualGroupIdentifier = 'Masked Virtual Group identifier.',
   claimsTypes            = 'Type of claims made by this Virtual Group.',
   lowVolumeStatusReasons = NA_character_,
@@ -245,14 +235,15 @@ c(
   hospitalVbpName        = 'Facility name within the Hospital Value-Based Purchasing Program',
   isFacilityBased        = 'True if the threshold of facility based encounters is met',
   hospitalVbpScore       = 'Hospital Value-Based Purchasing Program score'
-)
+) |> 
+  fuimus::print_ls()
 ```
 
 ### Special Scenario
 
 ```{r}
 #| label: dict_special_scenario
-c(
+list(
   aciReweighting           = 'True if the group meets the conditions necessary for ACI Reweighting',
   nonPatientFacing         = 'True if patient-facing encounters met the encounter threshold',
   ruralClinician           = 'True if clinician has at least one claim with a zip code designated as rural',
@@ -270,7 +261,8 @@ c(
   cost                     = 'True if extreme hardship exemption due to cost',
   extremeHardshipEventType = 'Type of extreme hardship event',
   extremeHardshipSources   = 'Extreme hardship reporting source. Allowed values: auto-fema, manual, auto-covid.'
-)
+) |> 
+  fuimus::print_ls()
 ```
 
 ### MAQI
