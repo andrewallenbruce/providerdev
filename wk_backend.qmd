@@ -42,20 +42,52 @@ class_Identifier <- new_class(
 ### `class_Resources`
 
 ```{r}
-#| label: class_Resources
-class_Resources <- new_class(
-  name       = "class_Resources",
-  properties = list(
-    url = NULL | class_character,
-    files = new_property(
-      class  = NULL | class_data.frame,
-      getter = function(self) {
-        if (not_null(self@url)) {
-          qTBL(fload(self@url, query = "/data")) |>
-            mtt(fileSize = prettyunits::pretty_bytes(fileSize, "nopad"))
-        }})
+#| label: class_resources
+ex_url <- paste0(
+  "https://data.cms.gov/",
+  "data-api/v1/",
+  "dataset-resources/",
+  "7dcf9ea6-ee2f-4bf1-8b5d-39c18b0e8541"
   )
+
+get_resources <- function(x) {
+  
+  fload(x, query = "/data") |> 
+    as_tbl() |>
+    fcompute(file = name,
+             size = roundup(fileSize / 1e6),
+             ext = tools::file_ext(downloadURL),
+             downloadurl = downloadURL) |> 
+    roworder(ext, -size)
+}
+
+class_resources <- new_class(
+  name       = "class_resources",
+  properties = list(
+    url      = class_character,
+    files    = new_property(
+      class  = class_list,
+      getter = function(self)
+        fload(self@url, query = "/data") |>
+        cheapr::as_df() |>
+        fcompute(
+          file         = name,
+          size         = roundup(fileSize / 1e6),
+          ext          = tools::file_ext(downloadURL),
+          downloadurl  = downloadURL) |>
+        roworder(ext, -size)
+      )
+    ),
+  validator = function(self) 
+    if (length(self@url) != 1L) "must be length 1"
 )
+
+get_resources(ex_url)
+
+x <- class_resources(ex_url)
+
+x@files |> 
+  as_tbl()
 ```
 
 ```{r}
@@ -77,7 +109,7 @@ class_API <- new_class(
           self 
           }
         }),
-    resourcesAPI       = class_Resources,
+    resourcesAPI       = class_resources,
     downloadURL        = class_character,
     describedBy        = class_character,
     landingPage        = class_character
@@ -134,122 +166,69 @@ main[["distribution_csv"]]
 
 ### `S7` Sketches
 
-#### `class_contactPoint`
+#### `class_distribution`
 
 ```{r}
-#| label: class_contactPoint
-class_contactPoint <- new_class(
-  name       = "class_contactPoint",
-  properties = list(
-    type     = new_property(class_character, 
-                            default = "vcard:Contact"),
-    fn       = class_character,
-    hasEmail = class_character,
-    hasURL   = class_character
-  )
-)
-```
-
-#### `class_publisher`
-
-```{r}
-#| label: class_publisher
-class_publisher <- new_class(
-  name       = "class_publisher",
-  properties = list(
-    type     = new_property(class_character, 
-                            default = "org:Organization"),
-    name     = new_property(class_character, 
-                            default = "Centers for Medicare & Medicaid Services")
-  )
-)
-```
-
-#### `class_Distribution`
-
-```{r}
-#| label: class_Distribution
-class_Distribution <- new_class(
-  name           = "class_Distribution",
+#| label: class_distribution
+class_distribution <- new_class(
+  name           = "class_distribution",
   properties     = list(
-    type         = new_property(class_character, 
-                                default = "dcat:Distribution"),
-    format       = class_character,
-    accessURL    = class_character,
-    resourcesAPI = class_character,
-    description  = class_character,
     title        = class_character,
+    description  = class_character,
+    format       = class_character,
+    accessurl    = class_character,
+    resources    = class_resources,
     modified     = class_Date,
     temporal     = class_character,
-    downloadURL  = class_character,
+    downloadurl  = class_character,
     mediaType    = class_character
     )
   )
+
+class_distribution
 ```
 
-#### `class_Dataset`
+#### `class_dataset`
 
 ```{r}
-#| label: class_Dataset
-class_Dataset <- new_class(
-  name = "class_Dataset",
+#| label: class_dataset
+class_dataset <- new_class(
+  name = "class_dataset",
   properties = list(
-    type               = new_property(class_character, 
-                                      default = "dcat:Dataset"),
-    accessLevel        = new_property(class_character, 
-                                      default = "public"),
-    accrualPeriodicity = class_character,
-    bureauCode         = new_property(class_character, 
-                                      default = "009:38"),
-    contactPoint       = new_property(class_contactPoint),
-    describedBy        = class_character,
-    dataQuality        = new_property(class_logical, 
-                                      default = TRUE),
-    description        = class_character,
-    distribution       = class_Distribution,
-    identifier         = class_character,
-    keyword            = class_character,
-    landingPage        = class_character,
-    language           = class_character,
-    license            = class_character,
-    issued             = class_Date,
-    modified           = class_Date,
-    released           = class_Date,
-    programCode        = new_property(class_character, 
-                                      default = "009:000"),
-    publisher          = new_property(class_publisher),
-    references         = class_character,
-    temporal           = class_character,
-    theme              = class_character,
-    title              = class_character,
-    describedByType    = class_character,
-    archiveExclude     = new_property(class_logical)
+    title        = class_character,
+    periodicity  = class_character,
+    contact      = class_character,
+    dictionary   = class_character,
+    description  = class_character,
+    distribution = class_distribution,
+    identifier   = class_character,
+    site         = class_character,
+    issued       = class_Date,
+    modified     = class_Date,
+    released     = class_Date,
+    references   = class_character,
+    temporal     = class_character,
+    group        = class_character
   ))
 
-class_Dataset()
+class_dataset
 ```
 
-#### `class_Catalog`
+#### `class_catalog`
 
 ```{r}
-#| label: class_Catalog
-class_Catalog <- new_class(
-  name = "class_Catalog",
+#| label: class_catalog
+class_catalog <- new_class(
+  name = "class_catalog",
   properties = list(
-    type        = new_property(class_character, 
-                               default = "dcat:Catalog"),
-    context     = new_property(class_character, 
-                               default = "https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld"),
-    id          = class_character,
-    conformsTo  = new_property(class_character, 
-                               default = "https://project-open-data.cio.gov/v1.1/schema"),
-    describedBy = new_property(class_character, 
-                               default = "https://project-open-data.cio.gov/v1.1/schema/catalog.json"),
-    dataset     = class_Dataset
+    groups = class_list),
+  validator = function(self) 
+    if (!rlang::is_named(self@groups)) "all @groups must be named"
   )
-)
 
-class_Catalog()
+class_catalog(groups = list(a = 1))
+
+try(class_catalog(groups = list(1)))
 ```
 
 ## Dataset Object
