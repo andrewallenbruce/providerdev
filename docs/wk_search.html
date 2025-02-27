@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="This is a personal, informal guide to rewriting an R package. It is a work in progress and will be updated as I learn more about the process.">
+
+<title>14&nbsp; Comprehensive Search – Refactoring Provider</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./end_affiliations.html" rel="next">
+<link href="./wk_download.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-fae04a4dda57acfb7da1e58796bfa73f.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-961a2cdaad528753ea29c3be32c286d9.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+
+<script src="site_libs/viz-1.8.2/viz.js"></script>
+
+<link href="site_libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet">
+
+<script src="site_libs/grViz-binding-1.0.11/grViz.js"></script>
+
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./wk_backend.html">Work Areas</a></li><li class="breadcrumb-item"><a href="./wk_search.html"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Comprehensive Search</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Refactoring Provider</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/andrewallenbruce/providerdev" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">APIs</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./api_main.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Main</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./api_prov.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Provider</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./api_open.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Open Payments</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./api_qpp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">QPP Eligibility</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./api_ndc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">National Drug Codes</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./api_nppes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">NPPES Registry</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Notes</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./faq_schema.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">DCAT Metadata Schema</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./faq_syntax.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">JSON:API Syntax</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Work Areas</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wk_backend.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Backend Preload</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wk_groups.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Keyword Groups</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wk_url.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">URL Object</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wk_query.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Querying</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wk_download.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Downloads</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wk_search.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Comprehensive Search</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Endpoints</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./end_affiliations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title"><code>affiliations</code></span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./end_enrollees.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title"><code>enrollees</code></span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Demos</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./demo_geo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Geospatial</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#individual-provider" id="toc-individual-provider" class="nav-link active" data-scroll-target="#individual-provider"><span class="header-section-number">14.0.1</span> Individual Provider</a></li>
+  <li><a href="#organizational-provider" id="toc-organizational-provider" class="nav-link" data-scroll-target="#organizational-provider"><span class="header-section-number">14.0.2</span> Organizational Provider</a></li>
+  </ul>
+<div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./wk_backend.html">Work Areas</a></li><li class="breadcrumb-item"><a href="./wk_search.html"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Comprehensive Search</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-compsearch" class="quarto-section-identifier"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Comprehensive Search</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="individual-provider" class="level3" data-number="14.0.1">
+<h3 data-number="14.0.1" class="anchored" data-anchor-id="individual-provider"><span class="header-section-number">14.0.1</span> Individual Provider</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>individual_search <span class="ot">&lt;-</span> <span class="cf">function</span>(npi) {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">lst</span>(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">nppes        =</span> provider<span class="sc">::</span><span class="fu">nppes</span>(<span class="at">npi =</span> npi),</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">enrollment   =</span> provider<span class="sc">::</span><span class="fu">providers</span>(<span class="at">npi =</span> npi),</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">order_refer  =</span> provider<span class="sc">::</span><span class="fu">order_refer</span>(<span class="at">npi =</span> npi, <span class="at">pivot =</span> <span class="cn">FALSE</span>),</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">reassignment =</span> provider<span class="sc">::</span><span class="fu">reassignments</span>(<span class="at">npi =</span> npi),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">clinician    =</span> provider<span class="sc">::</span><span class="fu">clinicians</span>(<span class="at">npi =</span> npi),</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">affiliations =</span> provider<span class="sc">::</span><span class="fu">affiliations</span>(<span class="at">npi =</span> npi) <span class="sc">|&gt;</span> </span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>      _[[<span class="st">"facility_ccn"</span>]] <span class="sc">|&gt;</span> </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>      purrr<span class="sc">::</span><span class="fu">map_dfr</span>(\(x) provider<span class="sc">::</span><span class="fu">hospitals</span>(<span class="at">facility_ccn =</span> x)) <span class="sc">|&gt;</span> </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">funique</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>)),</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">taxonomy =</span> <span class="fu">handle_na</span>(<span class="fu">sbt</span>(</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        arktax<span class="sc">::</span><span class="fu">taxonomy_raw</span>(<span class="at">taxonomy_code =</span> nppes<span class="sc">$</span>tx_code), </span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>        year <span class="sc">==</span> <span class="fu">fmax</span>(year) <span class="sc">&amp;</span> version <span class="sc">==</span> <span class="fu">fmax</span>(version))</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>      ))</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">individual_search</span>(<span class="at">npi =</span> <span class="dv">1043245657</span>)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>x <span class="sc">|&gt;</span> </span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>- $nppes       $npi                   c1  1043245657                        ...
+- $nppes       $entity_type           f1  Individual                        ...
+- $nppes       $enum_date             D1  2006-07-11                        ...
+- $nppes       $last_update           D1  2013-10-08                        ...
+- $nppes       $status                f1  Active                            ...
+- $nppes       $prefix                c1  Dr.                               ...
+- $nppes       $first                 c1  MARK                              ...
+- $nppes       $middle                c1  K                                 ...
+- $nppes       $last                  c1  FUNG                              ...
+- $nppes       $gender                f1  Unknown                           ...
+- $nppes       $credential            c1  MD, PhD                           ...
+- $nppes       $sole_prop             l1  F                                 ...
+- $nppes       $purpose               f1  Practice                          ...
+- $nppes       $address               c1  111 COLCHESTER AVE FLETCHER ALLEN ...
+- $nppes       $city                  c1  BURLINGTON                        ...
+- $nppes       $state                 f1  VT                                ...
+- $nppes       $zip                   c1  054011473                         ...
+- $nppes       $country               c1  US                                ...
+- $nppes       $phone                 c1  802-847-3000                      ...
+- $nppes       $fax                   c1  802-847-3509                      ...
+- $nppes       $tx_code               c1  207ZB0001X                        ...
+- $nppes       $tx_primary            l1  T                                 ...
+- $nppes       $tx_desc               c1  Pathology, Blood Banking &amp; Transf ...
+- $nppes       $tx_license            c1  042-0010655                       ...
+- $nppes       $tx_state              f1  VT                                ...
+- $nppes       $id_code               c1  05                                ...
+- $nppes       $id_desc               c1  MEDICAID                          ...
+- $nppes       $id_state              f1  VT                                ...
+- $nppes       $id_identifier         c1  1010070                           ...
+- $enrollment  $npi                   c1  1043245657              
+- $enrollment  $pac                   c1  7810891009              
+- $enrollment  $enid                  c1  I20031120000251         
+- $enrollment  $specialty_code        c1  14-22                   
+- $enrollment  $specialty_description c1  PRACTITIONER - PATHOLOGY
+- $enrollment  $state                 f1  VT                      
+- $enrollment  $first                 c1  MARK                    
+- $enrollment  $middle                c1  K                       
+- $enrollment  $last                  c1  FUNG                    
+- $enrollment  $gender                f1  Male                    
+- $order_refer $npi                   c1  1043245657
+- $order_refer $last_name             c1  FUNG      
+- $order_refer $first_name            c1  MARK      
+- $order_refer $partb                 l1  T         
+- $order_refer $dme                   l1  T         
+- $order_refer $hha                   l1  T         
+- $order_refer $pmd                   l1  T         
+- $order_refer $hospice               l1  T         
+- $reassignment$npi                   c1  1043245657                        ...
+- $reassignment$pac                   c1  7810891009                        ...
+- $reassignment$enid                  c1  I20031120000251                   ...
+- $reassignment$first                 c1  MARK                              ...
+- $reassignment$last                  c1  FUNG                              ...
+- $reassignment$associations          i1  1                                 ...
+- $reassignment$organization          c1  UNIVERSITY OF VERMONT MEDICAL CEN ...
+- $reassignment$pac_org               c1  3779491071                        ...
+- $reassignment$enid_org              c1  O20060822000040                   ...
+- $reassignment$state_org             f1  VT                                ...
+- $reassignment$reassignments         i1  97                                ...
+- $reassignment$entry                 f1  Reassignment                      ...
+- $clinician   $npi                   c1  1043245657                        ...
+- $clinician   $pac                   c1  7810891009                        ...
+- $clinician   $enid                  c1  I20031120000251                   ...
+- $clinician   $first                 c1  MARK                              ...
+- $clinician   $middle                c1  K                                 ...
+- $clinician   $last                  c1  FUNG                              ...
+- $clinician   $gender                f1  Male                              ...
+- $clinician   $credential            c1  MD                                ...
+- $clinician   $school                c1  UNIVERSITY OF ALABAMA SCHOOL OF M ...
+- $clinician   $grad_year             i1  1999                              ...
+- $clinician   $specialty             c1  PATHOLOGY                         ...
+- $clinician   $facility_name         c1  UNIVERSITY OF VERMONT MEDICAL CEN ...
+- $clinician   $pac_org               c1  3779491071                        ...
+- $clinician   $members_org           i1  1027                              ...
+- $clinician   $address_org           c1  111 COLCHESTER AVE                ...
+- $clinician   $city_org              c1  BURLINGTON                        ...
+- $clinician   $state_org             f1  VT                                ...
+- $clinician   $zip_org               c1  054011473                         ...
+- $clinician   $phone_org             c1  8028470000                        ...
+- $affiliations$npi_org               c3  1033270699                        ...
+- $affiliations$pac_org               c3  2769396878                        ...
+- $affiliations$enid_org              c3  O20120110000201                   ...
+- $affiliations$enid_state            f3  NY                                ...
+- $affiliations$facility_ccn          c3  330250                            ...
+- $affiliations$organization          c3  CHAMPLAIN VALLEY PHYSICIANS HOSPI ...
+- $affiliations$doing_business_as     c3  THE UNIVERSITY OF VT HEALTH NETWO ...
+- $affiliations$specialty_code        c3  00-09                             ...
+- $affiliations$specialty             c3  PART A PROVIDER - HOSPITAL        ...
+- $affiliations$incorp_date           D3  1926-01-01                        ...
+- $affiliations$incorp_state          f3  NY                                ...
+- $affiliations$structure             c3  CORPORATION                       ...
+- $affiliations$address               c3  75 BEEKMAN ST                     ...
+- $affiliations$city                  c3  PLATTSBURGH                       ...
+- $affiliations$state                 f3  NY                                ...
+- $affiliations$zip                   c3  129011438                         ...
+- $affiliations$location_type         c3  MAIN/PRIMARY HOSPITAL LOCATION    ...
+- $affiliations$registration          f3  Non-Profit                        ...
+- $affiliations$multi_npi             l3  F                                 ...
+- $affiliations$reh_conversion        l3  F                                 ...
+- $affiliations$subgroup              f3  Acute Care                        ...
+- $taxonomy    $year                  d1  2024                              ...
+- $taxonomy    $version               i1  1                                 ...
+- $taxonomy    $code                  c1  207ZB0001X                        ...
+- $taxonomy    $display_name          c1  Blood Banking &amp; Transfusion Medic ...
+- $taxonomy    $section               c1  Individual                        ...
+- $taxonomy    $grouping              c1  Allopathic &amp; Osteopathic Physicia ...
+- $taxonomy    $classification        c1  Pathology                         ...
+- $taxonomy    $specialization        c1  Blood Banking &amp; Transfusion Medic ...
+- $taxonomy    $definition            c1  A physician who specializes in bl ...
+- $taxonomy    $notes                 c1  Source: American Board of Medical ...</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dm)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>xdm <span class="ot">&lt;-</span> <span class="fu">new_dm</span>(x) <span class="sc">|&gt;</span> </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_pk</span>(nppes, npi) <span class="sc">|&gt;</span> </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_pk</span>(enrollment, npi) <span class="sc">|&gt;</span> </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_pk</span>(reassignment, npi) <span class="sc">|&gt;</span> </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_pk</span>(order_refer, npi) <span class="sc">|&gt;</span> </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_pk</span>(clinician, npi) <span class="sc">|&gt;</span> </span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_pk</span>(affiliations, facility_ccn) <span class="sc">|&gt;</span> </span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># dm_add_pk(hospitals, facility_ccn) |&gt; </span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_pk</span>(taxonomy, code) <span class="sc">|&gt;</span> </span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_fk</span>(nppes, npi, enrollment) <span class="sc">|&gt;</span> </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_fk</span>(nppes, tx_code, taxonomy, code) <span class="sc">|&gt;</span> </span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># dm_add_fk(nppes, npi, affiliations, npi) |&gt; </span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_fk</span>(enrollment, npi, clinician) <span class="sc">|&gt;</span> </span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_fk</span>(enrollment, npi, order_refer) <span class="sc">|&gt;</span> </span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_fk</span>(order_refer, npi, reassignment) <span class="sc">|&gt;</span> </span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># dm_add_fk(clinician, npi, affiliations, npi) |&gt; </span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_fk</span>(clinician, pac_org, affiliations, pac_org) <span class="sc">|&gt;</span> </span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_fk</span>(reassignment, pac_org, affiliations, pac_org) <span class="sc">|&gt;</span> </span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_fk</span>(affiliations, facility_ccn, affiliations)</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>xdm <span class="sc">|&gt;</span> </span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_set_colors</span>(</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">darkblue =</span> nppes,</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">tomato =</span> taxonomy,</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">mediumpurple =</span> <span class="fu">c</span>(enrollment, order_refer, reassignment),</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">seagreen =</span> <span class="fu">c</span>(clinician, affiliations)) <span class="sc">|&gt;</span> </span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_draw</span>(</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">font_size =</span> <span class="fu">c</span>(</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>      <span class="at">header =</span> <span class="dv">18</span>L, </span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>      <span class="at">table_description =</span> <span class="dv">9</span>L, </span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>      <span class="at">column =</span> <span class="dv">15</span>L),</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">column_types =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">rankdir =</span> <span class="st">"TB"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="grViz html-widget html-fill-item" id="htmlwidget-8805915874df100a754d" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-8805915874df100a754d">{"x":{"diagram":"#data_model\ndigraph {\ngraph [rankdir=TB tooltip=\"Data Model\" ]\n\nnode [margin=0 fontcolor = \"#444444\" ]\n\nedge [color = \"#555555\", arrowsize = 1, ]\n\npack=true\npackmode= \"node\"\n\n  \"affiliations\" [id = \"affiliations\", label = <<TABLE ALIGN=\"LEFT\" BORDER=\"1\" CELLBORDER=\"0\" CELLSPACING=\"0\" COLOR=\"#1E5C3AAA\">\n    <TR>\n      <TD COLSPAN=\"2\" BGCOLOR=\"#2E8B57FF\" BORDER=\"0\"><FONT COLOR=\"#FFFFFF\" POINT-SIZE=\"18\">affiliations<\/FONT>\n<\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#D5E7DDFF\" PORT=\"pac_org\"><FONT POINT-SIZE=\"15\"><I>pac_org<\/I><\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#D5E7DDFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#D5E7DDFF\" PORT=\"facility_ccn\"><FONT POINT-SIZE=\"15\"><U>facility_ccn<\/U><\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#D5E7DDFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n  <\/TABLE>>, shape = \"plaintext\"] \n\n  \"clinician\" [id = \"clinician\", label = <<TABLE ALIGN=\"LEFT\" BORDER=\"1\" CELLBORDER=\"0\" CELLSPACING=\"0\" COLOR=\"#1E5C3AAA\">\n    <TR>\n      <TD COLSPAN=\"2\" BGCOLOR=\"#2E8B57FF\" BORDER=\"0\"><FONT COLOR=\"#FFFFFF\" POINT-SIZE=\"18\">clinician<\/FONT>\n<\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#D5E7DDFF\" PORT=\"npi\"><FONT POINT-SIZE=\"15\"><U>npi<\/U><\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#D5E7DDFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#D5E7DDFF\" PORT=\"pac_org\"><FONT POINT-SIZE=\"15\">pac_org<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#D5E7DDFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n  <\/TABLE>>, shape = \"plaintext\"] \n\n  \"enrollment\" [id = \"enrollment\", label = <<TABLE ALIGN=\"LEFT\" BORDER=\"1\" CELLBORDER=\"0\" CELLSPACING=\"0\" COLOR=\"#624A92AA\">\n    <TR>\n      <TD COLSPAN=\"2\" BGCOLOR=\"#9370DBFF\" BORDER=\"0\"><FONT COLOR=\"#FFFFFF\" POINT-SIZE=\"18\">enrollment<\/FONT>\n<\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#E9E2F7FF\" PORT=\"npi\"><FONT POINT-SIZE=\"15\"><U>npi<\/U><\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#E9E2F7FF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n  <\/TABLE>>, shape = \"plaintext\"] \n\n  \"nppes\" [id = \"nppes\", label = <<TABLE ALIGN=\"LEFT\" BORDER=\"1\" CELLBORDER=\"0\" CELLSPACING=\"0\" COLOR=\"#00005CAA\">\n    <TR>\n      <TD COLSPAN=\"2\" BGCOLOR=\"#00008BFF\" BORDER=\"0\"><FONT COLOR=\"#FFFFFF\" POINT-SIZE=\"18\">nppes<\/FONT>\n<\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#CCCCE7FF\" PORT=\"npi\"><FONT POINT-SIZE=\"15\"><U>npi<\/U><\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#CCCCE7FF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#CCCCE7FF\" PORT=\"tx_code\"><FONT POINT-SIZE=\"15\">tx_code<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#CCCCE7FF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n  <\/TABLE>>, shape = \"plaintext\"] \n\n  \"order_refer\" [id = \"order_refer\", label = <<TABLE ALIGN=\"LEFT\" BORDER=\"1\" CELLBORDER=\"0\" CELLSPACING=\"0\" COLOR=\"#624A92AA\">\n    <TR>\n      <TD COLSPAN=\"2\" BGCOLOR=\"#9370DBFF\" BORDER=\"0\"><FONT COLOR=\"#FFFFFF\" POINT-SIZE=\"18\">order_refer<\/FONT>\n<\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#E9E2F7FF\" PORT=\"npi\"><FONT POINT-SIZE=\"15\"><U>npi<\/U><\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#E9E2F7FF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n  <\/TABLE>>, shape = \"plaintext\"] \n\n  \"reassignment\" [id = \"reassignment\", label = <<TABLE ALIGN=\"LEFT\" BORDER=\"1\" CELLBORDER=\"0\" CELLSPACING=\"0\" COLOR=\"#624A92AA\">\n    <TR>\n      <TD COLSPAN=\"2\" BGCOLOR=\"#9370DBFF\" BORDER=\"0\"><FONT COLOR=\"#FFFFFF\" POINT-SIZE=\"18\">reassignment<\/FONT>\n<\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#E9E2F7FF\" PORT=\"npi\"><FONT POINT-SIZE=\"15\"><U>npi<\/U><\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#E9E2F7FF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#E9E2F7FF\" PORT=\"pac_org\"><FONT POINT-SIZE=\"15\">pac_org<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#E9E2F7FF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n  <\/TABLE>>, shape = \"plaintext\"] \n\n  \"taxonomy\" [id = \"taxonomy\", label = <<TABLE ALIGN=\"LEFT\" BORDER=\"1\" CELLBORDER=\"0\" CELLSPACING=\"0\" COLOR=\"#AA422FAA\">\n    <TR>\n      <TD COLSPAN=\"2\" BGCOLOR=\"#FF6347FF\" BORDER=\"0\"><FONT COLOR=\"#FFFFFF\" POINT-SIZE=\"18\">taxonomy<\/FONT>\n<\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFDFDAFF\" PORT=\"code\"><FONT POINT-SIZE=\"15\"><U>code<\/U><\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFDFDAFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n  <\/TABLE>>, shape = \"plaintext\"] \n\n\"nppes\":\"npi\"->\"enrollment\":\"npi\" [id=\"nppes_1\"]\n\"enrollment\":\"npi\"->\"order_refer\":\"npi\" [id=\"enrollment_1\"]\n\"order_refer\":\"npi\"->\"reassignment\":\"npi\" [id=\"order_refer_1\"]\n\"enrollment\":\"npi\"->\"clinician\":\"npi\" [id=\"enrollment_2\"]\n\"clinician\":\"pac_org\"->\"affiliations\":\"pac_org\" [id=\"clinician_1\", style=\"dashed\"]\n\"reassignment\":\"pac_org\"->\"affiliations\":\"pac_org\" [id=\"reassignment_1\", style=\"dashed\"]\n\"affiliations\":\"facility_ccn\"->\"affiliations\":\"facility_ccn\" [id=\"affiliations_1\"]\n\"nppes\":\"tx_code\"->\"taxonomy\":\"code\" [id=\"nppes_2\"]\n}","config":{"engine":null,"options":null}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="organizational-provider" class="level3" data-number="14.0.2">
+<h3 data-number="14.0.2" class="anchored" data-anchor-id="organizational-provider"><span class="header-section-number">14.0.2</span> Organizational Provider</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>organizational_search <span class="ot">&lt;-</span> \(org) {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">lst</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">hospitals    =</span> provider<span class="sc">::</span><span class="fu">hospitals</span>(<span class="at">organization =</span> org),</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">affiliations =</span> purrr<span class="sc">::</span><span class="fu">map_dfr</span>(</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">uniq_narm</span>(hospitals<span class="sc">$</span>facility_ccn),</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>      \(x) provider<span class="sc">::</span><span class="fu">affiliations</span>(<span class="at">facility_ccn =</span> x)) <span class="sc">|&gt;</span> </span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">handle_na</span>() <span class="co">#,</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># providers = purrr::map_dfr(</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">#   uniq_narm(affiliations$npi),</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">#   \(x) provider::providers(npi = x)) |&gt; </span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">#   handle_na()</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="fu">organizational_search</span>(<span class="at">org =</span> <span class="st">"Elizabethtown Community Hospital"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>- $hospitals   $npi_org        c2  1891785184                               ...
+- $hospitals   $pac_org        c2  3577554138                               ...
+- $hospitals   $enid_org       c2  O20101110000259                          ...
+- $hospitals   $enid_state     f2  NY                                       ...
+- $hospitals   $facility_ccn   c2  331302                                   ...
+- $hospitals   $organization   c2  ELIZABETHTOWN COMMUNITY HOSPITAL         ...
+- $hospitals   $specialty_code c2  00-85                                    ...
+- $hospitals   $specialty      c2  PART A PROVIDER - CRITICAL ACCESS HOSPIT ...
+- $hospitals   $incorp_date    D2  1926-05-08                               ...
+- $hospitals   $incorp_state   f2  NY                                       ...
+- $hospitals   $structure      c2  CORPORATION                              ...
+- $hospitals   $address        c2  75 PARK ST                               ...
+- $hospitals   $city           c2  ELIZABETHTOWN                            ...
+- $hospitals   $state          f2  NY                                       ...
+- $hospitals   $zip            c2  129322300                                ...
+- $hospitals   $location_type  c2  OTHER HOSPITAL PRACTICE LOCATION         ...
+- $hospitals   $registration   f2  Non-Profit                               ...
+- $hospitals   $multi_npi      l2  T                                        ...
+- $hospitals   $reh_conversion l2  F                                        ...
+- $hospitals   $subgroup       f2  None                                     ...
+- $affiliations$npi            c196 1003815184     1003845272 1013910256    ...
+- $affiliations$pac            c196 4082693676     1759384035 5890719371    ...
+- $affiliations$first          c196 ARMIN          LAURA      JOSE          ...
+- $affiliations$middle         c196 NA             A          M             ...
+- $affiliations$last           c196 AFSAR KESHMIRI GREENE     ACOSTAMADIEDO ...
+- $affiliations$suffix         c196 NA             NA         NA            ...
+- $affiliations$facility_type  f196 Hospital       Hospital   Hospital      ...
+- $affiliations$facility_ccn   c196 331302         331302     331302        ...
+- $affiliations$parent_ccn     c196 NA             NA         NA            ...</code></pre>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/andrewallenbruce\.github\.io\/providerdev\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./wk_download.html" class="pagination-link" aria-label="Downloads">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Downloads</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./end_affiliations.html" class="pagination-link" aria-label="`affiliations`">
+        <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title"><code>affiliations</code></span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<script src="site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

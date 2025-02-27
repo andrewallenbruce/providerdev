@@ -1,0 +1,96 @@
+# Comprehensive Search {#sec-compsearch}
+
+```{r}
+#| label: setup-common-01
+#| include: false
+source("includes/_common.R")
+```
+
+### Individual Provider
+
+```{r}
+#| label: individual_search
+individual_search <- function(npi) {
+  
+  dplyr::lst(
+    nppes        = provider::nppes(npi = npi),
+    enrollment   = provider::providers(npi = npi),
+    order_refer  = provider::order_refer(npi = npi, pivot = FALSE),
+    reassignment = provider::reassignments(npi = npi),
+    clinician    = provider::clinicians(npi = npi),
+    affiliations = provider::affiliations(npi = npi) |> 
+      _[["facility_ccn"]] |> 
+      purrr::map_dfr(\(x) provider::hospitals(facility_ccn = x)) |> 
+      funique(cols = c(1:20)),
+    taxonomy = handle_na(sbt(
+        arktax::taxonomy_raw(taxonomy_code = nppes$tx_code), 
+        year == fmax(year) & version == fmax(version))
+      ))
+}
+
+x <- individual_search(npi = 1043245657)
+
+x |> 
+  purse()
+```
+
+
+```{r}
+library(dm)
+
+xdm <- new_dm(x) |> 
+  dm_add_pk(nppes, npi) |> 
+  dm_add_pk(enrollment, npi) |> 
+  dm_add_pk(reassignment, npi) |> 
+  dm_add_pk(order_refer, npi) |> 
+  dm_add_pk(clinician, npi) |> 
+  dm_add_pk(affiliations, facility_ccn) |> 
+  # dm_add_pk(hospitals, facility_ccn) |> 
+  dm_add_pk(taxonomy, code) |> 
+  dm_add_fk(nppes, npi, enrollment) |> 
+  dm_add_fk(nppes, tx_code, taxonomy, code) |> 
+  # dm_add_fk(nppes, npi, affiliations, npi) |> 
+  dm_add_fk(enrollment, npi, clinician) |> 
+  dm_add_fk(enrollment, npi, order_refer) |> 
+  dm_add_fk(order_refer, npi, reassignment) |> 
+  # dm_add_fk(clinician, npi, affiliations, npi) |> 
+  dm_add_fk(clinician, pac_org, affiliations, pac_org) |> 
+  dm_add_fk(reassignment, pac_org, affiliations, pac_org) |> 
+  dm_add_fk(affiliations, facility_ccn, affiliations)
+
+xdm |> 
+  dm_set_colors(
+    darkblue = nppes,
+    tomato = taxonomy,
+    mediumpurple = c(enrollment, order_refer, reassignment),
+    seagreen = c(clinician, affiliations)) |> 
+  dm_draw(
+    font_size = c(
+      header = 18L, 
+      table_description = 9L, 
+      column = 15L),
+    column_types = TRUE,
+    rankdir = "TB")
+```
+
+### Organizational Provider
+
+```{r}
+#| label: organizational_search
+organizational_search <- \(org) {
+  dplyr::lst(
+    hospitals    = provider::hospitals(organization = org),
+    affiliations = purrr::map_dfr(
+      uniq_narm(hospitals$facility_ccn),
+      \(x) provider::affiliations(facility_ccn = x)) |> 
+      handle_na() #,
+    # providers = purrr::map_dfr(
+    #   uniq_narm(affiliations$npi),
+    #   \(x) provider::providers(npi = x)) |> 
+    #   handle_na()
+  )
+}
+
+organizational_search(org = "Elizabethtown Community Hospital") |>
+  purse()
+```

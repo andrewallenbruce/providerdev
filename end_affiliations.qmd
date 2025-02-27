@@ -4,105 +4,23 @@
 #| label: setup-common-01
 #| include: false
 source("includes/_common.R")
-library(dm)
-
-htmltools::tagList(
-  btn_link(
-    "https://andrewallenbruce.github.io/provider/reference/affiliations.html", 
-    "Documentation"
-    ),
-  btn_link(
-    "https://github.com/andrewallenbruce/provider/blob/main/R/affiliations.R", 
-    "Source"
-    ))
 ```
 
 ## Examples
 
 ```{r}
-#| label: examples
-affiliations(parent_ccn = 670055)
-affiliations(facility_ccn = 331302)
-affiliations(facility_ccn = "33Z302")
+#| label: provider_examples
+provider::affiliations(parent_ccn = 670055)
+provider::affiliations(facility_ccn = 331302)
+provider::affiliations(facility_ccn = "33Z302")
 ```
 
-### Individual Provider
 
 ```{r}
-#| label: individual
-individual_search <- \(npi = 1043245657) {
-  
-  lst(
-    nppes        = nppes(npi = npi),
-    enrollment   = providers(npi = npi),
-    order_refer  = order_refer(npi = npi, pivot = FALSE),
-    reassignment = reassignments(1043245657),
-    clinician    = clinicians(npi = npi),
-    affiliations = affiliations(npi = npi),
-    hospitals    = map_dfr(affiliations[["facility_ccn"]], function(x) hospitals(facility_ccn = x)),
-    taxonomy     = arktax::taxonomy_raw(taxonomy_code = nppes$tx_code)
-    )
-  
-}
-
-fung <- individual_search()
-
-fung$hospitals <- fung$hospitals[2:3, ]
-
-fung$taxonomy <- fung$taxonomy[32, 3:10]
-
-fung_dm <- new_dm(fung) |> 
-  dm_add_pk(nppes, npi) |> 
-  dm_add_pk(enrollment, npi) |> 
-  dm_add_pk(reassignment, npi) |> 
-  dm_add_pk(order_refer, npi) |> 
-  dm_add_pk(clinician, npi) |> 
-  dm_add_pk(affiliations, facility_ccn) |> 
-  dm_add_pk(hospitals, facility_ccn) |> 
-  dm_add_pk(taxonomy, code) |> 
-  dm_add_fk(nppes, npi, enrollment) |> 
-  dm_add_fk(nppes, tx_code, taxonomy, code) |> 
-  dm_add_fk(nppes, npi, affiliations, npi) |> 
-  dm_add_fk(enrollment, npi, clinician) |> 
-  dm_add_fk(enrollment, npi, order_refer) |> 
-  dm_add_fk(order_refer, npi, reassignment) |> 
-  dm_add_fk(clinician, npi, affiliations, npi) |> 
-  dm_add_fk(clinician, pac_org, hospitals, pac_org) |> 
-  dm_add_fk(reassignment, pac_org, hospitals, pac_org) |> 
-  dm_add_fk(affiliations, facility_ccn, hospitals)
-
-fung_dm
-
-fung_dm |> 
-  dm_set_colors(
-    darkblue = nppes,
-    tomato = taxonomy,
-    mediumpurple = c(enrollment, order_refer, reassignment),
-    seagreen = c(clinician, affiliations, hospitals)) |> 
-  dm_draw(
-    font_size = c(
-      header = 18L, 
-      table_description = 9L, 
-      column = 15L),
-    column_types = TRUE,
-    rankdir = "TB")
-```
-
-### Organizational Provider
-
-```{r}
-#| label: organizational
-organizational_search <- \(org_name = "Elizabethtown Community Hospital") {
-  
-  lst(
-    hospitals    = hospitals(organization = org_name),
-    affiliations = map_dfr(hospitals[["facility_ccn"]], function(x) affiliations(facility_ccn = x))
-  )
-  
-}
-
-beth <- organizational_search()
-
-beth
+#| label: provider2_examples
+#| message: true
+providertwo::affiliations(ccn_parent = "670055")
+providertwo::affiliations(ccn_facility = "331302")
+providertwo::affiliations(ccn_facility = "33Z302")
 ```
 
