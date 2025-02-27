@@ -363,80 +363,100 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="catalog" class="level2" data-number="5.2">
 <h2 data-number="5.2" class="anchored" data-anchor-id="catalog"><span class="header-section-number">5.2</span> Catalog</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="st">"https://api.fda.gov/drug/ndc.json"</span> <span class="sc">|&gt;</span> </span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">request</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_string</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  jsonify<span class="sc">::</span><span class="fu">pretty_json</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://api.fda.gov/drug/ndc.json"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_string</span>()</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># fload(x, query = "")</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "{\n  \"meta\": {\n    \"disclaimer\": \"Do not rely on openFDA to make decisions regarding medical care. While we make every effort to ensure that data is accurate, you should assume all results are unvalidated. We may limit or otherwise restrict your access to the API in line with our Terms of Service.\",\n    \"terms\": \"https://open.fda.gov/terms/\",\n    \"license\": \"https://open.fda.gov/license/\",\n    \"last_updated\": \"2025-02-26\",\n    \"results\": {\n      \"skip\": 0,\n      \"limit\": 1,\n      \"total\": 129913\n    }\n  },\n  \"results\": [\n    {\n      \"product_ndc\": \"78206-188\",\n      \"generic_name\": \"Desloratadine\",\n      \"labeler_name\": \"Organon LLC\",\n      \"brand_name\": \"Clarinex\",\n      \"active_ingredients\": [\n        {\n          \"name\": \"DESLORATADINE\",\n          \"strength\": \"5 mg/1\"\n        }\n      ],\n      \"finished\": true,\n      \"packaging\": [\n        {\n          \"package_ndc\": \"78206-188-01\",\n          \"description\": \"100 TABLET, FILM COATED in 1 BOTTLE (78206-188-01)\",\n          \"marketing_start_date\": \"20220823\",\n          \"sample\": false\n        }\n      ],\n      \"listing_expiration_date\": \"20251231\",\n      \"openfda\": {\n        \"manufacturer_name\": [\n          \"Organon LLC\"\n        ],\n        \"rxcui\": [\n          \"349420\",\n          \"352086\"\n        ],\n        \"spl_set_id\": [\n          \"c671342e-69a2-4ca5-abc2-8166ed4240d4\"\n        ],\n        \"is_original_packager\": [\n          true\n        ],\n        \"upc\": [\n          \"0378206188014\",\n          \"0378206119018\"\n        ],\n        \"nui\": [\n          \"N0000000190\",\n          \"N0000175587\"\n        ],\n        \"pharm_class_moa\": [\n          \"Histamine H1 Receptor Antagonists [MoA]\"\n        ],\n        \"pharm_class_epc\": [\n          \"Histamine-1 Receptor Antagonist [EPC]\"\n        ],\n        \"unii\": [\n          \"FVF865388R\"\n        ]\n      },\n      \"marketing_category\": \"NDA\",\n      \"dosage_form\": \"TABLET, FILM COATED\",\n      \"spl_id\": \"56d88176-c545-4aed-a9e7-6b1696243c86\",\n      \"product_type\": \"HUMAN PRESCRIPTION DRUG\",\n      \"route\": [\n        \"ORAL\"\n      ],\n      \"marketing_start_date\": \"20220823\",\n      \"product_id\": \"78206-188_56d88176-c545-4aed-a9e7-6b1696243c86\",\n      \"application_number\": \"NDA021165\",\n      \"brand_name_base\": \"Clarinex\",\n      \"pharm_class\": [\n        \"Histamine H1 Receptor Antagonists [MoA]\",\n        \"Histamine-1 Receptor Antagonist [EPC]\"\n      ]\n    }\n  ]\n}"</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>jsonify<span class="sc">::</span><span class="fu">pretty_json</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>{
     "meta": {
         "disclaimer": "Do not rely on openFDA to make decisions regarding medical care. While we make every effort to ensure that data is accurate, you should assume all results are unvalidated. We may limit or otherwise restrict your access to the API in line with our Terms of Service.",
         "terms": "https://open.fda.gov/terms/",
         "license": "https://open.fda.gov/license/",
-        "last_updated": "2025-02-25",
+        "last_updated": "2025-02-26",
         "results": {
             "skip": 0,
             "limit": 1,
-            "total": 129819
+            "total": 129913
         }
     },
     "results": [
         {
-            "product_ndc": "77333-831",
-            "generic_name": "Sodium Bicarbonate",
-            "labeler_name": "Gendose Pharmaceuticals, LLC",
-            "brand_name": "Sodium Bicarbonate 10 GR. (650 MG)",
-            "brand_name_suffix": "10 GR. (650 MG)",
+            "product_ndc": "78206-188",
+            "generic_name": "Desloratadine",
+            "labeler_name": "Organon LLC",
+            "brand_name": "Clarinex",
             "active_ingredients": [
                 {
-                    "name": "SODIUM BICARBONATE",
-                    "strength": "650 mg/1"
+                    "name": "DESLORATADINE",
+                    "strength": "5 mg/1"
                 }
             ],
             "finished": true,
             "packaging": [
                 {
-                    "package_ndc": "77333-831-10",
-                    "description": "100 BLISTER PACK in 1 BOX (77333-831-10)  / 1 TABLET in 1 BLISTER PACK (77333-831-25)",
-                    "marketing_start_date": "20200515",
+                    "package_ndc": "78206-188-01",
+                    "description": "100 TABLET, FILM COATED in 1 BOTTLE (78206-188-01)",
+                    "marketing_start_date": "20220823",
                     "sample": false
                 }
             ],
             "listing_expiration_date": "20251231",
             "openfda": {
                 "manufacturer_name": [
-                    "Gendose Pharmaceuticals, LLC"
+                    "Organon LLC"
                 ],
                 "rxcui": [
-                    "198861"
+                    "349420",
+                    "352086"
                 ],
                 "spl_set_id": [
-                    "ee90d829-9f1f-52ae-e053-2995a90a29ce"
+                    "c671342e-69a2-4ca5-abc2-8166ed4240d4"
                 ],
                 "is_original_packager": [
                     true
                 ],
+                "upc": [
+                    "0378206188014",
+                    "0378206119018"
+                ],
+                "nui": [
+                    "N0000000190",
+                    "N0000175587"
+                ],
+                "pharm_class_moa": [
+                    "Histamine H1 Receptor Antagonists [MoA]"
+                ],
+                "pharm_class_epc": [
+                    "Histamine-1 Receptor Antagonist [EPC]"
+                ],
                 "unii": [
-                    "8MDF5V39QO"
+                    "FVF865388R"
                 ]
             },
-            "marketing_category": "OTC MONOGRAPH DRUG",
-            "dosage_form": "TABLET",
-            "spl_id": "0e765edc-2647-533a-e063-6394a90a7c53",
-            "product_type": "HUMAN OTC DRUG",
+            "marketing_category": "NDA",
+            "dosage_form": "TABLET, FILM COATED",
+            "spl_id": "56d88176-c545-4aed-a9e7-6b1696243c86",
+            "product_type": "HUMAN PRESCRIPTION DRUG",
             "route": [
                 "ORAL"
             ],
-            "marketing_start_date": "20200515",
-            "product_id": "77333-831_0e765edc-2647-533a-e063-6394a90a7c53",
-            "application_number": "M001",
-            "brand_name_base": "Sodium Bicarbonate",
+            "marketing_start_date": "20220823",
+            "product_id": "78206-188_56d88176-c545-4aed-a9e7-6b1696243c86",
+            "application_number": "NDA021165",
+            "brand_name_base": "Clarinex",
             "pharm_class": [
-                "Increased Large Intestinal Motility [PE]",
-                "Inhibition Large Intestine Fluid/Electrolyte Absorption [PE]",
-                "Osmotic Activity [MoA]",
-                "Osmotic Laxative [EPC]"
+                "Histamine H1 Receptor Antagonists [MoA]",
+                "Histamine-1 Receptor Antagonist [EPC]"
             ]
         }
     ]

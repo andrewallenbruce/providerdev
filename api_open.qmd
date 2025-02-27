@@ -38,6 +38,13 @@ clean_temp <- function(x) {
     roworder(-year)
 }
 
+clean_grouped <- function(x) {
+  sbt(x, year != "All", -description) |>
+    mtt(year   = as_int(year),
+        title  = stri_replace_all_regex(title, "^[0-9]{4} ", "")) |>
+    roworder(title, -year)
+}
+
 get_data_elem <- function(x) {
   delist(map(x, function(i)
     get_elem(as.list(i), "data")))
@@ -78,14 +85,10 @@ catalog_open_payments <- \() {
     rsplit( ~ theme)
   
   list(
-    summary = roworder(sbt(x$Summary, year == "All", -year), title),
-    grouped = sbt(x$Summary, year != "All") |> 
-      mtt(year = as_int(year), 
-          title = stri_replace_all_regex(title, "^[0-9]{4} ", ""),
-          description = NULL) |> 
-      roworder(title, -year),
-    general = clean_temp(x$`General Payments`),
-    research = clean_temp(x$`Research Payments`),
+    summary   = roworder(sbt(x$Summary, year == "All", -year), title),
+    grouped   = clean_grouped(x$Summary),
+    general   = clean_temp(x$`General Payments`),
+    research  = clean_temp(x$`Research Payments`),
     ownership = clean_temp(x$`Ownership Payments`)
   )
 }
@@ -95,29 +98,51 @@ open <- catalog_open_payments()
 open
 ```
 
-### Summary
+### Profiles
 
 ```{r}
-open$summary |> 
-  print(n = Inf)
+#| label: open_payments_profiles
+open_payments_profiles <- function(x) {
+  
+  list(
+    modified = fmax(x$summary$modified),
+    summary = sbt(
+      x$summary, 
+      stri_detect_regex(
+        title, 
+        "^(National|State|Payments|Summary)", 
+        negate = TRUE), 
+      -modified
+      )
+    )
+}
+
+open_payments_profiles(open)
 ```
 
-### Grouped Payment Summaries
+### Grouped Payments
 
 ```{r}
 #| label: open_payments_grouped
 open_payments_grouped <- function(x) {
   
+  s <- sbt(x$summary, 
+           stri_detect_regex(
+             title, 
+             "^(National|State|Payments|Summary)"), 
+           -modified, 
+           -description)
   m <- fmax(x$grouped$modified)
   x <- slt(x$grouped, -modified) |> rsplit(~ title)
   
   list(
-    modified = m,
-    recipient_nature = x$`Payments Grouped by Covered Recipient and Nature of Payments`,
-    recipient_entity = x$`Payments Grouped by Covered Recipient and Reporting Entities`,
-    entity_nature = x$`Payments Grouped by Reporting Entities and Nature of Payments`,
+    modified                = m,
+    summary                 = s,
+    recipient_nature        = x$`Payments Grouped by Covered Recipient and Nature of Payments`,
+    recipient_entity        = x$`Payments Grouped by Covered Recipient and Reporting Entities`,
+    entity_nature           = x$`Payments Grouped by Reporting Entities and Nature of Payments`,
     entity_recipient_nature = x$`Payments Grouped by Reporting Entities, Covered Recipient, and Nature of Payments`,
-    recipient_nature_state = x$`State Payment Totals Grouped by Nature of Payment for all Years`
+    recipient_nature_state  = x$`State Payment Totals Grouped by Nature of Payment for all Years`
   )
 }
 

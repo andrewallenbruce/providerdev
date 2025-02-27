@@ -327,8 +327,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#links" id="toc-links" class="nav-link active" data-scroll-target="#links"><span class="header-section-number">3.1</span> Links</a></li>
   <li><a href="#load-catalog" id="toc-load-catalog" class="nav-link" data-scroll-target="#load-catalog"><span class="header-section-number">3.2</span> Load Catalog</a>
   <ul class="collapse">
-  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="header-section-number">3.2.1</span> Summary</a></li>
-  <li><a href="#grouped-payment-summaries" id="toc-grouped-payment-summaries" class="nav-link" data-scroll-target="#grouped-payment-summaries"><span class="header-section-number">3.2.2</span> Grouped Payment Summaries</a></li>
+  <li><a href="#profiles" id="toc-profiles" class="nav-link" data-scroll-target="#profiles"><span class="header-section-number">3.2.1</span> Profiles</a></li>
+  <li><a href="#grouped-payments" id="toc-grouped-payments" class="nav-link" data-scroll-target="#grouped-payments"><span class="header-section-number">3.2.2</span> Grouped Payments</a></li>
   <li><a href="#payment-data-by-yearcategory" id="toc-payment-data-by-yearcategory" class="nav-link" data-scroll-target="#payment-data-by-yearcategory"><span class="header-section-number">3.2.3</span> Payment Data by Year/Category</a></li>
   </ul></li>
   <li><a href="#dictionary" id="toc-dictionary" class="nav-link" data-scroll-target="#dictionary"><span class="header-section-number">3.3</span> Dictionary</a></li>
@@ -386,17 +386,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">roworder</span>(<span class="sc">-</span>year)</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>get_data_elem <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">delist</span>(<span class="fu">map</span>(x, <span class="cf">function</span>(i)</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">get_elem</span>(<span class="fu">as.list</span>(i), <span class="st">"data"</span>)))</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>open_identifier_url <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">"https://openpaymentsdata.cms.gov/api/1/datastore/query/"</span>,</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>         x,</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>         <span class="st">"/0"</span>)</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>clean_grouped <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sbt</span>(x, year <span class="sc">!=</span> <span class="st">"All"</span>, <span class="sc">-</span>description) <span class="sc">|&gt;</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mtt</span>(<span class="at">year   =</span> <span class="fu">as_int</span>(year),</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">title  =</span> <span class="fu">stri_replace_all_regex</span>(title, <span class="st">"^[0-9]{4} "</span>, <span class="st">""</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">roworder</span>(title, <span class="sc">-</span>year)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>get_data_elem <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">delist</span>(<span class="fu">map</span>(x, <span class="cf">function</span>(i)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">get_elem</span>(<span class="fu">as.list</span>(i), <span class="st">"data"</span>)))</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>open_identifier_url <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">"https://openpaymentsdata.cms.gov/api/1/datastore/query/"</span>,</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>         x,</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>         <span class="st">"/0"</span>)</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>catalog_open_payments <span class="ot">&lt;-</span> \() {</span>
@@ -423,21 +430,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rsplit</span>( <span class="sc">~</span> theme)</span>
 <span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">summary =</span> <span class="fu">roworder</span>(<span class="fu">sbt</span>(x<span class="sc">$</span>Summary, year <span class="sc">==</span> <span class="st">"All"</span>, <span class="sc">-</span>year), title),</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">grouped =</span> <span class="fu">sbt</span>(x<span class="sc">$</span>Summary, year <span class="sc">!=</span> <span class="st">"All"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mtt</span>(<span class="at">year =</span> <span class="fu">as_int</span>(year), </span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="fu">stri_replace_all_regex</span>(title, <span class="st">"^[0-9]{4} "</span>, <span class="st">""</span>),</span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>          <span class="at">description =</span> <span class="cn">NULL</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>      <span class="fu">roworder</span>(title, <span class="sc">-</span>year),</span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">general =</span> <span class="fu">clean_temp</span>(x<span class="sc">$</span><span class="st">`</span><span class="at">General Payments</span><span class="st">`</span>),</span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">research =</span> <span class="fu">clean_temp</span>(x<span class="sc">$</span><span class="st">`</span><span class="at">Research Payments</span><span class="st">`</span>),</span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">ownership =</span> <span class="fu">clean_temp</span>(x<span class="sc">$</span><span class="st">`</span><span class="at">Ownership Payments</span><span class="st">`</span>)</span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>open <span class="ot">&lt;-</span> <span class="fu">catalog_open_payments</span>()</span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>open</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">summary   =</span> <span class="fu">roworder</span>(<span class="fu">sbt</span>(x<span class="sc">$</span>Summary, year <span class="sc">==</span> <span class="st">"All"</span>, <span class="sc">-</span>year), title),</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">grouped   =</span> <span class="fu">clean_grouped</span>(x<span class="sc">$</span>Summary),</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">general   =</span> <span class="fu">clean_temp</span>(x<span class="sc">$</span><span class="st">`</span><span class="at">General Payments</span><span class="st">`</span>),</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">research  =</span> <span class="fu">clean_temp</span>(x<span class="sc">$</span><span class="st">`</span><span class="at">Research Payments</span><span class="st">`</span>),</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">ownership =</span> <span class="fu">clean_temp</span>(x<span class="sc">$</span><span class="st">`</span><span class="at">Ownership Payments</span><span class="st">`</span>)</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>open <span class="ot">&lt;-</span> <span class="fu">catalog_open_payments</span>()</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>open</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$summary
 # A tibble: 18 × 5
@@ -515,58 +518,88 @@ $ownership
 7  2017 2025-01-30 f90c33d1-cfd8-4b15-8cf5-b3db2f214cdf https://download.cms.go…</code></pre>
 </div>
 </div>
-<section id="summary" class="level3" data-number="3.2.1">
-<h3 data-number="3.2.1" class="anchored" data-anchor-id="summary"><span class="header-section-number">3.2.1</span> Summary</h3>
+<section id="profiles" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1" class="anchored" data-anchor-id="profiles"><span class="header-section-number">3.2.1</span> Profiles</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>open<span class="sc">$</span>summary <span class="sc">|&gt;</span> </span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="cn">Inf</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 18 × 5
-   title                           description modified   identifier downloadurl
-   &lt;chr&gt;                           &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;      &lt;chr&gt;      
- 1 Covered Recipient Profile Supp… The Covere… 2025-01-30 23160558-… https://do…
- 2 National Level Payment Total a… This datas… 2025-01-30 04c3355f-… https://do…
- 3 National Level Payment Total a… This datas… 2025-01-30 aaaddc12-… https://do…
- 4 Payments Grouped by Covered Re… This datas… 2025-01-30 8d4d1fa0-… https://do…
- 5 Payments Grouped by Covered Re… This datas… 2025-01-30 e49defac-… https://do…
- 6 Payments Grouped by Physician … This datas… 2025-01-30 895260f5-… https://do…
- 7 Payments Grouped by Reporting … This datas… 2025-01-30 d5762bed-… https://do…
- 8 Payments Grouped by Reporting … This datas… 2025-01-30 61efcbef-… https://do…
- 9 Payments Grouped by Reporting … This datas… 2025-01-30 ea5eea39-… https://do…
-10 Payments Grouped by Teaching H… This datas… 2025-01-30 217ad1a7-… https://do…
-11 Physician (Distinct) Profile I… This datas… 2025-01-30 6ed6ae76-… https://do…
-12 Profile Information             This datas… 2025-01-30 f2ed17cc-… https://do…
-13 Provider Profile ID Mapping Ta… Maps secon… 2025-01-30 d19e5be2-… https://do…
-14 Reporting Entity Profile Infor… This datas… 2025-01-30 1cf0c6c0-… https://do…
-15 State Level Payment Total and … This datas… 2025-01-30 02157882-… https://do…
-16 State Payment Totals and Avera… Groups pay… 2025-01-30 7c5144d9-… https://do…
-17 Summary Dashboard - all Years   Summary da… 2025-01-30 e0d225fc-… https://do…
-18 Teaching Hospital Profile Info… This datas… 2025-01-30 8219fcb3-… https://do…</code></pre>
-</div>
-</div>
-</section>
-<section id="grouped-payment-summaries" class="level3" data-number="3.2.2">
-<h3 data-number="3.2.2" class="anchored" data-anchor-id="grouped-payment-summaries"><span class="header-section-number">3.2.2</span> Grouped Payment Summaries</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>open_payments_grouped <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">&lt;-</span> <span class="fu">fmax</span>(x<span class="sc">$</span>grouped<span class="sc">$</span>modified)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">slt</span>(x<span class="sc">$</span>grouped, <span class="sc">-</span>modified) <span class="sc">|&gt;</span> <span class="fu">rsplit</span>(<span class="sc">~</span> title)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">modified =</span> m,</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">recipient_nature =</span> x<span class="sc">$</span><span class="st">`</span><span class="at">Payments Grouped by Covered Recipient and Nature of Payments</span><span class="st">`</span>,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">recipient_entity =</span> x<span class="sc">$</span><span class="st">`</span><span class="at">Payments Grouped by Covered Recipient and Reporting Entities</span><span class="st">`</span>,</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">entity_nature =</span> x<span class="sc">$</span><span class="st">`</span><span class="at">Payments Grouped by Reporting Entities and Nature of Payments</span><span class="st">`</span>,</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">entity_recipient_nature =</span> x<span class="sc">$</span><span class="st">`</span><span class="at">Payments Grouped by Reporting Entities, Covered Recipient, and Nature of Payments</span><span class="st">`</span>,</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">recipient_nature_state =</span> x<span class="sc">$</span><span class="st">`</span><span class="at">State Payment Totals Grouped by Nature of Payment for all Years</span><span class="st">`</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="fu">open_payments_grouped</span>(open)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>open_payments_profiles <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">modified =</span> <span class="fu">fmax</span>(x<span class="sc">$</span>summary<span class="sc">$</span>modified),</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">summary =</span> <span class="fu">sbt</span>(</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>      x<span class="sc">$</span>summary, </span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">stri_detect_regex</span>(</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        title, </span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"^(National|State|Payments|Summary)"</span>, </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">negate =</span> <span class="cn">TRUE</span>), </span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>      <span class="sc">-</span>modified</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="fu">open_payments_profiles</span>(open)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$modified
 [1] "2025-01-30"
+
+$summary
+# A tibble: 6 × 4
+  title                                    description    identifier downloadurl
+  &lt;chr&gt;                                    &lt;chr&gt;          &lt;chr&gt;      &lt;chr&gt;      
+1 Covered Recipient Profile Supplement     The Covered R… 23160558-… https://do…
+2 Physician (Distinct) Profile Information This dataset … 6ed6ae76-… https://do…
+3 Profile Information                      This dataset … f2ed17cc-… https://do…
+4 Provider Profile ID Mapping Table        Maps secondar… d19e5be2-… https://do…
+5 Reporting Entity Profile Information     This dataset … 1cf0c6c0-… https://do…
+6 Teaching Hospital Profile Information    This dataset … 8219fcb3-… https://do…</code></pre>
+</div>
+</div>
+</section>
+<section id="grouped-payments" class="level3" data-number="3.2.2">
+<h3 data-number="3.2.2" class="anchored" data-anchor-id="grouped-payments"><span class="header-section-number">3.2.2</span> Grouped Payments</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>open_payments_grouped <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  s <span class="ot">&lt;-</span> <span class="fu">sbt</span>(x<span class="sc">$</span>summary, </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>           <span class="fu">stri_detect_regex</span>(</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>             title, </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>             <span class="st">"^(National|State|Payments|Summary)"</span>), </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>           <span class="sc">-</span>modified, </span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>           <span class="sc">-</span>description)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">&lt;-</span> <span class="fu">fmax</span>(x<span class="sc">$</span>grouped<span class="sc">$</span>modified)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">slt</span>(x<span class="sc">$</span>grouped, <span class="sc">-</span>modified) <span class="sc">|&gt;</span> <span class="fu">rsplit</span>(<span class="sc">~</span> title)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">modified                =</span> m,</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">summary                 =</span> s,</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">recipient_nature        =</span> x<span class="sc">$</span><span class="st">`</span><span class="at">Payments Grouped by Covered Recipient and Nature of Payments</span><span class="st">`</span>,</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">recipient_entity        =</span> x<span class="sc">$</span><span class="st">`</span><span class="at">Payments Grouped by Covered Recipient and Reporting Entities</span><span class="st">`</span>,</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">entity_nature           =</span> x<span class="sc">$</span><span class="st">`</span><span class="at">Payments Grouped by Reporting Entities and Nature of Payments</span><span class="st">`</span>,</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">entity_recipient_nature =</span> x<span class="sc">$</span><span class="st">`</span><span class="at">Payments Grouped by Reporting Entities, Covered Recipient, and Nature of Payments</span><span class="st">`</span>,</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">recipient_nature_state  =</span> x<span class="sc">$</span><span class="st">`</span><span class="at">State Payment Totals Grouped by Nature of Payment for all Years</span><span class="st">`</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="fu">open_payments_grouped</span>(open)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$modified
+[1] "2025-01-30"
+
+$summary
+# A tibble: 12 × 3
+   title                                                  identifier downloadurl
+   &lt;chr&gt;                                                  &lt;chr&gt;      &lt;chr&gt;      
+ 1 National Level Payment Total and Averages by Provider… 04c3355f-… https://do…
+ 2 National Level Payment Total and Averages for all Yea… aaaddc12-… https://do…
+ 3 Payments Grouped by Covered Recipient and Nature of P… 8d4d1fa0-… https://do…
+ 4 Payments Grouped by Covered Recipient and Reporting E… e49defac-… https://do…
+ 5 Payments Grouped by Physician (Distinct) for all Years 895260f5-… https://do…
+ 6 Payments Grouped by Reporting Entities                 d5762bed-… https://do…
+ 7 Payments Grouped by Reporting Entities and Nature of … 61efcbef-… https://do…
+ 8 Payments Grouped by Reporting Entities, Covered Recip… ea5eea39-… https://do…
+ 9 Payments Grouped by Teaching Hospital                  217ad1a7-… https://do…
+10 State Level Payment Total and Averages for all Years   02157882-… https://do…
+11 State Payment Totals and Averages Grouped by Nature o… 7c5144d9-… https://do…
+12 Summary Dashboard - all Years                          e0d225fc-… https://do…
 
 $recipient_nature
 # A tibble: 7 × 3

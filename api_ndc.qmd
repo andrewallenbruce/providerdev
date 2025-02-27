@@ -16,10 +16,16 @@ source("includes/_common.R")
 ## Catalog
 
 ```{r}
-"https://api.fda.gov/drug/ndc.json" |> 
-  request() |> 
-  req_perform() |> 
-  resp_body_string() |> 
-  jsonify::pretty_json()
+x <- request("https://api.fda.gov/drug/ndc.json") |>
+  req_perform() |>
+  resp_body_string()
+
+# fload(x, query = "")
+
+x
+```
+
+```{r}
+jsonify::pretty_json(x)
 ```
 
