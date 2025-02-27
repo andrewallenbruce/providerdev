@@ -126,12 +126,12 @@ open_payments_profiles(open)
 #| label: open_payments_grouped
 open_payments_grouped <- function(x) {
   
-  s <- sbt(x$summary, 
-           stri_detect_regex(
-             title, 
-             "^(National|State|Payments|Summary)"), 
-           -modified, 
-           -description)
+  s <- sbt(
+    x$summary,
+    stri_detect_regex(title, "^(National|State|Payments|Summary)"),
+    -modified,
+    -description
+  )
   m <- fmax(x$grouped$modified)
   x <- slt(x$grouped, -modified) |> rsplit(~ title)
   
@@ -155,28 +155,28 @@ open_payments_grouped(open)
 #| label: open_payments_general
 open_payments_general <- function(x) {
   list(
-    modified = fmax(x$general$modified),
-    title = "General Payment Data",
+    modified    = fmax(x$general$modified),
+    title       = "General Payment Data",
     description = "All general (non-research, non-ownership related) payments from the program year",
-    endpoints = slt(x$general, -modified)
+    endpoints   = slt(x$general, -modified)
   )
 }
 
 open_payments_research <- function(x) {
   list(
-    modified = fmax(x$research$modified),
-    title = "Research Payment Data",
+    modified    = fmax(x$research$modified),
+    title       = "Research Payment Data",
     description = "All research-related payments from the program year",
-    endpoints = slt(x$research, -modified)
+    endpoints   = slt(x$research, -modified)
   )
 }
 
 open_payments_ownership <- function(x) {
   list(
-    modified = fmax(x$ownership$modified),
-    title = "Ownership Payment Data",
+    modified    = fmax(x$ownership$modified),
+    title       = "Ownership Payment Data",
     description = "All ownership and investment payments from the program year",
-    endpoints = slt(x$ownership, -modified)
+    endpoints   = slt(x$ownership, -modified)
   )
 }
 

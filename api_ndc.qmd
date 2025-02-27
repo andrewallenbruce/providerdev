@@ -16,16 +16,69 @@ source("includes/_common.R")
 ## Catalog
 
 ```{r}
-x <- request("https://api.fda.gov/drug/ndc.json") |>
-  req_perform() |>
-  resp_body_string()
+make_fda_date <- function(i) {
+  delist(map(i, function(x)
+    paste0(
+      sf_sub(x, 1, 4), "-", sf_sub(x, 5, 6), "-", sf_sub(x, 7, 8)
+    )))
+}
 
-# fload(x, query = "")
+smush_elem <- function(i, el) {
+  map_chr(get_elem(i, el), function(x)
+    sf_smush(x, sep = ", "))
+}
+
+delist_elem <- function(x, el) {
+  delist(get_elem(x, el, DF.as.list = TRUE))
+}
+
+x <- request("https://api.fda.gov/drug/ndc.json") |>
+  req_headers_redacted(Authorization = glue("Basic {Sys.getenv('APIKEY_openFDA')}")) |>
+  req_url_query(search = "finished:true", limit = 1) |>
+  req_perform() |>
+  resp_simple_json() |>
+  as_tbl()
+
+x <- list(
+  modified               = x$meta$last_updated,
+  skip                   = x$meta$results$skip,
+  limit                  = x$meta$results$limit,
+  total                  = x$meta$results$total,
+  results                = mtt(
+    x$results,
+    route                = delist(get_elem(x$results, "route")),
+    pharm_class          = smush_elem(x$results, "pharm_class"),
+    lexp_date            = make_fda_date(listing_expiration_date),
+    mkt_date             = make_fda_date(marketing_start_date),
+    active_ingredient    = delist_elem(x$results$active_ingredients, "name"),
+    active_strength      = delist_elem(x$results$active_ingredients, "strength"),
+    pkg_ndc              = delist_elem(x$results$packaging, "package_ndc"),
+    pkg_desc             = delist_elem(x$results$packaging, "description"),
+    pkg_mkt_start_date   = delist_elem(x$results$packaging, "marketing_start_date"),
+    pkg_mkt_start_date   = make_fda_date(pkg_mkt_start_date),
+    pkg_sample           = delist_elem(x$results$packaging, "sample"),
+    manufacturer_name    = delist_elem(x$results$openfda, "manufacturer_name"),
+    rxcui                = smush_elem(x$results$openfda, "rxcui"),
+    spl_set_id           = delist_elem(x$results$openfda, "spl_set_id"),
+    is_original_packager = delist_elem(x$results$openfda, "is_original_packager"),
+    upc                  = smush_elem(x$results$openfda, "upc"),
+    nui                  = smush_elem(x$results$openfda, "nui"),
+    unii                 = smush_elem(x$results$openfda, "unii"),
+    pharm_class_moa      = delist_elem(x$results$openfda, "pharm_class_moa"),
+    pharm_class_epc      = delist_elem(x$results$openfda, "pharm_class_epc")) |>
+    slt(
+      -listing_expiration_date,
+      -marketing_start_date,
+      -active_ingredients,
+      -packaging,
+      -openfda) |>
+    uniq()
+)
 
 x
 ```
 
-```{r}
-jsonify::pretty_json(x)
-```
 
+```{r}
+x |> purse()
+```

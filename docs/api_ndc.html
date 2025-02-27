@@ -363,104 +363,142 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="catalog" class="level2" data-number="5.2">
 <h2 data-number="5.2" class="anchored" data-anchor-id="catalog"><span class="header-section-number">5.2</span> Catalog</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://api.fda.gov/drug/ndc.json"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_body_string</span>()</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># fload(x, query = "")</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>make_fda_date <span class="ot">&lt;-</span> <span class="cf">function</span>(i) {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">delist</span>(<span class="fu">map</span>(i, <span class="cf">function</span>(x)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste0</span>(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">sf_sub</span>(x, <span class="dv">1</span>, <span class="dv">4</span>), <span class="st">"-"</span>, <span class="fu">sf_sub</span>(x, <span class="dv">5</span>, <span class="dv">6</span>), <span class="st">"-"</span>, <span class="fu">sf_sub</span>(x, <span class="dv">7</span>, <span class="dv">8</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    )))</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>smush_elem <span class="ot">&lt;-</span> <span class="cf">function</span>(i, el) {</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_chr</span>(<span class="fu">get_elem</span>(i, el), <span class="cf">function</span>(x)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sf_smush</span>(x, <span class="at">sep =</span> <span class="st">", "</span>))</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>delist_elem <span class="ot">&lt;-</span> <span class="cf">function</span>(x, el) {</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">delist</span>(<span class="fu">get_elem</span>(x, el, <span class="at">DF.as.list =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://api.fda.gov/drug/ndc.json"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_headers_redacted</span>(<span class="at">Authorization =</span> <span class="fu">glue</span>(<span class="st">"Basic {Sys.getenv('APIKEY_openFDA')}"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_query</span>(<span class="at">search =</span> <span class="st">"finished:true"</span>, <span class="at">limit =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_simple_json</span>() <span class="sc">|&gt;</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tbl</span>()</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">modified               =</span> x<span class="sc">$</span>meta<span class="sc">$</span>last_updated,</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">skip                   =</span> x<span class="sc">$</span>meta<span class="sc">$</span>results<span class="sc">$</span>skip,</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">limit                  =</span> x<span class="sc">$</span>meta<span class="sc">$</span>results<span class="sc">$</span>limit,</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">total                  =</span> x<span class="sc">$</span>meta<span class="sc">$</span>results<span class="sc">$</span>total,</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">results                =</span> <span class="fu">mtt</span>(</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    x<span class="sc">$</span>results,</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">route                =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(x<span class="sc">$</span>results, <span class="st">"route"</span>)),</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">pharm_class          =</span> <span class="fu">smush_elem</span>(x<span class="sc">$</span>results, <span class="st">"pharm_class"</span>),</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">lexp_date            =</span> <span class="fu">make_fda_date</span>(listing_expiration_date),</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">mkt_date             =</span> <span class="fu">make_fda_date</span>(marketing_start_date),</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">active_ingredient    =</span> <span class="fu">delist_elem</span>(x<span class="sc">$</span>results<span class="sc">$</span>active_ingredients, <span class="st">"name"</span>),</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">active_strength      =</span> <span class="fu">delist_elem</span>(x<span class="sc">$</span>results<span class="sc">$</span>active_ingredients, <span class="st">"strength"</span>),</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">pkg_ndc              =</span> <span class="fu">delist_elem</span>(x<span class="sc">$</span>results<span class="sc">$</span>packaging, <span class="st">"package_ndc"</span>),</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">pkg_desc             =</span> <span class="fu">delist_elem</span>(x<span class="sc">$</span>results<span class="sc">$</span>packaging, <span class="st">"description"</span>),</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">pkg_mkt_start_date   =</span> <span class="fu">delist_elem</span>(x<span class="sc">$</span>results<span class="sc">$</span>packaging, <span class="st">"marketing_start_date"</span>),</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">pkg_mkt_start_date   =</span> <span class="fu">make_fda_date</span>(pkg_mkt_start_date),</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">pkg_sample           =</span> <span class="fu">delist_elem</span>(x<span class="sc">$</span>results<span class="sc">$</span>packaging, <span class="st">"sample"</span>),</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">manufacturer_name    =</span> <span class="fu">delist_elem</span>(x<span class="sc">$</span>results<span class="sc">$</span>openfda, <span class="st">"manufacturer_name"</span>),</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">rxcui                =</span> <span class="fu">smush_elem</span>(x<span class="sc">$</span>results<span class="sc">$</span>openfda, <span class="st">"rxcui"</span>),</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">spl_set_id           =</span> <span class="fu">delist_elem</span>(x<span class="sc">$</span>results<span class="sc">$</span>openfda, <span class="st">"spl_set_id"</span>),</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_original_packager =</span> <span class="fu">delist_elem</span>(x<span class="sc">$</span>results<span class="sc">$</span>openfda, <span class="st">"is_original_packager"</span>),</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">upc                  =</span> <span class="fu">smush_elem</span>(x<span class="sc">$</span>results<span class="sc">$</span>openfda, <span class="st">"upc"</span>),</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">nui                  =</span> <span class="fu">smush_elem</span>(x<span class="sc">$</span>results<span class="sc">$</span>openfda, <span class="st">"nui"</span>),</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">unii                 =</span> <span class="fu">smush_elem</span>(x<span class="sc">$</span>results<span class="sc">$</span>openfda, <span class="st">"unii"</span>),</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">pharm_class_moa      =</span> <span class="fu">delist_elem</span>(x<span class="sc">$</span>results<span class="sc">$</span>openfda, <span class="st">"pharm_class_moa"</span>),</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">pharm_class_epc      =</span> <span class="fu">delist_elem</span>(x<span class="sc">$</span>results<span class="sc">$</span>openfda, <span class="st">"pharm_class_epc"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>    <span class="fu">slt</span>(</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>      <span class="sc">-</span>listing_expiration_date,</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>      <span class="sc">-</span>marketing_start_date,</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>      <span class="sc">-</span>active_ingredients,</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>      <span class="sc">-</span>packaging,</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>      <span class="sc">-</span>openfda) <span class="sc">|&gt;</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>    <span class="fu">uniq</span>()</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "{\n  \"meta\": {\n    \"disclaimer\": \"Do not rely on openFDA to make decisions regarding medical care. While we make every effort to ensure that data is accurate, you should assume all results are unvalidated. We may limit or otherwise restrict your access to the API in line with our Terms of Service.\",\n    \"terms\": \"https://open.fda.gov/terms/\",\n    \"license\": \"https://open.fda.gov/license/\",\n    \"last_updated\": \"2025-02-26\",\n    \"results\": {\n      \"skip\": 0,\n      \"limit\": 1,\n      \"total\": 129913\n    }\n  },\n  \"results\": [\n    {\n      \"product_ndc\": \"78206-188\",\n      \"generic_name\": \"Desloratadine\",\n      \"labeler_name\": \"Organon LLC\",\n      \"brand_name\": \"Clarinex\",\n      \"active_ingredients\": [\n        {\n          \"name\": \"DESLORATADINE\",\n          \"strength\": \"5 mg/1\"\n        }\n      ],\n      \"finished\": true,\n      \"packaging\": [\n        {\n          \"package_ndc\": \"78206-188-01\",\n          \"description\": \"100 TABLET, FILM COATED in 1 BOTTLE (78206-188-01)\",\n          \"marketing_start_date\": \"20220823\",\n          \"sample\": false\n        }\n      ],\n      \"listing_expiration_date\": \"20251231\",\n      \"openfda\": {\n        \"manufacturer_name\": [\n          \"Organon LLC\"\n        ],\n        \"rxcui\": [\n          \"349420\",\n          \"352086\"\n        ],\n        \"spl_set_id\": [\n          \"c671342e-69a2-4ca5-abc2-8166ed4240d4\"\n        ],\n        \"is_original_packager\": [\n          true\n        ],\n        \"upc\": [\n          \"0378206188014\",\n          \"0378206119018\"\n        ],\n        \"nui\": [\n          \"N0000000190\",\n          \"N0000175587\"\n        ],\n        \"pharm_class_moa\": [\n          \"Histamine H1 Receptor Antagonists [MoA]\"\n        ],\n        \"pharm_class_epc\": [\n          \"Histamine-1 Receptor Antagonist [EPC]\"\n        ],\n        \"unii\": [\n          \"FVF865388R\"\n        ]\n      },\n      \"marketing_category\": \"NDA\",\n      \"dosage_form\": \"TABLET, FILM COATED\",\n      \"spl_id\": \"56d88176-c545-4aed-a9e7-6b1696243c86\",\n      \"product_type\": \"HUMAN PRESCRIPTION DRUG\",\n      \"route\": [\n        \"ORAL\"\n      ],\n      \"marketing_start_date\": \"20220823\",\n      \"product_id\": \"78206-188_56d88176-c545-4aed-a9e7-6b1696243c86\",\n      \"application_number\": \"NDA021165\",\n      \"brand_name_base\": \"Clarinex\",\n      \"pharm_class\": [\n        \"Histamine H1 Receptor Antagonists [MoA]\",\n        \"Histamine-1 Receptor Antagonist [EPC]\"\n      ]\n    }\n  ]\n}"</code></pre>
+<pre><code>$modified
+[1] "2025-02-26"
+
+$skip
+[1] 0
+
+$limit
+[1] 1
+
+$total
+[1] 109821
+
+$results
+  product_ndc  generic_name labeler_name brand_name finished marketing_category
+1   78206-188 Desloratadine  Organon LLC   Clarinex     TRUE                NDA
+          dosage_form                               spl_id
+1 TABLET, FILM COATED 56d88176-c545-4aed-a9e7-6b1696243c86
+             product_type route                                     product_id
+1 HUMAN PRESCRIPTION DRUG  ORAL 78206-188_56d88176-c545-4aed-a9e7-6b1696243c86
+  application_number brand_name_base
+1          NDA021165        Clarinex
+                                                                     pharm_class
+1 Histamine H1 Receptor Antagonists [MoA], Histamine-1 Receptor Antagonist [EPC]
+   lexp_date   mkt_date active_ingredient active_strength      pkg_ndc
+1 2025-12-31 2022-08-23     DESLORATADINE          5 mg/1 78206-188-01
+                                            pkg_desc pkg_mkt_start_date
+1 100 TABLET, FILM COATED in 1 BOTTLE (78206-188-01)         2022-08-23
+  pkg_sample manufacturer_name          rxcui
+1      FALSE       Organon LLC 349420, 352086
+                            spl_set_id is_original_packager
+1 c671342e-69a2-4ca5-abc2-8166ed4240d4                 TRUE
+                           upc                      nui       unii
+1 0378206188014, 0378206119018 N0000000190, N0000175587 FVF865388R
+                          pharm_class_moa                       pharm_class_epc
+1 Histamine H1 Receptor Antagonists [MoA] Histamine-1 Receptor Antagonist [EPC]</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>jsonify<span class="sc">::</span><span class="fu">pretty_json</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>x <span class="sc">|&gt;</span> <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>{
-    "meta": {
-        "disclaimer": "Do not rely on openFDA to make decisions regarding medical care. While we make every effort to ensure that data is accurate, you should assume all results are unvalidated. We may limit or otherwise restrict your access to the API in line with our Terms of Service.",
-        "terms": "https://open.fda.gov/terms/",
-        "license": "https://open.fda.gov/license/",
-        "last_updated": "2025-02-26",
-        "results": {
-            "skip": 0,
-            "limit": 1,
-            "total": 129913
-        }
-    },
-    "results": [
-        {
-            "product_ndc": "78206-188",
-            "generic_name": "Desloratadine",
-            "labeler_name": "Organon LLC",
-            "brand_name": "Clarinex",
-            "active_ingredients": [
-                {
-                    "name": "DESLORATADINE",
-                    "strength": "5 mg/1"
-                }
-            ],
-            "finished": true,
-            "packaging": [
-                {
-                    "package_ndc": "78206-188-01",
-                    "description": "100 TABLET, FILM COATED in 1 BOTTLE (78206-188-01)",
-                    "marketing_start_date": "20220823",
-                    "sample": false
-                }
-            ],
-            "listing_expiration_date": "20251231",
-            "openfda": {
-                "manufacturer_name": [
-                    "Organon LLC"
-                ],
-                "rxcui": [
-                    "349420",
-                    "352086"
-                ],
-                "spl_set_id": [
-                    "c671342e-69a2-4ca5-abc2-8166ed4240d4"
-                ],
-                "is_original_packager": [
-                    true
-                ],
-                "upc": [
-                    "0378206188014",
-                    "0378206119018"
-                ],
-                "nui": [
-                    "N0000000190",
-                    "N0000175587"
-                ],
-                "pharm_class_moa": [
-                    "Histamine H1 Receptor Antagonists [MoA]"
-                ],
-                "pharm_class_epc": [
-                    "Histamine-1 Receptor Antagonist [EPC]"
-                ],
-                "unii": [
-                    "FVF865388R"
-                ]
-            },
-            "marketing_category": "NDA",
-            "dosage_form": "TABLET, FILM COATED",
-            "spl_id": "56d88176-c545-4aed-a9e7-6b1696243c86",
-            "product_type": "HUMAN PRESCRIPTION DRUG",
-            "route": [
-                "ORAL"
-            ],
-            "marketing_start_date": "20220823",
-            "product_id": "78206-188_56d88176-c545-4aed-a9e7-6b1696243c86",
-            "application_number": "NDA021165",
-            "brand_name_base": "Clarinex",
-            "pharm_class": [
-                "Histamine H1 Receptor Antagonists [MoA]",
-                "Histamine-1 Receptor Antagonist [EPC]"
-            ]
-        }
-    ]
-}</code></pre>
+<pre><code>- $modified                      c1  2025-02-26
+- $skip                          i1  0
+- $limit                         i1  1
+- $total                         i1  109821
+- $results $product_ndc          c1  78206-188                              ...
+- $results $generic_name         c1  Desloratadine                          ...
+- $results $labeler_name         c1  Organon LLC                            ...
+- $results $brand_name           c1  Clarinex                               ...
+- $results $finished             l1  T                                      ...
+- $results $marketing_category   c1  NDA                                    ...
+- $results $dosage_form          c1  TABLET, FILM COATED                    ...
+- $results $spl_id               c1  56d88176-c545-4aed-a9e7-6b1696243c86   ...
+- $results $product_type         c1  HUMAN PRESCRIPTION DRUG                ...
+- $results $route                c1  ORAL                                   ...
+- $results $product_id           c1  78206-188_56d88176-c545-4aed-a9e7-6b16 ...
+- $results $application_number   c1  NDA021165                              ...
+- $results $brand_name_base      c1  Clarinex                               ...
+- $results $pharm_class          c1  Histamine H1 Receptor Antagonists [MoA ...
+- $results $lexp_date            c1  2025-12-31                             ...
+- $results $mkt_date             c1  2022-08-23                             ...
+- $results $active_ingredient    c1  DESLORATADINE                          ...
+- $results $active_strength      c1  5 mg/1                                 ...
+- $results $pkg_ndc              c1  78206-188-01                           ...
+- $results $pkg_desc             c1  100 TABLET, FILM COATED in 1 BOTTLE (7 ...
+- $results $pkg_mkt_start_date   c1  2022-08-23                             ...
+- $results $pkg_sample           l1  F                                      ...
+- $results $manufacturer_name    c1  Organon LLC                            ...
+- $results $rxcui                c1  349420, 352086                         ...
+- $results $spl_set_id           c1  c671342e-69a2-4ca5-abc2-8166ed4240d4   ...
+- $results $is_original_packager l1  T                                      ...
+- $results $upc                  c1  0378206188014, 0378206119018           ...
+- $results $nui                  c1  N0000000190, N0000175587               ...
+- $results $unii                 c1  FVF865388R                             ...
+- $results $pharm_class_moa      c1  Histamine H1 Receptor Antagonists [MoA ...
+- $results $pharm_class_epc      c1  Histamine-1 Receptor Antagonist [EPC]  ...</code></pre>
 </div>
 </div>
 
