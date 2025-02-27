@@ -337,7 +337,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#grouped-payments" id="toc-grouped-payments" class="nav-link" data-scroll-target="#grouped-payments"><span class="header-section-number">3.2.2</span> Grouped Payments</a></li>
   <li><a href="#payment-data-by-yearcategory" id="toc-payment-data-by-yearcategory" class="nav-link" data-scroll-target="#payment-data-by-yearcategory"><span class="header-section-number">3.2.3</span> Payment Data by Year/Category</a></li>
   </ul></li>
-  <li><a href="#dictionary" id="toc-dictionary" class="nav-link" data-scroll-target="#dictionary"><span class="header-section-number">3.3</span> Dictionary</a></li>
+  <li><a href="#example-queries" id="toc-example-queries" class="nav-link" data-scroll-target="#example-queries"><span class="header-section-number">3.3</span> Example Queries</a></li>
+  <li><a href="#dictionary" id="toc-dictionary" class="nav-link" data-scroll-target="#dictionary"><span class="header-section-number">3.4</span> Dictionary</a></li>
   </ul>
 <div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li></ul></div></nav>
     </div>
@@ -400,16 +401,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>get_data_elem <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">delist</span>(<span class="fu">map</span>(x, <span class="cf">function</span>(i)</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">get_elem</span>(<span class="fu">as.list</span>(i), <span class="st">"data"</span>)))</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>open_identifier_url <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">"https://openpaymentsdata.cms.gov/api/1/datastore/query/"</span>,</span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>         x,</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>         <span class="st">"/0"</span>)</span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">delist</span>(<span class="fu">map</span>(x, <span class="cf">function</span>(i) <span class="fu">get_elem</span>(<span class="fu">as.list</span>(i), <span class="st">"data"</span>)))</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>open_identifier_url <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">"https://openpaymentsdata.cms.gov/api/1/datastore/query/"</span>, x, <span class="st">"/0"</span>)</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>catalog_open_payments <span class="ot">&lt;-</span> \() {</span>
@@ -771,74 +768,395 @@ $endpoints
 </div>
 </section>
 </section>
-<section id="dictionary" class="level2" data-number="3.3">
-<h2 data-number="3.3" class="anchored" data-anchor-id="dictionary"><span class="header-section-number">3.3</span> Dictionary</h2>
+<section id="example-queries" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="example-queries"><span class="header-section-number">3.3</span> Example Queries</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>open_dictionary <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">map</span>(</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">get_elem</span>(</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">get_elem</span>(</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>        <span class="fu">as_tbl</span>(</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>          <span class="fu">fload</span>(</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>            <span class="fu">paste0</span>(</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>              <span class="st">"https://openpaymentsdata.cms.gov/"</span>,</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>              <span class="st">"api/1/metastore/schemas/dataset/"</span>,</span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>              <span class="st">"items?show-reference-ids"</span></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>              ))), </span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">"data"</span>, </span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">DF.as.list =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>      <span class="st">"title|describedBy"</span>,</span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">regex =</span> <span class="cn">TRUE</span>), </span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) x[<span class="fu">not_null</span>(<span class="fu">names</span>(x))]</span>
-<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">new_df</span>(</span>
-<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(x, <span class="st">"title"</span>)),</span>
-<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">dictionary =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(x, <span class="st">"describedBy"</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mtt</span>(</span>
-<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">year =</span> <span class="fu">as_int</span>(<span class="fu">stri_extract_all_regex</span>(name, <span class="st">"[0-9]{4}"</span>)),</span>
-<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">name =</span> <span class="fu">cheapr_if_else</span>(</span>
-<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>        <span class="fu">na</span>(year),</span>
-<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>        name,</span>
-<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>        <span class="fu">stri_extract_all_regex</span>(</span>
-<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>          name, </span>
-<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>          <span class="st">"^.*(?=</span><span class="sc">\\</span><span class="st">s.</span><span class="sc">\\</span><span class="st">sDetailed Dataset [0-9]{4} Reporting Year)"</span></span>
-<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>          )),</span>
-<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>      <span class="at">year =</span> <span class="fu">cheapr_if_else</span>(</span>
-<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>        <span class="fu">na</span>(year), </span>
-<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>        <span class="fu">fmax</span>(year), </span>
-<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>        year</span>
-<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>        )) <span class="sc">|&gt;</span></span>
-<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sbt</span>(year <span class="sc">==</span> <span class="fu">fmax</span>(year), <span class="sc">-</span>year)</span>
-<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> x[[<span class="st">"dictionary"</span>]] <span class="sc">|&gt;</span> </span>
-<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map</span>(request) <span class="sc">|&gt;</span> </span>
-<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">req_perform_parallel</span>(<span class="at">on_error =</span> <span class="st">"continue"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">resps_successes</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">resps_data</span>(\(resp) <span class="fu">resp_body_string</span>(resp)) <span class="sc">|&gt;</span> </span>
-<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fparse</span>(<span class="at">query =</span> <span class="st">"/data"</span>)</span>
-<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">funique</span>(</span>
-<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a>    <span class="fu">new_tbl</span>(</span>
-<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a>      <span class="at">field =</span> <span class="fu">delist</span>(</span>
-<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a>        <span class="fu">map</span>(</span>
-<span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a>          <span class="fu">get_elem</span>(x, <span class="st">"fields"</span>), </span>
-<span id="cb14-51"><a href="#cb14-51" aria-hidden="true" tabindex="-1"></a>          <span class="cf">function</span>(x) </span>
-<span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a>            <span class="fu">get_elem</span>(x, <span class="st">"name"</span>)</span>
-<span id="cb14-53"><a href="#cb14-53" aria-hidden="true" tabindex="-1"></a>          )),</span>
-<span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a>      <span class="at">description =</span> <span class="fu">delist</span>(</span>
-<span id="cb14-55"><a href="#cb14-55" aria-hidden="true" tabindex="-1"></a>        <span class="fu">map</span>(</span>
-<span id="cb14-56"><a href="#cb14-56" aria-hidden="true" tabindex="-1"></a>          <span class="fu">get_elem</span>(x, <span class="st">"fields"</span>), </span>
-<span id="cb14-57"><a href="#cb14-57" aria-hidden="true" tabindex="-1"></a>          <span class="cf">function</span>(x) </span>
-<span id="cb14-58"><a href="#cb14-58" aria-hidden="true" tabindex="-1"></a>            <span class="fu">get_elem</span>(x, <span class="st">"description"</span>))</span>
-<span id="cb14-59"><a href="#cb14-59" aria-hidden="true" tabindex="-1"></a>        ) <span class="sc">|&gt;</span> <span class="fu">replace_fixed</span>(<span class="fu">c</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>, <span class="st">'"'</span>), <span class="fu">c</span>(<span class="st">" "</span>, <span class="st">""</span>))), </span>
-<span id="cb14-60"><a href="#cb14-60" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="st">"field"</span>, </span>
-<span id="cb14-61"><a href="#cb14-61" aria-hidden="true" tabindex="-1"></a>    <span class="at">sort =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb14-62"><a href="#cb14-62" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb14-63"><a href="#cb14-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-64"><a href="#cb14-64" aria-hidden="true" tabindex="-1"></a><span class="fu">open_dictionary</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb14-65"><a href="#cb14-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="cn">Inf</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>format_query_open <span class="ot">&lt;-</span> <span class="cf">function</span>(args, <span class="at">operator =</span> <span class="st">"="</span>) {</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  args  <span class="ot">&lt;-</span> <span class="fu">discard</span>(args, is.null)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  query <span class="ot">&lt;-</span> <span class="fu">glue</span>(</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="st">  "conditions[{i}][property]" = "{PROPERTY}",</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="st">  "conditions[{i}][operator]" = "{OPERATOR}",</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="st">  "conditions[{i}][value]" = "{VALUE}"</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="st">  '</span>,</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">i                 =</span> <span class="fu">seq_along0</span>(args),</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">PROPERTY          =</span> <span class="fu">names</span>(args),</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">OPERATOR          =</span> operator,</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">VALUE             =</span> args) <span class="sc">|&gt;</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">glue_collapse</span>(<span class="at">sep =</span> <span class="st">",</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glue</span>(<span class="st">'c({query})'</span>) <span class="sc">|&gt;</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">parse_expr</span>() <span class="sc">|&gt;</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">eval_bare</span>()</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>perform_request_open <span class="ot">&lt;-</span> <span class="cf">function</span>(url, query) {</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">req_url_query</span>(<span class="fu">request</span>(url),</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!!!</span><span class="fu">format_query_open</span>(query),</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">schema  =</span> <span class="st">"false"</span>,</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">keys    =</span> <span class="st">"false"</span>,</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">results =</span> <span class="st">"true"</span>,</span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">count   =</span> <span class="st">"false"</span>,</span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">offset  =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>(<span class="at">verbosity =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">resp_simple_json</span>()</span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_df</span>(x<span class="sc">$</span>results) <span class="sc">|&gt;</span> </span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(x<span class="sc">$</span>query<span class="sc">$</span>properties) <span class="sc">|&gt;</span> </span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_na_if</span>()</span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>gen_21 <span class="ot">&lt;-</span> <span class="fu">sbt</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">open_payments_general</span>(open) <span class="sc">|&gt;</span> _[[<span class="st">"endpoints"</span>]], </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  year <span class="sc">==</span> <span class="dv">2021</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"identifier"</span>]] <span class="sc">|&gt;</span> </span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">open_identifier_url</span>()</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">perform_request_open</span>(</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">url   =</span> gen_21, </span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">query =</span> <span class="fu">c</span>(<span class="at">covered_recipient_npi =</span> <span class="dv">1023630738</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>*  Host openpaymentsdata.cms.gov:443 was resolved.
+*  IPv6: 2600:1403:5400:38c::1fc4, 2600:1403:5400:380::1fc4, 2600:1403:5400:3ae::1fc4, 2600:1403:5400:3b7::1fc4, 2600:1403:5400:381::1fc4
+*  IPv4: 23.13.76.121
+*    Trying [2600:1403:5400:38c::1fc4]:443...
+*  ALPN: curl offers h2,http/1.1
+*  TLSv1.3 (OUT), TLS handshake, Client hello (1):
+*   CAfile: C:/PROGRA~1/R/R-44~1.2/etc/curl-ca-bundle.crt
+*   CApath: none
+*  TLSv1.3 (IN), TLS handshake, Server hello (2):
+*  TLSv1.3 (IN), TLS change cipher, Change cipher spec (1):
+*  TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+*  TLSv1.3 (IN), TLS handshake, Certificate (11):
+*  TLSv1.3 (IN), TLS handshake, CERT verify (15):
+*  TLSv1.3 (IN), TLS handshake, Finished (20):
+*  TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+*  TLSv1.3 (OUT), TLS handshake, Finished (20):
+*  SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384 / x25519 / RSASSA-PSS
+*  ALPN: server accepted h2
+*  Server certificate:
+*   subject: C=US; ST=Maryland; L=Baltimore; O=Centers for Medicare &amp; Medicaid Services; CN=www.healthcare.gov
+*   start date: Feb 25 00:00:00 2025 GMT
+*   expire date: Oct  1 23:59:59 2025 GMT
+*   subjectAltName: host "openpaymentsdata.cms.gov" matched cert's "openpaymentsdata.cms.gov"
+*   issuer: C=US; O=DigiCert Inc; OU=www.digicert.com; CN=GeoTrust RSA CA 2018
+*   SSL certificate verify ok.
+*    Certificate level 0: Public key type RSA (2048/112 Bits/secBits), signed using sha256WithRSAEncryption
+*    Certificate level 1: Public key type RSA (2048/112 Bits/secBits), signed using sha256WithRSAEncryption
+*    Certificate level 2: Public key type RSA (2048/112 Bits/secBits), signed using sha1WithRSAEncryption
+*  Connected to openpaymentsdata.cms.gov (2600:1403:5400:38c::1fc4) port 443
+*  using HTTP/2
+*  [HTTP/2] [1] OPENED stream for https://openpaymentsdata.cms.gov/api/1/datastore/query/0380bbeb-aea1-58b6-b708-829f92a48202/0?conditions%5B0%5D%5Bproperty%5D=covered_recipient_npi&amp;conditions%5B0%5D%5Boperator%5D=%3D&amp;conditions%5B0%5D%5Bvalue%5D=1023630738&amp;schema=false&amp;keys=false&amp;results=true&amp;count=false&amp;offset=0
+*  [HTTP/2] [1] [:method: GET]
+*  [HTTP/2] [1] [:scheme: https]
+*  [HTTP/2] [1] [:authority: openpaymentsdata.cms.gov]
+*  [HTTP/2] [1] [:path: /api/1/datastore/query/0380bbeb-aea1-58b6-b708-829f92a48202/0?conditions%5B0%5D%5Bproperty%5D=covered_recipient_npi&amp;conditions%5B0%5D%5Boperator%5D=%3D&amp;conditions%5B0%5D%5Bvalue%5D=1023630738&amp;schema=false&amp;keys=false&amp;results=true&amp;count=false&amp;offset=0]
+*  [HTTP/2] [1] [user-agent: httr2/1.1.0 r-curl/6.2.1 libcurl/8.10.1]
+*  [HTTP/2] [1] [accept: */*]
+*  [HTTP/2] [1] [accept-encoding: deflate, gzip]
+-&gt; GET /api/1/datastore/query/0380bbeb-aea1-58b6-b708-829f92a48202/0?conditions%5B0%5D%5Bproperty%5D=covered_recipient_npi&amp;conditions%5B0%5D%5Boperator%5D=%3D&amp;conditions%5B0%5D%5Bvalue%5D=1023630738&amp;schema=false&amp;keys=false&amp;results=true&amp;count=false&amp;offset=0 HTTP/2
+-&gt; Host: openpaymentsdata.cms.gov
+-&gt; User-Agent: httr2/1.1.0 r-curl/6.2.1 libcurl/8.10.1
+-&gt; Accept: */*
+-&gt; Accept-Encoding: deflate, gzip
+-&gt; 
+*  Request completely sent off
+*  TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+*  TLSv1.3 (IN), TLS handshake, Newsession Ticket (4):
+&lt;- HTTP/2 200 
+&lt;- accept-ranges: bytes
+&lt;- content-encoding: gzip
+&lt;- content-language: en
+&lt;- content-type: application/json
+&lt;- etag: "1740676214"
+&lt;- last-modified: Thu, 27 Feb 2025 17:10:14 GMT
+&lt;- server: nginx
+&lt;- vary: Accept-Encoding
+&lt;- x-age: 0
+&lt;- x-ah-environment: prod
+&lt;- x-content-type-options: nosniff
+&lt;- x-drupal-cache: MISS
+&lt;- x-drupal-dynamic-cache: MISS
+&lt;- x-frame-options: SAMEORIGIN
+&lt;- x-generator: Drupal 10 (https://www.drupal.org)
+&lt;- x-request-id: v-b5a15062-f52d-11ef-a4b9-c3890f66aa32
+&lt;- content-length: 1254
+&lt;- cache-control: public, max-age=3600
+&lt;- expires: Thu, 27 Feb 2025 18:20:44 GMT
+&lt;- date: Thu, 27 Feb 2025 17:20:44 GMT
+&lt;- strict-transport-security: max-age=31536000 ; includeSubDomains
+&lt;- access-control-allow-methods: GET, POST
+&lt;- access-control-allow-headers: *
+&lt;- access-control-allow-origin: *
+&lt;- 
+&lt;&lt; 848 bytes of binary data
+&lt;&lt; 406 bytes of binary data
+&lt;&lt; 
+*  Connection #0 to host openpaymentsdata.cms.gov left intact</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>ex <span class="sc">|&gt;</span> </span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">handle_na</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>- $change_type                                                      c1  UNC ...
+- $covered_recipient_type                                           c1  Cov ...
+- $covered_recipient_profile_id                                     c1  879 ...
+- $covered_recipient_npi                                            c1  102 ...
+- $covered_recipient_first_name                                     c1  ALY ...
+- $covered_recipient_middle_name                                    c1  MOT ...
+- $covered_recipient_last_name                                      c1  SMI ...
+- $recipient_primary_business_street_address_line1                  c1  610 ...
+- $recipient_city                                                   c1  BUF ...
+- $recipient_state                                                  c1  OK  ...
+- $recipient_zip_code                                               c1  738 ...
+- $recipient_country                                                c1  Uni ...
+- $covered_recipient_primary_type_1                                 c1  Phy ...
+- $covered_recipient_specialty_1                                    c1  Phy ...
+- $covered_recipient_license_state_code1                            c1  OK  ...
+- $submitting_applicable_manufacturer_or_applicable_gpo_name        c1  Org ...
+- $applicable_manufacturer_or_applicable_gpo_making_payment_id      c1  100 ...
+- $applicable_manufacturer_or_applicable_gpo_making_payment_name    c1  Org ...
+- $applicable_manufacturer_or_applicable_gpo_making_payment_state   c1  NJ  ...
+- $applicable_manufacturer_or_applicable_gpo_making_payment_country c1  Uni ...
+- $total_amount_of_payment_usdollars                                c1  17. ...
+- $date_of_payment                                                  c1  08/ ...
+- $number_of_payments_included_in_total_amount                      c1  1   ...
+- $form_of_payment_or_transfer_of_value                             c1  In- ...
+- $nature_of_payment_or_transfer_of_value                           c1  Foo ...
+- $physician_ownership_indicator                                    c1  No  ...
+- $third_party_payment_recipient_indicator                          c1  No  ...
+- $delay_in_publication_indicator                                   c1  No  ...
+- $record_id                                                        c1  837 ...
+- $dispute_status_for_publication                                   c1  No  ...
+- $related_product_indicator                                        c1  Yes ...
+- $covered_or_noncovered_indicator_1                                c1  Cov ...
+- $indicate_drug_or_biological_or_device_or_medical_supply_1        c1  Dru ...
+- $product_category_or_therapeutic_area_1                           c1  CON ...
+- $name_of_drug_or_biological_or_device_or_medical_supply_1         c1  NEX ...
+- $associated_drug_or_biological_ndc_1                              c1  782 ...
+- $program_year                                                     c1  202 ...
+- $payment_publication_date                                         c1  01/ ...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>ex2 <span class="ot">&lt;-</span> <span class="fu">perform_request_open</span>(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">url   =</span> gen_21, </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">query =</span> <span class="fu">c</span>(<span class="at">covered_recipient_npi =</span> <span class="dv">1043218118</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>*  Re-using existing connection with host openpaymentsdata.cms.gov
+*  [HTTP/2] [3] OPENED stream for https://openpaymentsdata.cms.gov/api/1/datastore/query/0380bbeb-aea1-58b6-b708-829f92a48202/0?conditions%5B0%5D%5Bproperty%5D=covered_recipient_npi&amp;conditions%5B0%5D%5Boperator%5D=%3D&amp;conditions%5B0%5D%5Bvalue%5D=1043218118&amp;schema=false&amp;keys=false&amp;results=true&amp;count=false&amp;offset=0
+*  [HTTP/2] [3] [:method: GET]
+*  [HTTP/2] [3] [:scheme: https]
+*  [HTTP/2] [3] [:authority: openpaymentsdata.cms.gov]
+*  [HTTP/2] [3] [:path: /api/1/datastore/query/0380bbeb-aea1-58b6-b708-829f92a48202/0?conditions%5B0%5D%5Bproperty%5D=covered_recipient_npi&amp;conditions%5B0%5D%5Boperator%5D=%3D&amp;conditions%5B0%5D%5Bvalue%5D=1043218118&amp;schema=false&amp;keys=false&amp;results=true&amp;count=false&amp;offset=0]
+*  [HTTP/2] [3] [user-agent: httr2/1.1.0 r-curl/6.2.1 libcurl/8.10.1]
+*  [HTTP/2] [3] [accept: */*]
+*  [HTTP/2] [3] [accept-encoding: deflate, gzip]
+-&gt; GET /api/1/datastore/query/0380bbeb-aea1-58b6-b708-829f92a48202/0?conditions%5B0%5D%5Bproperty%5D=covered_recipient_npi&amp;conditions%5B0%5D%5Boperator%5D=%3D&amp;conditions%5B0%5D%5Bvalue%5D=1043218118&amp;schema=false&amp;keys=false&amp;results=true&amp;count=false&amp;offset=0 HTTP/2
+-&gt; Host: openpaymentsdata.cms.gov
+-&gt; User-Agent: httr2/1.1.0 r-curl/6.2.1 libcurl/8.10.1
+-&gt; Accept: */*
+-&gt; Accept-Encoding: deflate, gzip
+-&gt; 
+*  Request completely sent off
+&lt;- HTTP/2 200 
+&lt;- accept-ranges: bytes
+&lt;- content-encoding: gzip
+&lt;- content-language: en
+&lt;- content-type: application/json
+&lt;- etag: "1740676671"
+&lt;- last-modified: Thu, 27 Feb 2025 17:17:51 GMT
+&lt;- server: nginx
+&lt;- vary: Accept-Encoding
+&lt;- x-age: 0
+&lt;- x-ah-environment: prod
+&lt;- x-content-type-options: nosniff
+&lt;- x-drupal-cache: MISS
+&lt;- x-drupal-dynamic-cache: MISS
+&lt;- x-frame-options: SAMEORIGIN
+&lt;- x-generator: Drupal 10 (https://www.drupal.org)
+&lt;- x-request-id: v-c64a7884-f52e-11ef-9f41-3f20372404d5
+&lt;- content-length: 4847
+&lt;- cache-control: public, max-age=3600
+&lt;- expires: Thu, 27 Feb 2025 18:20:44 GMT
+&lt;- date: Thu, 27 Feb 2025 17:20:44 GMT
+&lt;- strict-transport-security: max-age=31536000 ; includeSubDomains
+&lt;- access-control-allow-methods: GET, POST
+&lt;- access-control-allow-headers: *
+&lt;- access-control-allow-origin: *
+&lt;- 
+&lt;&lt; 904 bytes of binary data
+&lt;&lt; 3943 bytes of binary data
+&lt;&lt; 
+*  Connection #0 to host openpaymentsdata.cms.gov left intact</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>ex2 <span class="sc">|&gt;</span> <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>- $change_type                                                      c92 UNC ...
+- $covered_recipient_type                                           c92 Cov ...
+- $teaching_hospital_ccn                                            c92 NA  ...
+- $teaching_hospital_id                                             c92 NA  ...
+- $teaching_hospital_name                                           c92 NA  ...
+- $covered_recipient_profile_id                                     c92 920 ...
+- $covered_recipient_npi                                            c92 104 ...
+- $covered_recipient_first_name                                     c92 Aha ...
+- $covered_recipient_middle_name                                    c92 NA  ...
+- $covered_recipient_last_name                                      c92 Mah ...
+- $covered_recipient_name_suffix                                    c92 NA  ...
+- $recipient_primary_business_street_address_line1                  c92 673 ...
+- $recipient_primary_business_street_address_line2                  c92 NA  ...
+- $recipient_city                                                   c92 Zep ...
+- $recipient_state                                                  c92 FL  ...
+- $recipient_zip_code                                               c92 335 ...
+- $recipient_country                                                c92 Uni ...
+- $recipient_province                                               c92 NA  ...
+- $recipient_postal_code                                            c92 NA  ...
+- $covered_recipient_primary_type_1                                 c92 Med ...
+- $covered_recipient_primary_type_2                                 c92 NA  ...
+- $covered_recipient_primary_type_3                                 c92 NA  ...
+- $covered_recipient_primary_type_4                                 c92 NA  ...
+- $covered_recipient_primary_type_5                                 c92 NA  ...
+- $covered_recipient_primary_type_6                                 c92 NA  ...
+- $covered_recipient_specialty_1                                    c92 All ...
+- $covered_recipient_specialty_2                                    c92 NA  ...
+- $covered_recipient_specialty_3                                    c92 NA  ...
+- $covered_recipient_specialty_4                                    c92 NA  ...
+- $covered_recipient_specialty_5                                    c92 NA  ...
+- $covered_recipient_specialty_6                                    c92 NA  ...
+- $covered_recipient_license_state_code1                            c92 FL  ...
+- $covered_recipient_license_state_code2                            c92 NA  ...
+- $covered_recipient_license_state_code3                            c92 NA  ...
+- $covered_recipient_license_state_code4                            c92 NA  ...
+- $covered_recipient_license_state_code5                            c92 NA  ...
+- $submitting_applicable_manufacturer_or_applicable_gpo_name        c92 Mob ...
+- $applicable_manufacturer_or_applicable_gpo_making_payment_id      c92 100 ...
+- $applicable_manufacturer_or_applicable_gpo_making_payment_name    c92 Mob ...
+- $applicable_manufacturer_or_applicable_gpo_making_payment_state   c92 MO  ...
+- $applicable_manufacturer_or_applicable_gpo_making_payment_country c92 Uni ...
+- $total_amount_of_payment_usdollars                                c92 250 ...
+- $date_of_payment                                                  c92 05/ ...
+- $number_of_payments_included_in_total_amount                      c92 1   ...
+- $form_of_payment_or_transfer_of_value                             c92 Cas ...
+- $nature_of_payment_or_transfer_of_value                           c92 Com ...
+- $city_of_travel                                                   c92 NA  ...
+- $state_of_travel                                                  c92 NA  ...
+- $country_of_travel                                                c92 NA  ...
+- $physician_ownership_indicator                                    c92 No  ...
+- $third_party_payment_recipient_indicator                          c92 No  ...
+- $name_of_third_party_entity_receiving_payment_or_transfer_of_ccfc c92 NA  ...
+- $charity_indicator                                                c92 No  ...
+- $third_party_equals_covered_recipient_indicator                   c92 NA  ...
+- $contextual_information                                           c92 NA  ...
+- $delay_in_publication_indicator                                   c92 No  ...
+- $record_id                                                        c92 754 ...
+- $dispute_status_for_publication                                   c92 No  ...
+- $related_product_indicator                                        c92 Yes ...
+- $covered_or_noncovered_indicator_1                                c92 Cov ...
+- $indicate_drug_or_biological_or_device_or_medical_supply_1        c92 Dru ...
+- $product_category_or_therapeutic_area_1                           c92 Oph ...
+- $name_of_drug_or_biological_or_device_or_medical_supply_1         c92 Mit ...
+- $associated_drug_or_biological_ndc_1                              c92 497 ...
+- $associated_device_or_medical_supply_pdi_1                        c92 NA  ...
+- $covered_or_noncovered_indicator_2                                c92 NA  ...
+- $indicate_drug_or_biological_or_device_or_medical_supply_2        c92 NA  ...
+- $product_category_or_therapeutic_area_2                           c92 NA  ...
+- $name_of_drug_or_biological_or_device_or_medical_supply_2         c92 NA  ...
+- $associated_drug_or_biological_ndc_2                              c92 NA  ...
+- $associated_device_or_medical_supply_pdi_2                        c92 NA  ...
+- $covered_or_noncovered_indicator_3                                c92 NA  ...
+- $indicate_drug_or_biological_or_device_or_medical_supply_3        c92 NA  ...
+- $product_category_or_therapeutic_area_3                           c92 NA  ...
+- $name_of_drug_or_biological_or_device_or_medical_supply_3         c92 NA  ...
+- $associated_drug_or_biological_ndc_3                              c92 NA  ...
+- $associated_device_or_medical_supply_pdi_3                        c92 NA  ...
+- $covered_or_noncovered_indicator_4                                c92 NA  ...
+- $indicate_drug_or_biological_or_device_or_medical_supply_4        c92 NA  ...
+- $product_category_or_therapeutic_area_4                           c92 NA  ...
+- $name_of_drug_or_biological_or_device_or_medical_supply_4         c92 NA  ...
+- $associated_drug_or_biological_ndc_4                              c92 NA  ...
+- $associated_device_or_medical_supply_pdi_4                        c92 NA  ...
+- $covered_or_noncovered_indicator_5                                c92 NA  ...
+- $indicate_drug_or_biological_or_device_or_medical_supply_5        c92 NA  ...
+- $product_category_or_therapeutic_area_5                           c92 NA  ...
+- $name_of_drug_or_biological_or_device_or_medical_supply_5         c92 NA  ...
+- $associated_drug_or_biological_ndc_5                              c92 NA  ...
+- $associated_device_or_medical_supply_pdi_5                        c92 NA  ...
+- $program_year                                                     c92 202 ...
+- $payment_publication_date                                         c92 01/ ...</code></pre>
+</div>
+</div>
+</section>
+<section id="dictionary" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="dictionary"><span class="header-section-number">3.4</span> Dictionary</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>open_dictionary <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">map</span>(</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">get_elem</span>(</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">get_elem</span>(</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>        <span class="fu">as_tbl</span>(</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>          <span class="fu">fload</span>(</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>            <span class="fu">paste0</span>(</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>              <span class="st">"https://openpaymentsdata.cms.gov/"</span>,</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>              <span class="st">"api/1/metastore/schemas/dataset/"</span>,</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>              <span class="st">"items?show-reference-ids"</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>              ))), </span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">"data"</span>, </span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">DF.as.list =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>      <span class="st">"title|describedBy"</span>,</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">regex =</span> <span class="cn">TRUE</span>), </span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(x) x[<span class="fu">not_null</span>(<span class="fu">names</span>(x))]</span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">new_df</span>(</span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(x, <span class="st">"title"</span>)),</span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">dictionary =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(x, <span class="st">"describedBy"</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mtt</span>(</span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">year =</span> <span class="fu">as_int</span>(<span class="fu">stri_extract_all_regex</span>(name, <span class="st">"[0-9]{4}"</span>)),</span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">name =</span> <span class="fu">cheapr_if_else</span>(</span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a>        <span class="fu">na</span>(year),</span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a>        name,</span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a>        <span class="fu">stri_extract_all_regex</span>(</span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a>          name, </span>
+<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a>          <span class="st">"^.*(?=</span><span class="sc">\\</span><span class="st">s.</span><span class="sc">\\</span><span class="st">sDetailed Dataset [0-9]{4} Reporting Year)"</span></span>
+<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a>          )),</span>
+<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a>      <span class="at">year =</span> <span class="fu">cheapr_if_else</span>(</span>
+<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a>        <span class="fu">na</span>(year), </span>
+<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a>        <span class="fu">fmax</span>(year), </span>
+<span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a>        year</span>
+<span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a>        )) <span class="sc">|&gt;</span></span>
+<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sbt</span>(year <span class="sc">==</span> <span class="fu">fmax</span>(year), <span class="sc">-</span>year)</span>
+<span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> x[[<span class="st">"dictionary"</span>]] <span class="sc">|&gt;</span> </span>
+<span id="cb23-40"><a href="#cb23-40" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map</span>(request) <span class="sc">|&gt;</span> </span>
+<span id="cb23-41"><a href="#cb23-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">req_perform_parallel</span>(<span class="at">on_error =</span> <span class="st">"continue"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb23-42"><a href="#cb23-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">resps_successes</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb23-43"><a href="#cb23-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">resps_data</span>(\(resp) <span class="fu">resp_body_string</span>(resp)) <span class="sc">|&gt;</span> </span>
+<span id="cb23-44"><a href="#cb23-44" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fparse</span>(<span class="at">query =</span> <span class="st">"/data"</span>)</span>
+<span id="cb23-45"><a href="#cb23-45" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb23-46"><a href="#cb23-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">funique</span>(</span>
+<span id="cb23-47"><a href="#cb23-47" aria-hidden="true" tabindex="-1"></a>    <span class="fu">new_tbl</span>(</span>
+<span id="cb23-48"><a href="#cb23-48" aria-hidden="true" tabindex="-1"></a>      <span class="at">field =</span> <span class="fu">delist</span>(</span>
+<span id="cb23-49"><a href="#cb23-49" aria-hidden="true" tabindex="-1"></a>        <span class="fu">map</span>(</span>
+<span id="cb23-50"><a href="#cb23-50" aria-hidden="true" tabindex="-1"></a>          <span class="fu">get_elem</span>(x, <span class="st">"fields"</span>), </span>
+<span id="cb23-51"><a href="#cb23-51" aria-hidden="true" tabindex="-1"></a>          <span class="cf">function</span>(x) </span>
+<span id="cb23-52"><a href="#cb23-52" aria-hidden="true" tabindex="-1"></a>            <span class="fu">get_elem</span>(x, <span class="st">"name"</span>)</span>
+<span id="cb23-53"><a href="#cb23-53" aria-hidden="true" tabindex="-1"></a>          )),</span>
+<span id="cb23-54"><a href="#cb23-54" aria-hidden="true" tabindex="-1"></a>      <span class="at">description =</span> <span class="fu">delist</span>(</span>
+<span id="cb23-55"><a href="#cb23-55" aria-hidden="true" tabindex="-1"></a>        <span class="fu">map</span>(</span>
+<span id="cb23-56"><a href="#cb23-56" aria-hidden="true" tabindex="-1"></a>          <span class="fu">get_elem</span>(x, <span class="st">"fields"</span>), </span>
+<span id="cb23-57"><a href="#cb23-57" aria-hidden="true" tabindex="-1"></a>          <span class="cf">function</span>(x) </span>
+<span id="cb23-58"><a href="#cb23-58" aria-hidden="true" tabindex="-1"></a>            <span class="fu">get_elem</span>(x, <span class="st">"description"</span>))</span>
+<span id="cb23-59"><a href="#cb23-59" aria-hidden="true" tabindex="-1"></a>        ) <span class="sc">|&gt;</span> <span class="fu">replace_fixed</span>(<span class="fu">c</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">"</span>, <span class="st">'"'</span>), <span class="fu">c</span>(<span class="st">" "</span>, <span class="st">""</span>))), </span>
+<span id="cb23-60"><a href="#cb23-60" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> <span class="st">"field"</span>, </span>
+<span id="cb23-61"><a href="#cb23-61" aria-hidden="true" tabindex="-1"></a>    <span class="at">sort =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb23-62"><a href="#cb23-62" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb23-63"><a href="#cb23-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-64"><a href="#cb23-64" aria-hidden="true" tabindex="-1"></a><span class="fu">open_dictionary</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb23-65"><a href="#cb23-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="cn">Inf</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 305 × 2
     field                                                            description
