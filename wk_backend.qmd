@@ -1,5 +1,5 @@
 ---
-title: "Backend Preload"
+title: "Backend"
 editor_options: 
    chunk_output_type: console
 ---
@@ -10,7 +10,9 @@ editor_options:
 source("includes/_common.R")
 ```
 
-### `class_Identifier`
+## `S7` Classes
+
+### `class_endpoint`
 
 ```{r}
 #| label: class_Identifier
@@ -39,7 +41,7 @@ class_Identifier <- new_class(
 )
 ```
 
-### `class_Resources`
+### `class_resources`
 
 ```{r}
 #| label: class_resources
@@ -90,83 +92,7 @@ x@files |>
   as_tbl()
 ```
 
-```{r}
-#| label: class_API
-class_API <- new_class(
-  name = "class_API",
-  properties = list(
-    title              = class_character,
-    description        = class_character,
-    accrualPeriodicity = class_character,
-    modified           = new_property(class_double | class_Date),
-    temporal           = class_character,
-    identifier         = class_Identifier,
-    accessURL          = new_property(
-      NULL | class_list, 
-      setter = \(self, value) { 
-        if (not_null(value)) { 
-          self@accessURL <- request(value); 
-          self 
-          }
-        }),
-    resourcesAPI       = class_resources,
-    downloadURL        = class_character,
-    describedBy        = class_character,
-    landingPage        = class_character
-  )
-)
-```
-
-
---------------------------------------------------------------------------------
-
-## Catalog
-
-```{r}
-#| label: catalog
-main <- main_data_rcpp()
-
-main
-```
-
-### Dataset
-
-```{r}
-#| label: dataset
-main[["dataset"]] |> 
-  tidyr::unnest_wider(contactPoint, names_sep = "_") |>
-  tidyr::unnest_wider(publisher, names_sep = "_") |> 
-  collapse::frename(remove_at_symbol) |> 
-  remove_all_na() |> 
-  purse()
-```
-
-### Distribution
-
-`"latest"`
-
-```{r}
-#| label: distribution_latest
-main[["distribution_latest"]]
-```
-
-`"API"`
-
-```{r}
-#| label: distribution_api
-main[["distribution_api"]]
-```
-
-`"text/csv"`
-
-```{r}
-#| label: distribution_csv
-main[["distribution_csv"]]
-```
-
-### `S7` Sketches
-
-#### `class_distribution`
+### `class_distribution`
 
 ```{r}
 #| label: class_distribution
@@ -188,7 +114,7 @@ class_distribution <- new_class(
 class_distribution
 ```
 
-#### `class_dataset`
+### `class_dataset`
 
 ```{r}
 #| label: class_dataset
@@ -214,7 +140,7 @@ class_dataset <- new_class(
 class_dataset
 ```
 
-#### `class_catalog`
+### `class_catalog`
 
 ```{r}
 #| label: class_catalog
@@ -226,34 +152,15 @@ class_catalog <- new_class(
     if (!rlang::is_named(self@groups)) "all @groups must be named"
   )
 
-class_catalog(groups = list(a = 1))
+class_catalog(groups = list(npi = 1, ccn = "clinicians"))
 
-try(class_catalog(groups = list(1)))
+try(class_catalog(groups = list(1, "clinicians")))
 ```
 
-## Dataset Object
-
-```{r}
-#| label: provider_data
-provider_data() |> 
-  purse()
-```
-
-### National Downloadable File
+## National Downloadable File
 
 ```{r}
 #| label: url_building
-#| eval: false
-httr2::url_parse("https://data.cms.gov/provider-data/api/1/datastore/query/")
-    
-# distro 
-
-unclass(
-  httr2::url_parse(
-    "?limit=1&offset=100&count=true&results=true&schema=true&keys=true&format=json&rowIds=true"
-    )
-  )
-
 ndf_identifier <- \(x) {
   kit::nswitch(x,
     "affiliations", "27ea-46a8",
@@ -262,11 +169,9 @@ ndf_identifier <- \(x) {
     nThread = 4L)
 }
 
-url_ndf <- httr2::url_parse(
-  "https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/"
-  )
+httr2::url_parse("https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/")
 
-url_tmp <- url_ndf |> 
+url_tmp <- httr2::url_parse("https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/") |> 
   httr2::url_build() |> 
   httr2::request()
 
@@ -275,11 +180,10 @@ httr2::req_template(
   "/{fname}?show-reference-ids=true", 
   fname = ndf_identifier("affiliations"))
 
-url_ndf |> 
+httr2::url_parse("https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items/") |> 
   httr2::url_build() |> 
   httr2::request() |> 
-  httr2::req_url_path_append(
-    ndf_identifier(fname)) |> 
+  httr2::req_url_path_append(ndf_identifier("affiliations")) |> 
   httr2::req_url_path_append("?show-reference-ids=true") |>
   httr2::req_perform() |>
   httr2::resp_body_json(check_type = FALSE, simplifyVector = TRUE)
@@ -321,7 +225,7 @@ meta_ndf <- \(fname) {
     "format=json&rowIds=true")) |>
        req_perform() |>
        resp_body_json(
-         check_type = FALSE,
+         check_type     = FALSE,
          simplifyVector = TRUE)
   
   z <- gelm(gelm(gelm(y, "schema"), distro), "fields")
@@ -331,14 +235,17 @@ meta_ndf <- \(fname) {
     description  = gelm(x, "description"),
     identifier   = gelm(gelm(x, "identifier"), "identifier"),
     distribution = distro,
-    issued       = gelm(x, "issued"), 
-    modified     = gelm(x, "modified")[[1]], 
+    issued       = gelm(x, "issued"),
+    modified     = gelm(x, "modified")[[1]],
     released     = gelm(x, "released"),
-    dimensions   = paste0(gelm(gelm(y, "count"), is.numeric), " x ", gelm(gelm(z, "record_number"), "length")), 
+    dimensions   = paste0(gelm(gelm(y, "count"), is.numeric), " x ", gelm(gelm(z, "record_number"), "length")),
     fields       = names(z),
     site         = gelm(x, "landingPage"),
     csv          = gelm(gelm(gelm(x, "distribution"), "data"), "downloadURL", m = "df"),
-    dictionary   = paste0("https://data.cms.gov/provider-data/sites/default/files/data_dictionaries/physician/DOC_Data_Dictionary.pdf"))
+    dictionary   = paste0(
+      "https://data.cms.gov/provider-data/sites/default/files/data_dictionaries/physician/DOC_Data_Dictionary.pdf"
+    )
+  )
   
 }
 ```
@@ -347,11 +254,13 @@ meta_ndf <- \(fname) {
 
 ```{r}
 #| label: meta_affiliations
-meta_ndf("affiliations") |> purse()
+meta_ndf("affiliations") |> 
+  purse()
 ```
 
 
 ```{r}
 #| label: meta_clinicians
-meta_ndf("clinicians") |> purse()
+meta_ndf("clinicians") |> 
+  purse()
 ```

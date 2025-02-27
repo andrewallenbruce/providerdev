@@ -1,4 +1,4 @@
-# Keyword Groups {#sec-keygroups}
+# Groups {#sec-keygroups}
 
 ```{r}
 #| label: setup-common-01
@@ -11,26 +11,16 @@ source("includes/_common.R")
 ```{r}
 #| label: provider_urls
 provider_urls <- function(x, nm) {
-  switch(
-    nm,
-    identifier = paste0(
-      "https://data.cms.gov/provider-data/api/1/datastore/query/",
-      x,
-      "/0"
-    ),
-    describedBy = paste0(
-      "https://data.cms.gov/provider-data/dataset/",
-      x,
-      "#data-dictionary"
-    )
-  )
+  switch(nm,
+         identifier  = paste0("https://data.cms.gov/provider-data/api/1/datastore/query/", x, "/0"),
+         describedBy = paste0("https://data.cms.gov/provider-data/dataset/", x, "#data-dictionary"))
 }
 ```
 
 ```{r}
 catalog_provider <- \() {
   
-  dataset <- as_tbl(
+  x <- as_tbl(
     fload(
       "https://data.cms.gov/provider-data/api/1/metastore/schemas/dataset/items"
     ) |>
@@ -42,13 +32,12 @@ catalog_provider <- \() {
         theme       = flatten_column(theme),
         description = trimws(sf_remove(description, "\n"))))
   
-    add_vars(
-      dataset,
-      downloadURL = delist(get_elem(dataset$distribution, "downloadURL", DF.as.list = TRUE)),
-      contact = glue('{delist(get_elem(dataset$contactPoint, "fn"))} ',
-                     '({delist(get_elem(dataset$contactPoint, "^has", regex = TRUE))})') |> 
-        as.character()
-      ) |> 
+    add_vars(x,
+      downloadurl = delist(get_elem(x$distribution, "downloadURL", DF.as.list = TRUE)),
+      contact     = as.character(
+        glue(
+          '{delist(get_elem(x$contactPoint, "fn"))} ',
+          '({delist(get_elem(x$contactPoint, "^has", regex = TRUE))})'))) |> 
       slt(
         title,
         theme,
@@ -59,9 +48,8 @@ catalog_provider <- \() {
         released,
         identifier,
         contact,
-        downloadurl = downloadURL,
-        landing = landingPage
-      ) |> 
+        downloadurl,
+        site = landingPage) |> 
       roworder(theme, title) |> 
       rsplit(~ theme) |> 
       set_names(
@@ -164,7 +152,7 @@ main <- as_tbl(
         identifier,
         contactPoint,
         dictionary = describedBy,
-        landing = landingPage,
+        site = landingPage,
         references
       ) |>
       mtt(
@@ -185,8 +173,7 @@ main <- add_vars(
       ) |> 
   slt(-contactPoint)
 
-main |> 
-  rsplit(~ periodicity)
+main
 ```
 
 ### Possible Groups
