@@ -1,13 +1,9 @@
-# Querying {#sec-querying}
+# Query {#sec-querying}
 
 ```{r}
 #| label: setup-common-01
 #| include: false
 source("includes/_common.R")
-
-# test_url <- glue::as_glue("https://data.cms.gov/data-api/v1/dataset/d10d792e-ea6e-4145-8512-34efbc1be04b/data?size=10&offset=0&")
-# 
-# test_url <- test_url + greater_or_equal("overall_rating", 3)
 ```
 
 ## Building Queries
@@ -78,28 +74,188 @@ tibble(
               column_labels.hidden = TRUE)
 ```
 
-## S7
-
-### `class_query`
+## S7 Classes
 
 ```{r}
-#| label: class_query
-class_query <- new_class(
-  "class_query",
-  properties = list(
-    path     = class_character,
-    operator = class_character,
-    value    = class_vector,
-    limit    = class_numeric,
-    sort     = class_character, 
-    column   = class_vector,
-    group    = new_property(
-      class_list,
-      default = list(
-        conjunction = "AND",
-        memberOf    = ""))
+#| eval: false
+value <- c("132456789", "1324567890", "132456789", "132456789")
+
+kit::pallv(nchar(value), value = 10L)
+
+all(stri_detect_regex(value, "^[0-9]{10}$"))
+
+allv(nchar(as_chr(value)), 10L)
+```
+
+
+```{r}
+#| eval: false
+prop_npi <- new_property(
+  class = NULL | class_character | class_numeric,
+  validator = function(value) {
+    if (not_null(value)) {
+      if (!allv(nchar(as_chr(value)), 10L)) "`npi` must be 10 characters long"
+      if (any(stri_detect_regex(value, "^[0-9]{1,10}$"))) "`npi` must be all digits"
+      if (any(!check_luhn(value))) "`npi` must pass Luhn algorithm"
+      if (any(!stri_startswith(value, "[12]"))) "`npi` must start with 1 or 2"
+    }
+  }
+)
+
+prop_state <- new_property(
+  class = null_character,
+  validator = function(value) {
+    if (not_null(value)) {
+      if (!is_character(value)) "`state` must be a character vector"
+      if (any(sf_chars(value) != 2L)) "`state` must be 2 characters long"
+      if (any(!value %in% state.abb)) {
+        paste(
+          "Invalid state(s) entered:",
+          paste0(
+            value[
+              which_(value %in% state.abb, invert = TRUE)],
+            collapse = ", "))
+      }
+    }
+  }
+)
+```
+
+
+### `class_arg`
+
+```{r}
+#| label: class_arg
+class_arg <- new_class(
+  "class_arg",
+  properties  = list(
+    endpoint  = new_property(class_character,
+    validator = function(value) { 
+      if (length(value) != 1L) "must be length 1" 
+      }),
+    field     = new_property(NULL | class_character,
+    validator = function(value) {
+      if (not_null(value)) {
+        if (length(value) != 1L) "must be length 1" 
+      }}),
+    operator = new_property(
+      class_character, 
+      default = "=",
+      validator = function(value) {
+        if (any(!value %in% c("=", ">=", "<=", ">", "<", "<>", 
+                              "STARTS_WITH", "ENDS_WITH", 
+                              "CONTAINS", "IN", "NOT IN", "BETWEEN", 
+                              "NOT BETWEEN")
+               )
+           ) "@operator invalid" 
+      })
   )
 )
+
+# choices = new_property(NULL | class_character,
+# setter = function(self, value) {
+#   self@choices <- value
+#   self}),
+
+npi <- new_class(
+  name = "npi",
+  parent = class_arg,
+  properties = list(
+    input = new_property(NULL | class_character | class_numeric),
+    field = new_property(NULL | class_character,
+    getter = function(self) {
+      if (not_null(self@endpoint)) {
+        kit::nswitch(
+          self@endpoint,
+          "affiliations", "npi",
+          "enrollees", "NPI",
+          "open_payments", "covered_recipient_npi")
+        }})),
+  validator = function(self) {
+    if (not_null(self@input)) {
+      if (!allv(nchar(as_chr(self@input)), 10L)) "`npi` must be 10 characters long"
+      if (any(stri_detect_regex(self@input, "^[0-9]{1,10}$"))) "`npi` must be all digits"
+      if (any(!check_luhn(as_chr(self@input)))) "`npi` must pass Luhn algorithm"
+      if (any(!stri_detect_regex(self@input, "^[12]"))) "`npi` must start with 1 or 2"
+    }
+  }
+)
+
+npi
+
+npi(
+  endpoint = "affiliations", 
+  operator = "IN",
+  input = c(1043218118, 1023630738))
+```
+
+
+```{r}
+#| eval: false
+pac <- class_arg(
+  label = "pac",
+  alias = "PECOS_ASCT_CNTL_ID",
+  operators = c("=", "IN", "NOT IN", "STARTS_WITH", "ENDS_WITH"))
+
+enid <- class_arg(
+  label = "enid",
+  alias = "ENRLMT_ID",
+  operators = c("=", "IN", "NOT IN", "STARTS_WITH", "ENDS_WITH"))
+
+state <- class_arg(
+  label = "state",
+  alias = "STATE_CD",
+  operators = c("=", "IN", "NOT IN", "STARTS_WITH", "ENDS_WITH"),
+  choices = state.abb)
+
+name <- class_arg(
+  label = "first",
+  alias = "FIRST_NAME",
+  operators = c("=", "IN", "NOT IN", "STARTS_WITH", "ENDS_WITH"))
+
+gender <- class_arg(
+  label = "gender",
+  alias = "GNDR_SW",
+  operators = c("=", "IN", "NOT IN", "STARTS_WITH", "ENDS_WITH"),
+  choices = c("M", "F", "9"))
+
+list2(
+  "NPI"                = npi,
+  "PECOS_ASCT_CNTL_ID" = pac,
+  "ENRLMT_ID"          = enid,
+  "PROVIDER_TYPE_CD"   = spec_code,
+  "PROVIDER_TYPE_DESC" = spec_desc,
+  "STATE_CD"           = state,
+  "FIRST_NAME"         = first,
+  "MDL_NAME"           = middle,
+  "LAST_NAME"          = last,
+  "ORG_NAME"           = org,
+  "GNDR_SW"            = gender)
+
+class_args <- new_class(
+  "class_args",
+  properties = list(args = class_list))
+
+list(
+  npi = arg_npi,
+  pac = arg_pac,
+  enid = arg_enid,
+  state = arg_state,
+  first = arg_firstname,
+  gender = arg_gender)
+
+args@
+  #' enrollees(enid = "I20040309000221")
+  #'
+  #' enrollees(npi = "1417918293", spec_code = "14-41")
+  #'
+  #' enrollees(pac = "2860305554", gender = "9")
+
+
+try(class_args(
+  id     = 1234567890,
+  state  = "ZZ",
+  number = "300.12"))
 ```
 
 ### `class_args`
@@ -138,6 +294,28 @@ try(class_args(
 class_args(state  = c("GA", "MD"))
 ```
 
+### `class_query`
+
+```{r}
+#| label: class_query
+class_query <- new_class(
+  "class_query",
+  properties = list(
+    path     = class_character,
+    operator = class_character,
+    value    = class_vector,
+    limit    = class_numeric,
+    sort     = class_character, 
+    column   = class_vector,
+    group    = new_property(
+      class_list,
+      default = list(
+        conjunction = "AND",
+        memberOf    = ""))
+  )
+)
+```
+
 ## `query` Formatters
 
 ```{r}
@@ -152,7 +330,8 @@ ex <- list(
 
 ```{r}
 #| label: query_comparison
-query_comparison <- function(args, operator = c("=", ">", ">=", "<", "<=", "<>")) {
+query_comparison <- function(args, 
+                             operator = c("=", ">", ">=", "<", "<=", "<>")) {
   
   operator <- match.arg(operator)
   args     <- args[
@@ -202,7 +381,8 @@ query_equals_simple(ex)
 
 ```{r}
 #| label: query_in_notin
-query_in_notin <- function(args, operator = c("IN", "NOT IN")) {
+query_in_notin <- function(args, 
+                           operator = c("IN", "NOT IN")) {
   
   operator <- match.arg(operator)
   args     <- args[cheapr::which_(cheapr::lengths_(args, names = TRUE) > 1)]
@@ -253,6 +433,13 @@ protofunc(state  = c("GA"),
           name   = "Jerry", 
           number = 300.12)
 ```
+
+```{r}
+# test_url <- glue::as_glue("https://data.cms.gov/data-api/v1/dataset/d10d792e-ea6e-4145-8512-34efbc1be04b/data?size=10&offset=0&")
+# 
+# test_url <- test_url + greater_or_equal("overall_rating", 3)
+```
+
 
 --------------------------------------------------------------------------------
 
