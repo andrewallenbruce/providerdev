@@ -110,10 +110,7 @@ open_payments_profiles <- function(x) {
   
   s <- sbt(
     x$summary, 
-    detect(
-      title, 
-      "^(^National|State|Payments|Summary)"
-      ))
+    detect(title, "^(National|State|Payments|Summary)", TRUE))
   
   list(
     modified = fmax(s$modified),
@@ -132,10 +129,7 @@ open_payments_grouped <- function(x) {
   
   s <- sbt(
     x$summary, 
-    detect(
-      title, 
-      "^(National|State|Payments|Summary)"
-      ))
+    detect(title, "^(National|State|Payments|Summary)"))
 
   g <- slt(x$grouped, -modified) |> rsplit(~ title)
   
