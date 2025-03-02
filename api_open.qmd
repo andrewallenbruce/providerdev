@@ -33,6 +33,15 @@ detect <- function(x, p, n = FALSE) {
     negate  = n)
 }
 
+sbt_detect <- function(i, x, p, n = FALSE) {
+  sbt(
+    i, 
+    detect(
+      x = x, 
+      p = p, 
+      n = n))
+}
+
 get_data_elem <- function(x) {
   delist(map(x, function(i) get_elem(as.list(i), "data")))
 }
@@ -67,26 +76,31 @@ open_identifier_url <- function(x) {
 #| label: catalog_open_payments
 catalog_open_payments <- \() {
   
-  x <- as_tbl(
-  mtt(fload("https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids"), 
-    modified    = as_date(modified), 
-    description = replace_fixed(description, c("\n", "\r. \r.", '"'), c(". ", "", "")),
-    theme       = get_data_elem(theme),
-    year        = get_data_elem(keyword),
-    year        = replace_fixed(year, c("all years"), c("All")),
-    year        = cheapr_if_else(title == "Provider profile ID mapping table", "All", year),
-    title       = tools::toTitleCase(title)))
+  x <- fload(
+    paste0(
+      "https://openpaymentsdata.cms.gov",
+      "/api/1/metastore/schemas/dataset/",
+      "items?show-reference-ids")) |>
+    as_tbl() |>
+    mtt(
+      modified    = as_date(modified),
+      description = replace_fixed(description, c("\n", "\r. \r.", '"'), c(". ", "", "")),
+      theme       = get_data_elem(theme),
+      year        = get_data_elem(keyword),
+      year        = replace_fixed(year, c("all years"), c("All")),
+      year        = cheapr_if_else(title == "Provider profile ID mapping table", "All", year),
+      title       = tools::toTitleCase(title)
+    )
   
-  x <- slt(
-    add_downloadurl(x),
-    year,
-    theme,
-    title,
-    description,
-    modified,
-    identifier,
-    downloadurl) |>
-    rsplit( ~ theme)
+  x <- add_downloadurl(x) |>
+    slt(year,
+        theme,
+        title,
+        description,
+        modified,
+        identifier,
+        downloadurl) |>
+    rsplit(~ theme)
   
   list(
     summary   = roworder(sbt(x$Summary, year == "All", -year), title),
@@ -109,7 +123,7 @@ open
 open_payments_profiles <- function(x) {
   
   s <- sbt(
-    x$summary, 
+    x$summary,
     detect(title, "^(National|State|Payments|Summary)", TRUE))
   
   list(
@@ -186,69 +200,101 @@ open_payments_ownership(open)
 ## Example Queries
 
 ```{r}
-format_query_open <- function(args, operator = "=") {
+format_query_open <- function(args, op = "=") {
 
   args  <- discard(args, is.null)
 
   query <- glue(
-    '
-  "conditions[{i}][property]" = "{PROPERTY}",
-  "conditions[{i}][operator]" = "{OPERATOR}",
-  "conditions[{i}][value]" = "{VALUE}"
-  ',
+  "
+  'conditions[{i}][property]' = '{PROPERTY}',
+  'conditions[{i}][operator]' = '{OPERATOR}',
+  'conditions[{i}][value]' = '{VALUE}'
+  ",
     i                 = seq_along0(args),
     PROPERTY          = names(args),
-    OPERATOR          = operator,
+    OPERATOR          = op,
     VALUE             = args) |>
     glue_collapse(sep = ",\n")
-
-  glue('c({query})') |>
+  
+  glue("c({query})") |>
     parse_expr() |>
     eval_bare()
 }
 
-perform_request_open <- function(url, query) {
-  
-  x <- req_url_query(request(url),
-    !!!format_query_open(query),
-    schema  = "false",
-    keys    = "false",
-    results = "true",
-    count   = "false",
-    offset  = 0) |>
-  req_perform(verbosity = 3) |> 
-  resp_simple_json()
-  
-  as_df(x$results) |> 
-  set_names(x$query$properties) |> 
-  map_na_if()
-  
-}
+format_query_open(c(covered_recipient_npi = 1023630738))
 ```
 
 
 ```{r}
-gen_21 <- sbt(
-  open_payments_general(open) |> _[["endpoints"]], 
+create_request_open <- function(url, args) {
+  
+  request(url) |> 
+    req_url_query(
+      !!!format_query_open(args),
+      schema  = "false", 
+      keys    = "false", 
+      offset  = 0)
+  
+}
+
+ex_url <- sbt(
+  open_payments_general(open) |> 
+    _[["endpoints"]], 
   year == 2021) |> 
   _[["identifier"]] |> 
   open_identifier_url()
 
-ex <- perform_request_open(
-  url   = gen_21, 
-  query = c(covered_recipient_npi = 1023630738))
+# c(covered_recipient_npi = 1043218118)
 
-ex |> 
-  handle_na() |> 
-  purse()
-
-ex2 <- perform_request_open(
-  url   = gen_21, 
-  query = c(covered_recipient_npi = 1043218118))
-
-ex2 |> purse()
+ex_req <- create_request_open(
+  url = ex_url,
+  args = c(covered_recipient_npi = 1023630738)
+)
 ```
 
+
+```{r}
+query_nresults_open <- function(req) {
+  
+  req_url_query(
+    req,
+    results = "false", 
+    count   = "true", 
+    offset  = 0, 
+    limit   = 1) |>
+    req_perform() |>
+    resp_simple_json() |> 
+    _[["count"]]
+  
+}
+
+query_nresults_open(ex_req)
+```
+
+
+```{r}
+perform_request_open <- function(req) {
+  
+  req_url_query(
+    req,
+    results = "true", 
+    count   = "false", 
+    offset  = 0, 
+    limit   = 500) |>
+    req_perform() |>
+    resp_simple_json()
+  
+}
+
+x <- perform_request_open(ex_req)
+
+x
+
+as_tbl(x$results) |> 
+  set_names(x$query$properties) |> 
+  map_na_if() |> 
+  purse()
+```
 
 ## Dictionary
 
