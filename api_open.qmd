@@ -200,6 +200,40 @@ open_payments_ownership(open)
 ## Example Queries
 
 ```{r}
+query_nrows_fields_open <- function(url) {
+  
+  x <- request(url) |> 
+  req_url_query(
+    schema  = "false", 
+    keys    = "false", 
+    results = "false", 
+    count   = "true", 
+    offset  = 0, 
+    limit   = 1) |>
+    req_perform() |>
+    resp_simple_json()
+  
+  list(
+    rows = x$count,
+    fields = x$query$properties
+  )
+  
+}
+
+cov_url <- sbt(
+  open_payments_profiles(open) |> 
+    _[["summary"]], 
+  detect(title, "^Covered")) |> 
+  _[["identifier"]] |> 
+  open_identifier_url()
+
+x <- query_nrows_fields_open(cov_url)
+
+x
+```
+
+
+```{r}
 format_query_open <- function(args, op = "=") {
 
   args  <- discard(args, is.null)
