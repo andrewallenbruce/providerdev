@@ -37,7 +37,7 @@ sbt_detect <- function(i, x, p, n = FALSE) {
   sbt(
     i, 
     detect(
-      x = x, 
+      x = i[[x]], 
       p = p, 
       n = n))
 }
@@ -67,7 +67,29 @@ clean_grouped <- function(x) {
 }
 
 open_identifier_url <- function(x) {
-  paste0("https://openpaymentsdata.cms.gov/api/1/datastore/query/", x, "/0")
+  paste0("https://openpaymentsdata.cms.gov",
+         "/api/1/datastore/query/", x, "/0")
+}
+
+open_nrows_fields <- function(id) {
+  
+  x <- id |>
+    open_identifier_url() |>
+    request() |>
+    req_url_query(
+      schema  = "false",
+      keys    = "false",
+      results = "false",
+      count   = "true",
+      offset  = 0,
+      limit   = 1
+    ) |>
+    req_perform() |>
+    resp_simple_json()
+  
+  list(rows = x$count, 
+       fields = x$query$properties)
+  
 }
 ```
 
@@ -122,9 +144,11 @@ open
 #| label: open_payments_profiles
 open_payments_profiles <- function(x) {
   
-  s <- sbt(
-    x$summary,
-    detect(title, "^(National|State|Payments|Summary)", TRUE))
+  s <- sbt_detect(
+    x$summary, 
+    "title", 
+    "^(National|State|Payments|Summary)", 
+    TRUE)
   
   list(
     modified = fmax(s$modified),
@@ -141,9 +165,10 @@ open_payments_profiles(open)
 #| label: open_payments_grouped
 open_payments_grouped <- function(x) {
   
-  s <- sbt(
+  s <- sbt_detect(
     x$summary, 
-    detect(title, "^(National|State|Payments|Summary)"))
+    "title", 
+    "^(National|State|Payments|Summary)")
 
   g <- slt(x$grouped, -modified) |> rsplit(~ title)
   
@@ -200,34 +225,13 @@ open_payments_ownership(open)
 ## Example Queries
 
 ```{r}
-query_nrows_fields_open <- function(url) {
-  
-  x <- request(url) |> 
-  req_url_query(
-    schema  = "false", 
-    keys    = "false", 
-    results = "false", 
-    count   = "true", 
-    offset  = 0, 
-    limit   = 1) |>
-    req_perform() |>
-    resp_simple_json()
-  
-  list(
-    rows = x$count,
-    fields = x$query$properties
-  )
-  
-}
-
-cov_url <- sbt(
+cov_id <- sbt(
   open_payments_profiles(open) |> 
     _[["summary"]], 
   detect(title, "^Covered")) |> 
-  _[["identifier"]] |> 
-  open_identifier_url()
+  _[["identifier"]]
 
-x <- query_nrows_fields_open(cov_url)
+x <- open_nrows_fields(cov_id)
 
 x
 ```
@@ -260,29 +264,30 @@ format_query_open(c(covered_recipient_npi = 1023630738))
 
 
 ```{r}
-create_request_open <- function(url, args) {
+create_request_open <- function(id, args) {
   
-  request(url) |> 
+  id |>
+    open_identifier_url() |>
+    request() |>
     req_url_query(
       !!!format_query_open(args),
-      schema  = "false", 
-      keys    = "false", 
-      offset  = 0)
+      schema  = "false",
+      keys    = "false",
+      offset  = 0
+    )
   
 }
 
-ex_url <- sbt(
-  open_payments_general(open) |> 
-    _[["endpoints"]], 
-  year == 2021) |> 
-  _[["identifier"]] |> 
-  open_identifier_url()
+ex_id <- open_payments_general(open) |> 
+    _[["endpoints"]] |> 
+  sbt(year == 2021) |> 
+  _[["identifier"]]
 
 # c(covered_recipient_npi = 1043218118)
 
 ex_req <- create_request_open(
-  url = ex_url,
-  args = c(covered_recipient_npi = 1023630738)
+  ex_id,
+  c(covered_recipient_npi = 1023630738)
 )
 ```
 
