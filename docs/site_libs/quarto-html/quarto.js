@@ -238,9 +238,10 @@ window.document.addEventListener("DOMContentLoaded", function (_event) {
         for (const listingPath of listingPaths) {
           const pathWithoutLeadingSlash = listingPath.listing.substring(1);
           for (const item of listingPath.items) {
+            const encodedItem = encodeURI(item);
             if (
-              item === currentPagePath ||
-              item === currentPagePath + "index.html"
+              encodedItem === currentPagePath ||
+              encodedItem === currentPagePath + "index.html"
             ) {
               // Resolve this path against the offset to be sure
               // we already are using the correct path to the listing
@@ -742,7 +743,7 @@ window.document.addEventListener("DOMContentLoaded", function (_event) {
 
     // See if there is an active child to this element
     let hasActiveChild = false;
-    for (child of el.children) {
+    for (const child of el.children) {
       hasActiveChild = walk(child, depth) || hasActiveChild;
     }
 

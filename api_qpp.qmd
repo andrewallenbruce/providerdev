@@ -13,29 +13,60 @@ source("includes/_common.R")
 ## Stats Endpoint
 
 ```{r}
+# qpp_stats <- function(year) {
+#   
+#   x <- glue(
+#     "https://qpp.cms.gov/api/eligibility/stats/?year={year}"
+#     ) |> 
+#     request() |>
+#     req_headers(Accept = "application/vnd.qpp.cms.gov.v6+json") |>
+#     req_perform() |>
+#     resp_simple_json() |> 
+#     _[["data"]]
+#   
+#   new_df(
+#     year              = as_int(year),
+#     ind_hcc_risk_avg  = x$individual$hccRiskScoreAverage,
+#     ind_dual_elig_avg = x$individual$dualEligibilityAverage,
+#     grp_hcc_risk_avg  = x$group$hccRiskScoreAverage,
+#     grp_dual_elig_avg = x$group$dualEligibilityAverage
+#     )
+# }
+# 
+# map(2018:2025, qpp_stats) |> 
+#   rowbind()
+```
+
+
+```{r}
 #| label: stats_endpoint
 qpp_stats <- function(year) {
-  
-  x <- glue(
-    "https://qpp.cms.gov/api/eligibility/stats/?year={year}"
-    ) |> 
-    request() |>
-    req_headers(Accept = "application/vnd.qpp.cms.gov.v6+json") |>
-    req_perform() |>
-    resp_simple_json() |> 
-    _[["data"]]
-  
-  new_df(
-    year              = as_int(year),
-    ind_hcc_risk_avg  = x$individual$hccRiskScoreAverage,
-    ind_dual_elig_avg = x$individual$dualEligibilityAverage,
-    grp_hcc_risk_avg  = x$group$hccRiskScoreAverage,
-    grp_dual_elig_avg = x$group$dualEligibilityAverage
+  f <- function(x) {
+    i <- glue("https://qpp.cms.gov/api/eligibility/stats/?year={x}") |>
+      request() |>
+      req_headers(Accept = "application/vnd.qpp.cms.gov.v6+json") |>
+      req_perform() |>
+      resp_simple_json() |>
+      _[["data"]]
+    
+    new_tbl(
+      year = rep(as_int(x), 4),
+      category = c(rep("Individual", 2), rep("Group", 2)),
+      statistic = rep(c("HCC Risk Score", "Dual Eligibility"), 2),
+      mean = c(
+        i$individual$hccRiskScoreAverage,
+        i$individual$dualEligibilityAverage,
+        i$group$hccRiskScoreAverage,
+        i$group$dualEligibilityAverage
+      )
     )
+  }
+  map(year, f) |>
+    rowbind()
 }
 
-map(2018:2025, qpp_stats) |> 
-  rowbind()
+qpp_stats(year = 2018:2025) |> 
+  print(n = 40)
 ```
 
 ## Main Endpoint
