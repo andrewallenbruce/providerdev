@@ -9,6 +9,7 @@ source("includes/_common.R")
 # 
 # open_payments(year = 2021, npi = 1023630738)
 # open_payments(year = 2021, npi = 1043218118)
+# c(covered_recipient_npi = 1043218118)
 ```
 
 ## Links
@@ -26,55 +27,14 @@ source("includes/_common.R")
 
 ```{r}
 #| label: open_helpers
-detect <- function(x, p, n = FALSE) {
-  stri_detect_regex(
-    str     = x, 
-    pattern = p, 
-    negate  = n)
-}
-
-sbt_detect <- function(i, x, p, n = FALSE) {
-  sbt(
-    i, 
-    detect(
-      x = i[[x]], 
-      p = p, 
-      n = n))
-}
-
-get_data_elem <- function(x) {
-  delist(map(x, function(i) get_elem(as.list(i), "data")))
-}
-
-
-add_downloadurl <- function(x) {
-  add_vars(x, downloadurl = delist(get_elem(
-    get_elem(x$distribution, "data", DF.as.list = TRUE),
-    "downloadURL"
-  )))
-}
-
-clean_temp <- function(x) {
-  slt(mtt(x, year = as_int(year)), -title, -description) |>
-    roworder(-year)
-}
-
-clean_grouped <- function(x) {
-  sbt(x, year != "All", -description) |>
-    mtt(year   = as_int(year),
-        title  = stri_replace_all_regex(title, "^[0-9]{4} ", "")) |>
-    roworder(title, -year)
-}
-
-open_identifier_url <- function(x) {
-  paste0("https://openpaymentsdata.cms.gov",
-         "/api/1/datastore/query/", x, "/0")
+subset_detect <- function(i, j, p, n = FALSE) {
+  sbt(i, detect(x = i[[j]], p = p, n = n))
 }
 
 open_nrows_fields <- function(id) {
   
   x <- id |>
-    open_identifier_url() |>
+    open_uuid_url() |>
     request() |>
     req_url_query(
       schema  = "false",
@@ -87,157 +47,11 @@ open_nrows_fields <- function(id) {
     req_perform() |>
     resp_simple_json()
   
-  list(rows = x$count, 
+  list(rows   = x$count, 
        fields = x$query$properties)
   
 }
-```
 
-
-```{r}
-#| label: catalog_open_payments
-catalog_open_payments <- \() {
-  
-  x <- fload(
-    paste0(
-      "https://openpaymentsdata.cms.gov",
-      "/api/1/metastore/schemas/dataset/",
-      "items?show-reference-ids")) |>
-    as_tbl() |>
-    mtt(
-      modified    = as_date(modified),
-      description = replace_fixed(description, c("\n", "\r. \r.", '"'), c(". ", "", "")),
-      theme       = get_data_elem(theme),
-      year        = get_data_elem(keyword),
-      year        = replace_fixed(year, c("all years"), c("All")),
-      year        = cheapr_if_else(title == "Provider profile ID mapping table", "All", year),
-      title       = tools::toTitleCase(title)
-    )
-  
-  x <- add_downloadurl(x) |>
-    slt(year,
-        theme,
-        title,
-        description,
-        modified,
-        identifier,
-        downloadurl) |>
-    rsplit(~ theme)
-  
-  list(
-    summary   = roworder(sbt(x$Summary, year == "All", -year), title),
-    grouped   = clean_grouped(x$Summary),
-    general   = clean_temp(x$`General Payments`),
-    research  = clean_temp(x$`Research Payments`),
-    ownership = clean_temp(x$`Ownership Payments`)
-  )
-}
-
-open <- catalog_open_payments()
-
-open
-```
-
-### Profiles
-
-```{r}
-#| label: open_payments_profiles
-open_payments_profiles <- function(x) {
-  
-  s <- sbt_detect(
-    x$summary, 
-    "title", 
-    "^(National|State|Payments|Summary)", 
-    TRUE)
-  
-  list(
-    modified = fmax(s$modified),
-    summary  = slt(s, -modified)
-  )
-}
-
-open_payments_profiles(open)
-```
-
-### Grouped Payments
-
-```{r}
-#| label: open_payments_grouped
-open_payments_grouped <- function(x) {
-  
-  s <- sbt_detect(
-    x$summary, 
-    "title", 
-    "^(National|State|Payments|Summary)")
-
-  g <- slt(x$grouped, -modified) |> rsplit(~ title)
-  
-  list(
-    modified                = fmax(c(s$modified, x$grouped$modified)),
-    summary                 = slt(s, -modified, -description),
-    recipient_nature        = g$`Payments Grouped by Covered Recipient and Nature of Payments`,
-    recipient_entity        = g$`Payments Grouped by Covered Recipient and Reporting Entities`,
-    entity_nature           = g$`Payments Grouped by Reporting Entities and Nature of Payments`,
-    entity_recipient_nature = g$`Payments Grouped by Reporting Entities, Covered Recipient, and Nature of Payments`,
-    recipient_nature_state  = g$`State Payment Totals Grouped by Nature of Payment for all Years`
-  )
-}
-
-open_payments_grouped(open)
-```
-
-### Payment Data by Year/Category
-
-```{r}
-#| label: open_payments_general
-open_payments_general <- function(x) {
-  list(
-    modified    = fmax(x$general$modified),
-    title       = "General Payment Data",
-    description = "All general (non-research, non-ownership related) payments from the program year",
-    endpoints   = slt(x$general, -modified)
-  )
-}
-
-open_payments_research <- function(x) {
-  list(
-    modified    = fmax(x$research$modified),
-    title       = "Research Payment Data",
-    description = "All research-related payments from the program year",
-    endpoints   = slt(x$research, -modified)
-  )
-}
-
-open_payments_ownership <- function(x) {
-  list(
-    modified    = fmax(x$ownership$modified),
-    title       = "Ownership Payment Data",
-    description = "All ownership and investment payments from the program year",
-    endpoints   = slt(x$ownership, -modified)
-  )
-}
-
-open_payments_general(open)
-open_payments_research(open)
-open_payments_ownership(open)
-```
-
-## Example Queries
-
-```{r}
-cov_id <- sbt(
-  open_payments_profiles(open) |> 
-    _[["summary"]], 
-  detect(title, "^Covered")) |> 
-  _[["identifier"]]
-
-x <- open_nrows_fields(cov_id)
-
-x
-```
-
-
-```{r}
 format_query_open <- function(args, op = "=") {
 
   args  <- discard(args, is.null)
@@ -259,15 +73,10 @@ format_query_open <- function(args, op = "=") {
     eval_bare()
 }
 
-format_query_open(c(covered_recipient_npi = 1023630738))
-```
-
-
-```{r}
 create_request_open <- function(id, args) {
   
   id |>
-    open_identifier_url() |>
+    open_uuid_url() |>
     request() |>
     req_url_query(
       !!!format_query_open(args),
@@ -275,24 +84,8 @@ create_request_open <- function(id, args) {
       keys    = "false",
       offset  = 0
     )
-  
 }
 
-ex_id <- open_payments_general(open) |> 
-    _[["endpoints"]] |> 
-  sbt(year == 2021) |> 
-  _[["identifier"]]
-
-# c(covered_recipient_npi = 1043218118)
-
-ex_req <- create_request_open(
-  ex_id,
-  c(covered_recipient_npi = 1023630738)
-)
-```
-
-
-```{r}
 query_nresults_open <- function(req) {
   
   req_url_query(
@@ -307,11 +100,6 @@ query_nresults_open <- function(req) {
   
 }
 
-query_nresults_open(ex_req)
-```
-
-
-```{r}
 perform_request_open <- function(req) {
   
   req_url_query(
@@ -325,6 +113,54 @@ perform_request_open <- function(req) {
   
 }
 
+format_query_open(
+  c(
+    covered_recipient_npi = 1023630738, 
+    covered_recipient_profile_city = "Valdosta")
+  ) |> 
+  fuimus::print_ls()
+```
+
+## Open Payments
+
+```{r}
+#| label: open_catalog
+op <- providertwo::open_catalog()
+op
+
+subset_detect(op$summary, "title", "^Covered")
+```
+
+```{r}
+#| label: open_profiles
+open_profiles(op)
+open_grouped(op)
+open_general(op)
+open_research(op)
+open_ownership(op)
+```
+
+## Queries
+
+```{r}
+open_nrows_fields(
+  sbt(
+    open_profiles(op) |> 
+      _[["summary"]], 
+    detect(title, "^Covered")) |> 
+    _[["identifier"]]
+)
+```
+
+```{r}
+ex_req <- create_request_open(
+  id   = open_general(op) |> _[["endpoints"]] |> sbt(year == 2021) |> _[["identifier"]],
+  args = c(covered_recipient_npi = 1023630738))
+
+query_nresults_open(ex_req)
+```
+
+```{r}
 x <- perform_request_open(ex_req)
 
 x
@@ -333,75 +169,4 @@ as_tbl(x$results) |>
   set_names(x$query$properties) |> 
   map_na_if() |> 
   purse()
-```
-
-## Dictionary
-
-```{r}
-#| label: open_dictionary
-open_dictionary <- function() {
-  
-  x <- map(
-    get_elem(
-      get_elem(
-        as_tbl(
-          fload(
-            paste0(
-              "https://openpaymentsdata.cms.gov/",
-              "api/1/metastore/schemas/dataset/",
-              "items?show-reference-ids"
-              ))), 
-        "data", 
-        DF.as.list = TRUE),
-      "title|describedBy",
-      regex = TRUE), 
-    function(x) x[not_null(names(x))]
-    )
-  
-  x <- new_df(
-    name = delist(get_elem(x, "title")),
-    dictionary = delist(get_elem(x, "describedBy"))) |>
-    mtt(
-      year = as_int(stri_extract_all_regex(name, "[0-9]{4}")),
-      name = cheapr_if_else(
-        na(year),
-        name,
-        stri_extract_all_regex(
-          name, 
-          "^.*(?=\\s.\\sDetailed Dataset [0-9]{4} Reporting Year)"
-          )),
-      year = cheapr_if_else(
-        na(year), 
-        fmax(year), 
-        year
-        )) |>
-    sbt(year == fmax(year), -year)
-  
-  x <- x[["dictionary"]] |> 
-    map(request) |> 
-    req_perform_parallel(on_error = "continue") |> 
-    resps_successes() |> 
-    resps_data(\(resp) resp_body_string(resp)) |> 
-    fparse(query = "/data")
-  
-  funique(
-    new_tbl(
-      field = delist(
-        map(
-          get_elem(x, "fields"), 
-          function(x) 
-            get_elem(x, "name")
-          )),
-      description = delist(
-        map(
-          get_elem(x, "fields"), 
-          function(x) 
-            get_elem(x, "description"))
-        ) |> replace_fixed(c("\n", '"'), c(" ", ""))), 
-    cols = "field", 
-    sort = TRUE)
-}
-
-open_dictionary() |> 
-  print(n = Inf)
 ```
