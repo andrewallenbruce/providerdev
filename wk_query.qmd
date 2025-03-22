@@ -562,15 +562,14 @@ url_parse(
     `conditions[0][property]` = "covered_recipient_last_name",
     `conditions[0][value]`    = "SMITH",
     `conditions[0][operator]` = "=",
-    schema = "false",
-    keys = "false",
-    results = "false",
-    offset = 0,
-    limit = 500) |>
+    schema                    = "false",
+    keys                      = "false",
+    results                   = "false",
+    offset                    = 0,
+    limit                     = 500) |>
   url_build() |> 
   request() |> 
-  req_perform() |> 
-  resp_body_json(simplifyVector = TRUE) |> 
+  perform_simple() |>
   _[["count"]]
 ```
 
@@ -591,8 +590,7 @@ url_parse(
     offset                    = 0) |>
   url_build() |> 
   request() |> 
-  req_perform() |> 
-  resp_body_json(simplifyVector = TRUE) |> 
+  perform_simple() |>
   _[["count"]]
 ```
 
@@ -780,12 +778,11 @@ nresults <- queryurl |>
   gelm("found")
 
 nresults
+```
 
+
+```{r}
 url_parse(queryurl$url)
-
-off <- offset_sequence(nresults, 5000)
-
-off
 ```
 
 Generate and Send Requests
@@ -796,12 +793,65 @@ reqs <- map(
     "{url}", 
     "&offset={off}", 
     url = queryurl$url, 
-    off = ), 
+    off = offset_sequence(nresults, 5000)), 
   httr2::request)
 
-req_perform_parallel(reqs) |> 
+res <- req_perform_parallel(reqs) |> 
   resps_successes() |> 
   map(\(x) tibble(resp_body_json(x, simplifyVector = TRUE))) |> 
   bind_rows()
+
+set_clean(res, names(res)) |> 
+  map_na_if() |> 
+  mtt(
+    optout_effective_date = as_date(optout_effective_date, fmt = "%m/%d/%Y"),
+    optout_end_date = as_date(optout_end_date, fmt = "%m/%d/%Y"),
+    last_updated = as_date(last_updated, fmt = "%m/%d/%Y")
+    ) |> 
+  cheapr::overview()
+```
+
+## Try Again
+
+```{r}
+startswith <- \(x) {
+  list(
+    OPERATOR = "STARTS_WITH", 
+    VALUE    = as.character(x)
+  )
+}
+
+startswith("Royalty or License")
+
+between <- \(x, negate = FALSE) {
+  list(
+    OPERATOR = ifelse(negate, "NOT BETWEEN", "BETWEEN"), 
+    VALUE    = as.character(x)
+  )
+}
+
+between(c(1, 10))
+
+between(c(1, 10), negate = TRUE)
+
+endswith <- \(x) {
+  list(
+    OPERATOR = "ENDS_WITH", 
+    VALUE    = as.character(x)
+  )
+}
+
+endswith("NYU")
+
+is_in <- \(x, negate = FALSE) {
+  list(
+    OPERATOR = ifelse(negate, "NOT IN", "IN"), 
+    VALUE    = as.character(x)
+  )
+}
+
+is_in(c("GA", "NY"))
+
+is_in(c("GA", "NY"), negate = TRUE)
 ```
 
