@@ -9,6 +9,17 @@ source("includes/_common.R")
 ## Provider API
 
 ```{r}
+CurrentProvider("affiliations")
+CurrentProvider("clinicians")
+CurrentProvider("utilization")
+
+provider_current_group("mips") |> 
+  slt(title, description) |> 
+  rsplit(~ title)
+```
+
+
+```{r}
 pro_group <- \(x) {
   subset_detect(
     pro, 
@@ -43,6 +54,27 @@ pro_group("^Table")
 
 
 ## Main API
+
+```{r}
+# TemporalMain("quality_payment")@fields
+
+util_field <- get_elem(TemporalMainGroup("utilization")@endpoints, "fields", regex = TRUE)
+
+cheapr::intersect_(util_field$by_provider, util_field$by_provider_and_service)
+
+cheapr::intersect_(
+  cheapr::intersect_(
+    util_field$by_provider, 
+    util_field$by_provider_and_service),
+  util_field$by_geography_and_service)
+
+
+# TemporalMainGroup("prescribers")
+# TemporalMainGroup("suppliers")
+# TemporalMainGroup("outpatient")
+# TemporalMainGroup("inpatient")
+```
+
 
 ```{r}
 curr_group <- \(x) {

@@ -162,30 +162,115 @@ format_query_open(
   fuimus::print_ls()
 ```
 
-## Queries
+## Query Format
 
 ```{r}
-#| eval: false
-open_nrows_fields(
-  sbt(
-    open_profiles(op) |> 
-      _[["summary"]], 
-    detect(title, "^Covered")) |> 
-    _[["identifier"]]
-)
-
-ex_req <- create_request_open(
-  id   = open_general(op) |> _[["endpoints"]] |> sbt(year == 2021) |> _[["identifier"]],
-  args = c(covered_recipient_npi = 1023630738))
-
-query_nresults_open(ex_req)
-
-x <- perform_request_open(ex_req)
-
-x
-
-as_tbl(x$results) |> 
-  set_names(x$query$properties) |> 
+tictoc::tic()
+request("https://openpaymentsdata.cms.gov/api/1/datastore/sql") |> 
+  req_url_query(
+    query = paste0(
+      '[SELECT * FROM 08e796b8-7108-561a-8430-bea3bd54e485]',
+      '[LIMIT 500 OFFSET 0]',
+      '[WHERE covered_recipient_last_name = "SMITH"]'
+      ),
+    show_db_columns = "true"
+  ) |> 
+  perform_simple() |> 
+  as_tbl() |> 
   map_na_if() |> 
+  handle_na()
+tictoc::toc()
+```
+
+
+```{r}
+ex_url <- url_parse(
+  base_url = "https://openpaymentsdata.cms.gov/api/1/datastore/", 
+  url      = "query/fdc3c773-018a-412c-8a81-d7b8a13a037b/0") |> 
+  url_modify_query(
+    `conditions[0][property]` = "covered_recipient_npi",
+    `conditions[0][value]`    = "1093709297",
+    # `conditions[0][property]` = "covered_recipient_last_name",
+    # `conditions[0][value]`    = "SMITH",
+    `conditions[0][operator]` = "=",
+    schema                    = "false",
+    keys                      = "false",
+    # results                   = "false",
+    offset                    = 0,
+    limit                     = 500) |>
+  url_build()
+
+tictoc::tic()
+ex_res <- fload(ex_url)
+tictoc::toc()
+
+as_tbl(ex_res$results) |> 
+  set_names(ex_res$query$properties) |> 
+  map_na_if() |> 
+  handle_na() |>
   purse()
+```
+
+
+
+```{r}
+tictoc::tic()
+url_parse(
+  base_url = "https://openpaymentsdata.cms.gov/api/1/datastore/", 
+  url      = "query/fdc3c773-018a-412c-8a81-d7b8a13a037b/0") |> 
+  url_modify_query(
+    # `conditions[0][property]` = "covered_recipient_npi",
+    # `conditions[0][value]`    = "1093709297",
+    `conditions[0][property]` = "covered_recipient_last_name",
+    `conditions[0][value]`    = "SMITH",
+    `conditions[0][operator]` = "=",
+    schema                    = "false",
+    keys                      = "false",
+    # results                   = "false",
+    offset                    = 0,
+    limit                     = 500) |>
+  url_build() |> 
+  request() |> 
+  perform_simple() |>
+  _[["count"]]
+tictoc::toc()
+```
+
+
+```{r}
+tictoc::tic()
+request("https://openpaymentsdata.cms.gov/api/1/datastore/query/fdc3c773-018a-412c-8a81-d7b8a13a037b/0") |> 
+  req_url_query(
+    `conditions[0][property]` = "covered_recipient_npi",
+    `conditions[0][value]`    = "1093709297",
+    `conditions[0][operator]` = "=",
+    schema                    = "false",
+    keys                      = "false",
+    results                   = "false",
+    offset                    = 0) |>
+  perform_simple() |>
+  _[["count"]]
+tictoc::toc()
+```
+
+```{r}
+tictoc::tic()
+url_parse(
+  base_url = "https://openpaymentsdata.cms.gov/api/1/datastore/", 
+  url      = "query/fdc3c773-018a-412c-8a81-d7b8a13a037b/0") |> 
+  url_modify_query(
+    `conditions[0][property]` = "covered_recipient_first_name",
+    `conditions[0][value]`    = "PATRICK",
+    `conditions[0][operator]` = "=",
+    `conditions[1][property]` = "covered_recipient_last_name",
+    `conditions[1][value]`    = "WARD",
+    `conditions[1][operator]` = "=",
+    schema                    = "false",
+    keys                      = "false",
+    # results                   = "false",
+    offset                    = 0) |>
+  url_build() |> 
+  request() |> 
+  perform_simple()
+tictoc::toc()
 ```
