@@ -1,4 +1,9 @@
-# NPPES Registry {#sec-nppesapi}
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+# NPI Registry {#sec-nppesapi}
 
 ```{r}
 #| label: setup-common-01
@@ -6,16 +11,14 @@
 source("includes/_common.R")
 ```
 
-## Links
+## NLM
 
    * [NLM: NPI Registry](https://clinicaltables.nlm.nih.gov/apidoc/npi_idv/v3/doc.html)
    * [NLM: NPI API](https://clinicaltables.nlm.nih.gov/api/npi_idv/v3)
 
-## Catalog
-
 ```{r}
 #| eval: false
-nppes_nlm <- function(terms) {
+nlm <- function(terms) {
 
   req <- request("https://clinicaltables.nlm.nih.gov/api/npi_idv/v3/search?") |>
     req_url_query(
@@ -71,3 +74,91 @@ nppes_nlm <- function(terms) {
   }
 }
 ```
+
+## NPPES
+
+   * [NPPES API Help](https://npiregistry.cms.hhs.gov/api-page)
+   * Contact: `mailto:NPIFiles@cms.hhs.gov`
+
+```{r}
+convert_epoch <- \(x) {
+  as.Date(
+    as.POSIXct.numeric(
+      as.numeric(x) / 1000, 
+      origin = "1970-01-01"
+      )
+    )
+}
+
+yank <- \(x) x[[1]]
+```
+
+
+```{r}
+nppes <- function(npi            = NULL,
+                  entity         = NULL,
+                  first          = NULL,
+                  last           = NULL,
+                  organization   = NULL,
+                  name_type      = NULL,
+                  taxonomy_desc  = NULL,
+                  city           = NULL,
+                  state          = NULL,
+                  zip            = NULL,
+                  country        = NULL) {
+
+  x <- request("https://npiregistry.cms.hhs.gov/api/?version=2.1") |>
+    req_url_query(
+      number               = npi,
+      enumeration_type     = entity,
+      first_name           = first,
+      last_name            = last,
+      name_purpose         = name_type,
+      organization_name    = organization,
+      taxonomy_description = taxonomy_desc,
+      city                 = city,
+      state                = state,
+      postal_code          = zip,
+      country_code         = country,
+      limit                = 1200L,
+      skip                 = 0L
+    ) |>
+    perform_simple()
+  
+  list(
+    count   = x$result_count,
+    results = x$results |> as_tbl()
+  )
+}
+
+ex <- nppes(npi = 1528060837)
+
+get_vars(ex$results, is_character) |> 
+  fcompute(
+    npi    = number,
+    entity = factor_(
+      val_match(
+        enumeration_type, 
+        "NPI-1" ~ "I", 
+        "NPI-2" ~ "O", 
+        .default = "X")),
+    date_created = convert_epoch(created_epoch),
+    last_updated = convert_epoch(last_updated_epoch)
+  ) |> 
+  add_vars(slt(ex$results$basic, -enumeration_date, -last_updated, -status))
+
+# get_vars(ex$results, is_list)
+
+yank(ex$results$addresses)
+
+yank(ex$results$taxonomies)
+
+yank(ex$results$practiceLocations)
+
+yank(ex$results$identifiers)
+
+empty(yank(ex$results$endpoints))
+
+empty(yank(ex$results$other_names))
+```
+

@@ -316,34 +316,34 @@
   {
     "objectID": "api_nppes.html",
     "href": "api_nppes.html",
-    "title": "6  NPPES Registry",
+    "title": "6  NPI Registry",
     "section": "",
-    "text": "6.1 Links",
+    "text": "6.1 NLM\nnlm &lt;- function(terms) {\n\n  req &lt;- request(\"https://clinicaltables.nlm.nih.gov/api/npi_idv/v3/search?\") |&gt;\n    req_url_query(\n      terms   = terms,\n      maxList = 500,\n      count   = 500,\n      offset  = 0L,\n      .space  = \"form\"\n    )\n\n  resp &lt;- req_perform(req) |&gt; resp_simple_json()\n\n  n &lt;- resp[[1]]\n\n  if (n &gt; 7500L) {\n    cli::cli_abort(c(\n      \"Your search returned {.strong {.val {n}}} results.\",\n      \"x\" = \"The NLM API limit is {.strong {.emph 7,500}}.\"))\n  }\n\n  results &lt;- resp[[4]] |&gt;\n    as.data.frame() |&gt;\n    set_names(c(\"name\", \"npi\", \"specialty\", \"address\")) |&gt;\n    as_tbl()\n\n  nreq &lt;- offset_length(n, 500) &gt; 1\n\n  cli_n_results_requests(n, 500)\n\n  if (false(nreq)) {\n\n    return(results)\n\n    } else {\n\n      results2 &lt;- req_perform_iterative(\n      req,\n      next_req        = iterate_with_offset(\n        param_name    = \"offset\",\n        start         = 500,\n        offset        = 500,\n        resp_complete = is_complete_with_limit(500))) |&gt;\n      map(\n        function(x) {\n          x &lt;- resp_simple_json(x)\n          x[[4]] |&gt;\n            as.data.frame() |&gt;\n            set_names(c(\"name\", \"npi\", \"specialty\", \"address\"))\n        }) |&gt;\n      rowbind()\n\n    as_tbl(rowbind(results, results2))\n  }\n}",
     "crumbs": [
       "APIs",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>NPPES Registry</span>"
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>NPI Registry</span>"
     ]
   },
   {
-    "objectID": "api_nppes.html#links",
-    "href": "api_nppes.html#links",
-    "title": "6  NPPES Registry",
+    "objectID": "api_nppes.html#nlm",
+    "href": "api_nppes.html#nlm",
+    "title": "6  NPI Registry",
     "section": "",
     "text": "NLM: NPI Registry\nNLM: NPI API",
     "crumbs": [
       "APIs",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>NPPES Registry</span>"
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>NPI Registry</span>"
     ]
   },
   {
-    "objectID": "api_nppes.html#catalog",
-    "href": "api_nppes.html#catalog",
-    "title": "6  NPPES Registry",
-    "section": "6.2 Catalog",
-    "text": "6.2 Catalog\n\nnppes_nlm &lt;- function(terms) {\n\n  req &lt;- request(\"https://clinicaltables.nlm.nih.gov/api/npi_idv/v3/search?\") |&gt;\n    req_url_query(\n      terms   = terms,\n      maxList = 500,\n      count   = 500,\n      offset  = 0L,\n      .space  = \"form\"\n    )\n\n  resp &lt;- req_perform(req) |&gt; resp_simple_json()\n\n  n &lt;- resp[[1]]\n\n  if (n &gt; 7500L) {\n    cli::cli_abort(c(\n      \"Your search returned {.strong {.val {n}}} results.\",\n      \"x\" = \"The NLM API limit is {.strong {.emph 7,500}}.\"))\n  }\n\n  results &lt;- resp[[4]] |&gt;\n    as.data.frame() |&gt;\n    set_names(c(\"name\", \"npi\", \"specialty\", \"address\")) |&gt;\n    as_tbl()\n\n  nreq &lt;- offset_length(n, 500) &gt; 1\n\n  cli_n_results_requests(n, 500)\n\n  if (false(nreq)) {\n\n    return(results)\n\n    } else {\n\n      results2 &lt;- req_perform_iterative(\n      req,\n      next_req        = iterate_with_offset(\n        param_name    = \"offset\",\n        start         = 500,\n        offset        = 500,\n        resp_complete = is_complete_with_limit(500))) |&gt;\n      map(\n        function(x) {\n          x &lt;- resp_simple_json(x)\n          x[[4]] |&gt;\n            as.data.frame() |&gt;\n            set_names(c(\"name\", \"npi\", \"specialty\", \"address\"))\n        }) |&gt;\n      rowbind()\n\n    as_tbl(rowbind(results, results2))\n  }\n}",
+    "objectID": "api_nppes.html#nppes",
+    "href": "api_nppes.html#nppes",
+    "title": "6  NPI Registry",
+    "section": "6.2 NPPES",
+    "text": "6.2 NPPES\n\nNPPES API Help\nContact: mailto:NPIFiles@cms.hhs.gov\n\n\nconvert_epoch &lt;- \\(x) {\n  as.Date(\n    as.POSIXct.numeric(\n      as.numeric(x) / 1000, \n      origin = \"1970-01-01\"\n      )\n    )\n}\n\nyank &lt;- \\(x) x[[1]]\n\n\nnppes &lt;- function(npi            = NULL,\n                  entity         = NULL,\n                  first          = NULL,\n                  last           = NULL,\n                  organization   = NULL,\n                  name_type      = NULL,\n                  taxonomy_desc  = NULL,\n                  city           = NULL,\n                  state          = NULL,\n                  zip            = NULL,\n                  country        = NULL) {\n\n  x &lt;- request(\"https://npiregistry.cms.hhs.gov/api/?version=2.1\") |&gt;\n    req_url_query(\n      number               = npi,\n      enumeration_type     = entity,\n      first_name           = first,\n      last_name            = last,\n      name_purpose         = name_type,\n      organization_name    = organization,\n      taxonomy_description = taxonomy_desc,\n      city                 = city,\n      state                = state,\n      postal_code          = zip,\n      country_code         = country,\n      limit                = 1200L,\n      skip                 = 0L\n    ) |&gt;\n    perform_simple()\n  \n  list(\n    count   = x$result_count,\n    results = x$results |&gt; as_tbl()\n  )\n}\n\nex &lt;- nppes(npi = 1528060837)\n\nget_vars(ex$results, is_character) |&gt; \n  fcompute(\n    npi    = number,\n    entity = factor_(\n      val_match(\n        enumeration_type, \n        \"NPI-1\" ~ \"I\", \n        \"NPI-2\" ~ \"O\", \n        .default = \"X\")),\n    date_created = convert_epoch(created_epoch),\n    last_updated = convert_epoch(last_updated_epoch)\n  ) |&gt; \n  add_vars(slt(ex$results$basic, -enumeration_date, -last_updated, -status))\n\n# A tibble: 1 × 12\n  npi        entity date_created last_updated first_name last_name middle_name\n* &lt;chr&gt;      &lt;fct&gt;  &lt;date&gt;       &lt;date&gt;       &lt;chr&gt;      &lt;chr&gt;     &lt;chr&gt;      \n1 1528060837 I      2005-06-01   2007-07-09   JOHN       SARGEANT  B          \n# ℹ 5 more variables: credential &lt;chr&gt;, sole_proprietor &lt;chr&gt;, sex &lt;chr&gt;,\n#   name_prefix &lt;chr&gt;, name_suffix &lt;chr&gt;\n\n# get_vars(ex$results, is_list)\n\nyank(ex$results$addresses)\n\n  country_code  country_name address_purpose address_type             address_1\n1           US United States         MAILING          DOM 1939 OLD ANNAPOLIS RD\n2           US United States        LOCATION          DOM   6000 EXECUTIVE BLVD\n       city state postal_code telephone_number address_2   fax_number\n1  WOODBINE    MD   217978201     301-854-6748      &lt;NA&gt;         &lt;NA&gt;\n2 ROCKVILLE    MD   208523803     301-816-0020   STE 201 301-816-0334\n\nyank(ex$results$taxonomies)\n\n        code taxonomy_group               desc state license primary\n1 225100000X                Physical Therapist    MD   14262    TRUE\n\nyank(ex$results$practiceLocations)\n\nlist()\n\nyank(ex$results$identifiers)\n\n  code                 desc                 issuer identifier state\n1   01 Other (non-Medicare)              Aetna HMO    0129008    MD\n2   01 Other (non-Medicare)               DOL/OWCP  146574500    MD\n3   01 Other (non-Medicare)      United Healthcare     230033    MD\n4   01 Other (non-Medicare)  MDIPA/Alliance/MLH/OC      38311    MD\n5   01 Other (non-Medicare)                  Cigna    4074069    MD\n6   01 Other (non-Medicare)              Aetna PPO    4296824    MD\n7   01 Other (non-Medicare) MCR Railroad retiremnt  650003825    DC\n8   01 Other (non-Medicare)    BC/BS Non Provider#       k366    MD\n\nempty(yank(ex$results$endpoints))\n\n[1] TRUE\n\nempty(yank(ex$results$other_names))\n\n[1] TRUE",
     "crumbs": [
       "APIs",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>NPPES Registry</span>"
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>NPI Registry</span>"
     ]
   },
   {
