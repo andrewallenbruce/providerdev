@@ -332,8 +332,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#links" id="toc-links" class="nav-link active" data-scroll-target="#links"><span class="header-section-number">3.1</span> Links</a></li>
   <li><a href="#load-catalog" id="toc-load-catalog" class="nav-link" data-scroll-target="#load-catalog"><span class="header-section-number">3.2</span> Load Catalog</a></li>
-  <li><a href="#open-payments" id="toc-open-payments" class="nav-link" data-scroll-target="#open-payments"><span class="header-section-number">3.3</span> Open Payments</a></li>
-  <li><a href="#queries" id="toc-queries" class="nav-link" data-scroll-target="#queries"><span class="header-section-number">3.4</span> Queries</a></li>
+  <li><a href="#s7-classes" id="toc-s7-classes" class="nav-link" data-scroll-target="#s7-classes"><span class="header-section-number">3.3</span> S7 Classes</a>
+  <ul class="collapse">
+  <li><a href="#dashboard" id="toc-dashboard" class="nav-link" data-scroll-target="#dashboard"><span class="header-section-number">3.3.1</span> Dashboard</a></li>
+  </ul></li>
+  <li><a href="#querying" id="toc-querying" class="nav-link" data-scroll-target="#querying"><span class="header-section-number">3.4</span> Querying</a></li>
+  <li><a href="#queries" id="toc-queries" class="nav-link" data-scroll-target="#queries"><span class="header-section-number">3.5</span> Queries</a></li>
   </ul>
 <div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li></ul></div></nav>
     </div>
@@ -368,106 +372,1638 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="load-catalog" class="level2" data-number="3.2">
 <h2 data-number="3.2" class="anchored" data-anchor-id="load-catalog"><span class="header-section-number">3.2</span> Load Catalog</h2>
-<ul>
-<li><code>publisher</code>: <code>"openpaymentsdata.cms.gov"</code></li>
-<li><code>bureauCode</code>: <code>"009:38"</code></li>
-<li><code>programCode</code>: <code>"009:000"</code></li>
-<li><code>accessLevel</code>: <code>"public"</code></li>
-<li>limit = <code>500</code></li>
-</ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>subset_detect <span class="ot">&lt;-</span> <span class="cf">function</span>(i, j, p, <span class="at">n =</span> <span class="cn">FALSE</span>) {</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sbt</span>(i, <span class="fu">detect</span>(<span class="at">x =</span> i[[j]], <span class="at">p =</span> p, <span class="at">n =</span> n))</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>open_nrows_fields <span class="ot">&lt;-</span> <span class="cf">function</span>(id) {</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> id <span class="sc">|&gt;</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">open_uuid_url</span>() <span class="sc">|&gt;</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">request</span>() <span class="sc">|&gt;</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">req_url_query</span>(</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">schema  =</span> <span class="st">"false"</span>,</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">keys    =</span> <span class="st">"false"</span>,</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">results =</span> <span class="st">"false"</span>,</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">count   =</span> <span class="st">"true"</span>,</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">offset  =</span> <span class="dv">0</span>,</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">limit   =</span> <span class="dv">1</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">req_perform</span>() <span class="sc">|&gt;</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">resp_simple_json</span>()</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">rows   =</span> x<span class="sc">$</span>count, </span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>       <span class="at">fields =</span> x<span class="sc">$</span>query<span class="sc">$</span>properties)</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>format_query_open <span class="ot">&lt;-</span> <span class="cf">function</span>(args, <span class="at">op =</span> <span class="st">"="</span>) {</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  args  <span class="ot">&lt;-</span> <span class="fu">discard</span>(args, is.null)</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>  query <span class="ot">&lt;-</span> <span class="fu">glue</span>(</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>  <span class="st">"</span></span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="st">  'conditions[{i}][property]' = '{PROPERTY}',</span></span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="st">  'conditions[{i}][operator]' = '{OPERATOR}',</span></span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="st">  'conditions[{i}][value]' = '{VALUE}'</span></span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="st">  "</span>,</span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">i                 =</span> <span class="fu">seq_along0</span>(args),</span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">PROPERTY          =</span> <span class="fu">names</span>(args),</span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">OPERATOR          =</span> op,</span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">VALUE             =</span> args) <span class="sc">|&gt;</span></span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>    <span class="fu">glue_collapse</span>(<span class="at">sep =</span> <span class="st">",</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glue</span>(<span class="st">"c({query})"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">parse_expr</span>() <span class="sc">|&gt;</span></span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>    <span class="fu">eval_bare</span>()</span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>create_request_open <span class="ot">&lt;-</span> <span class="cf">function</span>(id, args) {</span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>  id <span class="sc">|&gt;</span></span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>    <span class="fu">open_uuid_url</span>() <span class="sc">|&gt;</span></span>
-<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>    <span class="fu">request</span>() <span class="sc">|&gt;</span></span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>    <span class="fu">req_url_query</span>(</span>
-<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!!!</span><span class="fu">format_query_open</span>(args),</span>
-<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>      <span class="at">schema  =</span> <span class="st">"false"</span>,</span>
-<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>      <span class="at">keys    =</span> <span class="st">"false"</span>,</span>
-<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>      <span class="at">offset  =</span> <span class="dv">0</span></span>
-<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>query_nresults_open <span class="ot">&lt;-</span> <span class="cf">function</span>(req) {</span>
-<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_query</span>(</span>
-<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>    req,</span>
-<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>    <span class="at">results =</span> <span class="st">"false"</span>, </span>
-<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>    <span class="at">count   =</span> <span class="st">"true"</span>, </span>
-<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>    <span class="at">offset  =</span> <span class="dv">0</span>, </span>
-<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>    <span class="at">limit   =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>    <span class="fu">req_perform</span>() <span class="sc">|&gt;</span></span>
-<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>    <span class="fu">resp_simple_json</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a>    _[[<span class="st">"count"</span>]]</span>
-<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a>perform_request_open <span class="ot">&lt;-</span> <span class="cf">function</span>(req) {</span>
-<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_query</span>(</span>
-<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>    req,</span>
-<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a>    <span class="at">results =</span> <span class="st">"true"</span>, </span>
-<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a>    <span class="at">count   =</span> <span class="st">"false"</span>, </span>
-<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a>    <span class="at">offset  =</span> <span class="dv">0</span>, </span>
-<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a>    <span class="at">limit   =</span> <span class="dv">500</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a>    <span class="fu">req_perform</span>() <span class="sc">|&gt;</span></span>
-<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a>    <span class="fu">resp_simple_json</span>()</span>
-<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a><span class="fu">format_query_open</span>(</span>
-<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(</span>
-<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a>    <span class="at">covered_recipient_npi =</span> <span class="dv">1023630738</span>, </span>
-<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a>    <span class="at">covered_recipient_profile_city =</span> <span class="st">"Valdosta"</span>)</span>
-<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a>  fuimus<span class="sc">::</span><span class="fu">print_ls</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">.c</span>(open_curr, open_temp) <span class="sc">%=%</span> <span class="fu">catalog_open</span>()</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>open_curr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 18 × 6
+   title                      description modified   identifier contact download
+   &lt;chr&gt;                      &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;      &lt;chr&gt;   &lt;chr&gt;   
+ 1 Covered Recipient Profile… The Covere… 2025-01-30 23160558-… Open P… https:/…
+ 2 National Level Payment To… This datas… 2025-01-30 04c3355f-… Open P… https:/…
+ 3 National Level Payment To… This datas… 2025-01-30 aaaddc12-… Open P… https:/…
+ 4 Payments Grouped by Cover… This datas… 2025-01-30 8d4d1fa0-… Open P… https:/…
+ 5 Payments Grouped by Cover… This datas… 2025-01-30 e49defac-… Open P… https:/…
+ 6 Payments Grouped by Physi… This datas… 2025-01-30 895260f5-… Open P… https:/…
+ 7 Payments Grouped by Repor… This datas… 2025-01-30 d5762bed-… Open P… https:/…
+ 8 Payments Grouped by Repor… This datas… 2025-01-30 61efcbef-… Open P… https:/…
+ 9 Payments Grouped by Repor… This datas… 2025-01-30 ea5eea39-… Open P… https:/…
+10 Payments Grouped by Teach… This datas… 2025-01-30 217ad1a7-… Open P… https:/…
+11 Physician (Distinct) Prof… This datas… 2025-01-30 6ed6ae76-… Open P… https:/…
+12 Profile Information        This datas… 2025-01-30 f2ed17cc-… Open P… https:/…
+13 Provider Profile ID Mappi… Maps secon… 2025-01-30 d19e5be2-… Open P… https:/…
+14 Reporting Entity Profile … This datas… 2025-01-30 1cf0c6c0-… Open P… https:/…
+15 State Level Payment Total… This datas… 2025-01-30 02157882-… Open P… https:/…
+16 State Payment Totals and … Groups pay… 2025-01-30 7c5144d9-… Open P… https:/…
+17 Summary Dashboard - all Y… Summary da… 2025-01-30 e0d225fc-… Open P… https:/…
+18 Teaching Hospital Profile… This datas… 2025-01-30 8219fcb3-… Open P… https:/…</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>open_temp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 56 × 7
+    year title                description modified   identifier contact download
+   &lt;int&gt; &lt;chr&gt;                &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;      &lt;chr&gt;   &lt;chr&gt;   
+ 1  2023 General Payment Data "All gener… 2025-01-30 fb3a65aa-… Open P… https:/…
+ 2  2022 General Payment Data "All gener… 2025-01-30 df01c2f8-… Open P… https:/…
+ 3  2021 General Payment Data "All gener… 2025-01-30 0380bbeb-… Open P… https:/…
+ 4  2020 General Payment Data "All gener… 2025-01-30 a08c4b30-… Open P… https:/…
+ 5  2019 General Payment Data "All gener… 2025-01-30 4e54dd6c-… Open P… https:/…
+ 6  2018 General Payment Data "All gener… 2025-01-30 f003634c-… Open P… https:/…
+ 7  2017 General Payment Data "All gener… 2025-01-30 74e3a32c-… Open P… https:/…
+ 8  2023 Ownership Payment D… "Ownership… 2025-01-30 ac0bc85c-… Open P… https:/…
+ 9  2022 Ownership Payment D… "Ownership… 2025-01-30 37792388-… Open P… https:/…
+10  2021 Ownership Payment D… "Ownership… 2025-01-30 b0c03b8d-… Open P… https:/…
+# ℹ 46 more rows</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">subset_detect</span>(open_curr, title, <span class="st">"^Covered"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 6
+  title                       description modified   identifier contact download
+  &lt;chr&gt;                       &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;      &lt;chr&gt;   &lt;chr&gt;   
+1 Covered Recipient Profile … The Covere… 2025-01-30 23160558-… Open P… https:/…</code></pre>
+</div>
+</div>
+</section>
+<section id="s7-classes" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="s7-classes"><span class="header-section-number">3.3</span> S7 Classes</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">CurrentOpen</span>(<span class="st">"prof_cov"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;providertwo::CurrentOpen&gt;
+ @ title      : chr "Covered Recipient Profile Supplement"
+ @ description: chr "The Covered Recipient Profile Supplement file contains information about physicians and non-physician practitio"| __truncated__
+ @ contact    : chr "Open Payments (mailto:openpayments@cms.hhs.gov)"
+ @ modified   : Date[1:1], format: "2025-01-30"
+ @ identifier : chr "https://openpaymentsdata.cms.gov/api/1/datastore/query/23160558-6742-54ff-8b9f-cac7d514ff4e/0"
+ @ rows       : int 1530412
+ @ pages      : int 3061
+ @ fields     : chr [1:32] "covered_recipient_profile_type" ...
+ @ download   : chr "https://download.cms.gov/openpayments/PHPRFL_P01302025_01212025/OP_CVRD_RCPNT_PRFL_SPLMTL_P01302025_01212025.csv"
+ @ uuid       : chr "23160558-6742-54ff-8b9f-cac7d514ff4e"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">CurrentOpen</span>(<span class="st">"prof_phys"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;providertwo::CurrentOpen&gt;
+ @ title      : chr "Physician (Distinct) Profile Information"
+ @ description: chr "This dataset is pre-filtered based on the most frequent searches of Open Payments data."
+ @ contact    : chr "Open Payments (mailto:openpayments@cms.hhs.gov)"
+ @ modified   : Date[1:1], format: "2025-01-30"
+ @ identifier : chr "https://openpaymentsdata.cms.gov/api/1/datastore/query/6ed6ae76-2999-49da-b0b2-d7df150ac754/0"
+ @ rows       : int 1528054
+ @ pages      : int 3057
+ @ fields     : chr [1:33] "covered_recipient_profile_type" ...
+ @ download   : chr "https://download.cms.gov/openpayments/SMRY_RPTS_P01302025_01212025/PBLCTN_PHYSN_NON_PHYSN_PRCTNR_PRFL_SRCH_P013"| __truncated__
+ @ uuid       : chr "6ed6ae76-2999-49da-b0b2-d7df150ac754"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">CurrentOpen</span>(<span class="st">"prof_info"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;providertwo::CurrentOpen&gt;
+ @ title      : chr "Profile Information"
+ @ description: chr "This dataset provides profile information to display on payment search results."
+ @ contact    : chr "Open Payments (mailto:openpayments@cms.hhs.gov)"
+ @ modified   : Date[1:1], format: "2025-01-30"
+ @ identifier : chr "https://openpaymentsdata.cms.gov/api/1/datastore/query/f2ed17cc-f045-4e25-9b28-75c72f0c7efe/0"
+ @ rows       : int 1534695
+ @ pages      : int 3070
+ @ fields     : chr [1:20] "entity_id" "entity_provider_type" "entity_npi" ...
+ @ download   : chr "https://download.cms.gov/openpayments/SMRY_RPTS_P01302025_01212025/all-entities-profile-search.csv"
+ @ uuid       : chr "f2ed17cc-f045-4e25-9b28-75c72f0c7efe"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">CurrentOpen</span>(<span class="st">"prof_map"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;providertwo::CurrentOpen&gt;
+ @ title      : chr "Provider Profile ID Mapping Table"
+ @ description: chr "Maps secondary/duplicate provider profile IDs to the primary ID in the Open Payments system. For multiple reaso"| __truncated__
+ @ contact    : chr "Open Payments (mailto:openpayments@cms.hhs.gov)"
+ @ modified   : Date[1:1], format: "2025-01-30"
+ @ identifier : chr "https://openpaymentsdata.cms.gov/api/1/datastore/query/d19e5be2-5b8c-562c-af22-c243503bcfac/0"
+ @ rows       : int 2358
+ @ pages      : int 5
+ @ fields     : chr [1:2] "primary_provider_profile_id" ...
+ @ download   : chr "https://download.cms.gov/openpayments/SMRY_RPTS_P01302025_01212025/PBLCTN_PRVDR_PRFL_MAPPING_P01302025_01212025.csv"
+ @ uuid       : chr "d19e5be2-5b8c-562c-af22-c243503bcfac"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">CurrentOpen</span>(<span class="st">"prof_entity"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;providertwo::CurrentOpen&gt;
+ @ title      : chr "Reporting Entity Profile Information"
+ @ description: chr "This dataset is pre-filtered based on the most frequent searches of Open Payments data."
+ @ contact    : chr "Open Payments (mailto:openpayments@cms.hhs.gov)"
+ @ modified   : Date[1:1], format: "2025-01-30"
+ @ identifier : chr "https://openpaymentsdata.cms.gov/api/1/datastore/query/1cf0c6c0-c377-466e-b78f-037b442559f8/0"
+ @ rows       : int 2843
+ @ pages      : int 6
+ @ fields     : chr [1:9] "amgpo_making_payment_id" "amgpo_making_payment_name" ...
+ @ download   : chr "https://download.cms.gov/openpayments/SMRY_RPTS_P01302025_01212025/PBLCTN_RPTG_ORG_PRFL_SRCH_P01302025_01212025.csv"
+ @ uuid       : chr "1cf0c6c0-c377-466e-b78f-037b442559f8"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">CurrentOpen</span>(<span class="st">"prof_teach"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;providertwo::CurrentOpen&gt;
+ @ title      : chr "Teaching Hospital Profile Information"
+ @ description: chr "This dataset is pre-filtered based on the most frequent searches of Open Payments data."
+ @ contact    : chr "Open Payments (mailto:openpayments@cms.hhs.gov)"
+ @ modified   : Date[1:1], format: "2025-01-30"
+ @ identifier : chr "https://openpaymentsdata.cms.gov/api/1/datastore/query/8219fcb3-fb3d-4b51-9f65-be8a048c0608/0"
+ @ rows       : int 1440
+ @ pages      : int 3
+ @ fields     : chr [1:12] "teaching_hospital_ccn" "teaching_hospital_name" ...
+ @ download   : chr "https://download.cms.gov/openpayments/SMRY_RPTS_P01302025_01212025/PBLCTN_TH_PRFL_SRCH_P01302025_01212025.csv"
+ @ uuid       : chr "8219fcb3-fb3d-4b51-9f65-be8a048c0608"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">CurrentOpen</span>(<span class="st">"dashboard"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;providertwo::CurrentOpen&gt;
+ @ title      : chr "Summary Dashboard - all Years"
+ @ description: chr "Summary data."
+ @ contact    : chr "Open Payments (mailto:openpayments@cms.hhs.gov)"
+ @ modified   : Date[1:1], format: "2025-01-30"
+ @ identifier : chr "https://openpaymentsdata.cms.gov/api/1/datastore/query/e0d225fc-8230-401d-8fad-e2262fb22b4c/0"
+ @ rows       : int 90
+ @ pages      : int 1
+ @ fields     : chr [1:10] "dashboard_row_number" "data_metrics" "py_2017" "py_2018" ...
+ @ download   : chr "https://download.cms.gov/openpayments/SMRY_RPTS_P01302025_01212025/PBLCTN_DSHBRD_P01302025_01212025.csv"
+ @ uuid       : chr "e0d225fc-8230-401d-8fad-e2262fb22b4c"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">CurrentOpen</span>(<span class="st">"pay_state_total"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;providertwo::CurrentOpen&gt;
+ @ title      : chr "State Level Payment Total and Averages for all Years"
+ @ description: chr "This dataset is pre-filtered based on the most frequent searches of Open Payments data."
+ @ contact    : chr "Open Payments (mailto:openpayments@cms.hhs.gov)"
+ @ modified   : Date[1:1], format: "2025-01-30"
+ @ identifier : chr "https://openpaymentsdata.cms.gov/api/1/datastore/query/02157882-0f43-473a-a777-c96eb5b1b623/0"
+ @ rows       : int 2765
+ @ pages      : int 6
+ @ fields     : chr [1:28] "country_code" "country_name" "state_code" "state_name" ...
+ @ download   : chr "https://download.cms.gov/openpayments/SMRY_RPTS_P01302025_01212025/PBLCTN_STATE_SMRY_P01302025_01212025-joined.csv"
+ @ uuid       : chr "02157882-0f43-473a-a777-c96eb5b1b623"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">CurrentOpen</span>(<span class="st">"pay_state_group"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;providertwo::CurrentOpen&gt;
+ @ title      : chr "State Payment Totals and Averages Grouped by Nature of Payment for all Years"
+ @ description: chr "Groups payment data by state, recipient type, and nature of payment."
+ @ contact    : chr "Open Payments (mailto:openpayments@cms.hhs.gov)"
+ @ modified   : Date[1:1], format: "2025-01-30"
+ @ identifier : chr "https://openpaymentsdata.cms.gov/api/1/datastore/query/7c5144d9-1b2a-5039-a91a-cccb8ed7805c/0"
+ @ rows       : int 16758
+ @ pages      : int 34
+ @ fields     : chr [1:28] "country_code" "country_name" "state_code" "state_name" ...
+ @ download   : chr "https://download.cms.gov/openpayments/SMRY_RPTS_P01302025_01212025/PBLCTN_NTR_OF_PYMT_BY_STATE_SMRY_PGYRall_P01"| __truncated__
+ @ uuid       : chr "7c5144d9-1b2a-5039-a91a-cccb8ed7805c"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">CurrentOpen</span>(<span class="st">"pay_nat_group"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;providertwo::CurrentOpen&gt;
+ @ title      : chr "National Level Payment Total and Averages by Provider Specialty for all Years"
+ @ description: chr "This dataset is pre-filtered based on the most frequent searches of Open Payments data."
+ @ contact    : chr "Open Payments (mailto:openpayments@cms.hhs.gov)"
+ @ modified   : Date[1:1], format: "2025-01-30"
+ @ identifier : chr "https://openpaymentsdata.cms.gov/api/1/datastore/query/04c3355f-955b-4620-b3a8-08020cc9c1f2/0"
+ @ rows       : int 4188
+ @ pages      : int 9
+ @ fields     : chr [1:21] "payment_type" "recipient_type" "program_year" ...
+ @ download   : chr "https://download.cms.gov/openpayments/SMRY_RPTS_P01302025_01212025/PBLCTN_SPLTY_SMRY_P01302025_01212025-joined.csv"
+ @ uuid       : chr "04c3355f-955b-4620-b3a8-08020cc9c1f2"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">CurrentOpen</span>(<span class="st">"pay_nat_total"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;providertwo::CurrentOpen&gt;
+ @ title      : chr "National Level Payment Total and Averages for all Years"
+ @ description: chr "This dataset is pre-filtered based on the most frequent searches of Open Payments data."
+ @ contact    : chr "Open Payments (mailto:openpayments@cms.hhs.gov)"
+ @ modified   : Date[1:1], format: "2025-01-30"
+ @ identifier : chr "https://openpaymentsdata.cms.gov/api/1/datastore/query/aaaddc12-a3a7-4cc5-9c12-4a726317aa1c/0"
+ @ rows       : int 24
+ @ pages      : int 1
+ @ fields     : chr [1:18] "metric_level" "payment_type" "recipient_type" ...
+ @ download   : chr "https://download.cms.gov/openpayments/SMRY_RPTS_P01302025_01212025/PBLCTN_NTNL_SMRY_P01302025_01212025-joined.csv"
+ @ uuid       : chr "aaaddc12-a3a7-4cc5-9c12-4a726317aa1c"</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">TemporalOpen</span>(<span class="st">"general"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;providertwo::TemporalOpen&gt;
+ @ title      : chr "General Payment Data"
+ @ description: chr "All general (non-research, non-ownership related) payments from the 2023 program year [January 1 – December 31, 2023]"
+ @ contact    : chr "Open Payments (mailto:openpayments@cms.hhs.gov)"
+ @ rows       : int 14607336
+ @ pages      : int 29215
+ @ fields     : chr [1:91] "change_type" "covered_recipient_type" ...
+ @ years      : int [1:7] 2023 2022 2021 2020 2019 2018 2017
+ @ endpoints  : tibble [7 × 4] (S3: tbl_df/tbl/data.frame)
+ $ year      : int [1:7] 2023 2022 2021 2020 2019 2018 2017
+ $ modified  : Date[1:7], format: "2025-01-30" "2025-01-30" ...
+ $ identifier: chr [1:7] "fb3a65aa-c901-4a38-a813-b04b00dfa2a9" "df01c2f8-dc1f-4e79-96cb-8208beaf143c" "0380bbeb-aea1-58b6-b708-829f92a48202" "a08c4b30-5cf3-4948-ad40-36f404619019" ...
+ $ download  : chr [1:7] "https://download.cms.gov/openpayments/PGYR2023_P01302025_01212025/OP_DTL_GNRL_PGYR2023_P01302025_01212025.csv" "https://download.cms.gov/openpayments/PGYR2022_P01302025_01212025/OP_DTL_GNRL_PGYR2022_P01302025_01212025.csv" "https://download.cms.gov/openpayments/PGYR2021_P01302025_01212025/OP_DTL_GNRL_PGYR2021_P01302025_01212025.csv" "https://download.cms.gov/openpayments/PGYR2020_P01302025_01212025/OP_DTL_GNRL_PGYR2020_P01302025_01212025.csv" ...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">TemporalOpen</span>(<span class="st">"ownership"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;providertwo::TemporalOpen&gt;
+ @ title      : chr "Ownership Payment Data"
+ @ description: chr "Ownership Payment Data - Detailed Dataset 2023 Reporting Year\nAll ownership and investment payments from the 2"| __truncated__
+ @ contact    : chr "Open Payments (mailto:openpayments@cms.hhs.gov)"
+ @ rows       : int 4013
+ @ pages      : int 9
+ @ fields     : chr [1:30] "change_type" "physician_profile_id" "physician_npi" ...
+ @ years      : int [1:7] 2023 2022 2021 2020 2019 2018 2017
+ @ endpoints  : tibble [7 × 4] (S3: tbl_df/tbl/data.frame)
+ $ year      : int [1:7] 2023 2022 2021 2020 2019 2018 2017
+ $ modified  : Date[1:7], format: "2025-01-30" "2025-01-30" ...
+ $ identifier: chr [1:7] "ac0bc85c-02e3-45d9-89e8-2ff43da85df7" "37792388-800f-427a-9e02-b11601454eeb" "b0c03b8d-06df-58f2-8ce2-4daeffee147e" "a9a0bf48-6b96-4589-b4c2-3c5dcfbeaca2" ...
+ $ download  : chr [1:7] "https://download.cms.gov/openpayments/PGYR2023_P01302025_01212025/OP_DTL_OWNRSHP_PGYR2023_P01302025_01212025.csv" "https://download.cms.gov/openpayments/PGYR2022_P01302025_01212025/OP_DTL_OWNRSHP_PGYR2022_P01302025_01212025.csv" "https://download.cms.gov/openpayments/PGYR2021_P01302025_01212025/OP_DTL_OWNRSHP_PGYR2021_P01302025_01212025.csv" "https://download.cms.gov/openpayments/PGYR2020_P01302025_01212025/OP_DTL_OWNRSHP_PGYR2020_P01302025_01212025.csv" ...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">TemporalOpen</span>(<span class="st">"research"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;providertwo::TemporalOpen&gt;
+ @ title      : chr "Research Payment Data"
+ @ description: chr "Research Payment Data – Detailed Dataset 2023 Reporting Year\nAll research-related payments from the 2023 progr"| __truncated__
+ @ contact    : chr "Open Payments (mailto:openpayments@cms.hhs.gov)"
+ @ rows       : int 1027926
+ @ pages      : int 2056
+ @ fields     : chr [1:252] "change_type" "covered_recipient_type" ...
+ @ years      : int [1:7] 2023 2022 2021 2020 2019 2018 2017
+ @ endpoints  : tibble [7 × 4] (S3: tbl_df/tbl/data.frame)
+ $ year      : int [1:7] 2023 2022 2021 2020 2019 2018 2017
+ $ modified  : Date[1:7], format: "2025-01-30" "2025-01-30" ...
+ $ identifier: chr [1:7] "ec9521bf-9d97-4603-814c-f4132d34bc4f" "fdc3c773-018a-412c-8a81-d7b8a13a037b" "ce1d28dd-0094-5060-a036-580329439600" "9c248e7e-7c7f-478b-ab84-ce0919d72c1c" ...
+ $ download  : chr [1:7] "https://download.cms.gov/openpayments/PGYR2023_P01302025_01212025/OP_DTL_RSRCH_PGYR2023_P01302025_01212025.csv" "https://download.cms.gov/openpayments/PGYR2022_P01302025_01212025/OP_DTL_RSRCH_PGYR2022_P01302025_01212025.csv" "https://download.cms.gov/openpayments/PGYR2021_P01302025_01212025/OP_DTL_RSRCH_PGYR2021_P01302025_01212025.csv" "https://download.cms.gov/openpayments/PGYR2020_P01302025_01212025/OP_DTL_RSRCH_PGYR2020_P01302025_01212025.csv" ...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">TemporalOpen</span>(<span class="st">"recipient_nature"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;providertwo::TemporalOpen&gt;
+ @ title      : chr "Payments Grouped by Covered Recipient and Nature of Payments"
+ @ description: chr "This dataset is pre-filtered based on the most frequent searches of Open Payments data."
+ @ contact    : chr "Open Payments (mailto:openpayments@cms.hhs.gov)"
+ @ rows       : int 1184051
+ @ pages      : int 2369
+ @ fields     : chr [1:10] "recipient_id" "recipient_type" "covered_recipient_npi" ...
+ @ years      : int [1:7] 2023 2022 2021 2020 2019 2018 2017
+ @ endpoints  : tibble [7 × 4] (S3: tbl_df/tbl/data.frame)
+ $ year      : int [1:7] 2023 2022 2021 2020 2019 2018 2017
+ $ modified  : Date[1:7], format: "2025-01-30" "2025-01-30" ...
+ $ identifier: chr [1:7] "4017acfa-0eeb-4b8a-b68c-3b41e779c4a2" "686b765e-f4b7-4d35-a050-fb5af926dbbe" "d35243be-55cb-5087-931e-a294e0e0917f" "1fd2be47-cb72-435a-b2df-142f38e99a05" ...
+ $ download  : chr [1:7] "https://download.cms.gov/openpayments/SMRY_RPTS_P01302025_01212025/PBLCTN_SMRY_BY_CR_BY_NTR_OF_PYMT_PGYR2023_P0"| __truncated__ "https://download.cms.gov/openpayments/SMRY_RPTS_P01302025_01212025/PBLCTN_SMRY_BY_CR_BY_NTR_OF_PYMT_PGYR2022_P0"| __truncated__ "https://download.cms.gov/openpayments/SMRY_RPTS_P01302025_01212025/PBLCTN_SMRY_BY_CR_BY_NTR_OF_PYMT_PGYR2021_P0"| __truncated__ "https://download.cms.gov/openpayments/SMRY_RPTS_P01302025_01212025/PBLCTN_SMRY_BY_CR_BY_NTR_OF_PYMT_PGYR2020_P0"| __truncated__ ...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">TemporalOpen</span>(<span class="st">"recipient_entity"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;providertwo::TemporalOpen&gt;
+ @ title      : chr "Payments Grouped by Covered Recipient and Reporting Entities"
+ @ description: chr "This dataset is pre-filtered based on the most frequent searches of Open Payments data."
+ @ contact    : chr "Open Payments (mailto:openpayments@cms.hhs.gov)"
+ @ rows       : int 4416875
+ @ pages      : int 8834
+ @ fields     : chr [1:12] "recipient_id" "recipient_type" "covered_recipient_npi" ...
+ @ years      : int [1:7] 2023 2022 2021 2020 2019 2018 2017
+ @ endpoints  : tibble [7 × 4] (S3: tbl_df/tbl/data.frame)
+ $ year      : int [1:7] 2023 2022 2021 2020 2019 2018 2017
+ $ modified  : Date[1:7], format: "2025-01-30" "2025-01-30" ...
+ $ identifier: chr [1:7] "4fbf0094-3c7b-425a-aabe-5778052559ad" "d2d87f39-b117-4ac8-9f36-a088fb22a25b" "7c9ebb83-8f88-5462-ab7d-1925b0113cfc" "78ad9c8d-d7ae-4066-bf2d-a66e3c9d6e3b" ...
+ $ download  : chr [1:7] "https://download.cms.gov/openpayments/SMRY_RPTS_P01302025_01212025/PBLCTN_SMRY_BY_CR_BY_AMGPO_PGYR2023_P01302025_01212025.csv" "https://download.cms.gov/openpayments/SMRY_RPTS_P01302025_01212025/PBLCTN_SMRY_BY_CR_BY_AMGPO_PGYR2022_P01302025_01212025.csv" "https://download.cms.gov/openpayments/SMRY_RPTS_P01302025_01212025/PBLCTN_SMRY_BY_CR_BY_AMGPO_PGYR2021_P01302025_01212025.csv" "https://download.cms.gov/openpayments/SMRY_RPTS_P01302025_01212025/PBLCTN_SMRY_BY_CR_BY_AMGPO_PGYR2020_P01302025_01212025.csv" ...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">TemporalOpen</span>(<span class="st">"entity_nature"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;providertwo::TemporalOpen&gt;
+ @ title      : chr "Payments Grouped by Reporting Entities and Nature of Payments"
+ @ description: chr "This dataset is pre-filtered based on the most frequent searches of Open Payments data."
+ @ contact    : chr "Open Payments (mailto:openpayments@cms.hhs.gov)"
+ @ rows       : int 6192
+ @ pages      : int 13
+ @ fields     : chr [1:5] "amgpo_id" "nature_of_payment_type_code" ...
+ @ years      : int [1:7] 2023 2022 2021 2020 2019 2018 2017
+ @ endpoints  : tibble [7 × 4] (S3: tbl_df/tbl/data.frame)
+ $ year      : int [1:7] 2023 2022 2021 2020 2019 2018 2017
+ $ modified  : Date[1:7], format: "2025-01-30" "2025-01-30" ...
+ $ identifier: chr [1:7] "72008dab-0953-4226-a4cd-9f1872e8170d" "cedcd327-4e5d-43f9-8eb1-c11850fa7c66" "a2714020-f599-52b0-b12b-8f5b510e547a" "7dfe6254-2aee-454f-9ea5-df611a9a7b55" ...
+ $ download  : chr [1:7] "https://download.cms.gov/openpayments/SMRY_RPTS_P01302025_01212025/PBLCTN_SMRY_BY_AMGPO_BY_NTR_OF_PYMT_PGYR2023"| __truncated__ "https://download.cms.gov/openpayments/SMRY_RPTS_P01302025_01212025/PBLCTN_SMRY_BY_AMGPO_BY_NTR_OF_PYMT_PGYR2022"| __truncated__ "https://download.cms.gov/openpayments/SMRY_RPTS_P01302025_01212025/PBLCTN_SMRY_BY_AMGPO_BY_NTR_OF_PYMT_PGYR2021"| __truncated__ "https://download.cms.gov/openpayments/SMRY_RPTS_P01302025_01212025/PBLCTN_SMRY_BY_AMGPO_BY_NTR_OF_PYMT_PGYR2020"| __truncated__ ...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">TemporalOpen</span>(<span class="st">"entity_recipient_nature"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;providertwo::TemporalOpen&gt;
+ @ title      : chr "Payments Grouped by Reporting Entities, Covered Recipient, and Nature of Payments"
+ @ description: chr "This dataset is pre-filtered based on the most frequent searches of Open Payments data."
+ @ contact    : chr "Open Payments (mailto:openpayments@cms.hhs.gov)"
+ @ rows       : int 4588015
+ @ pages      : int 9177
+ @ fields     : chr [1:8] "amgpo_id" "recipient_id" "recipient_type" ...
+ @ years      : int [1:7] 2023 2022 2021 2020 2019 2018 2017
+ @ endpoints  : tibble [7 × 4] (S3: tbl_df/tbl/data.frame)
+ $ year      : int [1:7] 2023 2022 2021 2020 2019 2018 2017
+ $ modified  : Date[1:7], format: "2025-01-30" "2025-01-30" ...
+ $ identifier: chr [1:7] "29c23b6a-dd1e-4d82-a606-8d792c7f229e" "171e369a-6f25-49eb-aa36-37f0a497e5ca" "f240c437-9d8a-5be7-95a5-8ce8e0d970bf" "532df191-473f-4bcc-9056-a6260b9437b5" ...
+ $ download  : chr [1:7] "https://download.cms.gov/openpayments/SMRY_RPTS_P01302025_01212025/PBLCTN_SMRY_BY_AMGPO_BY_CR_BY_NTR_OF_PYMT_PG"| __truncated__ "https://download.cms.gov/openpayments/SMRY_RPTS_P01302025_01212025/PBLCTN_SMRY_BY_AMGPO_BY_CR_BY_NTR_OF_PYMT_PG"| __truncated__ "https://download.cms.gov/openpayments/SMRY_RPTS_P01302025_01212025/PBLCTN_SMRY_BY_AMGPO_BY_CR_BY_NTR_OF_PYMT_PG"| __truncated__ "https://download.cms.gov/openpayments/SMRY_RPTS_P01302025_01212025/PBLCTN_SMRY_BY_AMGPO_BY_CR_BY_NTR_OF_PYMT_PG"| __truncated__ ...</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">TemporalOpen</span>(<span class="st">"state_nature"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;providertwo::TemporalOpen&gt;
+ @ title      : chr "State Payment Totals Grouped by Nature of Payment for all Years"
+ @ description: chr "Groups payment data by state, recipient type, and nature of payment."
+ @ contact    : chr "Open Payments (mailto:openpayments@cms.hhs.gov)"
+ @ rows       : int 16758
+ @ pages      : int 34
+ @ fields     : chr [1:28] "country_code" "country_name" "state_code" "state_name" ...
+ @ years      : int [1:7] 2023 2022 2021 2020 2019 2018 2017
+ @ endpoints  : tibble [7 × 4] (S3: tbl_df/tbl/data.frame)
+ $ year      : int [1:7] 2023 2022 2021 2020 2019 2018 2017
+ $ modified  : Date[1:7], format: "2025-01-30" "2025-01-30" ...
+ $ identifier: chr [1:7] "f83aed3a-7504-4fca-aabb-ac0338c79688" "c64c40af-23a5-4419-8b64-692684483664" "7fad5b56-2cfe-52ab-ac4d-3200780287d4" "7f3055b6-73d8-5aff-be15-55873552e2cd" ...
+ $ download  : chr [1:7] "https://download.cms.gov/openpayments/SMRY_RPTS_P01302025_01212025/PBLCTN_NTR_OF_PYMT_BY_STATE_SMRY_PGYR2023_P0"| __truncated__ "https://download.cms.gov/openpayments/SMRY_RPTS_P01302025_01212025/PBLCTN_NTR_OF_PYMT_BY_STATE_SMRY_PGYR2022_P0"| __truncated__ "https://download.cms.gov/openpayments/SMRY_RPTS_P01302025_01212025/PBLCTN_NTR_OF_PYMT_BY_STATE_SMRY_PGYR2021_P0"| __truncated__ "https://download.cms.gov/openpayments/SMRY_RPTS_P01302025_01212025/PBLCTN_NTR_OF_PYMT_BY_STATE_SMRY_PGYR2020_P0"| __truncated__ ...</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>providertwo<span class="sc">:::</span><span class="fu">new_request</span>(<span class="fu">CurrentOpen</span>(<span class="st">"dashboard"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="dashboard" class="level3" data-number="3.3.1">
+<h3 data-number="3.3.1" class="anchored" data-anchor-id="dashboard"><span class="header-section-number">3.3.1</span> Dashboard</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>dashboard <span class="ot">&lt;-</span> data.table<span class="sc">::</span><span class="fu">fread</span>(<span class="fu">CurrentOpen</span>(<span class="st">"dashboard"</span>)<span class="sc">@</span>download)</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>dashboard <span class="sc">|&gt;</span> </span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tbl</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">f_select</span>(Data_Metrics, Total) <span class="sc">|&gt;</span> </span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">f_arrange</span>(<span class="sc">-</span>Total) <span class="sc">|&gt;</span> </span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="cn">Inf</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 90 × 2
+   Data_Metrics                                                            Total
+   &lt;chr&gt;                                                                   &lt;dbl&gt;
+ 1 Total Dollar Amount of all Payment Records                            7.24e10
+ 2 Total Dollar Amount of all Payment Records - Research Payments        4.88e10
+ 3 Total Dollar Amount of all Payment Records - Research Payments - Und… 4.87e10
+ 4 Total Dollar Amount of all Payment Records - Research Payments - Phy… 3.79e10
+ 5 Total Dollar Amount of all Payment Records - Research Payments - Non… 3.73e10
+ 6 Total Dollar Amount of all Payment Records - Research Payments - Non… 3.73e10
+ 7 Total Dollar Amount of all Payment Records - Research Payments - Non… 3.73e10
+ 8 Total Dollar Amount of all Payment Records - General Payments         2.23e10
+ 9 Total Dollar Amount of all Payment Records - General Payments - Undi… 2.23e10
+10 Total Dollar Amount of all Payment Records to Physicians              1.75e10
+11 Total Dollar Amount of all Payment Records to Teaching Hospitals      1.71e10
+12 Total Dollar Amount of all Payment Records to Physicians - General P… 1.55e10
+13 Total Dollar Amount of all Payment Records to Physicians - General P… 1.55e10
+14 Total Dollar Amount of all Payment Records - Research Payments - Cov… 1.14e10
+15 Total Dollar Amount of all Payment Records to Teaching Hospitals - R… 1.08e10
+16 Total Dollar Amount of all Payment Records to Teaching Hospitals - R… 1.08e10
+17 Total Dollar Amount of all Payment Records to Teaching Hospitals - G… 6.27e 9
+18 Total Dollar Amount of all Payment Records to Teaching Hospitals - G… 6.27e 9
+19 Total Dollar Amount Invested of all Payment Records - Ownership Paym… 2.68e 9
+20 Total Dollar Amount Invested of all Payment Records to Physicians - … 2.68e 9
+21 Total Dollar Amount Invested of all Payment Records - Ownership Paym… 2.68e 9
+22 Total Dollar Amount of all Payment Records to Physicians - Ownership… 2.68e 9
+23 Total value of interest of all Payment Records - Ownership Payments   1.34e 9
+24 Total value of interest of all Payment Records to Physician - Owners… 1.34e 9
+25 Total value of interest of all Payment Records - Ownership Payments … 1.34e 9
+26 Total value of interest of all Payment Records to Physicians - Owner… 1.34e 9
+27 Total Dollar Amount of all Payment Records to Physicians - Research … 6.31e 8
+28 Total Dollar Amount of all Payment Records to Physicians - Research … 6.30e 8
+29 Total Dollar Amount of all Payment Records to Non-Physician Practiti… 5.03e 8
+30 Total Dollar Amount of all Payment Records to Non-Physician Practiti… 5.02e 8
+31 Total Dollar Amount of all Payment Records to Non-Physician Practiti… 5.02e 8
+32 Total Number of all Payment Records                                   8.40e 7
+33 Total Number of all Payment Records - General Payments                7.82e 7
+34 Total Number of all Payment Records - General Payments - Undisputed   7.82e 7
+35 Total Number of all Payment Records to Physicians                     6.53e 7
+36 Total Number of all Payment Records to Physicians - General Payments  6.51e 7
+37 Total Number of all Payment Records to Physicians - General Payments… 6.51e 7
+38 Total Dollar Amount of all Payment Records - Research Payments - Dis… 3.40e 7
+39 Total Dollar Amount of all Payment Records to Teaching Hospitals - R… 2.94e 7
+40 Total Dollar Amount of all Payment Records - Research Payments - Non… 1.52e 7
+41 Total Number of all Payment Records to Non-Physician Practitioners    1.28e 7
+42 Total Number of all Payment Records to Non-Physician Practitioners -… 1.28e 7
+43 Total Number of all Payment Records to Non-Physician Practitioners -… 1.28e 7
+44 Total Dollar Amount of all Payment Records - General Payments - Disp… 1.22e 7
+45 Total Dollar Amount of all Payment Records to Teaching Hospitals - G… 6.43e 6
+46 Total Number of all Payment Records - Research Payments               5.84e 6
+47 Total Number of all Payment Records - Research Payments - Undisputed  5.84e 6
+48 Total Dollar Amount of all Payment Records to Physicians - General P… 5.75e 6
+49 Total Number of all Payment Records - Research Payments - Physician … 4.99e 6
+50 Total Number of all Payment Records - Research Payments - Non-Physic… 4.78e 6
+51 Total Number of all Payment Records - Research Payments - Non-Covere… 4.77e 6
+52 Total Number of all Payment Records - Research Payments - Non-Covere… 4.77e 6
+53 Total Dollar Amount of all Payment Records to Non-Physician Practiti… 1.37e 6
+54 Total Dollar Amount of all Payment Records to Non-Physician Practiti… 1.37e 6
+55 Total Number of all Payment Records to Teaching Hospitals             1.13e 6
+56 Total Number of Physician Covered Recipients with associated payment… 1.12e 6
+57 Total Number of all Payment Records - Research Payments - Covered Re… 1.06e 6
+58 Total Number of all Payment Records to Teaching Hospitals - Research… 8.48e 5
+59 Total Number of all Payment Records to Teaching Hospitals - Research… 8.47e 5
+60 Total Dollar Amount of all Payment Records to Physicians - Research … 5.91e 5
+61 Total Number of Non-Physician Practitioner Covered Recipients with a… 4.15e 5
+62 Total Number of all Payment Records to Teaching Hospitals - General … 2.83e 5
+63 Total Number of all Payment Records to Teaching Hospitals - General … 2.82e 5
+64 Total Number of all Payment Records to Physicians - Research Payments 2.13e 5
+65 Total Number of all Payment Records to Physicians - Research Payment… 2.13e 5
+66 Total value of interest of all Payment Records - Ownership Payments … 1.61e 5
+67 Total value of interest of all Payment Records to Physicians - Owner… 1.61e 5
+68 Total Dollar Amount Invested of all Payment Records - Ownership Paym… 9.97e 4
+69 Total Dollar Amount Invested of all Payment Records to Physicians - … 9.97e 4
+70 Total Number of all Payment Records - Ownership Payments              4.01e 3
+71 Total Number of all Payment Records to Physicians - Ownership Paymen… 4.01e 3
+72 Total Number of all Payment Records - Ownership Payments - Undisputed 4.01e 3
+73 Total Number of all Payment Records to Physicians - Ownership Paymen… 4.01e 3
+74 Total Number of all Payment Records - General Payments - Disputed     3.76e 3
+75 Total Number of all Payment Records - Research Payments - Non-Covere… 3.64e 3
+76 Total Number of Companies Making Payments (AM/GPO Making Payment)     2.84e 3
+77 Total Number of all Payment Records to Physicians - General Payments… 2.72e 3
+78 Total Number of all Payment Records to Non-Physician Practitioners -… 1.63e 3
+79 Total Number of all Payment Records to Non-Physician Practitioners -… 1.63e 3
+80 Total Number of Teaching Hospitals with associated payment records    1.44e 3
+81 Total Number of all Payment Records - Research Payments - Disputed    1.08e 3
+82 Total Number of all Payment Records to Teaching Hospitals - General … 1.03e 3
+83 Total Dollar Amount of all Payment Records to Non-Physician Practiti… 1.03e 3
+84 Total Number of all Payment Records to Teaching Hospitals - Research… 8.2 e 2
+85 Total Number of all Payment Records to Physicians - Research Payment… 6.6 e 1
+86 Total Number of all Payment Records to Non-Physician Practitioners -… 2.1 e 1
+87 Total Number of all Payment Records - Ownership Payments - Disputed   2   e 0
+88 Total Number of all Payment Records to Physicians - Ownership Paymen… 2   e 0
+89 Total Dollar Amount of all Payment Records to Non-Physician Practiti… 0      
+90 Total Number of all Payment Records to Non-Physician Practitioners -… 0      </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>dash <span class="ot">&lt;-</span> dashboard <span class="sc">|&gt;</span> </span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tbl</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(<span class="sc">-</span>Dashboard_Row_Number) <span class="sc">|&gt;</span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot</span>(<span class="at">ids =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roworder</span>(Data_Metrics) <span class="sc">|&gt;</span> </span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(<span class="at">year =</span> <span class="fu">delist</span>(<span class="fu">stri_extract_all_regex</span>(variable, <span class="st">"[0-9]{4}"</span>)))</span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>dash <span class="sc">|&gt;</span> </span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sbt</span>(<span class="fu">na</span>(year), <span class="at">metrics =</span> Data_Metrics, <span class="at">amount =</span> value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 90 × 2
+   metrics                                                                amount
+   &lt;chr&gt;                                                                   &lt;dbl&gt;
+ 1 Total Dollar Amount Invested of all Payment Records - Ownership Paym… 2.68e 9
+ 2 Total Dollar Amount Invested of all Payment Records - Ownership Paym… 9.97e 4
+ 3 Total Dollar Amount Invested of all Payment Records - Ownership Paym… 2.68e 9
+ 4 Total Dollar Amount Invested of all Payment Records to Physicians - … 2.68e 9
+ 5 Total Dollar Amount Invested of all Payment Records to Physicians - … 9.97e 4
+ 6 Total Dollar Amount of all Payment Records                            7.24e10
+ 7 Total Dollar Amount of all Payment Records - General Payments         2.23e10
+ 8 Total Dollar Amount of all Payment Records - General Payments - Disp… 1.22e 7
+ 9 Total Dollar Amount of all Payment Records - General Payments - Undi… 2.23e10
+10 Total Dollar Amount of all Payment Records - Research Payments        4.88e10
+# ℹ 80 more rows</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>dash <span class="sc">|&gt;</span> </span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sbt</span>(<span class="fu">not_na</span>(year), year, <span class="at">metrics =</span> Data_Metrics, <span class="at">amount =</span> value) <span class="sc">|&gt;</span> </span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(<span class="at">year =</span> <span class="fu">as_int</span>(year)) <span class="sc">|&gt;</span> </span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rsplit</span>(<span class="sc">~</span> metrics)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$`Total Dollar Amount Invested of all Payment Records - Ownership Payments`
+# A tibble: 7 × 2
+   year     amount
+  &lt;int&gt;      &lt;dbl&gt;
+1  2017 268224164.
+2  2018 542424631.
+3  2019 526403105.
+4  2020 420228143.
+5  2021 416271283.
+6  2022 287661921.
+7  2023 218848112.
+
+$`Total Dollar Amount Invested of all Payment Records - Ownership Payments- Disputed`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017 23232 
+2  2018 64838.
+3  2019     0 
+4  2020     0 
+5  2021     0 
+6  2022     0 
+7  2023 11600 
+
+$`Total Dollar Amount Invested of all Payment Records - Ownership Payments- Undisputed`
+# A tibble: 7 × 2
+   year     amount
+  &lt;int&gt;      &lt;dbl&gt;
+1  2017 268200932.
+2  2018 542359793.
+3  2019 526403105.
+4  2020 420228143.
+5  2021 416271283.
+6  2022 287661921.
+7  2023 218836512.
+
+$`Total Dollar Amount Invested of all Payment Records to Physicians - Ownership Payments`
+# A tibble: 7 × 2
+   year     amount
+  &lt;int&gt;      &lt;dbl&gt;
+1  2017 268224164.
+2  2018 542424631.
+3  2019 526403105.
+4  2020 420228143.
+5  2021 416271283.
+6  2022 287661921.
+7  2023 218848112.
+
+$`Total Dollar Amount Invested of all Payment Records to Physicians - Ownership Payments - Disputed`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017 23232 
+2  2018 64838.
+3  2019     0 
+4  2020     0 
+5  2021     0 
+6  2022     0 
+7  2023 11600 
+
+$`Total Dollar Amount of all Payment Records`
+# A tibble: 7 × 2
+   year       amount
+  &lt;int&gt;        &lt;dbl&gt;
+1  2017  9983443884.
+2  2018 10988256091.
+3  2019 11879437810.
+4  2020 10051904839.
+5  2021 12467447334.
+6  2022 12796535186.
+7  2023 12689034242.
+
+$`Total Dollar Amount of all Payment Records - General Payments`
+# A tibble: 7 × 2
+   year      amount
+  &lt;int&gt;       &lt;dbl&gt;
+1  2017 2964700222.
+2  2018 3119803936.
+3  2019 3711163079.
+4  2020 2186720795.
+5  2021 3254780105.
+6  2022 3809735885.
+7  2023 3277603855.
+
+$`Total Dollar Amount of all Payment Records - General Payments - Disputed`
+# A tibble: 7 × 2
+   year   amount
+  &lt;int&gt;    &lt;dbl&gt;
+1  2017 1605102.
+2  2018 2312466.
+3  2019  748979.
+4  2020 1846712.
+5  2021 2371048.
+6  2022 2069605.
+7  2023 1225486.
+
+$`Total Dollar Amount of all Payment Records - General Payments - Undisputed`
+# A tibble: 7 × 2
+   year      amount
+  &lt;int&gt;       &lt;dbl&gt;
+1  2017 2963095120.
+2  2018 3117491470.
+3  2019 3710414099.
+4  2020 2184874083.
+5  2021 3252409057.
+6  2022 3807666280.
+7  2023 3276378369.
+
+$`Total Dollar Amount of all Payment Records - Research Payments`
+# A tibble: 7 × 2
+   year      amount
+  &lt;int&gt;       &lt;dbl&gt;
+1  2017 5945500871.
+2  2018 6219076597.
+3  2019 6547251663.
+4  2020 6481368185.
+5  2021 7664160350.
+6  2022 7836917508.
+7  2023 8071650142.
+
+$`Total Dollar Amount of all Payment Records - Research Payments - Covered Recipient`
+# A tibble: 7 × 2
+   year      amount
+  &lt;int&gt;       &lt;dbl&gt;
+1  2017 1395333631.
+2  2018 1553625205.
+3  2019 1765255105.
+4  2020 1691796286.
+5  2021 1746440892.
+6  2022 1716211300.
+7  2023 1579336770.
+
+$`Total Dollar Amount of all Payment Records - Research Payments - Disputed`
+# A tibble: 7 × 2
+   year    amount
+  &lt;int&gt;     &lt;dbl&gt;
+1  2017  3627948.
+2  2018  2757924.
+3  2019   799696.
+4  2020  4969543.
+5  2021 14084579.
+6  2022  5714287.
+7  2023  2087094.
+
+$`Total Dollar Amount of all Payment Records - Research Payments - Non-Covered Recipient`
+# A tibble: 7 × 2
+   year      amount
+  &lt;int&gt;       &lt;dbl&gt;
+1  2017 4550167240.
+2  2018 4665451392.
+3  2019 4781996558.
+4  2020 4789571899.
+5  2021 5917719458 
+6  2022 6120706208.
+7  2023 6492313372.
+
+$`Total Dollar Amount of all Payment Records - Research Payments - Non-Covered Recipient Entity`
+# A tibble: 7 × 2
+   year      amount
+  &lt;int&gt;       &lt;dbl&gt;
+1  2017 4546892261.
+2  2018 4664795829.
+3  2019 4781363989.
+4  2020 4781213460.
+5  2021 5916766224.
+6  2022 6120240114.
+7  2023 6491463753.
+
+$`Total Dollar Amount of all Payment Records - Research Payments - Non-Covered Recipient Individual`
+# A tibble: 7 × 2
+   year   amount
+  &lt;int&gt;    &lt;dbl&gt;
+1  2017 3274978.
+2  2018  655564.
+3  2019  632570.
+4  2020 8358439.
+5  2021  953234.
+6  2022  466093.
+7  2023  849618.
+
+$`Total Dollar Amount of all Payment Records - Research Payments - Non-Physician Practitioner or Non-Covered Recipient`
+# A tibble: 7 × 2
+   year      amount
+  &lt;int&gt;       &lt;dbl&gt;
+1  2017 4550167240.
+2  2018 4665451392.
+3  2019 4781996558.
+4  2020 4789571899.
+5  2021 5918144405.
+6  2022 6121120064.
+7  2023 6492844892.
+
+$`Total Dollar Amount of all Payment Records - Research Payments - Physician or Non-Covered Recipient`
+# A tibble: 7 × 2
+   year      amount
+  &lt;int&gt;       &lt;dbl&gt;
+1  2017 4661745515.
+2  2018 4774115009.
+3  2019 4881865703.
+4  2020 4871090152.
+5  2021 5997888265.
+6  2022 6198723323.
+7  2023 6563407840.
+
+$`Total Dollar Amount of all Payment Records - Research Payments - Undisputed`
+# A tibble: 7 × 2
+   year      amount
+  &lt;int&gt;       &lt;dbl&gt;
+1  2017 5941872922.
+2  2018 6216318673.
+3  2019 6546451967.
+4  2020 6476398642.
+5  2021 7650075771.
+6  2022 7831203220.
+7  2023 8069563047.
+
+$`Total Dollar Amount of all Payment Records to Non-Physician Practitioners`
+# A tibble: 7 × 2
+   year     amount
+  &lt;int&gt;      &lt;dbl&gt;
+1  2017         0 
+2  2018         0 
+3  2019         0 
+4  2020         0 
+5  2021 122747788.
+6  2022 170988347.
+7  2023 209667312.
+
+$`Total Dollar Amount of all Payment Records to Non-Physician Practitioners - General Payments`
+# A tibble: 7 × 2
+   year     amount
+  &lt;int&gt;      &lt;dbl&gt;
+1  2017         0 
+2  2018         0 
+3  2019         0 
+4  2020         0 
+5  2021 122322841.
+6  2022 170574491.
+7  2023 209135792.
+
+$`Total Dollar Amount of all Payment Records to Non-Physician Practitioners - General Payments - Disputed`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017    0  
+2  2018    0  
+3  2019    0  
+4  2020    0  
+5  2021   18.5
+6  2022  885. 
+7  2023  124. 
+
+$`Total Dollar Amount of all Payment Records to Non-Physician Practitioners - General Payments - Undisputed`
+# A tibble: 7 × 2
+   year     amount
+  &lt;int&gt;      &lt;dbl&gt;
+1  2017         0 
+2  2018         0 
+3  2019         0 
+4  2020         0 
+5  2021 122322822.
+6  2022 170573606.
+7  2023 209135669.
+
+$`Total Dollar Amount of all Payment Records to Non-Physician Practitioners - Research Payments`
+# A tibble: 7 × 2
+   year  amount
+  &lt;int&gt;   &lt;dbl&gt;
+1  2017      0 
+2  2018      0 
+3  2019      0 
+4  2020      0 
+5  2021 424947.
+6  2022 413856.
+7  2023 531520.
+
+$`Total Dollar Amount of all Payment Records to Non-Physician Practitioners - Research Payments - Disputed`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017      0
+2  2018      0
+3  2019      0
+4  2020      0
+5  2021      0
+6  2022      0
+7  2023      0
+
+$`Total Dollar Amount of all Payment Records to Non-Physician Practitioners - Research Payments - Undisputed`
+# A tibble: 7 × 2
+   year  amount
+  &lt;int&gt;   &lt;dbl&gt;
+1  2017      0 
+2  2018      0 
+3  2019      0 
+4  2020      0 
+5  2021 424947.
+6  2022 413856.
+7  2023 531520.
+
+$`Total Dollar Amount of all Payment Records to Physicians`
+# A tibble: 7 × 2
+   year      amount
+  &lt;int&gt;       &lt;dbl&gt;
+1  2017 3378040925.
+2  2018 4026803500.
+3  2019 4152248318.
+4  2020 3150507455.
+5  2021 3785115291.
+6  2022 3767114109.
+7  2023 3685952691.
+
+$`Total Dollar Amount of all Payment Records to Physicians - General Payments`
+# A tibble: 7 × 2
+   year      amount
+  &lt;int&gt;       &lt;dbl&gt;
+1  2017 2193219859.
+2  2018 2268764326.
+3  2019 2431356105.
+4  2020 1685173342.
+5  2021 2156439605.
+6  2022 2539215200.
+7  2023 2275077977.
+
+$`Total Dollar Amount of all Payment Records to Physicians - General Payments - Disputed`
+# A tibble: 7 × 2
+   year   amount
+  &lt;int&gt;    &lt;dbl&gt;
+1  2017  490300.
+2  2018 1083559.
+3  2019  261971.
+4  2020 1586153.
+5  2021 1737370.
+6  2022  277182.
+7  2023  311955.
+
+$`Total Dollar Amount of all Payment Records to Physicians - General Payments - Undisputed`
+# A tibble: 7 × 2
+   year      amount
+  &lt;int&gt;       &lt;dbl&gt;
+1  2017 2192729559.
+2  2018 2267680767.
+3  2019 2431094134.
+4  2020 1683587188.
+5  2021 2154702235.
+6  2022 2538938019.
+7  2023 2274766023.
+
+$`Total Dollar Amount of all Payment Records to Physicians - Ownership Payments - Undisputed`
+# A tibble: 7 × 2
+   year     amount
+  &lt;int&gt;      &lt;dbl&gt;
+1  2017 268200932.
+2  2018 542359793.
+3  2019 526403105.
+4  2020 420228143.
+5  2021 416271283.
+6  2022 287661921.
+7  2023 218836512.
+
+$`Total Dollar Amount of all Payment Records to Physicians - Research Payments`
+# A tibble: 7 × 2
+   year     amount
+  &lt;int&gt;      &lt;dbl&gt;
+1  2017 111578275.
+2  2018 108663617.
+3  2019  99869145.
+4  2020  81518254.
+5  2021  80168807.
+6  2022  78017115.
+7  2023  71094469.
+
+$`Total Dollar Amount of all Payment Records to Physicians - Research Payments - Disputed`
+# A tibble: 7 × 2
+   year  amount
+  &lt;int&gt;   &lt;dbl&gt;
+1  2017 154926.
+2  2018 414855.
+3  2019  14026.
+4  2020      0 
+5  2021   1250 
+6  2022   1000 
+7  2023   4571.
+
+$`Total Dollar Amount of all Payment Records to Physicians - Research Payments - Undisputed`
+# A tibble: 7 × 2
+   year     amount
+  &lt;int&gt;      &lt;dbl&gt;
+1  2017 111423349.
+2  2018 108248762.
+3  2019  99855118.
+4  2020  81518254.
+5  2021  80167557.
+6  2022  78016115.
+7  2023  71089898.
+
+$`Total Dollar Amount of all Payment Records to Teaching Hospitals`
+# A tibble: 7 × 2
+   year      amount
+  &lt;int&gt;       &lt;dbl&gt;
+1  2017 2055235719.
+2  2018 2296001199.
+3  2019 2945192934.
+4  2020 2111825485.
+5  2021 2641864797.
+6  2022 2737726522.
+7  2023 2301100867.
+
+$`Total Dollar Amount of all Payment Records to Teaching Hospitals - General Payments`
+# A tibble: 7 × 2
+   year      amount
+  &lt;int&gt;       &lt;dbl&gt;
+1  2017  771480364.
+2  2018  851039611.
+3  2019 1279806974.
+4  2020  501547453.
+5  2021  976017659.
+6  2022 1099946193.
+7  2023  793390086.
+
+$`Total Dollar Amount of all Payment Records to Teaching Hospitals - General Payments - Disputed`
+# A tibble: 7 × 2
+   year   amount
+  &lt;int&gt;    &lt;dbl&gt;
+1  2017 1114802.
+2  2018 1228907.
+3  2019  487008.
+4  2020  260558.
+5  2021  633659.
+6  2022 1791538.
+7  2023  913408.
+
+$`Total Dollar Amount of all Payment Records to Teaching Hospitals - General Payments - Undisputed`
+# A tibble: 7 × 2
+   year      amount
+  &lt;int&gt;       &lt;dbl&gt;
+1  2017  770365561.
+2  2018  849810703.
+3  2019 1279319966.
+4  2020  501286894.
+5  2021  975384000.
+6  2022 1098154656.
+7  2023  792476678.
+
+$`Total Dollar Amount of all Payment Records to Teaching Hospitals - Research Payments`
+# A tibble: 7 × 2
+   year      amount
+  &lt;int&gt;       &lt;dbl&gt;
+1  2017 1283755356.
+2  2018 1444961588.
+3  2019 1665385960.
+4  2020 1610278032.
+5  2021 1665847138.
+6  2022 1637780329.
+7  2023 1507710781.
+
+$`Total Dollar Amount of all Payment Records to Teaching Hospitals - Research Payments - Disputed`
+# A tibble: 7 × 2
+   year    amount
+  &lt;int&gt;     &lt;dbl&gt;
+1  2017  1982706.
+2  2018  2131112.
+3  2019   540058.
+4  2020  4391942.
+5  2021 13900430.
+6  2022  4823320.
+7  2023  1618363.
+
+$`Total Dollar Amount of all Payment Records to Teaching Hospitals - Research Payments - Undisputed`
+# A tibble: 7 × 2
+   year      amount
+  &lt;int&gt;       &lt;dbl&gt;
+1  2017 1281772650.
+2  2018 1442830476.
+3  2019 1664845902.
+4  2020 1605886090.
+5  2021 1651946708.
+6  2022 1632957009.
+7  2023 1506092418.
+
+$`Total Number of Companies Making Payments (AM/GPO Making Payment)`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017   1678
+2  2018   1755
+3  2019   1797
+4  2020   1779
+5  2021   1855
+6  2022   1858
+7  2023   1776
+
+$`Total Number of Non-Physician Practitioner Covered Recipients with associated payment records`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017      0
+2  2018      0
+3  2019      0
+4  2020      0
+5  2021 235313
+6  2022 274226
+7  2023 309427
+
+$`Total Number of Physician Covered Recipients with associated payment records`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017 636495
+2  2018 632778
+3  2019 626286
+4  2020 491187
+5  2021 536501
+6  2022 593632
+7  2023 630293
+
+$`Total Number of Teaching Hospitals with associated payment records`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017   1164
+2  2018   1199
+3  2019   1207
+4  2020   1223
+5  2021   1251
+6  2022   1247
+7  2023   1225
+
+$`Total Number of all Payment Records`
+# A tibble: 7 × 2
+   year   amount
+  &lt;int&gt;    &lt;dbl&gt;
+1  2017 12250175
+2  2018 11732431
+3  2019 11364874
+4  2020  6522938
+5  2021 12269158
+6  2022 14277900
+7  2023 15639275
+
+$`Total Number of all Payment Records - General Payments`
+# A tibble: 7 × 2
+   year   amount
+  &lt;int&gt;    &lt;dbl&gt;
+1  2017 11426731
+2  2018 10937801
+3  2019 10557471
+4  2020  5840459
+5  2021 11537959
+6  2022 13286061
+7  2023 14607336
+
+$`Total Number of all Payment Records - General Payments - Disputed`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017    918
+2  2018    828
+3  2019    724
+4  2020    226
+5  2021    310
+6  2022    462
+7  2023    297
+
+$`Total Number of all Payment Records - General Payments - Undisputed`
+# A tibble: 7 × 2
+   year   amount
+  &lt;int&gt;    &lt;dbl&gt;
+1  2017 11425813
+2  2018 10936973
+3  2019 10556747
+4  2020  5840233
+5  2021 11537649
+6  2022 13285599
+7  2023 14607039
+
+$`Total Number of all Payment Records - Ownership Payments`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017   3323
+2  2018   3599
+3  2019   3019
+4  2020   3539
+5  2021   4162
+6  2022   4052
+7  2023   4013
+
+$`Total Number of all Payment Records - Ownership Payments - Disputed`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017      2
+2  2018      1
+3  2019      0
+4  2020      0
+5  2021      0
+6  2022      1
+7  2023      2
+
+$`Total Number of all Payment Records - Ownership Payments - Undisputed`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017   3321
+2  2018   3598
+3  2019   3019
+4  2020   3539
+5  2021   4162
+6  2022   4051
+7  2023   4011
+
+$`Total Number of all Payment Records - Research Payments`
+# A tibble: 7 × 2
+   year  amount
+  &lt;int&gt;   &lt;dbl&gt;
+1  2017  820121
+2  2018  791031
+3  2019  804384
+4  2020  678940
+5  2021  727037
+6  2022  987787
+7  2023 1027926
+
+$`Total Number of all Payment Records - Research Payments - Covered Recipient`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017 160192
+2  2018 165522
+3  2019 176052
+4  2020 149591
+5  2021 137979
+6  2022 134146
+7  2023 139317
+
+$`Total Number of all Payment Records - Research Payments - Disputed`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017    196
+2  2018    195
+3  2019    113
+4  2020    106
+5  2021    115
+6  2022    221
+7  2023    136
+
+$`Total Number of all Payment Records - Research Payments - Non-Covered Recipient`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017 659929
+2  2018 625509
+3  2019 628332
+4  2020 529349
+5  2021 589058
+6  2022 853641
+7  2023 888609
+
+$`Total Number of all Payment Records - Research Payments - Non-Covered Recipient Entity`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017 659247
+2  2018 625307
+3  2019 626537
+4  2020 528568
+5  2021 589035
+6  2022 853557
+7  2023 888539
+
+$`Total Number of all Payment Records - Research Payments - Non-Covered Recipient Individual`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017    682
+2  2018    202
+3  2019   1795
+4  2020    781
+5  2021     23
+6  2022     84
+7  2023     70
+
+$`Total Number of all Payment Records - Research Payments - Non-Physician Practitioner or Non-Covered Recipient`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017 659929
+2  2018 625509
+3  2019 628332
+4  2020 529349
+5  2021 589241
+6  2022 853922
+7  2023 889777
+
+$`Total Number of all Payment Records - Research Payments - Physician or Non-Covered Recipient`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017 693936
+2  2018 661332
+3  2019 671447
+4  2020 558616
+5  2021 612774
+6  2022 875912
+7  2023 913714
+
+$`Total Number of all Payment Records - Research Payments - Undisputed`
+# A tibble: 7 × 2
+   year  amount
+  &lt;int&gt;   &lt;dbl&gt;
+1  2017  819925
+2  2018  790836
+3  2019  804271
+4  2020  678834
+5  2021  726922
+6  2022  987566
+7  2023 1027790
+
+$`Total Number of all Payment Records to Non-Physician Practitioners`
+# A tibble: 7 × 2
+   year  amount
+  &lt;int&gt;   &lt;dbl&gt;
+1  2017       0
+2  2018       0
+3  2019       0
+4  2020       0
+5  2021 3574098
+6  2022 4236827
+7  2023 4976520
+
+$`Total Number of all Payment Records to Non-Physician Practitioners - General Payments`
+# A tibble: 7 × 2
+   year  amount
+  &lt;int&gt;   &lt;dbl&gt;
+1  2017       0
+2  2018       0
+3  2019       0
+4  2020       0
+5  2021 3573915
+6  2022 4236546
+7  2023 4975352
+
+$`Total Number of all Payment Records to Non-Physician Practitioners - General Payments - Disputed`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017      0
+2  2018      0
+3  2019      0
+4  2020      0
+5  2021      1
+6  2022     18
+7  2023      2
+
+$`Total Number of all Payment Records to Non-Physician Practitioners - General Payments - Undisputed`
+# A tibble: 7 × 2
+   year  amount
+  &lt;int&gt;   &lt;dbl&gt;
+1  2017       0
+2  2018       0
+3  2019       0
+4  2020       0
+5  2021 3573914
+6  2022 4236528
+7  2023 4975350
+
+$`Total Number of all Payment Records to Non-Physician Practitioners - Research Payments`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017      0
+2  2018      0
+3  2019      0
+4  2020      0
+5  2021    183
+6  2022    281
+7  2023   1168
+
+$`Total Number of all Payment Records to Non-Physician Practitioners - Research Payments - Disputed`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017      0
+2  2018      0
+3  2019      0
+4  2020      0
+5  2021      0
+6  2022      0
+7  2023      0
+
+$`Total Number of all Payment Records to Non-Physician Practitioners - Research Payments - Undisputed`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017      0
+2  2018      0
+3  2019      0
+4  2020      0
+5  2021    183
+6  2022    281
+7  2023   1168
+
+$`Total Number of all Payment Records to Physicians`
+# A tibble: 7 × 2
+   year   amount
+  &lt;int&gt;    &lt;dbl&gt;
+1  2017 11416664
+2  2018 10927861
+3  2019 10554156
+4  2020  5840603
+5  2021  7956850
+6  2022  9036995
+7  2023  9630514
+
+$`Total Number of all Payment Records to Physicians - General Payments`
+# A tibble: 7 × 2
+   year   amount
+  &lt;int&gt;    &lt;dbl&gt;
+1  2017 11379334
+2  2018 10888439
+3  2019 10508022
+4  2020  5807797
+5  2021  7928972
+6  2022  9010672
+7  2023  9601396
+
+$`Total Number of all Payment Records to Physicians - General Payments - Disputed`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017    600
+2  2018    620
+3  2019    632
+4  2020    155
+5  2021    148
+6  2022    329
+7  2023    232
+
+$`Total Number of all Payment Records to Physicians - General Payments - Undisputed`
+# A tibble: 7 × 2
+   year   amount
+  &lt;int&gt;    &lt;dbl&gt;
+1  2017 11378734
+2  2018 10887819
+3  2019 10507390
+4  2020  5807642
+5  2021  7928824
+6  2022  9010343
+7  2023  9601164
+
+$`Total Number of all Payment Records to Physicians - Ownership Payments`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017   3323
+2  2018   3599
+3  2019   3019
+4  2020   3539
+5  2021   4162
+6  2022   4052
+7  2023   4013
+
+$`Total Number of all Payment Records to Physicians - Ownership Payments - Disputed`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017      2
+2  2018      1
+3  2019      0
+4  2020      0
+5  2021      0
+6  2022      1
+7  2023      2
+
+$`Total Number of all Payment Records to Physicians - Ownership Payments - Undisputed`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017   3321
+2  2018   3598
+3  2019   3019
+4  2020   3539
+5  2021   4162
+6  2022   4051
+7  2023   4011
+
+$`Total Number of all Payment Records to Physicians - Research Payments`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017  34007
+2  2018  35823
+3  2019  43115
+4  2020  29267
+5  2021  23716
+6  2022  22271
+7  2023  25105
+
+$`Total Number of all Payment Records to Physicians - Research Payments - Disputed`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017     28
+2  2018     19
+3  2019     10
+4  2020      0
+5  2021      1
+6  2022      1
+7  2023      7
+
+$`Total Number of all Payment Records to Physicians - Research Payments - Undisputed`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017  33979
+2  2018  35804
+3  2019  43105
+4  2020  29267
+5  2021  23715
+6  2022  22270
+7  2023  25098
+
+$`Total Number of all Payment Records to Teaching Hospitals`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017 173582
+2  2018 179061
+3  2019 182386
+4  2020 152986
+5  2021 149152
+6  2022 150437
+7  2023 143632
+
+$`Total Number of all Payment Records to Teaching Hospitals - General Payments`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017  47397
+2  2018  49362
+3  2019  49449
+4  2020  32662
+5  2021  35072
+6  2022  38843
+7  2023  30588
+
+$`Total Number of all Payment Records to Teaching Hospitals - General Payments - Disputed`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017    318
+2  2018    208
+3  2019     92
+4  2020     71
+5  2021    161
+6  2022    115
+7  2023     63
+
+$`Total Number of all Payment Records to Teaching Hospitals - General Payments - Undisputed`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017  47079
+2  2018  49154
+3  2019  49357
+4  2020  32591
+5  2021  34911
+6  2022  38728
+7  2023  30525
+
+$`Total Number of all Payment Records to Teaching Hospitals - Research Payments`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017 126185
+2  2018 129699
+3  2019 132937
+4  2020 120324
+5  2021 114080
+6  2022 111594
+7  2023 113044
+
+$`Total Number of all Payment Records to Teaching Hospitals - Research Payments - Disputed`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017    102
+2  2018    163
+3  2019     74
+4  2020     70
+5  2021     90
+6  2022    209
+7  2023    112
+
+$`Total Number of all Payment Records to Teaching Hospitals - Research Payments - Undisputed`
+# A tibble: 7 × 2
+   year amount
+  &lt;int&gt;  &lt;dbl&gt;
+1  2017 126083
+2  2018 129536
+3  2019 132863
+4  2020 120254
+5  2021 113990
+6  2022 111385
+7  2023 112932
+
+$`Total value of interest of all Payment Records - Ownership Payments`
+# A tibble: 7 × 2
+   year      amount
+  &lt;int&gt;       &lt;dbl&gt;
+1  2017 1073242791.
+2  2018 1649375558.
+3  2019 1621023068.
+4  2020 1383815859.
+5  2021 1548506879.
+6  2022 1149881794.
+7  2023 1339780245.
+
+$`Total value of interest of all Payment Records - Ownership Payments - Disputed`
+# A tibble: 7 × 2
+   year    amount
+  &lt;int&gt;     &lt;dbl&gt;
+1  2017 27902592 
+2  2018   265936 
+3  2019        0 
+4  2020        0 
+5  2021        0 
+6  2022    99993.
+7  2023   160593.
+
+$`Total value of interest of all Payment Records - Ownership Payments - Undisputed`
+# A tibble: 7 × 2
+   year      amount
+  &lt;int&gt;       &lt;dbl&gt;
+1  2017 1045340199.
+2  2018 1649109622.
+3  2019 1621023068.
+4  2020 1383815859.
+5  2021 1548506879.
+6  2022 1149781801.
+7  2023 1339619653.
+
+$`Total value of interest of all Payment Records to Physician - Ownership Payments`
+# A tibble: 7 × 2
+   year      amount
+  &lt;int&gt;       &lt;dbl&gt;
+1  2017 1073242791.
+2  2018 1649375558.
+3  2019 1621023068.
+4  2020 1383815859.
+5  2021 1548506879.
+6  2022 1149881794.
+7  2023 1339780245.
+
+$`Total value of interest of all Payment Records to Physicians - Ownership Payments - Disputed`
+# A tibble: 7 × 2
+   year    amount
+  &lt;int&gt;     &lt;dbl&gt;
+1  2017 27902592 
+2  2018   265936 
+3  2019        0 
+4  2020        0 
+5  2021        0 
+6  2022    99993.
+7  2023   160593.
+
+$`Total value of interest of all Payment Records to Physicians - Ownership Payments - Undisputed`
+# A tibble: 7 × 2
+   year      amount
+  &lt;int&gt;       &lt;dbl&gt;
+1  2017 1045340199.
+2  2018 1649109622.
+3  2019 1621023068.
+4  2020 1383815859.
+5  2021 1548506879.
+6  2022 1149781801.
+7  2023 1339619653.</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="querying" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="querying"><span class="header-section-number">3.4</span> Querying</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>format_query_open <span class="ot">&lt;-</span> <span class="cf">function</span>(args, <span class="at">op =</span> <span class="st">"="</span>) {</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>  args  <span class="ot">&lt;-</span> <span class="fu">discard</span>(args, is.null)</span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>  query <span class="ot">&lt;-</span> <span class="fu">glue</span>(</span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"</span></span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a><span class="st">  'conditions[{i}][property]' = '{PROPERTY}',</span></span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a><span class="st">  'conditions[{i}][operator]' = '{OPERATOR}',</span></span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a><span class="st">  'conditions[{i}][value]' = '{VALUE}'</span></span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a><span class="st">  "</span>,</span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">i                 =</span> <span class="fu">seq_along0</span>(args),</span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">PROPERTY          =</span> <span class="fu">names</span>(args),</span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">OPERATOR          =</span> op,</span>
+<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">VALUE             =</span> args) <span class="sc">|&gt;</span></span>
+<span id="cb52-15"><a href="#cb52-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">glue_collapse</span>(<span class="at">sep =</span> <span class="st">",</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb52-16"><a href="#cb52-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb52-17"><a href="#cb52-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glue</span>(<span class="st">"c({query})"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb52-18"><a href="#cb52-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">parse_expr</span>() <span class="sc">|&gt;</span></span>
+<span id="cb52-19"><a href="#cb52-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">eval_bare</span>()</span>
+<span id="cb52-20"><a href="#cb52-20" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb52-21"><a href="#cb52-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-22"><a href="#cb52-22" aria-hidden="true" tabindex="-1"></a>create_request_open <span class="ot">&lt;-</span> <span class="cf">function</span>(id, args) {</span>
+<span id="cb52-23"><a href="#cb52-23" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb52-24"><a href="#cb52-24" aria-hidden="true" tabindex="-1"></a>  id <span class="sc">|&gt;</span></span>
+<span id="cb52-25"><a href="#cb52-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">open_uuid_url</span>() <span class="sc">|&gt;</span></span>
+<span id="cb52-26"><a href="#cb52-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">request</span>() <span class="sc">|&gt;</span></span>
+<span id="cb52-27"><a href="#cb52-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">req_url_query</span>(</span>
+<span id="cb52-28"><a href="#cb52-28" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!!!</span><span class="fu">format_query_open</span>(args),</span>
+<span id="cb52-29"><a href="#cb52-29" aria-hidden="true" tabindex="-1"></a>      <span class="at">schema  =</span> <span class="st">"false"</span>,</span>
+<span id="cb52-30"><a href="#cb52-30" aria-hidden="true" tabindex="-1"></a>      <span class="at">keys    =</span> <span class="st">"false"</span>,</span>
+<span id="cb52-31"><a href="#cb52-31" aria-hidden="true" tabindex="-1"></a>      <span class="at">offset  =</span> <span class="dv">0</span></span>
+<span id="cb52-32"><a href="#cb52-32" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb52-33"><a href="#cb52-33" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb52-34"><a href="#cb52-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-35"><a href="#cb52-35" aria-hidden="true" tabindex="-1"></a>query_nresults_open <span class="ot">&lt;-</span> <span class="cf">function</span>(req) {</span>
+<span id="cb52-36"><a href="#cb52-36" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb52-37"><a href="#cb52-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_query</span>(</span>
+<span id="cb52-38"><a href="#cb52-38" aria-hidden="true" tabindex="-1"></a>    req,</span>
+<span id="cb52-39"><a href="#cb52-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">results =</span> <span class="st">"false"</span>, </span>
+<span id="cb52-40"><a href="#cb52-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">count   =</span> <span class="st">"true"</span>, </span>
+<span id="cb52-41"><a href="#cb52-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">offset  =</span> <span class="dv">0</span>, </span>
+<span id="cb52-42"><a href="#cb52-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">limit   =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb52-43"><a href="#cb52-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">perform_simple</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb52-44"><a href="#cb52-44" aria-hidden="true" tabindex="-1"></a>    _[[<span class="st">"count"</span>]]</span>
+<span id="cb52-45"><a href="#cb52-45" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb52-46"><a href="#cb52-46" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb52-47"><a href="#cb52-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-48"><a href="#cb52-48" aria-hidden="true" tabindex="-1"></a>perform_request_open <span class="ot">&lt;-</span> <span class="cf">function</span>(req) {</span>
+<span id="cb52-49"><a href="#cb52-49" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb52-50"><a href="#cb52-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_query</span>(</span>
+<span id="cb52-51"><a href="#cb52-51" aria-hidden="true" tabindex="-1"></a>    req,</span>
+<span id="cb52-52"><a href="#cb52-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">results =</span> <span class="st">"true"</span>, </span>
+<span id="cb52-53"><a href="#cb52-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">count   =</span> <span class="st">"false"</span>, </span>
+<span id="cb52-54"><a href="#cb52-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">offset  =</span> <span class="dv">0</span>, </span>
+<span id="cb52-55"><a href="#cb52-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">limit   =</span> <span class="dv">500</span>) <span class="sc">|&gt;</span></span>
+<span id="cb52-56"><a href="#cb52-56" aria-hidden="true" tabindex="-1"></a>    <span class="fu">perform_simple</span>()</span>
+<span id="cb52-57"><a href="#cb52-57" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb52-58"><a href="#cb52-58" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb52-59"><a href="#cb52-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-60"><a href="#cb52-60" aria-hidden="true" tabindex="-1"></a><span class="fu">format_query_open</span>(</span>
+<span id="cb52-61"><a href="#cb52-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(</span>
+<span id="cb52-62"><a href="#cb52-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">covered_recipient_npi =</span> <span class="dv">1023630738</span>, </span>
+<span id="cb52-63"><a href="#cb52-63" aria-hidden="true" tabindex="-1"></a>    <span class="at">covered_recipient_profile_city =</span> <span class="st">"Valdosta"</span>)</span>
+<span id="cb52-64"><a href="#cb52-64" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb52-65"><a href="#cb52-65" aria-hidden="true" tabindex="-1"></a>  fuimus<span class="sc">::</span><span class="fu">print_ls</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>conditions[0][property] : covered_recipient_npi
 conditions[0][operator] : =
@@ -478,580 +2014,31 @@ conditions[1][value]    : Valdosta</code></pre>
 </div>
 </div>
 </section>
-<section id="open-payments" class="level2" data-number="3.3">
-<h2 data-number="3.3" class="anchored" data-anchor-id="open-payments"><span class="header-section-number">3.3</span> Open Payments</h2>
+<section id="queries" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="queries"><span class="header-section-number">3.5</span> Queries</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>op <span class="ot">&lt;-</span> providertwo<span class="sc">::</span><span class="fu">open_catalog</span>()</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>op</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$summary
-# A tibble: 18 × 5
-   title                           description modified   identifier downloadurl
-   &lt;chr&gt;                           &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;      &lt;chr&gt;      
- 1 Covered Recipient Profile Supp… The Covere… 2025-01-30 23160558-… https://do…
- 2 National Level Payment Total a… This datas… 2025-01-30 04c3355f-… https://do…
- 3 National Level Payment Total a… This datas… 2025-01-30 aaaddc12-… https://do…
- 4 Payments Grouped by Covered Re… This datas… 2025-01-30 8d4d1fa0-… https://do…
- 5 Payments Grouped by Covered Re… This datas… 2025-01-30 e49defac-… https://do…
- 6 Payments Grouped by Physician … This datas… 2025-01-30 895260f5-… https://do…
- 7 Payments Grouped by Reporting … This datas… 2025-01-30 d5762bed-… https://do…
- 8 Payments Grouped by Reporting … This datas… 2025-01-30 61efcbef-… https://do…
- 9 Payments Grouped by Reporting … This datas… 2025-01-30 ea5eea39-… https://do…
-10 Payments Grouped by Teaching H… This datas… 2025-01-30 217ad1a7-… https://do…
-11 Physician (Distinct) Profile I… This datas… 2025-01-30 6ed6ae76-… https://do…
-12 Profile Information             This datas… 2025-01-30 f2ed17cc-… https://do…
-13 Provider Profile ID Mapping Ta… Maps secon… 2025-01-30 d19e5be2-… https://do…
-14 Reporting Entity Profile Infor… This datas… 2025-01-30 1cf0c6c0-… https://do…
-15 State Level Payment Total and … This datas… 2025-01-30 02157882-… https://do…
-16 State Payment Totals and Avera… Groups pay… 2025-01-30 7c5144d9-… https://do…
-17 Summary Dashboard - all Years   Summary da… 2025-01-30 e0d225fc-… https://do…
-18 Teaching Hospital Profile Info… This datas… 2025-01-30 8219fcb3-… https://do…
-
-$grouped
-# A tibble: 35 × 5
-    year title                                 modified   identifier downloadurl
-   &lt;int&gt; &lt;chr&gt;                                 &lt;date&gt;     &lt;chr&gt;      &lt;chr&gt;      
- 1  2023 Payments Grouped by Covered Recipien… 2025-01-30 4017acfa-… https://do…
- 2  2022 Payments Grouped by Covered Recipien… 2025-01-30 686b765e-… https://do…
- 3  2021 Payments Grouped by Covered Recipien… 2025-01-30 d35243be-… https://do…
- 4  2020 Payments Grouped by Covered Recipien… 2025-01-30 1fd2be47-… https://do…
- 5  2019 Payments Grouped by Covered Recipien… 2025-01-30 0ff0961f-… https://do…
- 6  2018 Payments Grouped by Covered Recipien… 2025-01-30 07c1e377-… https://do…
- 7  2017 Payments Grouped by Covered Recipien… 2025-01-30 5aad28fa-… https://do…
- 8  2023 Payments Grouped by Covered Recipien… 2025-01-30 4fbf0094-… https://do…
- 9  2022 Payments Grouped by Covered Recipien… 2025-01-30 d2d87f39-… https://do…
-10  2021 Payments Grouped by Covered Recipien… 2025-01-30 7c9ebb83-… https://do…
-# ℹ 25 more rows
-
-$general
-# A tibble: 7 × 4
-   year modified   identifier                           downloadurl             
-  &lt;int&gt; &lt;date&gt;     &lt;chr&gt;                                &lt;chr&gt;                   
-1  2023 2025-01-30 fb3a65aa-c901-4a38-a813-b04b00dfa2a9 https://download.cms.go…
-2  2022 2025-01-30 df01c2f8-dc1f-4e79-96cb-8208beaf143c https://download.cms.go…
-3  2021 2025-01-30 0380bbeb-aea1-58b6-b708-829f92a48202 https://download.cms.go…
-4  2020 2025-01-30 a08c4b30-5cf3-4948-ad40-36f404619019 https://download.cms.go…
-5  2019 2025-01-30 4e54dd6c-30f8-4f86-86a7-3c109a89528e https://download.cms.go…
-6  2018 2025-01-30 f003634c-c103-568f-876c-73017fa83be0 https://download.cms.go…
-7  2017 2025-01-30 74e3a32c-e8f8-595c-899c-35f9bffa828f https://download.cms.go…
-
-$research
-# A tibble: 7 × 4
-   year modified   identifier                           downloadurl             
-  &lt;int&gt; &lt;date&gt;     &lt;chr&gt;                                &lt;chr&gt;                   
-1  2023 2025-01-30 ec9521bf-9d97-4603-814c-f4132d34bc4f https://download.cms.go…
-2  2022 2025-01-30 fdc3c773-018a-412c-8a81-d7b8a13a037b https://download.cms.go…
-3  2021 2025-01-30 ce1d28dd-0094-5060-a036-580329439600 https://download.cms.go…
-4  2020 2025-01-30 9c248e7e-7c7f-478b-ab84-ce0919d72c1c https://download.cms.go…
-5  2019 2025-01-30 713a6016-1930-4a0c-b7c2-3e3de4f244c5 https://download.cms.go…
-6  2018 2025-01-30 7b82fb48-2bec-45f0-b40e-aed5f1d1eba0 https://download.cms.go…
-7  2017 2025-01-30 0e3977b9-a5d6-427e-bc02-480481edd6e0 https://download.cms.go…
-
-$ownership
-# A tibble: 7 × 4
-   year modified   identifier                           downloadurl             
-  &lt;int&gt; &lt;date&gt;     &lt;chr&gt;                                &lt;chr&gt;                   
-1  2023 2025-01-30 ac0bc85c-02e3-45d9-89e8-2ff43da85df7 https://download.cms.go…
-2  2022 2025-01-30 37792388-800f-427a-9e02-b11601454eeb https://download.cms.go…
-3  2021 2025-01-30 b0c03b8d-06df-58f2-8ce2-4daeffee147e https://download.cms.go…
-4  2020 2025-01-30 a9a0bf48-6b96-4589-b4c2-3c5dcfbeaca2 https://download.cms.go…
-5  2019 2025-01-30 0b5c9710-7edb-484e-abc8-39293849ccb2 https://download.cms.go…
-6  2018 2025-01-30 de0087e0-101b-43c1-acdf-69986a4c166b https://download.cms.go…
-7  2017 2025-01-30 f90c33d1-cfd8-4b15-8cf5-b3db2f214cdf https://download.cms.go…</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">subset_detect</span>(op<span class="sc">$</span>summary, <span class="st">"title"</span>, <span class="st">"^Covered"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 5
-  title                            description modified   identifier downloadurl
-  &lt;chr&gt;                            &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;      &lt;chr&gt;      
-1 Covered Recipient Profile Suppl… The Covere… 2025-01-30 23160558-… https://do…</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_profiles</span>(op)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$modified
-[1] "2025-01-30"
-
-$summary
-# A tibble: 6 × 4
-  title                                    description    identifier downloadurl
-  &lt;chr&gt;                                    &lt;chr&gt;          &lt;chr&gt;      &lt;chr&gt;      
-1 Covered Recipient Profile Supplement     The Covered R… 23160558-… https://do…
-2 Physician (Distinct) Profile Information This dataset … 6ed6ae76-… https://do…
-3 Profile Information                      This dataset … f2ed17cc-… https://do…
-4 Provider Profile ID Mapping Table        Maps secondar… d19e5be2-… https://do…
-5 Reporting Entity Profile Information     This dataset … 1cf0c6c0-… https://do…
-6 Teaching Hospital Profile Information    This dataset … 8219fcb3-… https://do…</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_grouped</span>(op)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$modified
-[1] "2025-01-30"
-
-$summary
-# A tibble: 12 × 3
-   title                                                  identifier downloadurl
-   &lt;chr&gt;                                                  &lt;chr&gt;      &lt;chr&gt;      
- 1 National Level Payment Total and Averages by Provider… 04c3355f-… https://do…
- 2 National Level Payment Total and Averages for all Yea… aaaddc12-… https://do…
- 3 Payments Grouped by Covered Recipient and Nature of P… 8d4d1fa0-… https://do…
- 4 Payments Grouped by Covered Recipient and Reporting E… e49defac-… https://do…
- 5 Payments Grouped by Physician (Distinct) for all Years 895260f5-… https://do…
- 6 Payments Grouped by Reporting Entities                 d5762bed-… https://do…
- 7 Payments Grouped by Reporting Entities and Nature of … 61efcbef-… https://do…
- 8 Payments Grouped by Reporting Entities, Covered Recip… ea5eea39-… https://do…
- 9 Payments Grouped by Teaching Hospital                  217ad1a7-… https://do…
-10 State Level Payment Total and Averages for all Years   02157882-… https://do…
-11 State Payment Totals and Averages Grouped by Nature o… 7c5144d9-… https://do…
-12 Summary Dashboard - all Years                          e0d225fc-… https://do…
-
-$recipient_nature
-# A tibble: 7 × 3
-   year identifier                           downloadurl                        
-  &lt;int&gt; &lt;chr&gt;                                &lt;chr&gt;                              
-1  2023 4017acfa-0eeb-4b8a-b68c-3b41e779c4a2 https://download.cms.gov/openpayme…
-2  2022 686b765e-f4b7-4d35-a050-fb5af926dbbe https://download.cms.gov/openpayme…
-3  2021 d35243be-55cb-5087-931e-a294e0e0917f https://download.cms.gov/openpayme…
-4  2020 1fd2be47-cb72-435a-b2df-142f38e99a05 https://download.cms.gov/openpayme…
-5  2019 0ff0961f-8295-477c-8044-85b9a0753893 https://download.cms.gov/openpayme…
-6  2018 07c1e377-eb5b-4830-ad9b-61f04258036e https://download.cms.gov/openpayme…
-7  2017 5aad28fa-9785-492e-9a92-8d7b595bc43b https://download.cms.gov/openpayme…
-
-$recipient_entity
-# A tibble: 7 × 3
-   year identifier                           downloadurl                        
-  &lt;int&gt; &lt;chr&gt;                                &lt;chr&gt;                              
-1  2023 4fbf0094-3c7b-425a-aabe-5778052559ad https://download.cms.gov/openpayme…
-2  2022 d2d87f39-b117-4ac8-9f36-a088fb22a25b https://download.cms.gov/openpayme…
-3  2021 7c9ebb83-8f88-5462-ab7d-1925b0113cfc https://download.cms.gov/openpayme…
-4  2020 78ad9c8d-d7ae-4066-bf2d-a66e3c9d6e3b https://download.cms.gov/openpayme…
-5  2019 63c6fc23-1744-4040-babe-1af39a57c598 https://download.cms.gov/openpayme…
-6  2018 b6f534a9-ae05-4e78-9acf-c48b79fcee13 https://download.cms.gov/openpayme…
-7  2017 120f42a3-4f3c-48b2-bf32-4c852390c41a https://download.cms.gov/openpayme…
-
-$entity_nature
-# A tibble: 7 × 3
-   year identifier                           downloadurl                        
-  &lt;int&gt; &lt;chr&gt;                                &lt;chr&gt;                              
-1  2023 72008dab-0953-4226-a4cd-9f1872e8170d https://download.cms.gov/openpayme…
-2  2022 cedcd327-4e5d-43f9-8eb1-c11850fa7c66 https://download.cms.gov/openpayme…
-3  2021 a2714020-f599-52b0-b12b-8f5b510e547a https://download.cms.gov/openpayme…
-4  2020 7dfe6254-2aee-454f-9ea5-df611a9a7b55 https://download.cms.gov/openpayme…
-5  2019 7f3bcc65-6f34-42de-8e63-7611e0a6f67b https://download.cms.gov/openpayme…
-6  2018 76d91818-7015-4f94-a5b8-6f0dbf4fe206 https://download.cms.gov/openpayme…
-7  2017 8ab7b1de-c6da-4613-929e-5fbd27ea1032 https://download.cms.gov/openpayme…
-
-$entity_recipient_nature
-# A tibble: 7 × 3
-   year identifier                           downloadurl                        
-  &lt;int&gt; &lt;chr&gt;                                &lt;chr&gt;                              
-1  2023 29c23b6a-dd1e-4d82-a606-8d792c7f229e https://download.cms.gov/openpayme…
-2  2022 171e369a-6f25-49eb-aa36-37f0a497e5ca https://download.cms.gov/openpayme…
-3  2021 f240c437-9d8a-5be7-95a5-8ce8e0d970bf https://download.cms.gov/openpayme…
-4  2020 532df191-473f-4bcc-9056-a6260b9437b5 https://download.cms.gov/openpayme…
-5  2019 6c8251d4-3839-444b-810b-5bf035a23326 https://download.cms.gov/openpayme…
-6  2018 c1ce263b-0625-4ce6-9e81-62a7b3708f4b https://download.cms.gov/openpayme…
-7  2017 d3d4880a-be30-48ca-9a9b-6d8828f9c852 https://download.cms.gov/openpayme…
-
-$recipient_nature_state
-# A tibble: 7 × 3
-   year identifier                           downloadurl                        
-  &lt;int&gt; &lt;chr&gt;                                &lt;chr&gt;                              
-1  2023 f83aed3a-7504-4fca-aabb-ac0338c79688 https://download.cms.gov/openpayme…
-2  2022 c64c40af-23a5-4419-8b64-692684483664 https://download.cms.gov/openpayme…
-3  2021 7fad5b56-2cfe-52ab-ac4d-3200780287d4 https://download.cms.gov/openpayme…
-4  2020 7f3055b6-73d8-5aff-be15-55873552e2cd https://download.cms.gov/openpayme…
-5  2019 37fba404-224d-5bad-9c62-527d9316e516 https://download.cms.gov/openpayme…
-6  2018 6dd14c90-a6bd-52f8-9629-4d27fc02096d https://download.cms.gov/openpayme…
-7  2017 4013f179-6692-5ae8-8c51-ed7cc4b9bd17 https://download.cms.gov/openpayme…</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_general</span>(op)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$modified
-[1] "2025-01-30"
-
-$title
-[1] "General Payment Data"
-
-$description
-[1] "All general (non-research, non-ownership related) payments from the program year"
-
-$endpoints
-# A tibble: 7 × 3
-   year identifier                           downloadurl                        
-  &lt;int&gt; &lt;chr&gt;                                &lt;chr&gt;                              
-1  2023 fb3a65aa-c901-4a38-a813-b04b00dfa2a9 https://download.cms.gov/openpayme…
-2  2022 df01c2f8-dc1f-4e79-96cb-8208beaf143c https://download.cms.gov/openpayme…
-3  2021 0380bbeb-aea1-58b6-b708-829f92a48202 https://download.cms.gov/openpayme…
-4  2020 a08c4b30-5cf3-4948-ad40-36f404619019 https://download.cms.gov/openpayme…
-5  2019 4e54dd6c-30f8-4f86-86a7-3c109a89528e https://download.cms.gov/openpayme…
-6  2018 f003634c-c103-568f-876c-73017fa83be0 https://download.cms.gov/openpayme…
-7  2017 74e3a32c-e8f8-595c-899c-35f9bffa828f https://download.cms.gov/openpayme…</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_research</span>(op)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$modified
-[1] "2025-01-30"
-
-$title
-[1] "Research Payment Data"
-
-$description
-[1] "All research-related payments from the program year"
-
-$endpoints
-# A tibble: 7 × 3
-   year identifier                           downloadurl                        
-  &lt;int&gt; &lt;chr&gt;                                &lt;chr&gt;                              
-1  2023 ec9521bf-9d97-4603-814c-f4132d34bc4f https://download.cms.gov/openpayme…
-2  2022 fdc3c773-018a-412c-8a81-d7b8a13a037b https://download.cms.gov/openpayme…
-3  2021 ce1d28dd-0094-5060-a036-580329439600 https://download.cms.gov/openpayme…
-4  2020 9c248e7e-7c7f-478b-ab84-ce0919d72c1c https://download.cms.gov/openpayme…
-5  2019 713a6016-1930-4a0c-b7c2-3e3de4f244c5 https://download.cms.gov/openpayme…
-6  2018 7b82fb48-2bec-45f0-b40e-aed5f1d1eba0 https://download.cms.gov/openpayme…
-7  2017 0e3977b9-a5d6-427e-bc02-480481edd6e0 https://download.cms.gov/openpayme…</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_ownership</span>(op)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$modified
-[1] "2025-01-30"
-
-$title
-[1] "Ownership Payment Data"
-
-$description
-[1] "All ownership and investment payments from the program year"
-
-$endpoints
-# A tibble: 7 × 3
-   year identifier                           downloadurl                        
-  &lt;int&gt; &lt;chr&gt;                                &lt;chr&gt;                              
-1  2023 ac0bc85c-02e3-45d9-89e8-2ff43da85df7 https://download.cms.gov/openpayme…
-2  2022 37792388-800f-427a-9e02-b11601454eeb https://download.cms.gov/openpayme…
-3  2021 b0c03b8d-06df-58f2-8ce2-4daeffee147e https://download.cms.gov/openpayme…
-4  2020 a9a0bf48-6b96-4589-b4c2-3c5dcfbeaca2 https://download.cms.gov/openpayme…
-5  2019 0b5c9710-7edb-484e-abc8-39293849ccb2 https://download.cms.gov/openpayme…
-6  2018 de0087e0-101b-43c1-acdf-69986a4c166b https://download.cms.gov/openpayme…
-7  2017 f90c33d1-cfd8-4b15-8cf5-b3db2f214cdf https://download.cms.gov/openpayme…</code></pre>
-</div>
-</div>
-</section>
-<section id="queries" class="level2" data-number="3.4">
-<h2 data-number="3.4" class="anchored" data-anchor-id="queries"><span class="header-section-number">3.4</span> Queries</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_nrows_fields</span>(</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sbt</span>(</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">open_profiles</span>(op) <span class="sc">|&gt;</span> </span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>      _[[<span class="st">"summary"</span>]], </span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">detect</span>(title, <span class="st">"^Covered"</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    _[[<span class="st">"identifier"</span>]]</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$rows
-[1] 1530412
-
-$fields
- [1] "covered_recipient_profile_type"                 
- [2] "covered_recipient_profile_id"                   
- [3] "associated_covered_recipient_profile_id_1"      
- [4] "associated_covered_recipient_profile_id_2"      
- [5] "covered_recipient_npi"                          
- [6] "covered_recipient_profile_first_name"           
- [7] "covered_recipient_profile_middle_name"          
- [8] "covered_recipient_profile_last_name"            
- [9] "covered_recipient_profile_suffix"               
-[10] "covered_recipient_profile_alternate_first_name" 
-[11] "covered_recipient_profile_alternate_middle_name"
-[12] "covered_recipient_profile_alternate_last_name"  
-[13] "covered_recipient_profile_alternate_suffix"     
-[14] "covered_recipient_profile_address_line_1"       
-[15] "covered_recipient_profile_address_line_2"       
-[16] "covered_recipient_profile_city"                 
-[17] "covered_recipient_profile_state"                
-[18] "covered_recipient_profile_zipcode"              
-[19] "covered_recipient_profile_country_name"         
-[20] "covered_recipient_profile_province_name"        
-[21] "covered_recipient_profile_primary_specialty"    
-[22] "covered_recipient_profile_ops_taxonomy_1"       
-[23] "covered_recipient_profile_ops_taxonomy_2"       
-[24] "covered_recipient_profile_ops_taxonomy_3"       
-[25] "covered_recipient_profile_ops_taxonomy_4"       
-[26] "covered_recipient_profile_ops_taxonomy_5"       
-[27] "covered_recipient_profile_ops_taxonomy_6"       
-[28] "covered_recipient_profile_license_state_code_1" 
-[29] "covered_recipient_profile_license_state_code_2" 
-[30] "covered_recipient_profile_license_state_code_3" 
-[31] "covered_recipient_profile_license_state_code_4" 
-[32] "covered_recipient_profile_license_state_code_5" </code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>ex_req <span class="ot">&lt;-</span> <span class="fu">create_request_open</span>(</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">id   =</span> <span class="fu">open_general</span>(op) <span class="sc">|&gt;</span> _[[<span class="st">"endpoints"</span>]] <span class="sc">|&gt;</span> <span class="fu">sbt</span>(year <span class="sc">==</span> <span class="dv">2021</span>) <span class="sc">|&gt;</span> _[[<span class="st">"identifier"</span>]],</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">args =</span> <span class="fu">c</span>(<span class="at">covered_recipient_npi =</span> <span class="dv">1023630738</span>))</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="fu">query_nresults_open</span>(ex_req)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 1</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">perform_request_open</span>(ex_req)</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$results
-     [,1]        [,2]                                           [,3] [,4] [,5]
-[1,] "UNCHANGED" "Covered Recipient Non-Physician Practitioner" ""   ""   ""  
-     [,6]      [,7]         [,8]     [,9]   [,10]   [,11] [,12]          [,13]
-[1,] "8794482" "1023630738" "ALYSIA" "MOTA" "SMITH" ""    "610 N HOY ST" ""   
-     [,14]     [,15] [,16]   [,17]           [,18] [,19] [,20]                
-[1,] "BUFFALO" "OK"  "73834" "United States" ""    ""    "Physician Assistant"
-     [,21] [,22] [,23] [,24] [,25]
-[1,] ""    ""    ""    ""    ""   
-     [,26]                                                                           
-[1,] "Physician Assistants &amp; Advanced Practice Nursing Providers|Physician Assistant"
-     [,27] [,28] [,29] [,30] [,31] [,32] [,33] [,34] [,35] [,36] [,37]        
-[1,] ""    ""    ""    ""    ""    "OK"  ""    ""    ""    ""    "Organon LLC"
-     [,38]          [,39]         [,40] [,41]           [,42]   [,43]       
-[1,] "100000866821" "Organon LLC" "NJ"  "United States" "17.43" "08/25/2021"
-     [,44] [,45]                        [,46]               [,47] [,48] [,49]
-[1,] "1"   "In-kind items and services" "Food and Beverage" ""    ""    ""   
-     [,50] [,51]                    [,52] [,53] [,54] [,55] [,56] [,57]      
-[1,] "No"  "No Third Party Payment" ""    ""    ""    ""    "No"  "837177352"
-     [,58] [,59] [,60]     [,61]  [,62]            [,63]       [,64]         
-[1,] "No"  "Yes" "Covered" "Drug" "CONTRACEPTIVES" "NEXPLANON" "78206-145-01"
-     [,65] [,66] [,67] [,68] [,69] [,70] [,71] [,72] [,73] [,74] [,75] [,76]
-[1,] ""    ""    ""    ""    ""    ""    ""    ""    ""    ""    ""    ""   
-     [,77] [,78] [,79] [,80] [,81] [,82] [,83] [,84] [,85] [,86] [,87] [,88]
-[1,] ""    ""    ""    ""    ""    ""    ""    ""    ""    ""    ""    ""   
-     [,89] [,90]  [,91]       
-[1,] ""    "2021" "01/30/2025"
-
-$query
-$query$conditions
-               property operator      value
-1 covered_recipient_npi        = 1023630738
-
-$query$schema
-[1] FALSE
-
-$query$keys
-[1] FALSE
-
-$query$results
-[1] TRUE
-
-$query$count
-[1] FALSE
-
-$query$offset
-[1] 0
-
-$query$limit
-[1] 500
-
-$query$resources
-                                    id alias
-1 60b8b38c-114e-56a6-895e-1109e837841b     t
-
-$query$format
-[1] "json"
-
-$query$rowIds
-[1] FALSE
-
-$query$properties
- [1] "change_type"                                                     
- [2] "covered_recipient_type"                                          
- [3] "teaching_hospital_ccn"                                           
- [4] "teaching_hospital_id"                                            
- [5] "teaching_hospital_name"                                          
- [6] "covered_recipient_profile_id"                                    
- [7] "covered_recipient_npi"                                           
- [8] "covered_recipient_first_name"                                    
- [9] "covered_recipient_middle_name"                                   
-[10] "covered_recipient_last_name"                                     
-[11] "covered_recipient_name_suffix"                                   
-[12] "recipient_primary_business_street_address_line1"                 
-[13] "recipient_primary_business_street_address_line2"                 
-[14] "recipient_city"                                                  
-[15] "recipient_state"                                                 
-[16] "recipient_zip_code"                                              
-[17] "recipient_country"                                               
-[18] "recipient_province"                                              
-[19] "recipient_postal_code"                                           
-[20] "covered_recipient_primary_type_1"                                
-[21] "covered_recipient_primary_type_2"                                
-[22] "covered_recipient_primary_type_3"                                
-[23] "covered_recipient_primary_type_4"                                
-[24] "covered_recipient_primary_type_5"                                
-[25] "covered_recipient_primary_type_6"                                
-[26] "covered_recipient_specialty_1"                                   
-[27] "covered_recipient_specialty_2"                                   
-[28] "covered_recipient_specialty_3"                                   
-[29] "covered_recipient_specialty_4"                                   
-[30] "covered_recipient_specialty_5"                                   
-[31] "covered_recipient_specialty_6"                                   
-[32] "covered_recipient_license_state_code1"                           
-[33] "covered_recipient_license_state_code2"                           
-[34] "covered_recipient_license_state_code3"                           
-[35] "covered_recipient_license_state_code4"                           
-[36] "covered_recipient_license_state_code5"                           
-[37] "submitting_applicable_manufacturer_or_applicable_gpo_name"       
-[38] "applicable_manufacturer_or_applicable_gpo_making_payment_id"     
-[39] "applicable_manufacturer_or_applicable_gpo_making_payment_name"   
-[40] "applicable_manufacturer_or_applicable_gpo_making_payment_state"  
-[41] "applicable_manufacturer_or_applicable_gpo_making_payment_country"
-[42] "total_amount_of_payment_usdollars"                               
-[43] "date_of_payment"                                                 
-[44] "number_of_payments_included_in_total_amount"                     
-[45] "form_of_payment_or_transfer_of_value"                            
-[46] "nature_of_payment_or_transfer_of_value"                          
-[47] "city_of_travel"                                                  
-[48] "state_of_travel"                                                 
-[49] "country_of_travel"                                               
-[50] "physician_ownership_indicator"                                   
-[51] "third_party_payment_recipient_indicator"                         
-[52] "name_of_third_party_entity_receiving_payment_or_transfer_of_ccfc"
-[53] "charity_indicator"                                               
-[54] "third_party_equals_covered_recipient_indicator"                  
-[55] "contextual_information"                                          
-[56] "delay_in_publication_indicator"                                  
-[57] "record_id"                                                       
-[58] "dispute_status_for_publication"                                  
-[59] "related_product_indicator"                                       
-[60] "covered_or_noncovered_indicator_1"                               
-[61] "indicate_drug_or_biological_or_device_or_medical_supply_1"       
-[62] "product_category_or_therapeutic_area_1"                          
-[63] "name_of_drug_or_biological_or_device_or_medical_supply_1"        
-[64] "associated_drug_or_biological_ndc_1"                             
-[65] "associated_device_or_medical_supply_pdi_1"                       
-[66] "covered_or_noncovered_indicator_2"                               
-[67] "indicate_drug_or_biological_or_device_or_medical_supply_2"       
-[68] "product_category_or_therapeutic_area_2"                          
-[69] "name_of_drug_or_biological_or_device_or_medical_supply_2"        
-[70] "associated_drug_or_biological_ndc_2"                             
-[71] "associated_device_or_medical_supply_pdi_2"                       
-[72] "covered_or_noncovered_indicator_3"                               
-[73] "indicate_drug_or_biological_or_device_or_medical_supply_3"       
-[74] "product_category_or_therapeutic_area_3"                          
-[75] "name_of_drug_or_biological_or_device_or_medical_supply_3"        
-[76] "associated_drug_or_biological_ndc_3"                             
-[77] "associated_device_or_medical_supply_pdi_3"                       
-[78] "covered_or_noncovered_indicator_4"                               
-[79] "indicate_drug_or_biological_or_device_or_medical_supply_4"       
-[80] "product_category_or_therapeutic_area_4"                          
-[81] "name_of_drug_or_biological_or_device_or_medical_supply_4"        
-[82] "associated_drug_or_biological_ndc_4"                             
-[83] "associated_device_or_medical_supply_pdi_4"                       
-[84] "covered_or_noncovered_indicator_5"                               
-[85] "indicate_drug_or_biological_or_device_or_medical_supply_5"       
-[86] "product_category_or_therapeutic_area_5"                          
-[87] "name_of_drug_or_biological_or_device_or_medical_supply_5"        
-[88] "associated_drug_or_biological_ndc_5"                             
-[89] "associated_device_or_medical_supply_pdi_5"                       
-[90] "program_year"                                                    
-[91] "payment_publication_date"                                        </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as_tbl</span>(x<span class="sc">$</span>results) <span class="sc">|&gt;</span> </span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(x<span class="sc">$</span>query<span class="sc">$</span>properties) <span class="sc">|&gt;</span> </span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_na_if</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>- $change_type                                                      c1  UNC ...
-- $covered_recipient_type                                           c1  Cov ...
-- $teaching_hospital_ccn                                            c1  NA  ...
-- $teaching_hospital_id                                             c1  NA  ...
-- $teaching_hospital_name                                           c1  NA  ...
-- $covered_recipient_profile_id                                     c1  879 ...
-- $covered_recipient_npi                                            c1  102 ...
-- $covered_recipient_first_name                                     c1  ALY ...
-- $covered_recipient_middle_name                                    c1  MOT ...
-- $covered_recipient_last_name                                      c1  SMI ...
-- $covered_recipient_name_suffix                                    c1  NA  ...
-- $recipient_primary_business_street_address_line1                  c1  610 ...
-- $recipient_primary_business_street_address_line2                  c1  NA  ...
-- $recipient_city                                                   c1  BUF ...
-- $recipient_state                                                  c1  OK  ...
-- $recipient_zip_code                                               c1  738 ...
-- $recipient_country                                                c1  Uni ...
-- $recipient_province                                               c1  NA  ...
-- $recipient_postal_code                                            c1  NA  ...
-- $covered_recipient_primary_type_1                                 c1  Phy ...
-- $covered_recipient_primary_type_2                                 c1  NA  ...
-- $covered_recipient_primary_type_3                                 c1  NA  ...
-- $covered_recipient_primary_type_4                                 c1  NA  ...
-- $covered_recipient_primary_type_5                                 c1  NA  ...
-- $covered_recipient_primary_type_6                                 c1  NA  ...
-- $covered_recipient_specialty_1                                    c1  Phy ...
-- $covered_recipient_specialty_2                                    c1  NA  ...
-- $covered_recipient_specialty_3                                    c1  NA  ...
-- $covered_recipient_specialty_4                                    c1  NA  ...
-- $covered_recipient_specialty_5                                    c1  NA  ...
-- $covered_recipient_specialty_6                                    c1  NA  ...
-- $covered_recipient_license_state_code1                            c1  OK  ...
-- $covered_recipient_license_state_code2                            c1  NA  ...
-- $covered_recipient_license_state_code3                            c1  NA  ...
-- $covered_recipient_license_state_code4                            c1  NA  ...
-- $covered_recipient_license_state_code5                            c1  NA  ...
-- $submitting_applicable_manufacturer_or_applicable_gpo_name        c1  Org ...
-- $applicable_manufacturer_or_applicable_gpo_making_payment_id      c1  100 ...
-- $applicable_manufacturer_or_applicable_gpo_making_payment_name    c1  Org ...
-- $applicable_manufacturer_or_applicable_gpo_making_payment_state   c1  NJ  ...
-- $applicable_manufacturer_or_applicable_gpo_making_payment_country c1  Uni ...
-- $total_amount_of_payment_usdollars                                c1  17. ...
-- $date_of_payment                                                  c1  08/ ...
-- $number_of_payments_included_in_total_amount                      c1  1   ...
-- $form_of_payment_or_transfer_of_value                             c1  In- ...
-- $nature_of_payment_or_transfer_of_value                           c1  Foo ...
-- $city_of_travel                                                   c1  NA  ...
-- $state_of_travel                                                  c1  NA  ...
-- $country_of_travel                                                c1  NA  ...
-- $physician_ownership_indicator                                    c1  No  ...
-- $third_party_payment_recipient_indicator                          c1  No  ...
-- $name_of_third_party_entity_receiving_payment_or_transfer_of_ccfc c1  NA  ...
-- $charity_indicator                                                c1  NA  ...
-- $third_party_equals_covered_recipient_indicator                   c1  NA  ...
-- $contextual_information                                           c1  NA  ...
-- $delay_in_publication_indicator                                   c1  No  ...
-- $record_id                                                        c1  837 ...
-- $dispute_status_for_publication                                   c1  No  ...
-- $related_product_indicator                                        c1  Yes ...
-- $covered_or_noncovered_indicator_1                                c1  Cov ...
-- $indicate_drug_or_biological_or_device_or_medical_supply_1        c1  Dru ...
-- $product_category_or_therapeutic_area_1                           c1  CON ...
-- $name_of_drug_or_biological_or_device_or_medical_supply_1         c1  NEX ...
-- $associated_drug_or_biological_ndc_1                              c1  782 ...
-- $associated_device_or_medical_supply_pdi_1                        c1  NA  ...
-- $covered_or_noncovered_indicator_2                                c1  NA  ...
-- $indicate_drug_or_biological_or_device_or_medical_supply_2        c1  NA  ...
-- $product_category_or_therapeutic_area_2                           c1  NA  ...
-- $name_of_drug_or_biological_or_device_or_medical_supply_2         c1  NA  ...
-- $associated_drug_or_biological_ndc_2                              c1  NA  ...
-- $associated_device_or_medical_supply_pdi_2                        c1  NA  ...
-- $covered_or_noncovered_indicator_3                                c1  NA  ...
-- $indicate_drug_or_biological_or_device_or_medical_supply_3        c1  NA  ...
-- $product_category_or_therapeutic_area_3                           c1  NA  ...
-- $name_of_drug_or_biological_or_device_or_medical_supply_3         c1  NA  ...
-- $associated_drug_or_biological_ndc_3                              c1  NA  ...
-- $associated_device_or_medical_supply_pdi_3                        c1  NA  ...
-- $covered_or_noncovered_indicator_4                                c1  NA  ...
-- $indicate_drug_or_biological_or_device_or_medical_supply_4        c1  NA  ...
-- $product_category_or_therapeutic_area_4                           c1  NA  ...
-- $name_of_drug_or_biological_or_device_or_medical_supply_4         c1  NA  ...
-- $associated_drug_or_biological_ndc_4                              c1  NA  ...
-- $associated_device_or_medical_supply_pdi_4                        c1  NA  ...
-- $covered_or_noncovered_indicator_5                                c1  NA  ...
-- $indicate_drug_or_biological_or_device_or_medical_supply_5        c1  NA  ...
-- $product_category_or_therapeutic_area_5                           c1  NA  ...
-- $name_of_drug_or_biological_or_device_or_medical_supply_5         c1  NA  ...
-- $associated_drug_or_biological_ndc_5                              c1  NA  ...
-- $associated_device_or_medical_supply_pdi_5                        c1  NA  ...
-- $program_year                                                     c1  202 ...
-- $payment_publication_date                                         c1  01/ ...</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_nrows_fields</span>(</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sbt</span>(</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">open_profiles</span>(op) <span class="sc">|&gt;</span> </span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>      _[[<span class="st">"summary"</span>]], </span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">detect</span>(title, <span class="st">"^Covered"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>    _[[<span class="st">"identifier"</span>]]</span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>ex_req <span class="ot">&lt;-</span> <span class="fu">create_request_open</span>(</span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">id   =</span> <span class="fu">open_general</span>(op) <span class="sc">|&gt;</span> _[[<span class="st">"endpoints"</span>]] <span class="sc">|&gt;</span> <span class="fu">sbt</span>(year <span class="sc">==</span> <span class="dv">2021</span>) <span class="sc">|&gt;</span> _[[<span class="st">"identifier"</span>]],</span>
+<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">args =</span> <span class="fu">c</span>(<span class="at">covered_recipient_npi =</span> <span class="dv">1023630738</span>))</span>
+<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a><span class="fu">query_nresults_open</span>(ex_req)</span>
+<span id="cb54-14"><a href="#cb54-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-15"><a href="#cb54-15" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">perform_request_open</span>(ex_req)</span>
+<span id="cb54-16"><a href="#cb54-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-17"><a href="#cb54-17" aria-hidden="true" tabindex="-1"></a>x</span>
+<span id="cb54-18"><a href="#cb54-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-19"><a href="#cb54-19" aria-hidden="true" tabindex="-1"></a><span class="fu">as_tbl</span>(x<span class="sc">$</span>results) <span class="sc">|&gt;</span> </span>
+<span id="cb54-20"><a href="#cb54-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(x<span class="sc">$</span>query<span class="sc">$</span>properties) <span class="sc">|&gt;</span> </span>
+<span id="cb54-21"><a href="#cb54-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_na_if</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb54-22"><a href="#cb54-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
