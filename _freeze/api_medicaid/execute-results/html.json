@@ -1,0 +1,15 @@
+{
+  "hash": "1459cf607c62ac62ff5649ce8a609864",
+  "result": {
+    "engine": "knitr",
+    "markdown": "# Medicaid {#sec-mcdapi}\n\n\n\n## Links\n\n   * [Medicaid.gov API](https://data.medicaid.gov/about/api)\n\n## Load Catalog\n\n::: {.cell}\n\n```{.r .cell-code}\ncatalog_mcd <- function() {\n\n  x <- fload(\"https://data.medicaid.gov/api/1/metastore/schemas/dataset/items?show-reference-ids\")\n\n  x <- mtt(x,\n      modified    = as_date(modified),\n      year        = get_data_elem(keyword),\n      year        = replace_fixed(year, c(\"all years\"), c(\"All\")),\n      year        = cheapr_if_else(title == \"Provider profile ID mapping table\", \"All\", year),\n      title       = toTitleCase(title),\n      contact     = reduce_contact(x$contactPoint),\n      description = gsub(\"[\\\"']\", \"\", description, perl = TRUE),\n      description = gsub(\"\\r\\n\", \" \", description, perl = TRUE),\n      description = gsub(\"  \", \" \", description, perl = TRUE),\n      description = stri_trim(description),\n      download    = delist(get_elem(get_elem(x$distribution, \"data\", DF.as.list = TRUE), \"downloadURL\"))) |>\n    slt(year, title, description, modified, identifier, contact, download) |>\n    as_tbl()\n\n  list(current  = roworder(sbt(x, year == \"All\", -year), title),\n       temporal = roworder(sbt(x, year != \"All\") |> mtt(year = as_int(year), title = stri_replace_all_regex(title, \"^[0-9]{4} \", \"\")), title, -year)\n  )\n}\n```\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

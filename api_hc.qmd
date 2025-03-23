@@ -1,0 +1,45 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+# HealthCare.Gov {#sec-hcapi}
+
+```{r}
+#| label: setup-common-01
+#| include: false
+source("includes/_common.R")
+```
+
+## Links
+
+   * [HealthCare.gov API](https://data.healthcare.gov/api)
+
+## Load Catalog
+
+```{r}
+#| label: hc_catalog
+catalog_hcgov <- function() {
+
+  x <- fload("https://data.healthcare.gov/api/1/metastore/schemas/dataset/items?show-reference-ids") |> as_tbl()
+
+  x <- x |> 
+    mtt(modified    = as_date(modified),
+      # year        = get_data_elem(keyword),
+      # year        = replace_fixed(year, c("all years"), c("All")),
+      # year        = cheapr_if_else(title == "Provider profile ID mapping table", "All", year),
+      title       = tools::toTitleCase(title),
+      contact     = reduce_contact(x$contactPoint),
+      description = gsub("[\"']", "", description, perl = TRUE),
+      description = gsub("\r\n", " ", description, perl = TRUE),
+      description = gsub("  ", " ", description, perl = TRUE),
+      description = stri_trim(description),
+      download    = delist(get_elem(get_elem(x$distribution, "data", DF.as.list = TRUE), "downloadURL"))) |>
+    slt(year, title, description, modified, identifier, contact, download) |>
+    as_tbl()
+
+  list(current  = roworder(sbt(x, year == "All", -year), title),
+       temporal = roworder(sbt(x, year != "All") |> mtt(year = as_int(year), title = stri_replace_all_regex(title, "^[0-9]{4} ", "")), title, -year)
+  )
+}
+```
