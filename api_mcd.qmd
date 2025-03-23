@@ -23,7 +23,7 @@ catalog_mcd <- function() {
 
   x <- fload("https://data.medicaid.gov/api/1/metastore/schemas/dataset/items?show-reference-ids")
     
-  x |>
+  x <- x |>
     as_tbl() |>
     mtt(
       modified    = as_date(modified),
@@ -45,15 +45,54 @@ catalog_mcd <- function() {
       temporal,
       references
     )
+  
+  groups <- new_df(
+    title = x$title,
+    group = na_if(
+      flatten_column(
+        map(x$theme, \(x) get_elem(as.list(x), "data"))), "")) |>
+    sbt(not_na(group) & group != "Uncategorized")
+  
+  keys <- new_df(
+    title = x$title,
+    keywords = na_if(
+      flatten_column(
+        map(x$keyword, \(x) get_elem(as.list(x), "data"))), ""))
+  
+  refs <- new_df(
+    title = x$title,
+    references = na_if(flatten_column(x$references), "NA")) |> 
+  sbt(not_na(references) & stri_detect_regex(references, "^https://www.mathematica.org/", negate = TRUE)) |> 
+  mtt(references = stri_replace_all_fixed(
+    references,
+    ", https://www.mathematica.org/",
+    ""
+  ))
+  
+  join(
+    slt(x, -theme, -keyword, -references),
+    groups,
+    on = "title",
+    verbose = 0
+  ) |> 
+    join(
+      keys,
+      on = "title",
+      verbose = 0
+    ) |> 
+    join(
+      refs,
+      on = "title",
+      verbose = 0
+    )
 }
 
 x <- catalog_mcd()
 
 x
+```
 
-# map(x$theme, \(x) get_elem(as.list(x), "data"))
-# sbt(x$references, not_na(x$references))
-
+```{r}
 x$distribution[[1]]$data[[1]]$downloadURL
 
 x$distribution[[1]]$data[[1]]$describedBy
