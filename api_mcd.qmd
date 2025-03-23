@@ -14,6 +14,7 @@ source("includes/_common.R")
 ## Links
 
    * [Medicaid.gov API](https://data.medicaid.gov/about/api)
+   * Limit: `8000L`
 
 ## Load Catalog
 
@@ -70,21 +71,17 @@ catalog_mcd <- function() {
   ))
   
   join(
-    slt(x, -theme, -keyword, -references),
+    slt(x, -theme, -keyword, -references), 
     groups,
-    on = "title",
-    verbose = 0
-  ) |> 
+    on = "title", verbose = 0) |> 
     join(
       keys,
       on = "title",
-      verbose = 0
-    ) |> 
+      verbose = 0) |> 
     join(
       refs,
       on = "title",
-      verbose = 0
-    )
+      verbose = 0)
 }
 
 x <- catalog_mcd()
@@ -93,9 +90,72 @@ x
 ```
 
 ```{r}
-x$distribution[[1]]$data[[1]]$downloadURL
+x$distribution[[326]]$data[[2]]$downloadURL
 
 x$distribution[[1]]$data[[1]]$describedBy
+```
+
+
+```{r}
+d <- rowbind(x$distribution, fill = TRUE) |> as_tbl()
+
+new_tbl(
+  title = delist(get_elem(d$data, "title")),
+  download = delist(get_elem(d$data, "downloadURL")),
+  dictionary = delist(get_elem(d$data, "describedBy"))
+) |> 
+  print(n = 100)
+```
+
+```{r}
+mcd_url <- function(uuid) {
+  paste0("https://data.medicaid.gov/api/1/datastore/query/", uuid, "/0")
+}
+
+mcd_dims <- function(uuid) {
+
+  x <- uuid |>
+    mcd_url() |>
+    request() |>
+    req_url_query(
+      schema  = "false",
+      keys    = "false",
+      results = "true",
+      count   = "true",
+      format  = "json",
+      rowIds  = "false",
+      limit   = 1,
+      offset  = 0
+    ) |>
+    perform_simple()
+
+  list_tidy(
+    rows   = x$count,
+    fields = x$query$properties,
+    pages  = offset_length(rows, 8000L))
+
+}
+
+identifier <- sbt(x, title == "State Drug Utilization Data 2020") |> _[["identifier"]]
+
+mcd_dims(identifier)
+
+mcd_url(identifier) |> 
+  request() |> 
+  req_url_query(
+    limit = 10,
+    offset = 0,
+    count = "true",
+    results = "true",
+    schema = "false",
+    keys = "true",
+    format = "json",
+    rowIds = "false"
+  ) |> 
+  perform_simple() |> 
+  _[["results"]] |> 
+  map_na_if() |> 
+  as_tbl()
 ```
 
 
