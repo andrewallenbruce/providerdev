@@ -1,3 +1,8 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
 # Medicaid {#sec-mcdapi}
 
 ```{r}
@@ -17,24 +22,48 @@ source("includes/_common.R")
 catalog_mcd <- function() {
 
   x <- fload("https://data.medicaid.gov/api/1/metastore/schemas/dataset/items?show-reference-ids")
-
-  x <- mtt(x,
+    
+  x |>
+    as_tbl() |>
+    mtt(
       modified    = as_date(modified),
-      year        = get_data_elem(keyword),
-      year        = replace_fixed(year, c("all years"), c("All")),
-      year        = cheapr_if_else(title == "Provider profile ID mapping table", "All", year),
-      title       = toTitleCase(title),
-      contact     = reduce_contact(x$contactPoint),
-      description = gsub("[\"']", "", description, perl = TRUE),
-      description = gsub("\r\n", " ", description, perl = TRUE),
-      description = gsub("  ", " ", description, perl = TRUE),
-      description = stri_trim(description),
-      download    = delist(get_elem(get_elem(x$distribution, "data", DF.as.list = TRUE), "downloadURL"))) |>
-    slt(year, title, description, modified, identifier, contact, download) |>
-    as_tbl()
-
-  list(current  = roworder(sbt(x, year == "All", -year), title),
-       temporal = roworder(sbt(x, year != "All") |> mtt(year = as_int(year), title = stri_replace_all_regex(title, "^[0-9]{4} ", "")), title, -year)
-  )
+      issued      = as_date(issued),
+      periodicity = recode_iso8601(accrualPeriodicity),
+      contact     = reduce_contact(x$contactPoint)
+    ) |>
+    slt(
+      title,
+      identifier,
+      description,
+      periodicity,
+      issued,
+      modified,
+      contact,
+      theme,
+      keyword,
+      distribution,
+      temporal,
+      references
+    )
 }
+
+x <- catalog_mcd()
+
+x
+
+# map(x$theme, \(x) get_elem(as.list(x), "data"))
+# sbt(x$references, not_na(x$references))
+
+x$distribution[[1]]$data[[1]]$downloadURL
+
+x$distribution[[1]]$data[[1]]$describedBy
 ```
+
+
+```{r}
+utils::formatOL(
+  x$title
+) |> 
+  writeLines()
+```
+

@@ -378,29 +378,365 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="load-catalog" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="load-catalog"><span class="header-section-number">4.2</span> Load Catalog</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>catalog_hcgov <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">fload</span>(<span class="st">"https://data.healthcare.gov/api/1/metastore/schemas/dataset/items?show-reference-ids"</span>) <span class="sc">|&gt;</span> <span class="fu">as_tbl</span>()</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> x <span class="sc">|&gt;</span> </span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mtt</span>(<span class="at">modified    =</span> <span class="fu">as_date</span>(modified),</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>      <span class="co"># year        = get_data_elem(keyword),</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>      <span class="co"># year        = replace_fixed(year, c("all years"), c("All")),</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>      <span class="co"># year        = cheapr_if_else(title == "Provider profile ID mapping table", "All", year),</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">title       =</span> tools<span class="sc">::</span><span class="fu">toTitleCase</span>(title),</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">contact     =</span> <span class="fu">reduce_contact</span>(x<span class="sc">$</span>contactPoint),</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">description =</span> <span class="fu">gsub</span>(<span class="st">"[</span><span class="sc">\"</span><span class="st">']"</span>, <span class="st">""</span>, description, <span class="at">perl =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">description =</span> <span class="fu">gsub</span>(<span class="st">"</span><span class="sc">\r\n</span><span class="st">"</span>, <span class="st">" "</span>, description, <span class="at">perl =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">description =</span> <span class="fu">gsub</span>(<span class="st">"  "</span>, <span class="st">" "</span>, description, <span class="at">perl =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">description =</span> <span class="fu">stri_trim</span>(description),</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">download    =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(<span class="fu">get_elem</span>(x<span class="sc">$</span>distribution, <span class="st">"data"</span>, <span class="at">DF.as.list =</span> <span class="cn">TRUE</span>), <span class="st">"downloadURL"</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">slt</span>(year, title, description, modified, identifier, contact, download) <span class="sc">|&gt;</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as_tbl</span>()</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">current  =</span> <span class="fu">roworder</span>(<span class="fu">sbt</span>(x, year <span class="sc">==</span> <span class="st">"All"</span>, <span class="sc">-</span>year), title),</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>       <span class="at">temporal =</span> <span class="fu">roworder</span>(<span class="fu">sbt</span>(x, year <span class="sc">!=</span> <span class="st">"All"</span>) <span class="sc">|&gt;</span> <span class="fu">mtt</span>(<span class="at">year =</span> <span class="fu">as_int</span>(year), <span class="at">title =</span> <span class="fu">stri_replace_all_regex</span>(title, <span class="st">"^[0-9]{4} "</span>, <span class="st">""</span>)), title, <span class="sc">-</span>year)</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>catalog_hc <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fload</span>(<span class="st">"https://data.healthcare.gov/api/1/metastore/schemas/dataset/items?show-reference-ids"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as_tbl</span>()</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">catalog_hc</span>()</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 315 × 21
+   `@type`    title identifier description accessLevel accrualPeriodicity issued
+ * &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;       &lt;chr&gt;              &lt;chr&gt; 
+ 1 dcat:Data… Agen… e4rr-zk4i  "Dataset."  public      R/P10Y             2018-…
+ 2 dcat:Data… AB R… wb6u-x2ny  "Access Da… public      R/P10Y             2016-…
+ 3 dcat:Data… AB S… e8uy-7rnp  "Access Da… public      R/P10Y             2016-…
+ 4 &lt;NA&gt;       Netw… efch-75vp  "The Netwo… public      &lt;NA&gt;               2020-…
+ 5 &lt;NA&gt;       Serv… cqrd-buzn  "The Servi… public      &lt;NA&gt;               2020-…
+ 6 &lt;NA&gt;       Busi… g6ja-xx6f  "The Busin… public      &lt;NA&gt;               2020-…
+ 7 &lt;NA&gt;       Plan… a2km-i629  "The Plan … public      &lt;NA&gt;               2020-…
+ 8 &lt;NA&gt;       Bene… 86mw-kems  "The Benef… public      &lt;NA&gt;               2020-…
+ 9 &lt;NA&gt;       Rate… 7wqt-7ky9  "The Rate … public      &lt;NA&gt;               2020-…
+10 dcat:Data… Issu… 5k5i-wzex  "The datas… public      R/P10Y             2020-…
+# ℹ 305 more rows
+# ℹ 14 more variables: modified &lt;chr&gt;, publisher &lt;list&gt;, contactPoint &lt;list&gt;,
+#   keyword &lt;list&gt;, distribution &lt;list&gt;, bureauCode &lt;list&gt;, programCode &lt;list&gt;,
+#   `%modified` &lt;chr&gt;, dataQuality &lt;lgl&gt;, license &lt;chr&gt;, theme &lt;list&gt;,
+#   references &lt;list&gt;, landingPage &lt;chr&gt;, describedBy &lt;chr&gt;</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>utils<span class="sc">::</span><span class="fu">formatOL</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  x<span class="sc">$</span>title</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  1. Agent Broker Registration Tracker
+  2. AB Registration Completion List
+  3. AB Suspension and Termination List
+  4. Network PUF - 2021
+  5. Service Area PUF - 2021
+  6. Business Rules PUF - 2021
+  7. Plan Attributes PUF - 2021
+  8. Benefits and Cost Sharing PUF - 2021
+  9. Rate PUF - 2021
+ 10. Issuer_Partner_Lookup
+ 11. Plan ID Crosswalk PUF - 2021
+ 12. Rolling Draft ECP List
+ 13. Auto-population File
+ 14. RY2019 MLR Dataset 12042020
+ 15. Quality PUF - PY2021
+ 16. Plan ID Crosswalk PUF - 2020
+ 17. Service Area PUF - 2020
+ 18. Rate PUF - 2020
+ 19. Plan Attributes PUF - 2020
+ 20. Network PUF - 2020
+ 21. Benefits and Cost Sharing PUF -2020
+ 22. Business Rules PUF - 2020
+ 23. Issuer Partner Directory - Reference Text
+ 24. NIPR Valid Lines of Authority List
+ 25. RY2018 MLR Dataset 12032019
+ 26. Direct Enrollment Partners
+ 27. Issuer and DE Partner Directory
+ 28. Quality PUF - PY2020
+ 29. Benefits Cost Sharing PUF - 2019
+ 30. Rate PUF - 2019
+ 31. Service Area PUF - 2019
+ 32. Plan Attributes PUF - 2019
+ 33. Network PUF - 2019
+ 34. Business Rules PUF - 2019
+ 35. RY2013 MLR Dataset 20140716
+ 36. RY2012 MLR Dataset 20130805
+ 37. Agent Broker Registration Tracker Glossary
+ 38. QHP PY2018 Medical - SHOP - Landscape 10-23-2017
+ 39. QHP PY2018 Dent- SHOP- Land-10-18-2017
+ 40. QHP PY2018 Dent- Indi- Land-10-18-2017
+ 41. QHP PY2018 Medi- Indi- Land
+ 42. MLR RY2017 Socrata Dataset 20181031
+ 43. QHP Landscape Individual Market Medical
+ 44. Plan ID Crosswalk PUF - 2019
+ 45. Quality PUF - PY2019
+ 46. Response Codes
+ 47. Benefits Cost Sharing PUF - 2018
+ 48. Rate PUF - 2018
+ 49. Service Area PUF - 2018
+ 50. Plan Attributes PUF - 2018
+ 51. Business Rules PUF - 2018
+ 52. Network PUF - 2018
+ 53. MLR RY2016 Socrata Dataset 01192018
+ 54. Rate PUF - 2015
+ 55. Benefits and Cost Sharing PUF
+ 56. Plan Attributes PUF
+ 57. Business Rules PUF
+ 58. Service Area PUF
+ 59. Network PUF
+ 60. Benefits and Cost Sharing PUF - 2014
+ 61. Rate PUF - 2014
+ 62. Plan ID Crosswalk PUF
+ 63. Plan Attributes PUF - 2014
+ 64. Network PUF - 2014
+ 65. Business Rules PUF - 2014
+ 66. Service Area PUF - 2014
+ 67. Plan ID Crosswalk PUF - 2018
+ 68. Service Area PUF - 2017
+ 69. Business Rules PUF - 2017
+ 70. Benefits Cost Sharing PUF - 2017
+ 71. Rate PUF - 2017
+ 72. Plan Attributes PUF - 2017
+ 73. Network PUF - 2017
+ 74. 2017 QHP Landscape SHOP Market Dental
+ 75. 2017 QHP Landscape SHOP Market Medical
+ 76. 2017 QHP Landscape Individual Market Medical
+ 77. 2017 QHP Landscape Individual Market Dental
+ 78. States
+ 79. Counties
+ 80. Quality PUF - 2017
+ 81. Transparency In Coverage PUF - 2017
+ 82. Plan ID Crosswalk PUF - 2017
+ 83. MLR RY2015 Socrata Dataset 10272016
+ 84. 2016 QHP Landscape SHOP Market Dental
+ 85. 2016 QHP Landscape SHOP Market Medical
+ 86. 2016 QHP Landscape Individual Market Medical
+ 87. 2016 QHP Landscape Individual Market Dental
+ 88. Benefits Cost Sharing PUF 2016
+ 89. Rate PUF 2016
+ 90. Plan Attributes PUF 2016
+ 91. Business Rules PUF 2016
+ 92. Service Area PUF 2016
+ 93. Network PUF 2016
+ 94. Plan Crosswalk PUF 2016
+ 95. 2016 QHP Landscape HI Individual Market Dental
+ 96. 2016 QHP Landscape NV SHOP Market Medical
+ 97. 2016 QHP Landscape NV SHOP Market Dental
+ 98. 2016 QHP Landscape NV Individual Market Dental
+ 99. 2016 QHP Landscape HI Individual Market Medical
+100. 2016 QHP Landscape OR Individual Market Dental
+101. 2016 QHP Landscape NM Individual Market Dental
+102. 2016 QHP Landscape NV Individual Market Medical
+103. 2016 QHP Landscape OR Individual Market Medical
+104. 2016 QHP Landscape NM Individual Market Medical
+105. MLR RY2014 Socrata Dataset 10302015
+106. 2015 QHP Landscape OR Individual Market Medical
+107. 2015 QHP Landscape OR Individual Market Dental
+108. 2015 QHP Landscape NV SHOP Market Medical
+109. 2015 QHP Landscape NV Individual Market Medical
+110. 2015 QHP Landscape NV SHOP Market Dental
+111. 2015 QHP Landscape NV Individual Market Dental
+112. 2015 QHP Landscape NM Individual Market Medical
+113. 2015 QHP Landscape NM Individual Market Dental
+114. 2015 QHP Landscape Individual Market Medical
+115. 2015 QHP Landscape SHOP Market Medical
+116. 2015 QHP Landscape SHOP Market Dental
+117. 2015 QHP Landscape Individual Market Dental
+118. 2015 Qualifying Health Plan Selections by Type of Consumer and
+     County, as of February 22, 2015
+119. 2015 Qualifying Health Plan Selections by APTC and County, as of
+     February 22, 2015
+120. 2015 Qualifying Health Plan Selections by CSR and County, as of
+     February 22, 2015
+121. 2015 Qualifying Health Plan Selections by Metal Level and County,
+     as of February 22, 2015
+122. 2015 Qualifying Health Plan Selections by Household Income as a
+     Percent of the Federal Poverty Level and County, as of February
+     22, 2015
+123. 2015 Qualifying Health Plan Selections by Race/ Ethnicity and
+     County, as of February 22, 2015
+124. 2015 Qualifying Health Plan Selections by Age Group and County, as
+     of February 22, 2015
+125. QHP Landscape SHOP Market Medical
+126. QHP Landscape ID SHOP Market Dental
+127. QHP Landscape SHOP Market Dental
+128. QHP Landscape Individual Market Dental
+129. QHP Landscape ID SHOP Market Medical
+130. QHP Landscape ID Individual Market Dental
+131. QHP Landscape ID Individual Market Medical
+132. QHP Landscape NM Individual Market Dental
+133. QHP Landscape NM Individual Market Medical
+134. QHP Landscape Health Plan Business Rule Variables
+135. SLCSP - County-Zip Reference Data
+136. County Service Areas
+137. Catastrophic Plans for People with Cancelled Policies
+138. Helpful Contacts Admins
+139. RY2011 MLR Dataset 20121206
+140. QHP Landscape PY2021 Individual Dental Zip File
+141. QHP Landscape PY2021 Individual Medical Zip File
+142. QHP Landscape PY2021 Medical SHOP Zip File
+143. QHP Landscape PY2021 Dental SHOP Zip File
+144. QHP Landscape Instructions PY2021 Medical SHOP
+145. QHP Landscape Instructions PY2021 Dental SHOP
+146. QHP Landscape Instructions PY2021 Individual Medical
+147. QHP Landscape Instructions PY2021 Individual Dental
+148. QHP Landscape PY2020 Medical SHOP Zip File
+149. QHP Landscape PY2020 Dental SHOP Zip File
+150. QHP Landscape PY2020 Individual Medical Zip File
+151. QHP Landscape PY2020 Individual Dental Zip File
+152. QHP Landscape Instructions PY2020 Medical SHOP
+153. QHP Landscape Instructions PY2020 Dental SHOP
+154. QHP Landscape Instructions PY2020 Individual Medical
+155. PY2019 SHOP Market Medical Zip File
+156. QHP PY2019 Dental SHOP Zip File
+157. QHP PY19 Dental Individual Landscape Zip File
+158. QHP PY19 Medical Individual Landscape Zip File
+159. QHP PY19 Medical SHOP Landscape Instructions
+160. QHP PY19 Medical Individual Landscape Instructions
+161. QHP PY 2019 Dental SHOP Landscape Instructions
+162. QHP PY19 Dental Individual Landscape Instructions
+163. QHP PY 2018 Dental SHOP Landscape Instructions
+164. QHP PY18 Medical SHOP Landscape Instructions
+165. QHP PY2018 Dent- SHOP- Land-10-18-2017.zip
+166. QHP PY2018 Medi- Indi- Land-10-23-2017.zip
+167. QHP PY18 Dental Individual Landscape Instructions
+168. QHP PY18 Medical Individual Landscape Instructions
+169. QHP PY2018 Medi- SHOP- Land-10-23-2017.zip
+170. QHP PY2018 Dent- Indi- Land-10-18-2017.zip
+171. 2017 QHP Landscape SHOP Market Dental Instructions
+172. 2017 QHP Landscape Individual Market Dental Instructions
+173. 2017 QHP Landscape Individual Market Medical Instructions
+174. 2017 QHP Landscape SHOP Market Medical Instructions
+175. 2017 QHP Landscape SHOP Market Dental Excel
+176. 2017 QHP Landscape Individual Market Dental Excel
+177. 2017 QHP Landscape SHOP Market Medical Excel
+178. 2017 QHP Landscape Individual Market Medical Excel
+179. 2016 QHP Landscape SHOP Market Medical Instructions
+180. 2016 QHP Landscape Individual Market Medical Instructions
+181. 2016 QHP Landscape SHOP Market Dental Instructions
+182. 2016 QHP Landscape Individual Market Dental Instructions
+183. 2016 QHP Landscape SHOP Market Medical Excel
+184. 2016 QHP Landscape Individual Market Medical Excel
+185. 2016 QHP Landscape SHOP Market Dental Excel
+186. 2016 QHP Landscape Individual Market Dental Excel
+187. 2016 QHP Landscape SHOP Market Medical
+188. 2016 QHP Landscape HI Individual Market Medical Instructions
+189. 2016 QHP Landscape HI Individual Market Dental Instructions
+190. 2016 QHP Landscape OR Individual Market Medical Instructions
+191. 2016 QHP Landscape OR Individual Market Dental Instructions
+192. 2016 QHP Landscape NV SHOP Market Medical Instructions
+193. 2016 QHP Landscape NV Individual Market Medical Instructions
+194. 2016 QHP Landscape NV SHOP Market Dental Instructions
+195. 2016 QHP Landscape NV Individual Market Dental Instructions
+196. 2016 QHP Landscape NM Individual Market Medical Instructions
+197. 2016 QHP Landscape NM Individual Market Dental Instructions
+198. 2016 QHP Landscape HI Individual Market Medical Excel
+199. 2016 QHP Landscape HI Individual Market Dental Excel
+200. 2016 QHP Landscape OR Individual Market Medical Excel
+201. 2016 QHP Landscape OR Individual Market Dental Excel
+202. 2016 QHP Landscape NV SHOP Market Medical Excel
+203. 2016 QHP Landscape NV Individual Market Medical Excel
+204. 2016 QHP Landscape NV SHOP Market Dental Excel
+205. 2016 QHP Landscape NV Individual Market Dental Excel
+206. 2016 QHP Landscape NM Individual Market Medical Excel
+207. 2016 QHP Landscape NM Individual Market Dental Excel
+208. 2015 QHP Landscape OR Individual Market Medical Instructions
+209. 2015 QHP Landscape OR Individual Market Dental Instructions
+210. 2015 QHP Landscape NV SHOP Market Medical Instructions
+211. 2015 QHP Landscape NV Individual Market Medical Instructions
+212. 2015 QHP Landscape NV SHOP Market Dental Instructions
+213. 2015 QHP Landscape NV Individual Market Dental Instructions
+214. 2015 QHP Landscape NM Individual Market Medical Instructions
+215. 2015 QHP Landscape NM Individual Market Dental Instructions
+216. 2015 QHP Landscape SHOP Market Medical Instructions
+217. 2015 QHP Landscape Individual Market Medical Instructions
+218. 2015 QHP Landscape SHOP Market Dental Instructions
+219. 2015 QHP Landscape Individual Market Dental Instructions
+220. 2015 QHP Landscape OR Individual Market Medical Excel
+221. 2015 QHP Landscape OR Individual Market Dental Excel
+222. 2015 QHP Landscape NV SHOP Market Medical Excel
+223. 2015 QHP Landscape NV Individual Market Medical Excel
+224. 2015 QHP Landscape NV SHOP Market Dental Excel
+225. 2015 QHP Landscape NV Individual Market Dental Excel
+226. 2015 QHP Landscape NM Individual Market Medical Excel
+227. 2015 QHP Landscape Individual Market Medical Excel
+228. 2015 QHP Landscape SHOP Market Medical Excel
+229. 2015 QHP Landscape NM Individual Market Dental Excel
+230. 2015 QHP Landscape SHOP Market Dental Excel
+231. 2015 QHP Landscape Individual Market Dental Excel
+232. QHP Landscape Individual Market Medical Excel
+233. QHP Landscape Individual Market Dental Excel
+234. QHP Landscape SHOP Market Medical Excel
+235. QHP Landscape SHOP Market Dental Excel
+236. QHP Landscape ID Individual Market Dental Excel
+237. QHP Landscape ID Individual Market Medical Excel
+238. QHP Landscape ID SHOP Market Dental Excel
+239. QHP Landscape ID SHOP Market Medical Excel
+240. QHP Landscape NM Individual Market Dental Excel
+241. QHP Landscape NM Individual Market Medical Excel
+242. Plan Attributes PUF - PY2022
+243. Benefits and Cost Sharing PUF - PY2022
+244. Business Rules PUF - PY2022
+245. Network PUF - PY2022
+246. Rate PUF – PY2022
+247. Service Area PUF – PY2022
+248. Plan ID Crosswalk PUF – PY2022
+249. Transparency in Coverage PUF - PY2022
+250. Machine Readable PUF - PY2022
+251. QHP Landscape PY2022 Individual Medical
+252. QHP Landscape PY2022 Medical SHOP
+253. QHP Landscape PY2022 Individual Dental
+254. QHP Landscape PY2022 Dental SHOP
+255. QHP Landscape Instructions PY2022 Individual Medical
+256. QHP Landscape Instructions PY2022 Medical SHOP
+257. QHP Landscape Instructions PY2022 Individual Dental
+258. QHP Landscape Instructions PY2022 Dental SHOP
+259. Quality PUF - PY2022
+260. Marketplace Agent/Broker NIPR Valid Lines of Authority, by State
+261. QHP Landscape Instructions PY2023 Individual Medical
+262. QHP Landscape PY2023 Individual Medical
+263. QHP Landscape PY2023 Medical SHOP
+264. QHP Landscape Instructions PY2023 Medical SHOP
+265. QHP Landscape PY2023 Individual Dental
+266. QHP Landscape Instructions PY2023 Individual Dental
+267. QHP Landscape PY2023 Dental SHOP
+268. QHP Landscape Instructions PY2023 Dental SHOP
+269. Benefits and Cost Sharing PUF - PY2023
+270. Business Rules PUF - PY2023
+271. Network PUF - PY2023
+272. Plan Attributes PUF - PY2023
+273. Rate PUF – PY2023
+274. Service Area PUF – PY2023
+275. Plan ID Crosswalk PUF – PY2023
+276. Machine Readable PUF - PY2023
+277. Transparency in Coverage PUF - PY2023
+278. Quality PUF - PY2023
+279. Find Local Help
+280. QHP Landscape PY2024 Individual Medical
+281. QHP Landscape Instructions PY2024 Individual Medical
+282. QHP Landscape PY2024 Medical SHOP
+283. QHP Landscape Instructions PY2024 Medical SHOP
+284. QHP Landscape PY2024 Individual Dental
+285. QHP Landscape Instructions PY2024 Individual Dental
+286. QHP Landscape PY2024 Dental SHOP
+287. QHP Landscape Instructions PY2024 Dental SHOP
+288. Benefits and Cost Sharing PUF - PY2024
+289. Business Rules PUF - PY2024
+290. Network PUF - PY2024
+291. Plan Attributes PUF - PY2024
+292. Rate PUF - PY2024
+293. Service Area PUF - PY2024
+294. Plan ID Crosswalk PUF - PY2024
+295. Machine Readable PUF - PY2024
+296. Transparency in Coverage PUF - PY2024
+297. Quality PUF - PY2024
+298. QHP Landscape PY2025 Individual Medical
+299. QHP Landscape Instructions PY2025 Individual Medical
+300. QHP Landscape PY2025 Medical SHOP
+301. QHP Landscape Instructions PY2025 Medical SHOP
+302. QHP Landscape PY2025 Individual Dental
+303. QHP Landscape Instructions PY2025 Individual Dental
+304. QHP Landscape PY2025 Dental SHOP
+305. QHP Landscape Instructions PY2025 Dental SHOP
+306. Benefits and Cost Sharing PUF - PY2025
+307. Business Rules PUF - PY2025
+308. Network PUF - PY2025
+309. Plan Attributes PUF - PY2025
+310. Rate PUF – PY2025
+311. Service Area PUF – PY2025
+312. Plan ID Crosswalk PUF – PY2025
+313. Machine Readable PUF - PY2025
+314. Transparency in Coverage PUF - PY2025
+315. Quality PUF - PY2025</code></pre>
+</div>
 </div>
 
 
