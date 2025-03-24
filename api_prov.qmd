@@ -1,3 +1,8 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
 # Provider {#sec-providerapi}
 
 ```{r}
@@ -22,12 +27,11 @@ The **Provider Data Catalog API** provides access to official CMS data used on t
 ```{r}
 #| label: doctors_and_clinicians
 #| echo: false
-provider_data() |> 
-  filter(sf_detect(theme, "Doctors")) |> 
+catalog_provider() |> 
+  subset_detect(group, "Doctors") |> 
   reframe(
     id = row_number(),
     title,
-    keyword,
     description,
     dates = issued,
     modified,
@@ -37,21 +41,19 @@ provider_data() |>
   tab_header(title    = md("CMS **Provider Catalog**: Doctors and Clinicians")) |> 
   opt_all_caps() |>
   opt_table_font(font = google_font(name = "Rubik")) |>
-  cols_align("center", c(id, title)) |> 
+  cols_align("center", id) |> 
+  cols_align("left", -id) |> 
   fmt_date(columns    = c(dates, released)) |>
   tab_style(style     = css(position = "sticky", top = "-1em", `z-index` = 10), 
             locations = cells_column_labels()) |>
   tab_style(style     = cell_text(weight = "lighter", size = "small"),
             locations = cells_body(
-              columns = c(keyword, description, dates, modified, released))) |>
+              columns = c(description, dates, modified, released))) |>
   tab_style(style     = cell_text(weight = "bold", size = "small"),
             locations = cells_body(columns = title)) |>
   cols_merge(
     columns  = c(dates, modified, released), 
-    pattern  = "<b>ISSUED</b>: {1} <br><br> <b>MODIFIED</b>: {2} <br><br> <b>RELEASED</b>: {3}") |>
-  cols_merge(
-    columns  = c(description, keyword), 
-    pattern  = "<b>DESCRIPTION</b>: {1} <br><br> <b>KEYWORDS</b>: {2}") |>
+    pattern  = "<b>ISSUED</b>: {1}<br> <b>MODIFIED</b>: {2} <br> <b>RELEASED</b>: {3}") |>
   tab_options(container.height                  = px(900),
               quarto.disable_processing         = TRUE,
               column_labels.border.bottom.style = "hidden",
@@ -73,39 +75,35 @@ A comprehensive list of all datasets available from the `metastore/schemas` endp
 ```{r}
 #| label: Catalog_provider
 #| echo: false
-# Catalog_provider() |>
-provider_data() |> 
-  filter(sf_ndetect(theme, "Doctors")) |> 
+catalog_provider() |> 
+  subset_detect(group, "Doctors", n = TRUE) |> 
   reframe(
     id = row_number(),
     title,
-    theme,
-    keyword,
+    group,
     description,
     dates = issued,
     modified,
     released) |>
   arrange(id, title) |>
-  gt(groupname_col = "theme",
+  gt(groupname_col = "group",
      row_group_as_column = TRUE) |>
   tab_header(title    = md("CMS **Provider Catalog**: Available Datasets")) |> 
   opt_all_caps() |>
   opt_table_font(font = google_font(name = "Rubik")) |>
-  cols_align("center", c(id, title)) |> 
+  cols_align("center", id) |> 
+  cols_align("left", -id) |> 
   fmt_date(columns    = c(dates, released)) |>
   tab_style(style     = css(position = "sticky", top = "-1em", `z-index` = 10), 
             locations = cells_column_labels()) |>
   tab_style(style     = cell_text(weight = "lighter", size = "small"),
             locations = cells_body(
-              columns = c(keyword, theme, description, dates, modified, released))) |>
+            columns = c(group, description, dates, modified, released))) |>
   tab_style(style     = cell_text(weight = "bold", size = "small"),
             locations = cells_body(columns = title)) |>
   cols_merge(
     columns  = c(dates, modified, released), 
     pattern  = "<b>ISSUED</b>: {1} <br><br> <b>MODIFIED</b>: {2} <br><br> <b>RELEASED</b>: {3}") |>
-  cols_merge(
-    columns  = c(description, keyword), 
-    pattern  = "<b>DESCRIPTION</b>: {1} <br><br> <b>KEYWORDS</b>: {2}") |>
   tab_options(container.height                  = px(900),
               quarto.disable_processing         = TRUE,
               column_labels.border.bottom.style = "hidden",
@@ -127,13 +125,13 @@ The API is currently limited to a maximum of **`2000`** per request. The followi
 
 ```{r}
 #| label: ndf_0
-ndf_0 <- httr2::url_parse(
+ndf_0 <- url_parse(
   base_url = "https://data.cms.gov/provider-data/", 
   url      = "api/1/datastore/query/mj5m-pzi6/0") |> 
   url_modify_query(
     offset = 0, 
     limit  = 2000) |> 
-  httr2::url_build() |> 
+  url_build() |> 
   request() |> 
   req_perform() |> 
   resp_body_json(simplifyVector = TRUE)
@@ -148,7 +146,7 @@ ndf_0$query$properties
 
 ndf_0$results |> 
   tibble() |> 
-  head() |> 
+  map_na_if() |>
   purse()
 ```
 
@@ -156,20 +154,20 @@ ndf_0$results |>
 
 ```{r}
 #| label: ndf_1
-ndf_1 <- httr2::url_parse(
+ndf_1 <- url_parse(
   base_url = "https://data.cms.gov/provider-data/", 
   url      = "api/1/datastore/query/mj5m-pzi6/0") |> 
   url_modify_query(
-    offset = 2001, 
+    offset = 2000, 
     limit  = 2000) |> 
-  httr2::url_build() |> 
+  url_build() |> 
   request() |> 
   req_perform() |> 
   resp_body_json(simplifyVector = TRUE)
 
 ndf_1$results |> 
   tibble() |> 
-  head() |> 
+  map_na_if() |>
   purse()
 ```
 
@@ -189,7 +187,7 @@ For example, the query for the first 2000 [**Nursing Home**](https://data.cms.go
 
 ```{r}
 #| label: nh_0
-nh_0 <- httr2::url_parse(
+nh_0 <- url_parse(
   base_url = "https://data.cms.gov/provider-data/", 
   url      = "api/1/datastore/query/4pq5-n9py/0") |> 
   url_modify_query(
@@ -198,7 +196,7 @@ nh_0 <- httr2::url_parse(
     `conditions[0][operator]` = "<",
     offset                    = 0, 
     limit                     = 2000) |> 
-  httr2::url_build() |> 
+  url_build() |> 
   request() |> 
   req_perform() |> 
   resp_body_json(simplifyVector = TRUE)
@@ -207,44 +205,42 @@ nh_0$count
 
 length(offset_sequence(nh_0$count, 2000))
 
-nh_0$query$resources$id
-
 nh_0$results |> 
   tibble() |> 
-  head() |> 
+  map_na_if() |>
   purse()
 
-nh_0$results |> 
-  count(overall_rating, 
-        sort = TRUE)
+nh_0$results |>
+  map_na_if() |>
+  count(overall_rating, sort = TRUE)
 ```
 
 The query for the second 2000 is:
 
 ```{r}
 #| label: nh_1
-nh_1 <- httr2::url_parse(
+nh_1 <- url_parse(
   base_url = "https://data.cms.gov/provider-data/", 
   url      = "api/1/datastore/query/4pq5-n9py/0") |> 
   url_modify_query(
     `conditions[0][property]` = "overall_rating",
     `conditions[0][value]`    = 5,
     `conditions[0][operator]` = "<",
-    offset                    = 2001, 
+    offset                    = 2000, 
     limit                     = 2000) |> 
-  httr2::url_build() |> 
+  url_build() |> 
   request() |> 
   req_perform() |> 
   resp_body_json(simplifyVector = TRUE)
 
 nh_1$results |> 
   tibble() |> 
-  head() |> 
+  map_na_if() |>
   purse()
 
 nh_1$results |> 
-  count(overall_rating, 
-        sort = TRUE)
+  map_na_if() |>
+  count(overall_rating, sort = TRUE)
 ```
 
 
@@ -256,16 +252,16 @@ For example, to return the first 500 results of a dataset with an overall rating
 
 ```{r}
 #| label: first_500
-first_500 <- httr2::url_parse(
+first_500 <- url_parse(
   base_url = "https://data.cms.gov/provider-data/", 
   url      = "api/1/datastore/query/4pq5-n9py/0") |> 
   url_modify_query(
     `conditions[0][property]` = "total_amount_of_fines_in_dollars",
-    `conditions[0][value]`    = "23989.00",
     `conditions[0][operator]` = "<>",
+    `conditions[0][value]`    = "23989.00",
     offset                    = 0, 
     limit                     = 500) |> 
-  httr2::url_build() |> 
+  url_build() |> 
   request() |> 
   req_perform() |> 
   resp_body_json(simplifyVector = TRUE)
@@ -274,10 +270,11 @@ first_500$count
 
 first_500$results |> 
   tibble() |> 
-  head() |> 
+  map_na_if() |>
   purse()
 
 first_500$results |> 
+  map_na_if() |>
   count(total_amount_of_fines_in_dollars, 
         sort = TRUE) |> 
   filter(n > 1)
@@ -290,14 +287,14 @@ For example, to return the `cms_certification_number_ccn` and `overall_rating` c
 ```{.json}
 {
     "properties": [
-        "cms_certification_number_ccn",
+        "state",
         "overall_rating"
     ],
     "conditions": [
         {
-            "property":"overall_rating",
-            "value": "3",
-            "operator": ">"
+            "property": "overall_rating",
+            "operator": ">",
+            "value": "3"
         }
     ]
 }
@@ -307,26 +304,29 @@ This converts to a query string of:
 
 ```{r}
 #| label: ccn_rating
-ccnr3 <- httr2::url_parse(
+ccnr3 <- url_parse(
   base_url = "https://data.cms.gov/provider-data/", 
   url      = "api/1/datastore/query/4pq5-n9py/0") |> 
   url_modify_query(
     `properties[]`            = "state",
     `properties[]`            = "overall_rating",
     `conditions[0][property]` = "overall_rating",
-    `conditions[0][value]`    = 3,
     `conditions[0][operator]` = ">",
+    `conditions[0][value]`    = 3,
     offset                    = 0, 
     limit                     = 2000) |> 
-  httr2::url_build() |> 
+  url_build() |> 
   request() |> 
   req_perform() |> 
   resp_body_json(simplifyVector = TRUE)
 
-ccnr3$results |> tibble()
+ccnr3$results |> 
+  tibble() |> 
+  map_na_if() |>
+  purse()
 
 ccnr3$results |> 
-  mutate(across(where(is.character),  ~ na_if(.x, ""))) |> 
+  map_na_if() |>
   remove_all_na() |> 
   count(state, overall_rating, sort = TRUE)
 ```
@@ -339,13 +339,14 @@ Return a list of all public datasets for a particular __Topic__ area via the `/a
 
 ```{r}
 #| label: search_theme
-theme <- httr2::url_parse(
+#| eval: false
+theme <- url_parse(
   base_url = "https://data.cms.gov/provider-data/",
   url      = "api/1/search?") |> 
   url_modify_query(
     `page-size` = 100,
     theme       = "Home health services") |> 
-  httr2::url_build() |> 
+  url_build() |> 
   request() |> 
   req_perform() |> 
   resp_body_json(simplifyVector = TRUE)
