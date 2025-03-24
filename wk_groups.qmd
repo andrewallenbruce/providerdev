@@ -9,7 +9,46 @@ source("includes/_common.R")
 ## Provider API
 
 ```{r}
-CurrentProvider("affiliations")
+aff_fields <- \(x) {
+  val_match(
+    x,
+    "npi" ~ "npi",
+    "ind_pac_id" ~ "pac",
+    "provider_last_name" ~ "last_name",
+    "provider_first_name" ~ "first_name",
+    "provider_middle_name" ~ "middle_name",
+    "suff" ~ "suffix",
+    "facility_type" ~ "facility_type",
+    "facility_affiliations_certification_number" ~ "ccn_facility",
+    "facility_type_certification_number" ~ "ccn_parent"
+  )
+}
+
+# set_names(aff@fields, aff_fields(aff@fields))
+
+aff_fn <- function(npi           = NULL,
+                   pac           = NULL,
+                   first_name    = NULL,
+                   middle_name   = NULL,
+                   last_name     = NULL,
+                   suffix        = NULL,
+                   facility_type = NULL,
+                   ccn_facility  = NULL,
+                   ccn_parent    = NULL) {
+  
+  x <- CurrentProvider("affiliations")
+  
+  xargs <- set_names(x@fields, aff_fields(x@fields))
+  
+  unname(xargs[fn_fmls_names()])
+  
+}
+
+aff_fn()
+```
+
+
+```{r}
 CurrentProvider("clinicians")
 CurrentProvider("utilization")
 
