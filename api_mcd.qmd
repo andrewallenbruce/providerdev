@@ -19,6 +19,11 @@ source("includes/_common.R")
 ## Load Catalog
 
 ```{r}
+join_title <- \(a, b) join(x = a, y = b, on = "title", verbose = 0)
+```
+
+
+```{r}
 #| label: mcd_catalog
 catalog_mcd <- function() {
 
@@ -47,6 +52,12 @@ catalog_mcd <- function() {
       references
     )
   
+  d <- rowbind(x$distribution, fill = TRUE)
+  
+  tvec <- new_df(title = x$title, ndist = fnobs(get_elem(x$distribution, "data", DF.as.list = TRUE))) |> 
+    tidyr::uncount(ndist) |> 
+    _[["title"]]
+  
   groups <- new_df(
     title = x$title,
     group = na_if(
@@ -64,47 +75,19 @@ catalog_mcd <- function() {
     title = x$title,
     references = na_if(flatten_column(x$references), "NA")) |> 
   sbt(not_na(references) & stri_detect_regex(references, "^https://www.mathematica.org/", negate = TRUE)) |> 
-  mtt(references = stri_replace_all_fixed(
-    references,
-    ", https://www.mathematica.org/",
-    ""
-  ))
+  mtt(references = stri_replace_all_fixed(references, ", https://www.mathematica.org/", ""))
   
-  join(
-    slt(x, -theme, -keyword, -references), 
-    groups,
-    on = "title", verbose = 0) |> 
-    join(
-      keys,
-      on = "title",
-      verbose = 0) |> 
-    join(
-      refs,
-      on = "title",
-      verbose = 0)
+  list(
+    sets = reduce(list(slt(x, -theme, -keyword, -references, -distribution), groups, keys, refs), join_title),
+    download = new_tbl(title = tvec, download = delist(get_elem(d$data, "downloadURL"))),
+    dictionary = delist(get_elem(d$data, "describedBy")) |> funique() |> as_tbl()
+    )
+  
 }
 
 x <- catalog_mcd()
 
 x
-```
-
-```{r}
-x$distribution[[326]]$data[[2]]$downloadURL
-
-x$distribution[[1]]$data[[1]]$describedBy
-```
-
-
-```{r}
-d <- rowbind(x$distribution, fill = TRUE) |> as_tbl()
-
-new_tbl(
-  title = delist(get_elem(d$data, "title")),
-  download = delist(get_elem(d$data, "downloadURL")),
-  dictionary = delist(get_elem(d$data, "describedBy"))
-) |> 
-  print(n = 100)
 ```
 
 ```{r}
@@ -136,7 +119,7 @@ mcd_dims <- function(uuid) {
 
 }
 
-identifier <- sbt(x, title == "State Drug Utilization Data 2020") |> _[["identifier"]]
+identifier <- sbt(x$sets, title == "State Drug Utilization Data 2020") |> _[["identifier"]]
 
 mcd_dims(identifier)
 
@@ -155,7 +138,8 @@ mcd_url(identifier) |>
   perform_simple() |> 
   _[["results"]] |> 
   map_na_if() |> 
-  as_tbl()
+  as_tbl() |> 
+  purse()
 ```
 
 
