@@ -373,45 +373,101 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 data-number="4.1" class="anchored" data-anchor-id="links"><span class="header-section-number">4.1</span> Links</h2>
 <ul>
 <li><a href="https://data.healthcare.gov/api">HealthCare.gov API</a></li>
+<li>Limit: <code>500L</code></li>
 </ul>
 </section>
 <section id="load-catalog" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="load-catalog"><span class="header-section-number">4.2</span> Load Catalog</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>catalog_hc <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fload</span>(<span class="st">"https://data.healthcare.gov/api/1/metastore/schemas/dataset/items?show-reference-ids"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as_tbl</span>()</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">catalog_hc</span>()</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>join_title <span class="ot">&lt;-</span> \(a, b) <span class="fu">join</span>(<span class="at">x =</span> a, <span class="at">y =</span> b, <span class="at">on =</span> <span class="st">"title"</span>, <span class="at">verbose =</span> <span class="dv">0</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>make_join_col <span class="ot">&lt;-</span> \(x, col) {</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na_if</span>(<span class="fu">flatten_column</span>(<span class="fu">map</span>(x[[<span class="fu">ensym</span>(col)]], \(x) <span class="fu">get_elem</span>(<span class="fu">as.list</span>(x), <span class="st">"data"</span>))), <span class="st">""</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>catalog_hc <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">fload</span>(<span class="st">"https://data.healthcare.gov/api/1/metastore/schemas/dataset/items?show-reference-ids"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> x <span class="sc">|&gt;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as_tbl</span>() <span class="sc">|&gt;</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mtt</span>(</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">modified    =</span> <span class="fu">as_date</span>(modified),</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">issued      =</span> <span class="fu">as_date</span>(issued),</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">periodicity =</span> <span class="fu">recode_iso8601</span>(accrualPeriodicity),</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">contact     =</span> <span class="fu">reduce_contact</span>(x<span class="sc">$</span>contactPoint)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">slt</span>(</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>      title,</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>      identifier,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>      description,</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>      periodicity,</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>      issued,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>      modified,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>      contact,</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>      keyword,</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>      distribution</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>  keys <span class="ot">&lt;-</span> <span class="fu">new_df</span>(<span class="at">title =</span> x<span class="sc">$</span>title, <span class="at">keyword =</span> <span class="fu">make_join_col</span>(x, keyword)) <span class="sc">|&gt;</span> </span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sbt</span>(keyword <span class="sc">!=</span> <span class="st">"healthcare"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mtt</span>(<span class="at">keyword =</span> <span class="fu">stri_replace_all_regex</span>(keyword, <span class="st">", healthcare|healthcare, "</span>, <span class="st">""</span>))</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  d <span class="ot">&lt;-</span> <span class="fu">rowbind</span>(x<span class="sc">$</span>distribution, <span class="at">fill =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>  tvec <span class="ot">&lt;-</span> vctrs<span class="sc">::</span><span class="fu">vec_rep_each</span>(x<span class="sc">$</span>title, <span class="fu">fnobs</span>(<span class="fu">get_elem</span>(x<span class="sc">$</span>distribution, <span class="st">"data"</span>, <span class="at">DF.as.list =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>  download <span class="ot">&lt;-</span> <span class="fu">new_tbl</span>(<span class="at">title =</span> tvec, <span class="at">download =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(d<span class="sc">$</span>data, <span class="st">"downloadURL"</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fcount</span>(title, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">sets =</span> <span class="fu">join_title</span>(<span class="fu">slt</span>(x, <span class="sc">-</span>keyword, <span class="sc">-</span>distribution), keys) <span class="sc">|&gt;</span> <span class="fu">join_title</span>(download <span class="sc">|&gt;</span> <span class="fu">sbt</span>(N <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> <span class="fu">slt</span>(<span class="sc">-</span>N)),</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">download =</span> download <span class="sc">|&gt;</span> <span class="fu">sbt</span>(N <span class="sc">&gt;</span> <span class="dv">1</span>)</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">catalog_hc</span>()</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 315 × 21
-   `@type`    title identifier description accessLevel accrualPeriodicity issued
- * &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;       &lt;chr&gt;              &lt;chr&gt; 
- 1 dcat:Data… Agen… e4rr-zk4i  "Dataset."  public      R/P10Y             2018-…
- 2 dcat:Data… AB R… wb6u-x2ny  "Access Da… public      R/P10Y             2016-…
- 3 dcat:Data… AB S… e8uy-7rnp  "Access Da… public      R/P10Y             2016-…
- 4 &lt;NA&gt;       Netw… efch-75vp  "The Netwo… public      &lt;NA&gt;               2020-…
- 5 &lt;NA&gt;       Serv… cqrd-buzn  "The Servi… public      &lt;NA&gt;               2020-…
- 6 &lt;NA&gt;       Busi… g6ja-xx6f  "The Busin… public      &lt;NA&gt;               2020-…
- 7 &lt;NA&gt;       Plan… a2km-i629  "The Plan … public      &lt;NA&gt;               2020-…
- 8 &lt;NA&gt;       Bene… 86mw-kems  "The Benef… public      &lt;NA&gt;               2020-…
- 9 &lt;NA&gt;       Rate… 7wqt-7ky9  "The Rate … public      &lt;NA&gt;               2020-…
-10 dcat:Data… Issu… 5k5i-wzex  "The datas… public      R/P10Y             2020-…
+<pre><code>$sets
+# A tibble: 315 × 9
+   title        identifier description periodicity issued     modified   contact
+ * &lt;chr&gt;        &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;       &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;  
+ 1 Agent Broke… e4rr-zk4i  "Dataset."  Decenniall… 2018-07-31 2025-03-24 FFMPro…
+ 2 AB Registra… wb6u-x2ny  "Access Da… Decenniall… 2016-03-30 2025-03-24 FFMPro…
+ 3 AB Suspensi… e8uy-7rnp  "Access Da… Decenniall… 2016-05-03 2025-03-24 FFMPro…
+ 4 Network PUF… efch-75vp  "The Netwo… &lt;NA&gt;        2020-10-09 2021-08-11 Andy E…
+ 5 Service Are… cqrd-buzn  "The Servi… &lt;NA&gt;        2020-10-09 2021-08-11 Andy E…
+ 6 Business Ru… g6ja-xx6f  "The Busin… &lt;NA&gt;        2020-10-09 2021-08-11 Andy E…
+ 7 Plan Attrib… a2km-i629  "The Plan … &lt;NA&gt;        2020-10-09 2021-08-11 Andy E…
+ 8 Benefits an… 86mw-kems  "The Benef… &lt;NA&gt;        2020-10-09 2021-08-11 Andy E…
+ 9 Rate PUF - … 7wqt-7ky9  "The Rate … &lt;NA&gt;        2020-10-09 2021-08-11 Andy E…
+10 Issuer_Part… 5k5i-wzex  "The datas… Decenniall… 2020-06-05 2025-01-13 Domini…
 # ℹ 305 more rows
-# ℹ 14 more variables: modified &lt;chr&gt;, publisher &lt;list&gt;, contactPoint &lt;list&gt;,
-#   keyword &lt;list&gt;, distribution &lt;list&gt;, bureauCode &lt;list&gt;, programCode &lt;list&gt;,
-#   `%modified` &lt;chr&gt;, dataQuality &lt;lgl&gt;, license &lt;chr&gt;, theme &lt;list&gt;,
-#   references &lt;list&gt;, landingPage &lt;chr&gt;, describedBy &lt;chr&gt;</code></pre>
+# ℹ 2 more variables: keyword &lt;chr&gt;, download &lt;chr&gt;
+
+$download
+# A tibble: 8 × 3
+  title                                  download                              N
+  &lt;chr&gt;                                  &lt;chr&gt;                             &lt;int&gt;
+1 2016 QHP Landscape SHOP Market Medical https://data.healthcare.gov/data…     2
+2 2016 QHP Landscape SHOP Market Medical https://data.healthcare.gov/data…     2
+3 Quality PUF - PY2023                   https://edit.data.healthcare.gov…     2
+4 Quality PUF - PY2023                   https://edit.data.healthcare.gov…     2
+5 Quality PUF - PY2024                   https://data.healthcare.gov/site…     2
+6 Quality PUF - PY2024                   https://data.healthcare.gov/site…     2
+7 Quality PUF - PY2025                   https://data.healthcare.gov/site…     2
+8 Quality PUF - PY2025                   https://data.healthcare.gov/site…     2</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>utils<span class="sc">::</span><span class="fu">formatOL</span>(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  x<span class="sc">$</span>title</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>utils<span class="sc">::</span><span class="fu">formatOL</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  x<span class="sc">$</span>sets<span class="sc">$</span>title</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  1. Agent Broker Registration Tracker
   2. AB Registration Completion List

@@ -419,42 +419,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>      references</span>
 <span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>  d <span class="ot">&lt;-</span> <span class="fu">rowbind</span>(x<span class="sc">$</span>distribution, <span class="at">fill =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  tvec <span class="ot">&lt;-</span> vctrs<span class="sc">::</span><span class="fu">vec_rep_each</span>(x<span class="sc">$</span>title, <span class="fu">fnobs</span>(<span class="fu">get_elem</span>(x<span class="sc">$</span>distribution, <span class="st">"data"</span>, <span class="at">DF.as.list =</span> <span class="cn">TRUE</span>)))</span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>  groups <span class="ot">&lt;-</span> <span class="fu">new_df</span>(<span class="at">title =</span> x<span class="sc">$</span>title, <span class="at">group =</span> <span class="fu">make_join_col</span>(x, theme)) <span class="sc">|&gt;</span></span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sbt</span>(<span class="fu">not_na</span>(group) <span class="sc">&amp;</span> group <span class="sc">!=</span> <span class="st">"Uncategorized"</span>)</span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>  keys <span class="ot">&lt;-</span> <span class="fu">new_df</span>(<span class="at">title =</span> x<span class="sc">$</span>title, <span class="at">keyword =</span> <span class="fu">make_join_col</span>(x, keyword))</span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>  refs <span class="ot">&lt;-</span> <span class="fu">new_df</span>(<span class="at">title =</span> x<span class="sc">$</span>title,</span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>                 <span class="at">references =</span> <span class="fu">na_if</span>(<span class="fu">flatten_column</span>(x<span class="sc">$</span>references), <span class="st">"NA"</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sbt</span>(<span class="fu">not_na</span>(references) <span class="sc">&amp;</span> <span class="fu">stri_detect_regex</span>(references, <span class="st">"^https://www.mathematica.org/"</span>, <span class="at">negate =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(<span class="at">references =</span> <span class="fu">stri_replace_all_fixed</span>(references, <span class="st">", https://www.mathematica.org/"</span>, <span class="st">""</span>))</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>  groups <span class="ot">&lt;-</span> <span class="fu">new_df</span>(<span class="at">title =</span> x<span class="sc">$</span>title, <span class="at">group =</span> <span class="fu">make_join_col</span>(x, theme)) <span class="sc">|&gt;</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sbt</span>(<span class="fu">not_na</span>(group) <span class="sc">&amp;</span> group <span class="sc">!=</span> <span class="st">"Uncategorized"</span>)</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>  keys <span class="ot">&lt;-</span> <span class="fu">new_df</span>(<span class="at">title =</span> x<span class="sc">$</span>title, <span class="at">keyword =</span> <span class="fu">make_join_col</span>(x, keyword))</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>  refs <span class="ot">&lt;-</span> <span class="fu">new_df</span>(<span class="at">title =</span> x<span class="sc">$</span>title,</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>                 <span class="at">references =</span> <span class="fu">na_if</span>(<span class="fu">flatten_column</span>(x<span class="sc">$</span>references), <span class="st">"NA"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sbt</span>(<span class="fu">not_na</span>(references) <span class="sc">&amp;</span> <span class="fu">stri_detect_regex</span>(references, <span class="st">"^https://www.mathematica.org/"</span>, <span class="at">negate =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(<span class="at">references =</span> <span class="fu">stri_replace_all_fixed</span>(references, <span class="st">", https://www.mathematica.org/"</span>, <span class="st">""</span>))</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>  d <span class="ot">&lt;-</span> <span class="fu">rowbind</span>(x<span class="sc">$</span>distribution, <span class="at">fill =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>  tvec <span class="ot">&lt;-</span> vctrs<span class="sc">::</span><span class="fu">vec_rep_each</span>(x<span class="sc">$</span>title, <span class="fu">fnobs</span>(<span class="fu">get_elem</span>(x<span class="sc">$</span>distribution, <span class="st">"data"</span>, <span class="at">DF.as.list =</span> <span class="cn">TRUE</span>)))</span>
 <span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">sets =</span> <span class="fu">reduce</span>(<span class="fu">list</span>(</span>
-<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>      <span class="fu">slt</span>(x, <span class="sc">-</span>theme, <span class="sc">-</span>keyword, <span class="sc">-</span>references, <span class="sc">-</span>distribution), </span>
-<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>      groups, </span>
-<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>      keys, </span>
-<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>      refs), </span>
-<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>      join_title),</span>
-<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">download =</span> <span class="fu">new_tbl</span>(</span>
-<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> tvec, </span>
-<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>      <span class="at">download =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(d<span class="sc">$</span>data, <span class="st">"downloadURL"</span>))) <span class="sc">|&gt;</span> </span>
-<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>      <span class="fu">fcount</span>(title, <span class="at">add =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">dictionary =</span> <span class="fu">new_tbl</span>(<span class="at">url =</span> <span class="fu">funique</span>(<span class="fu">delist</span>(<span class="fu">get_elem</span>(d<span class="sc">$</span>data, <span class="st">"describedBy"</span>)))) <span class="sc">|&gt;</span> </span>
-<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mtt</span>(<span class="at">title =</span> <span class="fu">map_chr</span>(url, \(x) <span class="fu">dict_title</span>(x))) <span class="sc">|&gt;</span> <span class="fu">colorder</span>(title)</span>
-<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">catalog_mcd</span>()</span>
-<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>  download <span class="ot">&lt;-</span> <span class="fu">new_tbl</span>(<span class="at">title =</span> tvec, <span class="at">download =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(d<span class="sc">$</span>data, <span class="st">"downloadURL"</span>))) <span class="sc">|&gt;</span> <span class="fu">fcount</span>(title, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">sets       =</span> <span class="fu">reduce</span>(<span class="fu">list</span>(<span class="fu">slt</span>(x, <span class="sc">-</span>theme, <span class="sc">-</span>keyword, <span class="sc">-</span>references, <span class="sc">-</span>distribution), groups, keys, refs, <span class="fu">sbt</span>(download, N <span class="sc">==</span> <span class="dv">1</span>, <span class="sc">-</span>N)), join_title),</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">download   =</span> <span class="fu">funique</span>(<span class="fu">sbt</span>(download, N <span class="sc">&gt;</span> <span class="dv">1</span>), <span class="at">cols =</span> <span class="st">"download"</span>),</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">dictionary =</span> <span class="fu">new_tbl</span>(<span class="at">url =</span> <span class="fu">funique</span>(<span class="fu">delist</span>(<span class="fu">get_elem</span>(d<span class="sc">$</span>data, <span class="st">"describedBy"</span>)))) <span class="sc">|&gt;</span> <span class="fu">mtt</span>(<span class="at">identifier =</span> stringi<span class="sc">::</span><span class="fu">stri_extract</span>(url,</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>      <span class="at">regex =</span> <span class="st">"(?:[0-9a-fA-F]){8}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){12}"</span>)) <span class="sc">|&gt;</span> <span class="fu">colorder</span>(identifier)</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>    <span class="co"># |&gt; mtt(title = map_chr(url, \(x) dict_title(x))) |&gt; colorder(title)</span></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">catalog_mcd</span>()</span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$sets
-# A tibble: 482 × 11
+# A tibble: 483 × 12
    title        identifier description periodicity issued     modified   contact
  * &lt;chr&gt;        &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;       &lt;date&gt;     &lt;date&gt;     &lt;chr&gt;  
  1 State Drug … ae4d5347-… Drug utili… Decenniall… 2015-06-11 2024-06-11 Medica…
@@ -467,40 +462,40 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  8 State Drug … d371b0f4-… Drug utili… Decenniall… 2015-06-11 2024-06-11 Medica…
  9 State Drug … c39d3302-… Drug utili… Decenniall… 2015-06-11 2024-06-11 Medica…
 10 State Drug … 57c03da7-… Drug utili… Decenniall… 2015-06-11 2024-06-11 Medica…
-# ℹ 472 more rows
-# ℹ 4 more variables: temporal &lt;chr&gt;, group &lt;chr&gt;, keyword &lt;chr&gt;,
-#   references &lt;chr&gt;
+# ℹ 473 more rows
+# ℹ 5 more variables: temporal &lt;chr&gt;, group &lt;chr&gt;, keyword &lt;chr&gt;,
+#   references &lt;chr&gt;, download &lt;chr&gt;
 
 $download
-# A tibble: 515 × 3
-   title                            download                                   N
-   &lt;chr&gt;                            &lt;chr&gt;                                  &lt;int&gt;
- 1 State Drug Utilization Data 1991 https://download.medicaid.gov/data/St…     1
- 2 State Drug Utilization Data 1992 https://download.medicaid.gov/data/St…     1
- 3 State Drug Utilization Data 1993 https://download.medicaid.gov/data/St…     1
- 4 State Drug Utilization Data 1994 https://download.medicaid.gov/data/St…     1
- 5 State Drug Utilization Data 1995 https://download.medicaid.gov/data/St…     1
- 6 State Drug Utilization Data 1996 https://download.medicaid.gov/data/St…     1
- 7 State Drug Utilization Data 1997 https://download.medicaid.gov/data/St…     1
- 8 State Drug Utilization Data 1998 https://download.medicaid.gov/data/St…     1
- 9 State Drug Utilization Data 1999 https://download.medicaid.gov/data/St…     1
-10 State Drug Utilization Data 2000 https://download.medicaid.gov/data/St…     1
-# ℹ 505 more rows
+# A tibble: 53 × 3
+   title                                   download                            N
+   &lt;chr&gt;                                   &lt;chr&gt;                           &lt;int&gt;
+ 1 Scorecard measure                       https://download.medicaid.gov/…     3
+ 2 Scorecard TAG v0.2.4-1 (dev)            https://download.medicaid.gov/…     2
+ 3 Scorecard TAG v0.3.0-1 (etl_test)       https://download.medicaid.gov/…     2
+ 4 Medicaid and CHIP CAA Reporting Metrics https://download.medicaid.gov/…    17
+ 5 Medicaid and CHIP CAA Reporting Metrics https://download.medicaid.gov/…    17
+ 6 Medicaid and CHIP CAA Reporting Metrics https://download.medicaid.gov/…    17
+ 7 Medicaid and CHIP CAA Reporting Metrics https://download.medicaid.gov/…    17
+ 8 Medicaid and CHIP CAA Reporting Metrics https://download.medicaid.gov/…    17
+ 9 Medicaid and CHIP CAA Reporting Metrics https://download.medicaid.gov/…    17
+10 Medicaid and CHIP CAA Reporting Metrics https://download.medicaid.gov/…    17
+# ℹ 43 more rows
 
 $dictionary
 # A tibble: 66 × 2
-   title                                                            url         
- * &lt;chr&gt;                                                            &lt;chr&gt;       
- 1 State Drug Utilization Data Data Dictionary                      https://dat…
- 2 NADAC Data Dictionary                                            https://dat…
- 3 NADAC 2021 Data Dictionary                                       https://dat…
- 4 Drug Products Data Dictionary                                    https://dat…
- 5 Monthly Enrollment Data Dictionary updated                       https://dat…
- 6 Drug Manufacturer Contact Info Data Dictionary                   https://dat…
- 7 Medicaid Enrollment - New Adult Group - Data Dictionary-12112024 https://dat…
- 8 Quality Measures 2018 Dictionary                                 https://dat…
- 9 Medicaid CMS-64 FFCRA Increased FMAP Expenditure data dictionary https://dat…
-10 NADAC First Time Rates                                           https://dat…
+   identifier                           url                                     
+ * &lt;chr&gt;                                &lt;chr&gt;                                   
+ 1 6eb01b59-271e-4a58-b9b8-2d17e2cbd34b https://data.medicaid.gov/api/1/metasto…
+ 2 de58d5ec-4515-494e-ae3f-620200f72989 https://data.medicaid.gov/api/1/metasto…
+ 3 f6868b6f-7ac0-4438-ba0b-2f8e5555123f https://data.medicaid.gov/api/1/metasto…
+ 4 8b3e3880-fd1b-487c-9817-9aa93009f2aa https://data.medicaid.gov/api/1/metasto…
+ 5 7d80cfd8-3266-4c55-8436-948b7c55b9dd https://data.medicaid.gov/api/1/metasto…
+ 6 64b9c63b-7690-4d5d-9e50-5c36d460524e https://data.medicaid.gov/api/1/metasto…
+ 7 9d72d844-1ed3-4988-9fe9-b9988aa7588c https://data.medicaid.gov/api/1/metasto…
+ 8 40415510-8910-4c02-a019-69cccc9f5cb6 https://data.medicaid.gov/api/1/metasto…
+ 9 e27804f7-1db8-41cb-8ece-a1c1fe9d885a https://data.medicaid.gov/api/1/metasto…
+10 8f48dac1-fd84-489a-86be-1b16963d5651 https://data.medicaid.gov/api/1/metasto…
 # ℹ 56 more rows</code></pre>
 </div>
 </div>
@@ -625,92 +620,635 @@ $pages
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  x<span class="sc">$</span>dictionary<span class="sc">$</span>title</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> 1. State Drug Utilization Data Data Dictionary
- 2. NADAC Data Dictionary
- 3. NADAC 2021 Data Dictionary
- 4. Drug Products Data Dictionary
- 5. Monthly Enrollment Data Dictionary updated
- 6. Drug Manufacturer Contact Info Data Dictionary
- 7. Medicaid Enrollment - New Adult Group - Data Dictionary-12112024
- 8. Quality Measures 2018 Dictionary
- 9. Medicaid CMS-64 FFCRA Increased FMAP Expenditure data dictionary
-10. NADAC First Time Rates
-11. Medicaid CMS-64 FFCRA Increased FMAP Expenditure - Data
-    Dictionary-12112024
-12. Medicaid Financial Management Data - Data Dictionary-12112024
-13. Quality Measures 2014-2015 Data Dictionary
-14. Medicaid Financial Management Data – National Totals - Data
-    Dictionary-12112024
-15. State Contact Information Data Dictionary
-16. AMP Reporting Monthly Data Dictionary
-17. Quality Measures 2016-2017 Data Dictionary
-18. NADAC Comparison Data Dictionary
-19. Federal Upper Limits Data Dictionary
-20. AMP Reporting Quarterly Data Dictionary
-21. Quality Measures 2019-2022 Data Dictionary
-22. Newly Reported Drugs Data Dictionary
-23. Division of Pharmacy Releases Index data dictionary
-24. Blood Disorders Data Dictionary
-25. Exclusively Pediatric Data Dictionary
-26. Clotting Factor Drug Report Data Dictionary
-27. Enrollment PUF (program information by month) Data Dictionary
-28. Enrollment PUF (program information by year) Data Dictionary
-29. Enrollment PUF (benefit package by month) Data Dictionary
-30. Enrollment PUF (benefit package by year) Data Dictionary
-31. Enrollment PUF (dual status information by month) Data Dictionary
-32. Enrollment PUF (dual status information by year) Data Dictionary
-33. Enrollment PUF (major eligibility group information by month) Data
-    Dictionary
-34. Enrollment PUF (major eligibility group information by year) Data
-    Dictionary
-35. Enrollment PUF (managed care information by month) Data Dictionary
-36. Enrollment PUF (managed care information by year) Data Dictionary
-37. Service Use PUF (Behavioral Health Services) Data Dictionary
-38. Service Use PUF (Blood Lead Screening Services) Data Dictionary
-39. Service Use PUF (Health Screening Services) Data Dictionary
-40. Service Use PUF (Contraceptive Care Services) Data Dictionary
-41. Service Use PUF (Telehealth Services) Data Dictionary
-42. Service Use PUF (Vaccinations Provided) Data Dictionary
-43. Number and rate of NAS per 1,000 births in newborns whose
-    deliveries were covered by Medicaid or CHIP, 2017 - 2021
-44. Number and rate of SMM among Medicaid- and CHIP-covered deliveries,
-    2017 - 2021
-45. Beneficiaries who could benefit from integrated care, 2017-2021
-46. Beneficiaries receiving a physical health service among
-    beneficiaries receiving a SUD service by physical health cond,
-    2017-2021
-47. Unwinding: Medicaid and CHIP CAA Reporting Metrics
-48. Unwinding: HealthCare.gov Transitions Marketplace Medicaid
-    Unwinding Report
-49. Unwinding: State-based Marketplace (SBM) Medicaid Unwinding Report
-50. Unwinding: HealthCare.gov Marketplace Medicaid Unwinding Report
-51. Unwinding: Separate CHIP Enrollment by Month and State
-52. Medicaid CMS-64 CAA 2023 Increased FMAP Expenditure Data Collected
-    through MBES/CBES - Data Dictionary-12112024
-53. Unwinding: Medicaid and CHIP Updated Renewal Outcomes
-54. Monthly enrollment PI dataset Data dictionary
-55. MLR Public Data Dictionary
-56. Renewal dataset data dictionary
-57. Current Separate CHIP Enrollment by Month and State Data Dictionary
-58. Race and ethnicity of the national Medicaid and CHIP population
-59. Medicaid enrollees who qualify for&nbsp;benefits based on disability
-60. Primary language spoken by the&nbsp;Medicaid and CHIP population
-61. Rural Medicaid and CHIP enrollees
-62. Section 1915(c) waiver program&nbsp;participants
-63. Medicaid and CHIP enrollees who&nbsp;received a well-child visit
-64. Medicaid and CHIP enrollees who received&nbsp;mental health or SUD
-    services
-65. Prematurity and severe maternal morbidity among Medicaid- and
-    CHIP-covered live births
-66. Medicaid Enterprise System Datatable - Data Dictionary</code></pre>
-</div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>utils<span class="sc">::</span><span class="fu">formatOL</span>(</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  x<span class="sc">$</span>title</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>utils<span class="sc">::</span><span class="fu">formatOL</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  x<span class="sc">$</span>sets<span class="sc">$</span>title</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  1. State Drug Utilization Data 1991
+  2. State Drug Utilization Data 1992
+  3. State Drug Utilization Data 1993
+  4. State Drug Utilization Data 1994
+  5. State Drug Utilization Data 1995
+  6. State Drug Utilization Data 1996
+  7. State Drug Utilization Data 1997
+  8. State Drug Utilization Data 1998
+  9. State Drug Utilization Data 1999
+ 10. State Drug Utilization Data 2000
+ 11. State Drug Utilization Data 2001
+ 12. State Drug Utilization Data 2002
+ 13. State Drug Utilization Data 2003
+ 14. State Drug Utilization Data 2004
+ 15. State Drug Utilization Data 2005
+ 16. State Drug Utilization Data 2006
+ 17. State Drug Utilization Data 2007
+ 18. State Drug Utilization Data 2008
+ 19. State Drug Utilization Data 2009
+ 20. State Drug Utilization Data 2010
+ 21. State Drug Utilization Data 2011
+ 22. State Drug Utilization Data 2012
+ 23. State Drug Utilization Data 2013
+ 24. State Drug Utilization Data 2014
+ 25. State Drug Utilization Data 2015
+ 26. State Drug Utilization Data 2016
+ 27. State Drug Utilization Data 2017
+ 28. State Drug Utilization Data 2018
+ 29. State Drug Utilization Data 2019
+ 30. State Drug Utilization Data 2020
+ 31. NADAC (National Average Drug Acquisition Cost) 2014
+ 32. NADAC (National Average Drug Acquisition Cost) 2015
+ 33. NADAC (National Average Drug Acquisition Cost) 2016
+ 34. NADAC (National Average Drug Acquisition Cost) 2017
+ 35. NADAC (National Average Drug Acquisition Cost) 2018
+ 36. NADAC (National Average Drug Acquisition Cost) 2019
+ 37. NADAC (National Average Drug Acquisition Cost) 2020
+ 38. NADAC (National Average Drug Acquisition Cost) 2021
+ 39. Drug Products in the Medicaid Drug Rebate Program
+ 40. State Medicaid and CHIP Applications, Eligibility Determinations,
+     and Enrollment Data
+ 41. Drug Manufacturer Contacts
+ 42. Medicaid Enrollment - New Adult Group
+ 43. Managed Care Enrollment by Program and Plan
+ 44. 2017 Child and Adult Health Care Quality Measures
+ 45. 2018 Child and Adult Health Care Quality Measures
+ 46. Managed Care Enrollment Summary
+ 47. Managed Long Term Services and Supports (MLTSS) Enrollees
+ 48. Managed Care Enrollment by Program and Population (All)
+ 49. Managed Care Features By Enrollment Population
+ 50. Medicaid CMS-64 New Adult Group Expenditures
+ 51. 2017 Managed Care Programs by State
+ 52. 2019 Child and Adult Health Care Quality Measures Quality
+ 53. Share of Medicaid Enrollees in Managed Care
+ 54. Managed Care Features by QA and Performance Incentive
+ 55. 2018 Managed Care Programs By State
+ 56. Managed Care Enrollment by Program and Population (Duals)
+ 57. First Time NADAC Rates
+ 58. NAM CAHPS 2014 Public Use
+ 59. Medicaid CMS-64 FFCRA Increased FMAP Expenditure
+ 60. Medicaid Financial Management Data
+ 61. Medicaid and CHIP Eligibility Levels
+ 62. 2014 Child and Adult Health Care Quality Measures
+ 63. Medicaid Financial Management Data – National Totals
+ 64. Medicaid Drug Rebate Program State Contact Information
+ 65. Express Lane Eligibility for Medicaid and CHIP Coverage
+ 66. Continuous Eligibility for Medicaid and CHIP Coverage
+ 67. Drug AMP Reporting - Monthly
+ 68. Disproportionate Share Hospital (DSH) Payments - Annual Reporting
+     Requirements
+ 69. Managed Care Programs by State
+ 70. 2016 Child and Adult Health Care Quality Measures
+ 71. NADAC Comparison
+ 72. ACA Federal Upper Limits
+ 73. Presumptive Eligibility for Medicaid and CHIP Coverage
+ 74. 2015 Child and Adult Health Care Quality Measures
+ 75. Drug AMP Reporting - Quarterly
+ 76. category_tiles
+ 77. State Drug Utilization Data 2021
+ 78. NADAC (National Average Drug Acquisition Cost) 2013
+ 79. 2020 Child and Adult Health Care Quality Measures Quality
+ 80. featAuto_topicArea_measureDisplayGroups
+ 81. featAuto_tafVersion
+ 82. featAuto_states_measures_download
+ 83. featAuto_states_measures
+ 84. featAuto_measure_concernLevel
+ 85. featAuto_measure_compare_download
+ 86. featAuto_measure_compare
+ 87. featAuto_measure_backgroundAndMethods
+ 88. featAuto_measure_allStates_downloadLink
+ 89. featAuto_measure_allStates_download
+ 90. featAuto_measure_allStates
+ 91. featAuto_map
+ 92. featAuto_files_topicSnapshot
+ 93. featAuto_files_stateSnapshot
+ 94. featAuto_files_allDownloads
+ 95. featAuto_fileType_measureDisplayGroups
+ 96. featAuto_concernLevel
+ 97. devAuto_topicArea_measureDisplayGroups
+ 98. devAuto_tafVersion
+ 99. devAuto_states_measures_download
+100. devAuto_states_measures
+101. devAuto_states
+102. devAuto_measure_concernLevel
+103. devAuto_measure_compare_download
+104. devAuto_measure_compare
+105. devAuto_measure_backgroundAndMethods
+106. devAuto_measure_allStates_downloadLink
+107. devAuto_measure_allStates_download
+108. devAuto_measure_allStates
+109. devAuto_map
+110. devAuto_files_topicSnapshot
+111. devAuto_files_stateSnapshot
+112. devAuto_files_allDownloads
+113. devAuto_fileType_measureDisplayGroups
+114. devAuto_concernLevel
+115. implAuto_topicArea_measureDisplayGroups
+116. implAuto_tafVersion
+117. implAuto_states_measures_download
+118. implAuto_states_measures
+119. implAuto_states
+120. implAuto_measure_concernLevel
+121. implAuto_measure_compare_download
+122. implAuto_measure_compare
+123. implAuto_measure_backgroundAndMethods
+124. implAuto_measure_allStates_downloadLink
+125. implAuto_measure_allStates
+126. implAuto_map
+127. implAuto_fileType_measureDisplayGroups
+128. implAuto_concernLevel
+129. prodAuto_topicArea_measureDisplayGroups
+130. prodAuto_tafVersion
+131. prodAuto_states_measures_download
+132. prodAuto_states_measures
+133. prodAuto_states
+134. prodAuto_measure_concernLevel
+135. prodAuto_measure_compare_download
+136. prodAuto_measure_compare
+137. prodAuto_measure_backgroundAndMethods
+138. prodAuto_measure_allStates_downloadLink
+139. prodAuto_measure_allStates_download
+140. prodAuto_measure_allStates
+141. prodAuto_map
+142. prodAuto_files_topicSnapshot
+143. prodAuto_files_stateSnapshot
+144. prodAuto_files_allDownloads
+145. prodAuto_fileType_measureDisplayGroups
+146. prodAuto_concernLevel
+147. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program
+148. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 20210802 to 20210808
+149. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 20210809 to 20210815
+150. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 20210816 to 20210822
+151. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 20210823 to 20210829
+152. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 20210927 to 20211003
+153. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 20210830 to 20210905
+154. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 20210906 to 20210912
+155. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 20210913 to 20210919
+156. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 20210920 to 20210926
+157. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 20210726 to 20210801
+158. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 20211004 to 20211010
+159. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 20211011 to 20211017
+160. Division of Pharmacy Releases Index dataset
+161. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 20211018 to 20211024
+162. 2019 Managed Care Programs By State
+163. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 20211025 to 20211031
+164. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 20211101 to 20211107
+165. Rate of NAS per 1,000 births in newborns whose deliveries were
+     covered by Medicaid or CHIP, 2017 - 2019
+166. NADAC (National Average Drug Acquisition Cost) 2022
+167. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2022-01-31 to 2022-02-06
+168. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2022-02-07 to 2022-02-13
+169. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2022-02-14 to 2022-02-20
+170. CHIP Applications, Eligibility Determinations, and Enrollment Data
+171. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2022-02-21 to 2022-02-27
+172. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2022-02-28 to 2022-03-06
+173. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2022-03-07 to 2022-03-13
+174. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2022-03-14 to 2022-03-20
+175. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2022-03-21 to 2022-03-27
+176. SDUD
+177. NADAC
+178. Pricing Comparison for Blood Disorder Treatments (Pricing as of
+     12/1/2021)
+179. featAuto_files_allDownloadsSSBtn
+180. devAuto_files_allDownloadsSSBtn
+181. implAuto_files_allDownloadsSSBtn
+182. prodAuto_files_allDownloadsSSBtn
+183. 2020 Managed Care Programs By State
+184. State Drug Utilization Data 2022
+185. featAuto_measureSearchInfo
+186. devAuto_measureSearchInfo
+187. implAuto_measureSearchInfo
+188. prodAuto_measureSearchInfo
+189. featAuto_states
+190. Pricing Comparison for Blood Disorder Treatments (Pricing as of
+     6/1/2022)
+191. Exclusive Pediatric Drugs
+192. Clotting Factor Drug Report
+193. Pricing Comparison for Blood Disorder Treatments (Pricing as of
+     12/1/2022)
+194. NADAC (National Average Drug Acquisition Cost) 2023
+195. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-01-30-to-2023-02-05
+196. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-01-02-to-2023-01-08
+197. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-01-09-to-2023-01-15
+198. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-01-16-to-2023-01-22
+199. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-01-23-to-2023-01-29
+200. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2022-12-26-to-2023-01-01
+201. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-02-06-to-2023-02-12
+202. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-02-13-to-2023-02-19
+203. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-02-20-to-2023-02-26
+204. Scorecard measure
+205. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-02-27-to-2023-03-05
+206. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-03-06-to-2023-03-12
+207. Program Information for Medicaid and CHIP Beneficiaries by Month
+208. Program Information for Medicaid and CHIP Beneficiaries by Year
+209. Benefit Package for Medicaid and CHIP Beneficiaries by Month
+210. Benefit Package for Medicaid and CHIP Beneficiaries by Year
+211. Dual Status Information for Medicaid and CHIP Beneficiaries by
+     Month
+212. Dual Status Information for Medicaid and CHIP Beneficiaries by
+     Year
+213. Major Eligibility Group Information for Medicaid and CHIP
+     Beneficiaries by Month
+214. Major Eligibility Group Information for Medicaid and CHIP
+     Beneficiaries by Year
+215. Managed Care Information for Medicaid and CHIP Beneficiaries by
+     Month
+216. Managed Care Information for Medicaid and CHIP Beneficiaries by
+     Year
+217. Acute Care Services Provided to the Medicaid and CHIP Population
+218. Behavioral Health Services&nbsp;Provided to the Medicaid and CHIP
+     Population
+219. Blood Lead Screening Services Provided to Medicaid and CHIP
+     Beneficiaries Ages 1-2
+220. Health Screenings Provided to Medicaid and CHIP Beneficiaries
+     Under Age 19
+221. Respiratory Conditions in the Medicaid and CHIP Population
+222. Contraceptive Care Services Provided to Medicaid and CHIP
+     Beneficiaries ages 15 to 44
+223. COVID Testing and Testing-Related Services Provided to Medicaid
+     and CHIP Beneficiaries
+224. Dental Services Provided to Medicaid and CHIP Beneficiaries Under
+     Age 19
+225. Perinatal Care Services Provided to Medicaid and CHIP
+     Beneficiaries ages 15 to 44
+226. Pregnancy Outcomes for Medicaid and CHIP Beneficiaries ages 15 to
+     44
+227. Telehealth Services Provided to the Medicaid and CHIP Population
+228. Vaccinations Provided to the Medicaid and CHIP Population under
+     age 19
+229. Number and rate of NAS per 1,000 births in newborns whose
+     deliveries were covered by Medicaid or CHIP, 2017 - 2021
+230. Number and rate of SMM among Medicaid- and CHIP-covered
+     deliveries, 2017 - 2021
+231. Number of pregnant and postpartum Medicaid and CHIP beneficiaries,
+     2017-2021
+232. Beneficiaries who could benefit from integrated care, 2017-2021
+233. Beneficiaries receiving a behavioral health service by behavioral
+     health condition, 2017-2021
+234. Beneficiaries receiving a physical hlth serv among beneficiaries
+     receiving a mental hlth serv, by physical hlth cond, 2017-2021
+235. Beneficiaries receiving a physical health service among
+     beneficiaries receiving a SUD service by physical health cond,
+     2017-2021
+236. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-03-13-to-2023-03-19
+237. Scorecard measure
+238. Scorecard measure_value v3.1.1 (dev)
+239. Scorecard pillar
+240. Scorecard state v3.1.1 (dev)
+241. Scorecard TAG v0.2.4-1 (dev)
+242. Scorecard filters v3.1.1 (dev)
+243. Scorecard measure v3.1.1 (dev)
+244. Scorecard measure
+245. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-03-20-to-2023-03-26
+246. featAuto_footnotes
+247. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-03-27-to-2023-04-02
+248. Scorecard pillar v3.1.1 (dev)
+249. Scorecard pillar v3.1.3 (etl-test)
+250. Scorecard state v3.1.3 (etl-test)
+251. Scorecard measure_value v3.1.3 (etl-test)
+252. Scorecard measure v3.1.3 (etl-test)
+253. Scorecard filters v3.1.3 (etl-test)
+254. Scorecard TAG v0.2.4-1 (etl_test)
+255. Scorecard example_small_source_data_file
+256. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-04-03-to-2023-04-09
+257. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-04-10-to-2023-04-16
+258. Scorecard pillar v3.1.1 (cmsdev)
+259. Scorecard state v3.1.1 (cmsdev)
+260. Scorecard measure_value v3.1.1 (cmsdev)
+261. Scorecard measure v3.1.1 (cmsdev)
+262. Scorecard filters v3.1.1 (cmsdev)
+263. Scorecard TAG v0.2.4-1 (dev0)
+264. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-04-17-to-2023-04-23
+265. devAuto_footnotes
+266. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-04-24-to-2023-04-30
+267. Scorecard Example
+268. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-05-01-to-2023-05-07
+269. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-05-08-to-2023-05-14
+270. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-05-15-to-2023-05-21
+271. Scorecard TAG v0.3.0-1 (etl_test)
+272. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-05-22-to-2023-05-28
+273. Scorecard TAG v0.2.4-1 (dev0)
+274. Scorecard TAG v0.3.0-1 (etl_test)
+275. Scorecard TAG v0.2.4-1 (dev)
+276. implAuto_footnotes
+277. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-05-29-to-2023-06-04
+278. prodAuto_footnotes
+279. Scorecard TAG v0.3.1-1 (etl_test)
+280. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-06-05-to-2023-06-11
+281. Scorecard version v3.1.1 (cmsdev)
+282. Scorecard version v3.1.1 (dev)
+283. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-06-19-to-2023-06-25
+284. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-06-12-to-2023-06-18
+285. Scorecard pillar v2.12.4 (impl)
+286. Scorecard state v2.12.4 (impl)
+287. Scorecard measure_value v2.12.4 (impl)
+288. Scorecard measure v2.12.4 (impl)
+289. Scorecard filters v2.12.4 (impl)
+290. Scorecard version v2.12.4 (impl)
+291. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-06-26-to-2023-07-02
+292. Pricing Comparison for Blood Disorder Treatments (Pricing as of
+     6/1/2023)
+293. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-07-03-to-2023-07-09
+294. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-07-10-to-2023-07-16
+295. 2021 Managed Care Programs By State
+296. Scorecard pillar v2.11.9 (prod)
+297. Scorecard state v2.11.9 (prod)
+298. Scorecard measure_value v2.11.9 (prod)
+299. Scorecard measure v2.11.9 (prod)
+300. Scorecard filters v2.11.9 (prod)
+301. Scorecard version v2.11.9 (prod)
+302. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-07-17-to-2023-07-23
+303. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-07-24-to-2023-07-30
+304. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-07-31-to-2023-08-06
+305. CoreSet pillar v2.11.19-test (local)
+306. CoreSet state v2.11.19-test (local)
+307. CoreSet measure_value v2.11.19-test (local)
+308. CoreSet measure v2.11.19-test (local)
+309. CoreSet filters v2.11.19-test (local)
+310. CoreSet version v2.11.19-test (local)
+311. Scorecard PILLAR v0.3.58-test (local)
+312. Scorecard STATE v0.3.58-test (local)
+313. Scorecard MEASURE_VALUE v0.3.58-test (local)
+314. Scorecard MEASURE v0.3.58-test (local)
+315. Scorecard FILTERS v0.3.58-test (local)
+316. Scorecard VERSION v0.3.58-test (local)
+317. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-08-07-to-2023-08-13
+318. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-08-14-to-2023-08-20
+319. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-08-21-to-2023-08-27
+320. 2022 Child and Adult Health Care Quality Measures Quality
+321. 2021 Child and Adult Health Care Quality Measures Quality
+322. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-08-28-to-2023-09-03
+323. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-09-04-to-2023-09-10
+324. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-09-11-to-2023-09-17
+325. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-09-18-to-2023-09-24
+326. Medicaid and CHIP CAA Reporting Metrics
+327. HealthCare.gov Transitions Marketplace Medicaid Unwinding Report
+328. State-based Marketplace (SBM) Medicaid Unwinding Report
+329. HealthCare.gov Marketplace Medicaid Unwinding Report
+330. Separate CHIP Enrollment by Month and State – Historic
+     CAA/Unwinding Period
+331. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-09-25-to-2023-10-01
+332. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-10-02-to-2023-10-08
+333. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-10-09-to-2023-10-15
+334. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-10-16-to-2023-10-22
+335. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-10-23-to-2023-10-29
+336. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-10-30-to-2023-11-05
+337. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-11-06-to-2023-11-12
+338. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-11-13-to-2023-11-19
+339. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-11-20-to-2023-11-26
+340. State Drug Utilization Data 2023
+341. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-11-27-to-2023-12-03
+342. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-12-04-to-2023-12-10
+343. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-12-11-to-2023-12-17
+344. Scorecard SELECTIONS v0.drew.2-test (local)
+345. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-12-18-to-2023-12-24
+346. Pricing Comparison for Blood Disorder Treatments (Pricing as of
+     12/1/2023)
+347. NADAC (National Average Drug Acquisition Cost) 2024
+348. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2023-12-25-to-2023-12-31
+349. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2024-01-01-to-2024-01-07
+350. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2024-01-08-to-2024-01-14
+351. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2024-01-15-to-2024-01-21
+352. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2024-01-22-to-2024-01-28
+353. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 2024-01-29-to-2024-02-04
+354. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 02-05-2024-to-02-11-2024
+355. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 02-12-2024-to-02-18-2024
+356. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 02-19-2024-to-02-25-2024
+357. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 02-26-2024-to-03-03-2024
+358. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 03-04-2024-to-03-10-2024
+359. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 03-11-2024-to-03-17-2024
+360. Medicaid CMS-64 CAA 2023 Increased FMAP Expenditure Data Collected
+     through MBES/CBES
+361. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 03-18-2024-to-03-24-2024
+362. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 03-25-2024-to-03-31-2024
+363. Medicaid and CHIP Updated Renewal Outcomes
+364. Scorecard PILLAR vCORESET.1.1-test (coreset-local)
+365. Scorecard STATE vCORESET.1.1-test (coreset-local)
+366. Scorecard MEASURE_VALUE vCORESET.1.1-test (coreset-local)
+367. Scorecard MEASURE vCORESET.1.1-test (coreset-local)
+368. Scorecard FILTERS vCORESET.1.1-test (coreset-local)
+369. Scorecard VERSION vCORESET.1.1-test (coreset-local)
+370. Scorecard version v3.1.3 (etl-test)
+371. Pricing Comparison for Blood Disorder Treatments (Pricing as of
+     06/1/2024)
+372. devAuto_briefType
+373. devAuto_brief
+374. featAuto_briefType
+375. featAuto_brief
+376. implAuto_briefType
+377. prodAuto_brief
+378. prodAuto_briefType
+379. 2023 Child and Adult Health Care Quality Measures Quality
+380. 2022 Managed Care Programs By State
+381. State Drug Utilization Data 2024
+382. PI dataset
+383. CoreSEt pillar v2.10.6 (coreset-etl-test)
+384. CoreSEt state v2.10.6 (coreset-etl-test)
+385. CoreSEt measure_value v2.10.6 (coreset-etl-test)
+386. CoreSEt measure v2.10.6 (coreset-etl-test)
+387. CoreSEt filters v2.10.6 (coreset-etl-test)
+388. CoreSEt version v2.10.6 (coreset-etl-test)
+389. CoreSEt pillar v2.10.6 (coreset-etl-test)
+390. CoreSEt state v2.10.6 (coreset-etl-test)
+391. CoreSEt measure_value v2.10.6 (coreset-etl-test)
+392. CoreSEt measure v2.10.6 (coreset-etl-test)
+393. CoreSEt pillar v2.10.6 (coreset-etl-test)
+394. CoreSEt state v2.10.6 (coreset-etl-test)
+395. CoreSEt measure_value v2.10.6 (coreset-etl-test)
+396. CoreSEt measure v2.10.6 (coreset-etl-test)
+397. CoreSEt filters v2.10.6 (coreset-etl-test)
+398. CoreSet pillar v3.1.7 (etl-test)
+399. CoreSet state v3.1.7 (etl-test)
+400. CoreSet measure_value v3.1.7 (etl-test)
+401. CoreSet measure v3.1.7 (etl-test)
+402. CoreSet filters v3.1.7 (etl-test)
+403. CoreSet version v3.1.7 (etl-test)
+404. State Medicaid and CHIP Test
+405. MLR Summary Reports
+406. CoreSet pillar v3.1.1 (dev)
+407. CoreSet state v3.1.1 (dev)
+408. CoreSet measure_value v3.1.1 (dev)
+409. CoreSet measure v3.1.1 (dev)
+410. CoreSet filters v3.1.1 (dev)
+411. CoreSet version v3.1.1 (dev)
+412. CoreSEt pillar v2.10.14 (coreset-dev)
+413. CoreSEt state v2.10.14 (coreset-dev)
+414. CoreSEt measure_value v2.10.14 (coreset-dev)
+415. CoreSEt measure v2.10.14 (coreset-dev)
+416. CoreSEt filters v2.10.14 (coreset-dev)
+417. CoreSEt version v2.10.14 (coreset-dev)
+418. CoreSet pillar v3.1.1 (cmsdev)
+419. CoreSet state v3.1.1 (cmsdev)
+420. CoreSet measure_value v3.1.1 (cmsdev)
+421. CoreSet measure v3.1.1 (cmsdev)
+422. CoreSet filters v3.1.1 (cmsdev)
+423. CoreSet version v3.1.1 (cmsdev)
+424. CoreSEt pillar v2.10.16 (coreset-dev0)
+425. CoreSEt state v2.10.16 (coreset-dev0)
+426. CoreSEt measure_value v2.10.16 (coreset-dev0)
+427. CoreSEt measure v2.10.16 (coreset-dev0)
+428. CoreSEt filters v2.10.16 (coreset-dev0)
+429. CoreSEt version v2.10.16 (coreset-dev0)
+430. CoreSEt pillar v2.10.22 (coreset-impl)
+431. CoreSEt measure_value v2.10.22 (coreset-impl)
+432. CoreSet measure v2.10.64 (coreset-impl)
+433. CoreSEt pillar v2.10.22 (coreset-impl)
+434. CoreSEt version v2.10.22 (coreset-impl)
+435. CoreSEt filters v2.10.22 (coreset-impl)
+436. CoreSEt version v2.10.22 (coreset-impl)
+437. CoreSEt state v2.10.22 (coreset-impl)
+438. CoreSEt filters v2.10.22 (coreset-impl)
+439. CoreSEt version v2.10.22 (coreset-impl)
+440. CoreSEt measure_value v2.10.22 (coreset-impl)
+441. CoreSEt filters v2.10.22 (coreset-impl)
+442. CoreSet pillar v2.10.64 (coreset-impl)
+443. CoreSet state v2.10.64 (coreset-impl)
+444. CoreSEt measure_value v2.10.22 (coreset-impl)
+445. CoreSet measure_value v2.10.64 (coreset-impl)
+446. CoreSet filters v2.10.64 (coreset-impl)
+447. CoreSet version v2.10.64 (coreset-impl)
+448. CoreSEt pillar v2.10.23 (coreset-prod)
+449. CoreSEt measure_value v2.10.23 (coreset-prod)
+450. CoreSEt filters v2.10.23 (coreset-prod)
+451. CoreSet pillar v2.10.64 (coreset-prod)
+452. CoreSet measure v2.10.64 (coreset-prod)
+453. CoreSEt measure_value v2.10.23 (coreset-prod)
+454. CoreSet filters v2.10.64 (coreset-prod)
+455. CoreSet version v2.10.64 (coreset-prod)
+456. CoreSEt pillar v2.10.23 (coreset-prod)
+457. CoreSet state v2.10.64 (coreset-prod)
+458. CoreSet measure_value v2.10.64 (coreset-prod)
+459. State Medicaid and CHIP Eligibility Processing Data
+460. Separate CHIP Enrollment by Month and State
+461. NADAC (National Average Drug Acquisition Cost) 2025
+462. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 12-30-2024-to-01-05-2025
+463. Pricing Comparison for Blood Disorder Treatments (Pricing as of
+     12/1/2024)
+464. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 01-06-2025-to-01-12-2025
+465. Race and ethnicity of the national Medicaid and CHIP population
+466. Medicaid enrollees who qualify for benefits based on disability
+467. Primary language spoken by the Medicaid and CHIP population
+468. Rural Medicaid and CHIP enrollees
+469. Section 1915(c) waiver program participants
+470. Medicaid and CHIP enrollees who received a well-child visit
+471. Medicaid and CHIP enrollees who received mental health or SUD
+     services
+472. Prematurity and severe maternal morbidity among Medicaid- and
+     CHIP-covered live births
+473. Medicaid Enterprise System Datatable
+474. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 01-13-2025-to-01-19-2025
+475. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 01-20-2025-to-01-26-2025
+476. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 01-27-2025-to-02-02-2025
+477. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 02-03-2025-to-02-09-2025
+478. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 02-10-2025-to-02-16-2025
+479. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 02-17-2025-to-02-23-2025
+480. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 02-24-2025-to-03-02-2025
+481. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 03-03-2025-to-03-09-2025
+482. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 03-10-2025-to-03-16-2025
+483. Product Data for Newly Reported Drugs in the Medicaid Drug Rebate
+     Program 03-17-2025-to-03-23-2025</code></pre>
+</div>
 </div>
 
 

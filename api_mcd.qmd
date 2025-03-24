@@ -62,10 +62,6 @@ catalog_mcd <- function() {
       references
     )
   
-  d <- rowbind(x$distribution, fill = TRUE)
-  
-  tvec <- vctrs::vec_rep_each(x$title, fnobs(get_elem(x$distribution, "data", DF.as.list = TRUE)))
-  
   groups <- new_df(title = x$title, group = make_join_col(x, theme)) |>
     sbt(not_na(group) & group != "Uncategorized")
   
@@ -76,20 +72,19 @@ catalog_mcd <- function() {
   sbt(not_na(references) & stri_detect_regex(references, "^https://www.mathematica.org/", negate = TRUE)) |> 
   mtt(references = stri_replace_all_fixed(references, ", https://www.mathematica.org/", ""))
   
+  d <- rowbind(x$distribution, fill = TRUE)
+  
+  tvec <- vctrs::vec_rep_each(x$title, fnobs(get_elem(x$distribution, "data", DF.as.list = TRUE)))
+  
+  download <- new_tbl(title = tvec, download = delist(get_elem(d$data, "downloadURL"))) |> fcount(title, add = TRUE)
+  
   list(
-    sets = reduce(list(
-      slt(x, -theme, -keyword, -references, -distribution), 
-      groups, 
-      keys, 
-      refs), 
-      join_title),
-    download = new_tbl(
-      title = tvec, 
-      download = delist(get_elem(d$data, "downloadURL"))) |> 
-      fcount(title, add = TRUE),
-    dictionary = new_tbl(url = funique(delist(get_elem(d$data, "describedBy")))) |> 
-      mtt(title = map_chr(url, \(x) dict_title(x))) |> colorder(title)
-    )
+    sets       = reduce(list(slt(x, -theme, -keyword, -references, -distribution), groups, keys, refs, sbt(download, N == 1, -N)), join_title),
+    download   = funique(sbt(download, N > 1), cols = "download"),
+    dictionary = new_tbl(url = funique(delist(get_elem(d$data, "describedBy")))) |> mtt(identifier = stringi::stri_extract(url,
+      regex = "(?:[0-9a-fA-F]){8}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){12}")) |> colorder(identifier)
+    # |> mtt(title = map_chr(url, \(x) dict_title(x))) |> colorder(title)
+  )
 }
 
 x <- catalog_mcd()
@@ -171,7 +166,7 @@ utils::formatOL(
 
 ```{r}
 utils::formatOL(
-  x$title
+  x$sets$title
 ) |> 
   writeLines()
 ```

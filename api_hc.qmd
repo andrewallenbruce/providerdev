@@ -14,14 +14,61 @@ source("includes/_common.R")
 ## Links
 
    * [HealthCare.gov API](https://data.healthcare.gov/api)
+   * Limit: `500L`
 
 ## Load Catalog
 
 ```{r}
+join_title <- \(a, b) join(x = a, y = b, on = "title", verbose = 0)
+
+make_join_col <- \(x, col) {
+  na_if(flatten_column(map(x[[ensym(col)]], \(x) get_elem(as.list(x), "data"))), "")
+}
+```
+
+
+```{r}
 #| label: hc_catalog
 catalog_hc <- function() {
-  fload("https://data.healthcare.gov/api/1/metastore/schemas/dataset/items?show-reference-ids") |> 
-    as_tbl()
+  
+  x <- fload("https://data.healthcare.gov/api/1/metastore/schemas/dataset/items?show-reference-ids")
+  
+  x <- x |>
+    as_tbl() |>
+    mtt(
+      modified    = as_date(modified),
+      issued      = as_date(issued),
+      periodicity = recode_iso8601(accrualPeriodicity),
+      contact     = reduce_contact(x$contactPoint)
+    ) |>
+    slt(
+      title,
+      identifier,
+      description,
+      periodicity,
+      issued,
+      modified,
+      contact,
+      keyword,
+      distribution
+    )
+  
+  keys <- new_df(title = x$title, keyword = make_join_col(x, keyword)) |> 
+    sbt(keyword != "healthcare") |> 
+    mtt(keyword = stri_replace_all_regex(keyword, ", healthcare|healthcare, ", ""))
+  
+  d <- rowbind(x$distribution, fill = TRUE)
+  
+  tvec <- vctrs::vec_rep_each(x$title, fnobs(get_elem(x$distribution, "data", DF.as.list = TRUE)))
+  
+  download <- new_tbl(title = tvec, download = delist(get_elem(d$data, "downloadURL"))) |> 
+    fcount(title, add = TRUE)
+  
+  list(
+    sets = join_title(slt(x, -keyword, -distribution), keys) |> join_title(download |> sbt(N == 1) |> slt(-N)),
+    download = download |> sbt(N > 1)
+    )
+  
 }
 
 x <- catalog_hc()
@@ -32,7 +79,7 @@ x
 
 ```{r}
 utils::formatOL(
-  x$title
+  x$sets$title
 ) |> 
   writeLines()
 ```
