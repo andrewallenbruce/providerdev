@@ -20,6 +20,16 @@ source("includes/_common.R")
 
 ```{r}
 join_title <- \(a, b) join(x = a, y = b, on = "title", verbose = 0)
+
+make_join_col <- \(x, col) {
+  na_if(flatten_column(map(x[[ensym(col)]], \(x) get_elem(as.list(x), "data"))), "")
+}
+
+dict_title <- \(x) {
+  perform_simple(request(x)) |>
+    _[["data"]] |>
+    _[["title"]]
+}
 ```
 
 
@@ -54,35 +64,32 @@ catalog_mcd <- function() {
   
   d <- rowbind(x$distribution, fill = TRUE)
   
-  tvec <- new_df(title = x$title, ndist = fnobs(get_elem(x$distribution, "data", DF.as.list = TRUE))) |> 
-    tidyr::uncount(ndist) |> 
-    _[["title"]]
+  tvec <- vctrs::vec_rep_each(x$title, fnobs(get_elem(x$distribution, "data", DF.as.list = TRUE)))
   
-  groups <- new_df(
-    title = x$title,
-    group = na_if(
-      flatten_column(
-        map(x$theme, \(x) get_elem(as.list(x), "data"))), "")) |>
+  groups <- new_df(title = x$title, group = make_join_col(x, theme)) |>
     sbt(not_na(group) & group != "Uncategorized")
   
-  keys <- new_df(
-    title = x$title,
-    keywords = na_if(
-      flatten_column(
-        map(x$keyword, \(x) get_elem(as.list(x), "data"))), ""))
+  keys <- new_df(title = x$title, keyword = make_join_col(x, keyword))
   
-  refs <- new_df(
-    title = x$title,
-    references = na_if(flatten_column(x$references), "NA")) |> 
+  refs <- new_df(title = x$title,
+                 references = na_if(flatten_column(x$references), "NA")) |> 
   sbt(not_na(references) & stri_detect_regex(references, "^https://www.mathematica.org/", negate = TRUE)) |> 
   mtt(references = stri_replace_all_fixed(references, ", https://www.mathematica.org/", ""))
   
   list(
-    sets = reduce(list(slt(x, -theme, -keyword, -references, -distribution), groups, keys, refs), join_title),
-    download = new_tbl(title = tvec, download = delist(get_elem(d$data, "downloadURL"))),
-    dictionary = delist(get_elem(d$data, "describedBy")) |> funique() |> as_tbl()
+    sets = reduce(list(
+      slt(x, -theme, -keyword, -references, -distribution), 
+      groups, 
+      keys, 
+      refs), 
+      join_title),
+    download = new_tbl(
+      title = tvec, 
+      download = delist(get_elem(d$data, "downloadURL"))) |> 
+      fcount(title, add = TRUE),
+    dictionary = new_tbl(url = funique(delist(get_elem(d$data, "describedBy")))) |> 
+      mtt(title = map_chr(url, \(x) dict_title(x))) |> colorder(title)
     )
-  
 }
 
 x <- catalog_mcd()
@@ -142,6 +149,25 @@ mcd_url(identifier) |>
   purse()
 ```
 
+```{r}
+ex <- x$dictionary$url[[1]] |> 
+  request() |> 
+  perform_simple() |> 
+  _[["data"]]
+
+
+new_tbl(
+  fields = ex$fields$name,
+  description = gsub("\r\n", " ", ex$fields$description)) |> 
+  map_na_if()
+```
+
+```{r}
+utils::formatOL(
+  x$dictionary$title
+) |> 
+  writeLines()
+```
 
 ```{r}
 utils::formatOL(

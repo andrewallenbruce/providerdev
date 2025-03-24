@@ -379,7 +379,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="load-catalog" class="level2" data-number="5.2">
 <h2 data-number="5.2" class="anchored" data-anchor-id="load-catalog"><span class="header-section-number">5.2</span> Load Catalog</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>join_title <span class="ot">&lt;-</span> \(a, b) <span class="fu">join</span>(<span class="at">x =</span> a, <span class="at">y =</span> b, <span class="at">on =</span> <span class="st">"title"</span>, <span class="at">verbose =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>join_title <span class="ot">&lt;-</span> \(a, b) <span class="fu">join</span>(<span class="at">x =</span> a, <span class="at">y =</span> b, <span class="at">on =</span> <span class="st">"title"</span>, <span class="at">verbose =</span> <span class="dv">0</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>make_join_col <span class="ot">&lt;-</span> \(x, col) {</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na_if</span>(<span class="fu">flatten_column</span>(<span class="fu">map</span>(x[[<span class="fu">ensym</span>(col)]], \(x) <span class="fu">get_elem</span>(<span class="fu">as.list</span>(x), <span class="st">"data"</span>))), <span class="st">""</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>dict_title <span class="ot">&lt;-</span> \(x) {</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">perform_simple</span>(<span class="fu">request</span>(x)) <span class="sc">|&gt;</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    _[[<span class="st">"data"</span>]] <span class="sc">|&gt;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    _[[<span class="st">"title"</span>]]</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>catalog_mcd <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
@@ -411,40 +421,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>  d <span class="ot">&lt;-</span> <span class="fu">rowbind</span>(x<span class="sc">$</span>distribution, <span class="at">fill =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  tvec <span class="ot">&lt;-</span> <span class="fu">new_df</span>(<span class="at">title =</span> x<span class="sc">$</span>title, <span class="at">ndist =</span> <span class="fu">fnobs</span>(<span class="fu">get_elem</span>(x<span class="sc">$</span>distribution, <span class="st">"data"</span>, <span class="at">DF.as.list =</span> <span class="cn">TRUE</span>))) <span class="sc">|&gt;</span> </span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    tidyr<span class="sc">::</span><span class="fu">uncount</span>(ndist) <span class="sc">|&gt;</span> </span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    _[[<span class="st">"title"</span>]]</span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>  groups <span class="ot">&lt;-</span> <span class="fu">new_df</span>(</span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> x<span class="sc">$</span>title,</span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">group =</span> <span class="fu">na_if</span>(</span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>      <span class="fu">flatten_column</span>(</span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>        <span class="fu">map</span>(x<span class="sc">$</span>theme, \(x) <span class="fu">get_elem</span>(<span class="fu">as.list</span>(x), <span class="st">"data"</span>))), <span class="st">""</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sbt</span>(<span class="fu">not_na</span>(group) <span class="sc">&amp;</span> group <span class="sc">!=</span> <span class="st">"Uncategorized"</span>)</span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>  keys <span class="ot">&lt;-</span> <span class="fu">new_df</span>(</span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> x<span class="sc">$</span>title,</span>
-<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">keywords =</span> <span class="fu">na_if</span>(</span>
-<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>      <span class="fu">flatten_column</span>(</span>
-<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>        <span class="fu">map</span>(x<span class="sc">$</span>keyword, \(x) <span class="fu">get_elem</span>(<span class="fu">as.list</span>(x), <span class="st">"data"</span>))), <span class="st">""</span>))</span>
-<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>  refs <span class="ot">&lt;-</span> <span class="fu">new_df</span>(</span>
-<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> x<span class="sc">$</span>title,</span>
-<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">references =</span> <span class="fu">na_if</span>(<span class="fu">flatten_column</span>(x<span class="sc">$</span>references), <span class="st">"NA"</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sbt</span>(<span class="fu">not_na</span>(references) <span class="sc">&amp;</span> <span class="fu">stri_detect_regex</span>(references, <span class="st">"^https://www.mathematica.org/"</span>, <span class="at">negate =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(<span class="at">references =</span> <span class="fu">stri_replace_all_fixed</span>(references, <span class="st">", https://www.mathematica.org/"</span>, <span class="st">""</span>))</span>
-<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">sets =</span> <span class="fu">reduce</span>(<span class="fu">list</span>(<span class="fu">slt</span>(x, <span class="sc">-</span>theme, <span class="sc">-</span>keyword, <span class="sc">-</span>references, <span class="sc">-</span>distribution), groups, keys, refs), join_title),</span>
-<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">download =</span> <span class="fu">new_tbl</span>(<span class="at">title =</span> tvec, <span class="at">download =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(d<span class="sc">$</span>data, <span class="st">"downloadURL"</span>))),</span>
-<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>    <span class="at">dictionary =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(d<span class="sc">$</span>data, <span class="st">"describedBy"</span>)) <span class="sc">|&gt;</span> <span class="fu">funique</span>() <span class="sc">|&gt;</span> <span class="fu">as_tbl</span>()</span>
-<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">catalog_mcd</span>()</span>
-<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  tvec <span class="ot">&lt;-</span> vctrs<span class="sc">::</span><span class="fu">vec_rep_each</span>(x<span class="sc">$</span>title, <span class="fu">fnobs</span>(<span class="fu">get_elem</span>(x<span class="sc">$</span>distribution, <span class="st">"data"</span>, <span class="at">DF.as.list =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>  groups <span class="ot">&lt;-</span> <span class="fu">new_df</span>(<span class="at">title =</span> x<span class="sc">$</span>title, <span class="at">group =</span> <span class="fu">make_join_col</span>(x, theme)) <span class="sc">|&gt;</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sbt</span>(<span class="fu">not_na</span>(group) <span class="sc">&amp;</span> group <span class="sc">!=</span> <span class="st">"Uncategorized"</span>)</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>  keys <span class="ot">&lt;-</span> <span class="fu">new_df</span>(<span class="at">title =</span> x<span class="sc">$</span>title, <span class="at">keyword =</span> <span class="fu">make_join_col</span>(x, keyword))</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>  refs <span class="ot">&lt;-</span> <span class="fu">new_df</span>(<span class="at">title =</span> x<span class="sc">$</span>title,</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>                 <span class="at">references =</span> <span class="fu">na_if</span>(<span class="fu">flatten_column</span>(x<span class="sc">$</span>references), <span class="st">"NA"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sbt</span>(<span class="fu">not_na</span>(references) <span class="sc">&amp;</span> <span class="fu">stri_detect_regex</span>(references, <span class="st">"^https://www.mathematica.org/"</span>, <span class="at">negate =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(<span class="at">references =</span> <span class="fu">stri_replace_all_fixed</span>(references, <span class="st">", https://www.mathematica.org/"</span>, <span class="st">""</span>))</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">sets =</span> <span class="fu">reduce</span>(<span class="fu">list</span>(</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>      <span class="fu">slt</span>(x, <span class="sc">-</span>theme, <span class="sc">-</span>keyword, <span class="sc">-</span>references, <span class="sc">-</span>distribution), </span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>      groups, </span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>      keys, </span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>      refs), </span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>      join_title),</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">download =</span> <span class="fu">new_tbl</span>(</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>      <span class="at">title =</span> tvec, </span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>      <span class="at">download =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(d<span class="sc">$</span>data, <span class="st">"downloadURL"</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>      <span class="fu">fcount</span>(title, <span class="at">add =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">dictionary =</span> <span class="fu">new_tbl</span>(<span class="at">url =</span> <span class="fu">funique</span>(<span class="fu">delist</span>(<span class="fu">get_elem</span>(d<span class="sc">$</span>data, <span class="st">"describedBy"</span>)))) <span class="sc">|&gt;</span> </span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mtt</span>(<span class="at">title =</span> <span class="fu">map_chr</span>(url, \(x) <span class="fu">dict_title</span>(x))) <span class="sc">|&gt;</span> <span class="fu">colorder</span>(title)</span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">catalog_mcd</span>()</span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$sets
 # A tibble: 482 × 11
@@ -461,39 +468,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  9 State Drug … c39d3302-… Drug utili… Decenniall… 2015-06-11 2024-06-11 Medica…
 10 State Drug … 57c03da7-… Drug utili… Decenniall… 2015-06-11 2024-06-11 Medica…
 # ℹ 472 more rows
-# ℹ 4 more variables: temporal &lt;chr&gt;, group &lt;chr&gt;, keywords &lt;chr&gt;,
+# ℹ 4 more variables: temporal &lt;chr&gt;, group &lt;chr&gt;, keyword &lt;chr&gt;,
 #   references &lt;chr&gt;
 
 $download
-# A tibble: 515 × 2
-   title                            download                                    
-   &lt;chr&gt;                            &lt;chr&gt;                                       
- 1 State Drug Utilization Data 1991 https://download.medicaid.gov/data/StateDru…
- 2 State Drug Utilization Data 1992 https://download.medicaid.gov/data/StateDru…
- 3 State Drug Utilization Data 1993 https://download.medicaid.gov/data/StateDru…
- 4 State Drug Utilization Data 1994 https://download.medicaid.gov/data/StateDru…
- 5 State Drug Utilization Data 1995 https://download.medicaid.gov/data/StateDru…
- 6 State Drug Utilization Data 1996 https://download.medicaid.gov/data/StateDru…
- 7 State Drug Utilization Data 1997 https://download.medicaid.gov/data/StateDru…
- 8 State Drug Utilization Data 1998 https://download.medicaid.gov/data/StateDru…
- 9 State Drug Utilization Data 1999 https://download.medicaid.gov/data/StateDru…
-10 State Drug Utilization Data 2000 https://download.medicaid.gov/data/StateDru…
+# A tibble: 515 × 3
+   title                            download                                   N
+   &lt;chr&gt;                            &lt;chr&gt;                                  &lt;int&gt;
+ 1 State Drug Utilization Data 1991 https://download.medicaid.gov/data/St…     1
+ 2 State Drug Utilization Data 1992 https://download.medicaid.gov/data/St…     1
+ 3 State Drug Utilization Data 1993 https://download.medicaid.gov/data/St…     1
+ 4 State Drug Utilization Data 1994 https://download.medicaid.gov/data/St…     1
+ 5 State Drug Utilization Data 1995 https://download.medicaid.gov/data/St…     1
+ 6 State Drug Utilization Data 1996 https://download.medicaid.gov/data/St…     1
+ 7 State Drug Utilization Data 1997 https://download.medicaid.gov/data/St…     1
+ 8 State Drug Utilization Data 1998 https://download.medicaid.gov/data/St…     1
+ 9 State Drug Utilization Data 1999 https://download.medicaid.gov/data/St…     1
+10 State Drug Utilization Data 2000 https://download.medicaid.gov/data/St…     1
 # ℹ 505 more rows
 
 $dictionary
-# A tibble: 66 × 1
-   value                                                                        
-   &lt;chr&gt;                                                                        
- 1 https://data.medicaid.gov/api/1/metastore/schemas/data-dictionary/items/6eb0…
- 2 https://data.medicaid.gov/api/1/metastore/schemas/data-dictionary/items/de58…
- 3 https://data.medicaid.gov/api/1/metastore/schemas/data-dictionary/items/f686…
- 4 https://data.medicaid.gov/api/1/metastore/schemas/data-dictionary/items/8b3e…
- 5 https://data.medicaid.gov/api/1/metastore/schemas/data-dictionary/items/7d80…
- 6 https://data.medicaid.gov/api/1/metastore/schemas/data-dictionary/items/64b9…
- 7 https://data.medicaid.gov/api/1/metastore/schemas/data-dictionary/items/9d72…
- 8 https://data.medicaid.gov/api/1/metastore/schemas/data-dictionary/items/4041…
- 9 https://data.medicaid.gov/api/1/metastore/schemas/data-dictionary/items/e278…
-10 https://data.medicaid.gov/api/1/metastore/schemas/data-dictionary/items/8f48…
+# A tibble: 66 × 2
+   title                                                            url         
+ * &lt;chr&gt;                                                            &lt;chr&gt;       
+ 1 State Drug Utilization Data Data Dictionary                      https://dat…
+ 2 NADAC Data Dictionary                                            https://dat…
+ 3 NADAC 2021 Data Dictionary                                       https://dat…
+ 4 Drug Products Data Dictionary                                    https://dat…
+ 5 Monthly Enrollment Data Dictionary updated                       https://dat…
+ 6 Drug Manufacturer Contact Info Data Dictionary                   https://dat…
+ 7 Medicaid Enrollment - New Adult Group - Data Dictionary-12112024 https://dat…
+ 8 Quality Measures 2018 Dictionary                                 https://dat…
+ 9 Medicaid CMS-64 FFCRA Increased FMAP Expenditure data dictionary https://dat…
+10 NADAC First Time Rates                                           https://dat…
 # ℹ 56 more rows</code></pre>
 </div>
 </div>
@@ -582,10 +589,128 @@ $pages
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>utils<span class="sc">::</span><span class="fu">formatOL</span>(</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  x<span class="sc">$</span>title</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> x<span class="sc">$</span>dictionary<span class="sc">$</span>url[[<span class="dv">1</span>]] <span class="sc">|&gt;</span> </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">request</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">perform_simple</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"data"</span>]]</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="fu">new_tbl</span>(</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">fields =</span> ex<span class="sc">$</span>fields<span class="sc">$</span>name,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">description =</span> <span class="fu">gsub</span>(<span class="st">"</span><span class="sc">\r\n</span><span class="st">"</span>, <span class="st">" "</span>, ex<span class="sc">$</span>fields<span class="sc">$</span>description)) <span class="sc">|&gt;</span> </span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_na_if</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 15 × 2
+   fields                         description                                   
+   &lt;chr&gt;                          &lt;chr&gt;                                         
+ 1 utilization_type               Constant of “FFSU” or “MCOU” - The FFSU Recor…
+ 2 state                          State Abbreviation - Two character post offic…
+ 3 ndc                            The National Drug Code (NDC) is a numerical c…
+ 4 labeler_code                   NDC #1 - First segment of National Drug Code …
+ 5 product_code                   NDC #2 - Second segment of National Drug Code 
+ 6 package_size                   NDC #3 - Third segment of National Drug Code  
+ 7 year                           Calendar year covered by data.                
+ 8 quarter                        Calendar quarter covered by data. Valid value…
+ 9 suppression_used               &lt;NA&gt;                                          
+10 product_name                   Product Name as appears on FDA listing form (…
+11 units_reimbursed               The total number of units (based on Unit Type…
+12 number_of_prescriptions        The number of prescriptions reimbursed (by th…
+13 total_amount_reimbursed        The total amount reimbursed by both Medicaid …
+14 medicaid_amount_reimbursed     The amount reimbursed (by the Medicaid Progra…
+15 non_medicaid_amount_reimbursed The amount reimbursed (by non-Medicaid entiti…</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>utils<span class="sc">::</span><span class="fu">formatOL</span>(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  x<span class="sc">$</span>dictionary<span class="sc">$</span>title</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> 1. State Drug Utilization Data Data Dictionary
+ 2. NADAC Data Dictionary
+ 3. NADAC 2021 Data Dictionary
+ 4. Drug Products Data Dictionary
+ 5. Monthly Enrollment Data Dictionary updated
+ 6. Drug Manufacturer Contact Info Data Dictionary
+ 7. Medicaid Enrollment - New Adult Group - Data Dictionary-12112024
+ 8. Quality Measures 2018 Dictionary
+ 9. Medicaid CMS-64 FFCRA Increased FMAP Expenditure data dictionary
+10. NADAC First Time Rates
+11. Medicaid CMS-64 FFCRA Increased FMAP Expenditure - Data
+    Dictionary-12112024
+12. Medicaid Financial Management Data - Data Dictionary-12112024
+13. Quality Measures 2014-2015 Data Dictionary
+14. Medicaid Financial Management Data – National Totals - Data
+    Dictionary-12112024
+15. State Contact Information Data Dictionary
+16. AMP Reporting Monthly Data Dictionary
+17. Quality Measures 2016-2017 Data Dictionary
+18. NADAC Comparison Data Dictionary
+19. Federal Upper Limits Data Dictionary
+20. AMP Reporting Quarterly Data Dictionary
+21. Quality Measures 2019-2022 Data Dictionary
+22. Newly Reported Drugs Data Dictionary
+23. Division of Pharmacy Releases Index data dictionary
+24. Blood Disorders Data Dictionary
+25. Exclusively Pediatric Data Dictionary
+26. Clotting Factor Drug Report Data Dictionary
+27. Enrollment PUF (program information by month) Data Dictionary
+28. Enrollment PUF (program information by year) Data Dictionary
+29. Enrollment PUF (benefit package by month) Data Dictionary
+30. Enrollment PUF (benefit package by year) Data Dictionary
+31. Enrollment PUF (dual status information by month) Data Dictionary
+32. Enrollment PUF (dual status information by year) Data Dictionary
+33. Enrollment PUF (major eligibility group information by month) Data
+    Dictionary
+34. Enrollment PUF (major eligibility group information by year) Data
+    Dictionary
+35. Enrollment PUF (managed care information by month) Data Dictionary
+36. Enrollment PUF (managed care information by year) Data Dictionary
+37. Service Use PUF (Behavioral Health Services) Data Dictionary
+38. Service Use PUF (Blood Lead Screening Services) Data Dictionary
+39. Service Use PUF (Health Screening Services) Data Dictionary
+40. Service Use PUF (Contraceptive Care Services) Data Dictionary
+41. Service Use PUF (Telehealth Services) Data Dictionary
+42. Service Use PUF (Vaccinations Provided) Data Dictionary
+43. Number and rate of NAS per 1,000 births in newborns whose
+    deliveries were covered by Medicaid or CHIP, 2017 - 2021
+44. Number and rate of SMM among Medicaid- and CHIP-covered deliveries,
+    2017 - 2021
+45. Beneficiaries who could benefit from integrated care, 2017-2021
+46. Beneficiaries receiving a physical health service among
+    beneficiaries receiving a SUD service by physical health cond,
+    2017-2021
+47. Unwinding: Medicaid and CHIP CAA Reporting Metrics
+48. Unwinding: HealthCare.gov Transitions Marketplace Medicaid
+    Unwinding Report
+49. Unwinding: State-based Marketplace (SBM) Medicaid Unwinding Report
+50. Unwinding: HealthCare.gov Marketplace Medicaid Unwinding Report
+51. Unwinding: Separate CHIP Enrollment by Month and State
+52. Medicaid CMS-64 CAA 2023 Increased FMAP Expenditure Data Collected
+    through MBES/CBES - Data Dictionary-12112024
+53. Unwinding: Medicaid and CHIP Updated Renewal Outcomes
+54. Monthly enrollment PI dataset Data dictionary
+55. MLR Public Data Dictionary
+56. Renewal dataset data dictionary
+57. Current Separate CHIP Enrollment by Month and State Data Dictionary
+58. Race and ethnicity of the national Medicaid and CHIP population
+59. Medicaid enrollees who qualify for&nbsp;benefits based on disability
+60. Primary language spoken by the&nbsp;Medicaid and CHIP population
+61. Rural Medicaid and CHIP enrollees
+62. Section 1915(c) waiver program&nbsp;participants
+63. Medicaid and CHIP enrollees who&nbsp;received a well-child visit
+64. Medicaid and CHIP enrollees who received&nbsp;mental health or SUD
+    services
+65. Prematurity and severe maternal morbidity among Medicaid- and
+    CHIP-covered live births
+66. Medicaid Enterprise System Datatable - Data Dictionary</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>utils<span class="sc">::</span><span class="fu">formatOL</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  x<span class="sc">$</span>title</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 
