@@ -28,6 +28,26 @@ yank  <- \(x) x[[1]]
 purse <- \(x, pre = "- ", wid = 0, max = 20, sep = " ") terse::terse(x = x, prefix = pre, width = wid, max_vec_len = max, config = list(gsep = sep, ansi = FALSE))
 remove_at_symbol <- \(x) sf_remove(s = x, p = "@", fix = TRUE)
 
+npi_kind <- c(
+  1225701881,
+  1174270805,
+  1235702796,
+  1962116806,
+  1013647569,
+  1306500665,
+  1982296737,
+  1083295638,
+  1841967825,
+  1891390084,
+  1275117269,
+  1992338701,
+  1891355863,
+  1548743511,
+  1023473279,
+  1861857013,
+  1689182859,
+  1982059275
+)
 
 # btn_link <- \(href, label) {
 #

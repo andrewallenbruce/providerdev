@@ -81,9 +81,11 @@ catalog_mcd <- function() {
   list(
     sets       = reduce(list(slt(x, -theme, -keyword, -references, -distribution), groups, keys, refs, sbt(download, N == 1, -N)), join_title),
     download   = funique(sbt(download, N > 1), cols = "download"),
-    dictionary = new_tbl(url = funique(delist(get_elem(d$data, "describedBy")))) |> mtt(identifier = stringi::stri_extract(url,
-      regex = "(?:[0-9a-fA-F]){8}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){12}")) |> colorder(identifier)
-    # |> mtt(title = map_chr(url, \(x) dict_title(x))) |> colorder(title)
+    dictionary = new_tbl(url = funique(delist(get_elem(d$data, "describedBy")))) |> 
+      mtt(identifier = stringi::stri_extract(url,
+      regex = "(?:[0-9a-fA-F]){8}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){12}")) |> 
+      mtt(title = map_chr(url, \(x) dict_title(x))) |> 
+      colorder(title, identifier)
   )
 }
 

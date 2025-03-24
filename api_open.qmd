@@ -58,6 +58,7 @@ TemporalOpen("state_nature")
 ```
 
 ```{r}
+#| message: true
 providertwo:::new_request(CurrentOpen("dashboard"))
 ```
 
@@ -194,7 +195,7 @@ ex_url <- url_parse(
     # `conditions[0][value]`    = "SMITH",
     `conditions[0][operator]` = "=",
     schema                    = "false",
-    keys                      = "false",
+    keys                      = "true",
     # results                   = "false",
     offset                    = 0,
     limit                     = 500) |>
@@ -205,7 +206,6 @@ ex_res <- fload(ex_url)
 tictoc::toc()
 
 as_tbl(ex_res$results) |> 
-  set_names(ex_res$query$properties) |> 
   map_na_if() |> 
   handle_na() |>
   purse()
@@ -266,8 +266,7 @@ url_parse(
     `conditions[1][value]`    = "WARD",
     `conditions[1][operator]` = "=",
     schema                    = "false",
-    keys                      = "false",
-    # results                   = "false",
+    keys                      = "true",
     offset                    = 0) |>
   url_build() |> 
   request() |> 

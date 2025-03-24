@@ -438,15 +438,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
 <span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">sets       =</span> <span class="fu">reduce</span>(<span class="fu">list</span>(<span class="fu">slt</span>(x, <span class="sc">-</span>theme, <span class="sc">-</span>keyword, <span class="sc">-</span>references, <span class="sc">-</span>distribution), groups, keys, refs, <span class="fu">sbt</span>(download, N <span class="sc">==</span> <span class="dv">1</span>, <span class="sc">-</span>N)), join_title),</span>
 <span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">download   =</span> <span class="fu">funique</span>(<span class="fu">sbt</span>(download, N <span class="sc">&gt;</span> <span class="dv">1</span>), <span class="at">cols =</span> <span class="st">"download"</span>),</span>
-<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">dictionary =</span> <span class="fu">new_tbl</span>(<span class="at">url =</span> <span class="fu">funique</span>(<span class="fu">delist</span>(<span class="fu">get_elem</span>(d<span class="sc">$</span>data, <span class="st">"describedBy"</span>)))) <span class="sc">|&gt;</span> <span class="fu">mtt</span>(<span class="at">identifier =</span> stringi<span class="sc">::</span><span class="fu">stri_extract</span>(url,</span>
-<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>      <span class="at">regex =</span> <span class="st">"(?:[0-9a-fA-F]){8}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){12}"</span>)) <span class="sc">|&gt;</span> <span class="fu">colorder</span>(identifier)</span>
-<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>    <span class="co"># |&gt; mtt(title = map_chr(url, \(x) dict_title(x))) |&gt; colorder(title)</span></span>
-<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">catalog_mcd</span>()</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">dictionary =</span> <span class="fu">new_tbl</span>(<span class="at">url =</span> <span class="fu">funique</span>(<span class="fu">delist</span>(<span class="fu">get_elem</span>(d<span class="sc">$</span>data, <span class="st">"describedBy"</span>)))) <span class="sc">|&gt;</span> </span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mtt</span>(<span class="at">identifier =</span> stringi<span class="sc">::</span><span class="fu">stri_extract</span>(url,</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>      <span class="at">regex =</span> <span class="st">"(?:[0-9a-fA-F]){8}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){12}"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mtt</span>(<span class="at">title =</span> <span class="fu">map_chr</span>(url, \(x) <span class="fu">dict_title</span>(x))) <span class="sc">|&gt;</span> </span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>      <span class="fu">colorder</span>(title, identifier)</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">catalog_mcd</span>()</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$sets
 # A tibble: 483 × 12
@@ -483,19 +485,19 @@ $download
 # ℹ 43 more rows
 
 $dictionary
-# A tibble: 66 × 2
-   identifier                           url                                     
- * &lt;chr&gt;                                &lt;chr&gt;                                   
- 1 6eb01b59-271e-4a58-b9b8-2d17e2cbd34b https://data.medicaid.gov/api/1/metasto…
- 2 de58d5ec-4515-494e-ae3f-620200f72989 https://data.medicaid.gov/api/1/metasto…
- 3 f6868b6f-7ac0-4438-ba0b-2f8e5555123f https://data.medicaid.gov/api/1/metasto…
- 4 8b3e3880-fd1b-487c-9817-9aa93009f2aa https://data.medicaid.gov/api/1/metasto…
- 5 7d80cfd8-3266-4c55-8436-948b7c55b9dd https://data.medicaid.gov/api/1/metasto…
- 6 64b9c63b-7690-4d5d-9e50-5c36d460524e https://data.medicaid.gov/api/1/metasto…
- 7 9d72d844-1ed3-4988-9fe9-b9988aa7588c https://data.medicaid.gov/api/1/metasto…
- 8 40415510-8910-4c02-a019-69cccc9f5cb6 https://data.medicaid.gov/api/1/metasto…
- 9 e27804f7-1db8-41cb-8ece-a1c1fe9d885a https://data.medicaid.gov/api/1/metasto…
-10 8f48dac1-fd84-489a-86be-1b16963d5651 https://data.medicaid.gov/api/1/metasto…
+# A tibble: 66 × 3
+   title                                                        identifier url  
+ * &lt;chr&gt;                                                        &lt;chr&gt;      &lt;chr&gt;
+ 1 State Drug Utilization Data Data Dictionary                  6eb01b59-… http…
+ 2 NADAC Data Dictionary                                        de58d5ec-… http…
+ 3 NADAC 2021 Data Dictionary                                   f6868b6f-… http…
+ 4 Drug Products Data Dictionary                                8b3e3880-… http…
+ 5 Monthly Enrollment Data Dictionary updated                   7d80cfd8-… http…
+ 6 Drug Manufacturer Contact Info Data Dictionary               64b9c63b-… http…
+ 7 Medicaid Enrollment - New Adult Group - Data Dictionary-121… 9d72d844-… http…
+ 8 Quality Measures 2018 Dictionary                             40415510-… http…
+ 9 Medicaid CMS-64 FFCRA Increased FMAP Expenditure data dicti… e27804f7-… http…
+10 NADAC First Time Rates                                       8f48dac1-… http…
 # ℹ 56 more rows</code></pre>
 </div>
 </div>
@@ -620,12 +622,92 @@ $pages
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  x<span class="sc">$</span>dictionary<span class="sc">$</span>title</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> 1. State Drug Utilization Data Data Dictionary
+ 2. NADAC Data Dictionary
+ 3. NADAC 2021 Data Dictionary
+ 4. Drug Products Data Dictionary
+ 5. Monthly Enrollment Data Dictionary updated
+ 6. Drug Manufacturer Contact Info Data Dictionary
+ 7. Medicaid Enrollment - New Adult Group - Data Dictionary-12112024
+ 8. Quality Measures 2018 Dictionary
+ 9. Medicaid CMS-64 FFCRA Increased FMAP Expenditure data dictionary
+10. NADAC First Time Rates
+11. Medicaid CMS-64 FFCRA Increased FMAP Expenditure - Data
+    Dictionary-12112024
+12. Medicaid Financial Management Data - Data Dictionary-12112024
+13. Quality Measures 2014-2015 Data Dictionary
+14. Medicaid Financial Management Data – National Totals - Data
+    Dictionary-12112024
+15. State Contact Information Data Dictionary
+16. AMP Reporting Monthly Data Dictionary
+17. Quality Measures 2016-2017 Data Dictionary
+18. NADAC Comparison Data Dictionary
+19. Federal Upper Limits Data Dictionary
+20. AMP Reporting Quarterly Data Dictionary
+21. Quality Measures 2019-2022 Data Dictionary
+22. Newly Reported Drugs Data Dictionary
+23. Division of Pharmacy Releases Index data dictionary
+24. Blood Disorders Data Dictionary
+25. Exclusively Pediatric Data Dictionary
+26. Clotting Factor Drug Report Data Dictionary
+27. Enrollment PUF (program information by month) Data Dictionary
+28. Enrollment PUF (program information by year) Data Dictionary
+29. Enrollment PUF (benefit package by month) Data Dictionary
+30. Enrollment PUF (benefit package by year) Data Dictionary
+31. Enrollment PUF (dual status information by month) Data Dictionary
+32. Enrollment PUF (dual status information by year) Data Dictionary
+33. Enrollment PUF (major eligibility group information by month) Data
+    Dictionary
+34. Enrollment PUF (major eligibility group information by year) Data
+    Dictionary
+35. Enrollment PUF (managed care information by month) Data Dictionary
+36. Enrollment PUF (managed care information by year) Data Dictionary
+37. Service Use PUF (Behavioral Health Services) Data Dictionary
+38. Service Use PUF (Blood Lead Screening Services) Data Dictionary
+39. Service Use PUF (Health Screening Services) Data Dictionary
+40. Service Use PUF (Contraceptive Care Services) Data Dictionary
+41. Service Use PUF (Telehealth Services) Data Dictionary
+42. Service Use PUF (Vaccinations Provided) Data Dictionary
+43. Number and rate of NAS per 1,000 births in newborns whose
+    deliveries were covered by Medicaid or CHIP, 2017 - 2021
+44. Number and rate of SMM among Medicaid- and CHIP-covered deliveries,
+    2017 - 2021
+45. Beneficiaries who could benefit from integrated care, 2017-2021
+46. Beneficiaries receiving a physical health service among
+    beneficiaries receiving a SUD service by physical health cond,
+    2017-2021
+47. Unwinding: Medicaid and CHIP CAA Reporting Metrics
+48. Unwinding: HealthCare.gov Transitions Marketplace Medicaid
+    Unwinding Report
+49. Unwinding: State-based Marketplace (SBM) Medicaid Unwinding Report
+50. Unwinding: HealthCare.gov Marketplace Medicaid Unwinding Report
+51. Unwinding: Separate CHIP Enrollment by Month and State
+52. Medicaid CMS-64 CAA 2023 Increased FMAP Expenditure Data Collected
+    through MBES/CBES - Data Dictionary-12112024
+53. Unwinding: Medicaid and CHIP Updated Renewal Outcomes
+54. Monthly enrollment PI dataset Data dictionary
+55. MLR Public Data Dictionary
+56. Renewal dataset data dictionary
+57. Current Separate CHIP Enrollment by Month and State Data Dictionary
+58. Race and ethnicity of the national Medicaid and CHIP population
+59. Medicaid enrollees who qualify for&nbsp;benefits based on disability
+60. Primary language spoken by the&nbsp;Medicaid and CHIP population
+61. Rural Medicaid and CHIP enrollees
+62. Section 1915(c) waiver program&nbsp;participants
+63. Medicaid and CHIP enrollees who&nbsp;received a well-child visit
+64. Medicaid and CHIP enrollees who received&nbsp;mental health or SUD
+    services
+65. Prematurity and severe maternal morbidity among Medicaid- and
+    CHIP-covered live births
+66. Medicaid Enterprise System Datatable - Data Dictionary</code></pre>
+</div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>utils<span class="sc">::</span><span class="fu">formatOL</span>(</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  x<span class="sc">$</span>sets<span class="sc">$</span>title</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>utils<span class="sc">::</span><span class="fu">formatOL</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  x<span class="sc">$</span>sets<span class="sc">$</span>title</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  1. State Drug Utilization Data 1991
   2. State Drug Utilization Data 1992

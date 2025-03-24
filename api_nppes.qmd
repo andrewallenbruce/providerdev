@@ -90,11 +90,6 @@ convert_epoch <- \(x) {
     )
 }
 
-yank <- \(x) x[[1]]
-```
-
-
-```{r}
 nppes <- function(npi            = NULL,
                   entity         = NULL,
                   first          = NULL,
@@ -130,7 +125,10 @@ nppes <- function(npi            = NULL,
     results = x$results |> as_tbl()
   )
 }
+```
 
+
+```{r}
 ex <- nppes(npi = 1528060837)
 
 get_vars(ex$results, is_character) |> 
@@ -160,5 +158,34 @@ yank(ex$results$identifiers)
 empty(yank(ex$results$endpoints))
 
 empty(yank(ex$results$other_names))
+```
+
+
+```{r}
+npi_kind
+
+kind <- purrr::map(
+  npi_kind,
+  function(x) {
+    nppes(npi = x)$results
+    }, 
+  .progress = TRUE)
+
+kind
+```
+
+
+```{r}
+purrr::list_rbind(kind) |> 
+  mtt(npi    = number,
+      entity = factor_(
+      val_match(
+        enumeration_type, 
+        "NPI-1" ~ "I", 
+        "NPI-2" ~ "O", 
+        .default = "X")),
+    date_created = convert_epoch(created_epoch),
+    last_updated = convert_epoch(last_updated_epoch)) |> 
+  slt(-number, -enumeration_type, -created_epoch, -last_updated_epoch)
 ```
 

@@ -449,60 +449,58 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>yank <span class="ot">&lt;-</span> \(x) x[[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>nppes <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">npi            =</span> <span class="cn">NULL</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>                  <span class="at">entity         =</span> <span class="cn">NULL</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>                  <span class="at">first          =</span> <span class="cn">NULL</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>                  <span class="at">last           =</span> <span class="cn">NULL</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>                  <span class="at">organization   =</span> <span class="cn">NULL</span>,</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>                  <span class="at">name_type      =</span> <span class="cn">NULL</span>,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>                  <span class="at">taxonomy_desc  =</span> <span class="cn">NULL</span>,</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>                  <span class="at">city           =</span> <span class="cn">NULL</span>,</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>                  <span class="at">state          =</span> <span class="cn">NULL</span>,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>                  <span class="at">zip            =</span> <span class="cn">NULL</span>,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>                  <span class="at">country        =</span> <span class="cn">NULL</span>) {</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://npiregistry.cms.hhs.gov/api/?version=2.1"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">req_url_query</span>(</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">number               =</span> npi,</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">enumeration_type     =</span> entity,</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>      <span class="at">first_name           =</span> first,</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>      <span class="at">last_name            =</span> last,</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>      <span class="at">name_purpose         =</span> name_type,</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>      <span class="at">organization_name    =</span> organization,</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>      <span class="at">taxonomy_description =</span> taxonomy_desc,</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>      <span class="at">city                 =</span> city,</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>      <span class="at">state                =</span> state,</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>      <span class="at">postal_code          =</span> zip,</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>      <span class="at">country_code         =</span> country,</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>      <span class="at">limit                =</span> <span class="dv">1200</span>L,</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>      <span class="at">skip                 =</span> <span class="dv">0</span>L</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">perform_simple</span>()</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">count   =</span> x<span class="sc">$</span>result_count,</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">results =</span> x<span class="sc">$</span>results <span class="sc">|&gt;</span> <span class="fu">as_tbl</span>()</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>nppes <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">npi            =</span> <span class="cn">NULL</span>,</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">entity         =</span> <span class="cn">NULL</span>,</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">first          =</span> <span class="cn">NULL</span>,</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">last           =</span> <span class="cn">NULL</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                  <span class="at">organization   =</span> <span class="cn">NULL</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>                  <span class="at">name_type      =</span> <span class="cn">NULL</span>,</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">taxonomy_desc  =</span> <span class="cn">NULL</span>,</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                  <span class="at">city           =</span> <span class="cn">NULL</span>,</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>                  <span class="at">state          =</span> <span class="cn">NULL</span>,</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>                  <span class="at">zip            =</span> <span class="cn">NULL</span>,</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>                  <span class="at">country        =</span> <span class="cn">NULL</span>) {</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">request</span>(<span class="st">"https://npiregistry.cms.hhs.gov/api/?version=2.1"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">req_url_query</span>(</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">number               =</span> npi,</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">enumeration_type     =</span> entity,</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">first_name           =</span> first,</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">last_name            =</span> last,</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">name_purpose         =</span> name_type,</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">organization_name    =</span> organization,</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">taxonomy_description =</span> taxonomy_desc,</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>      <span class="at">city                 =</span> city,</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>      <span class="at">state                =</span> state,</span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">postal_code          =</span> zip,</span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">country_code         =</span> country,</span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>      <span class="at">limit                =</span> <span class="dv">1200</span>L,</span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>      <span class="at">skip                 =</span> <span class="dv">0</span>L</span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">perform_simple</span>()</span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">count   =</span> x<span class="sc">$</span>result_count,</span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">results =</span> x<span class="sc">$</span>results <span class="sc">|&gt;</span> <span class="fu">as_tbl</span>()</span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">nppes</span>(<span class="at">npi =</span> <span class="dv">1528060837</span>)</span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="fu">get_vars</span>(ex<span class="sc">$</span>results, is_character) <span class="sc">|&gt;</span> </span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fcompute</span>(</span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">npi    =</span> number,</span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">entity =</span> <span class="fu">factor_</span>(</span>
-<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>      <span class="fu">val_match</span>(</span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>        enumeration_type, </span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>        <span class="st">"NPI-1"</span> <span class="sc">~</span> <span class="st">"I"</span>, </span>
-<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>        <span class="st">"NPI-2"</span> <span class="sc">~</span> <span class="st">"O"</span>, </span>
-<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>        <span class="at">.default =</span> <span class="st">"X"</span>)),</span>
-<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">date_created =</span> <span class="fu">convert_epoch</span>(created_epoch),</span>
-<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">last_updated =</span> <span class="fu">convert_epoch</span>(last_updated_epoch)</span>
-<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_vars</span>(<span class="fu">slt</span>(ex<span class="sc">$</span>results<span class="sc">$</span>basic, <span class="sc">-</span>enumeration_date, <span class="sc">-</span>last_updated, <span class="sc">-</span>status))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> <span class="fu">nppes</span>(<span class="at">npi =</span> <span class="dv">1528060837</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">get_vars</span>(ex<span class="sc">$</span>results, is_character) <span class="sc">|&gt;</span> </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fcompute</span>(</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">npi    =</span> number,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">entity =</span> <span class="fu">factor_</span>(</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">val_match</span>(</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        enumeration_type, </span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"NPI-1"</span> <span class="sc">~</span> <span class="st">"I"</span>, </span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">"NPI-2"</span> <span class="sc">~</span> <span class="st">"O"</span>, </span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">.default =</span> <span class="st">"X"</span>)),</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">date_created =</span> <span class="fu">convert_epoch</span>(created_epoch),</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">last_updated =</span> <span class="fu">convert_epoch</span>(last_updated_epoch)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_vars</span>(<span class="fu">slt</span>(ex<span class="sc">$</span>results<span class="sc">$</span>basic, <span class="sc">-</span>enumeration_date, <span class="sc">-</span>last_updated, <span class="sc">-</span>status))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 12
   npi        entity date_created last_updated first_name last_name middle_name
@@ -550,6 +548,210 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">empty</span>(<span class="fu">yank</span>(ex<span class="sc">$</span>results<span class="sc">$</span>other_names))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>npi_kind</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 1225701881 1174270805 1235702796 1962116806 1013647569 1306500665
+ [7] 1982296737 1083295638 1841967825 1891390084 1275117269 1992338701
+[13] 1891355863 1548743511 1023473279 1861857013 1689182859 1982059275</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>kind <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  npi_kind,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(x) {</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">nppes</span>(<span class="at">npi =</span> x)<span class="sc">$</span>results</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    }, </span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">.progress =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>kind</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+# A tibble: 1 × 11
+  created_epoch enumeration_type last_updated_epoch number     addresses   
+* &lt;chr&gt;         &lt;chr&gt;            &lt;chr&gt;              &lt;chr&gt;      &lt;list&gt;      
+1 1627585585000 NPI-2            1707768606000      1225701881 &lt;df [2 × 9]&gt;
+# ℹ 6 more variables: practiceLocations &lt;list&gt;, basic &lt;df[,10]&gt;,
+#   taxonomies &lt;list&gt;, identifiers &lt;list&gt;, endpoints &lt;list&gt;, other_names &lt;list&gt;
+
+[[2]]
+# A tibble: 1 × 11
+  created_epoch enumeration_type last_updated_epoch number     addresses   
+* &lt;chr&gt;         &lt;chr&gt;            &lt;chr&gt;              &lt;chr&gt;      &lt;list&gt;      
+1 1646266470000 NPI-2            1716222184000      1174270805 &lt;df [2 × 9]&gt;
+# ℹ 6 more variables: practiceLocations &lt;list&gt;, basic &lt;df[,12]&gt;,
+#   taxonomies &lt;list&gt;, identifiers &lt;list&gt;, endpoints &lt;list&gt;, other_names &lt;list&gt;
+
+[[3]]
+# A tibble: 1 × 11
+  created_epoch enumeration_type last_updated_epoch number     addresses    
+* &lt;chr&gt;         &lt;chr&gt;            &lt;chr&gt;              &lt;chr&gt;      &lt;list&gt;       
+1 1626971928000 NPI-2            1707768904000      1235702796 &lt;df [2 × 10]&gt;
+# ℹ 6 more variables: practiceLocations &lt;list&gt;, basic &lt;df[,10]&gt;,
+#   taxonomies &lt;list&gt;, identifiers &lt;list&gt;, endpoints &lt;list&gt;, other_names &lt;list&gt;
+
+[[4]]
+# A tibble: 1 × 11
+  created_epoch enumeration_type last_updated_epoch number     addresses   
+* &lt;chr&gt;         &lt;chr&gt;            &lt;chr&gt;              &lt;chr&gt;      &lt;list&gt;      
+1 1672956101000 NPI-2            1716223626000      1962116806 &lt;df [2 × 9]&gt;
+# ℹ 6 more variables: practiceLocations &lt;list&gt;, basic &lt;df[,13]&gt;,
+#   taxonomies &lt;list&gt;, identifiers &lt;list&gt;, endpoints &lt;list&gt;, other_names &lt;list&gt;
+
+[[5]]
+# A tibble: 1 × 11
+  created_epoch enumeration_type last_updated_epoch number     addresses    
+* &lt;chr&gt;         &lt;chr&gt;            &lt;chr&gt;              &lt;chr&gt;      &lt;list&gt;       
+1 1655341041000 NPI-2            1716221224000      1013647569 &lt;df [2 × 10]&gt;
+# ℹ 6 more variables: practiceLocations &lt;list&gt;, basic &lt;df[,12]&gt;,
+#   taxonomies &lt;list&gt;, identifiers &lt;list&gt;, endpoints &lt;list&gt;, other_names &lt;list&gt;
+
+[[6]]
+# A tibble: 1 × 11
+  created_epoch enumeration_type last_updated_epoch number     addresses   
+* &lt;chr&gt;         &lt;chr&gt;            &lt;chr&gt;              &lt;chr&gt;      &lt;list&gt;      
+1 1635005507000 NPI-2            1716222487000      1306500665 &lt;df [2 × 9]&gt;
+# ℹ 6 more variables: practiceLocations &lt;list&gt;, basic &lt;df[,11]&gt;,
+#   taxonomies &lt;list&gt;, identifiers &lt;list&gt;, endpoints &lt;list&gt;, other_names &lt;list&gt;
+
+[[7]]
+# A tibble: 1 × 11
+  created_epoch enumeration_type last_updated_epoch number     addresses    
+* &lt;chr&gt;         &lt;chr&gt;            &lt;chr&gt;              &lt;chr&gt;      &lt;list&gt;       
+1 1612386220000 NPI-2            1612386220000      1982296737 &lt;df [2 × 10]&gt;
+# ℹ 6 more variables: practiceLocations &lt;list&gt;, basic &lt;df[,12]&gt;,
+#   taxonomies &lt;list&gt;, identifiers &lt;list&gt;, endpoints &lt;list&gt;, other_names &lt;list&gt;
+
+[[8]]
+# A tibble: 1 × 11
+  created_epoch enumeration_type last_updated_epoch number     addresses   
+* &lt;chr&gt;         &lt;chr&gt;            &lt;chr&gt;              &lt;chr&gt;      &lt;list&gt;      
+1 1618524374000 NPI-2            1716221532000      1083295638 &lt;df [2 × 9]&gt;
+# ℹ 6 more variables: practiceLocations &lt;list&gt;, basic &lt;df[,11]&gt;,
+#   taxonomies &lt;list&gt;, identifiers &lt;list&gt;, endpoints &lt;list&gt;, other_names &lt;list&gt;
+
+[[9]]
+# A tibble: 1 × 11
+  created_epoch enumeration_type last_updated_epoch number     addresses   
+* &lt;chr&gt;         &lt;chr&gt;            &lt;chr&gt;              &lt;chr&gt;      &lt;list&gt;      
+1 1630001926000 NPI-2            1716222950000      1841967825 &lt;df [2 × 9]&gt;
+# ℹ 6 more variables: practiceLocations &lt;list&gt;, basic &lt;df[,12]&gt;,
+#   taxonomies &lt;list&gt;, identifiers &lt;list&gt;, endpoints &lt;list&gt;, other_names &lt;list&gt;
+
+[[10]]
+# A tibble: 1 × 11
+  created_epoch enumeration_type last_updated_epoch number     addresses   
+* &lt;chr&gt;         &lt;chr&gt;            &lt;chr&gt;              &lt;chr&gt;      &lt;list&gt;      
+1 1607040802000 NPI-2            1716223303000      1891390084 &lt;df [2 × 9]&gt;
+# ℹ 6 more variables: practiceLocations &lt;list&gt;, basic &lt;df[,13]&gt;,
+#   taxonomies &lt;list&gt;, identifiers &lt;list&gt;, endpoints &lt;list&gt;, other_names &lt;list&gt;
+
+[[11]]
+# A tibble: 1 × 11
+  created_epoch enumeration_type last_updated_epoch number     addresses   
+* &lt;chr&gt;         &lt;chr&gt;            &lt;chr&gt;              &lt;chr&gt;      &lt;list&gt;      
+1 1620327662000 NPI-2            1716222333000      1275117269 &lt;df [2 × 9]&gt;
+# ℹ 6 more variables: practiceLocations &lt;list&gt;, basic &lt;df[,11]&gt;,
+#   taxonomies &lt;list&gt;, identifiers &lt;list&gt;, endpoints &lt;list&gt;, other_names &lt;list&gt;
+
+[[12]]
+# A tibble: 1 × 11
+  created_epoch enumeration_type last_updated_epoch number     addresses   
+* &lt;chr&gt;         &lt;chr&gt;            &lt;chr&gt;              &lt;chr&gt;      &lt;list&gt;      
+1 1582213960000 NPI-2            1701120143000      1992338701 &lt;df [2 × 9]&gt;
+# ℹ 6 more variables: practiceLocations &lt;list&gt;, basic &lt;df[,11]&gt;,
+#   taxonomies &lt;list&gt;, identifiers &lt;list&gt;, endpoints &lt;list&gt;, other_names &lt;list&gt;
+
+[[13]]
+# A tibble: 1 × 11
+  created_epoch enumeration_type last_updated_epoch number     addresses   
+* &lt;chr&gt;         &lt;chr&gt;            &lt;chr&gt;              &lt;chr&gt;      &lt;list&gt;      
+1 1561054181000 NPI-2            1582304583000      1891355863 &lt;df [2 × 9]&gt;
+# ℹ 6 more variables: practiceLocations &lt;list&gt;, basic &lt;df[,11]&gt;,
+#   taxonomies &lt;list&gt;, identifiers &lt;list&gt;, endpoints &lt;list&gt;, other_names &lt;list&gt;
+
+[[14]]
+# A tibble: 1 × 11
+  created_epoch enumeration_type last_updated_epoch number     addresses   
+* &lt;chr&gt;         &lt;chr&gt;            &lt;chr&gt;              &lt;chr&gt;      &lt;list&gt;      
+1 1536946216000 NPI-2            1536946216000      1548743511 &lt;df [2 × 9]&gt;
+# ℹ 6 more variables: practiceLocations &lt;list&gt;, basic &lt;df[,10]&gt;,
+#   taxonomies &lt;list&gt;, identifiers &lt;list&gt;, endpoints &lt;list&gt;, other_names &lt;list&gt;
+
+[[15]]
+# A tibble: 1 × 11
+  created_epoch enumeration_type last_updated_epoch number     addresses    
+* &lt;chr&gt;         &lt;chr&gt;            &lt;chr&gt;              &lt;chr&gt;      &lt;list&gt;       
+1 1450192387000 NPI-2            1707767268000      1023473279 &lt;df [2 × 11]&gt;
+# ℹ 6 more variables: practiceLocations &lt;list&gt;, basic &lt;df[,13]&gt;,
+#   taxonomies &lt;list&gt;, identifiers &lt;list&gt;, endpoints &lt;list&gt;, other_names &lt;list&gt;
+
+[[16]]
+# A tibble: 1 × 11
+  created_epoch enumeration_type last_updated_epoch number     addresses    
+* &lt;chr&gt;         &lt;chr&gt;            &lt;chr&gt;              &lt;chr&gt;      &lt;list&gt;       
+1 1450191708000 NPI-2            1707768221000      1861857013 &lt;df [2 × 10]&gt;
+# ℹ 6 more variables: practiceLocations &lt;list&gt;, basic &lt;df[,13]&gt;,
+#   taxonomies &lt;list&gt;, identifiers &lt;list&gt;, endpoints &lt;list&gt;, other_names &lt;list&gt;
+
+[[17]]
+# A tibble: 1 × 11
+  created_epoch enumeration_type last_updated_epoch number     addresses    
+* &lt;chr&gt;         &lt;chr&gt;            &lt;chr&gt;              &lt;chr&gt;      &lt;list&gt;       
+1 1516648288000 NPI-2            1683135725000      1689182859 &lt;df [2 × 10]&gt;
+# ℹ 6 more variables: practiceLocations &lt;list&gt;, basic &lt;df[,12]&gt;,
+#   taxonomies &lt;list&gt;, identifiers &lt;list&gt;, endpoints &lt;list&gt;, other_names &lt;list&gt;
+
+[[18]]
+# A tibble: 1 × 11
+  created_epoch enumeration_type last_updated_epoch number     addresses    
+* &lt;chr&gt;         &lt;chr&gt;            &lt;chr&gt;              &lt;chr&gt;      &lt;list&gt;       
+1 1461596970000 NPI-2            1461596970000      1982059275 &lt;df [2 × 10]&gt;
+# ℹ 6 more variables: practiceLocations &lt;list&gt;, basic &lt;df[,11]&gt;,
+#   taxonomies &lt;list&gt;, identifiers &lt;list&gt;, endpoints &lt;list&gt;, other_names &lt;list&gt;</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>purrr<span class="sc">::</span><span class="fu">list_rbind</span>(kind) <span class="sc">|&gt;</span> </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(<span class="at">npi    =</span> number,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">entity =</span> <span class="fu">factor_</span>(</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">val_match</span>(</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>        enumeration_type, </span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"NPI-1"</span> <span class="sc">~</span> <span class="st">"I"</span>, </span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"NPI-2"</span> <span class="sc">~</span> <span class="st">"O"</span>, </span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">.default =</span> <span class="st">"X"</span>)),</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">date_created =</span> <span class="fu">convert_epoch</span>(created_epoch),</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">last_updated =</span> <span class="fu">convert_epoch</span>(last_updated_epoch)) <span class="sc">|&gt;</span> </span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(<span class="sc">-</span>number, <span class="sc">-</span>enumeration_type, <span class="sc">-</span>created_epoch, <span class="sc">-</span>last_updated_epoch)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 18 × 11
+   addresses     practiceLocations basic$organization_n…¹ taxonomies identifiers
+   &lt;list&gt;        &lt;list&gt;            &lt;chr&gt;                  &lt;list&gt;     &lt;list&gt;     
+ 1 &lt;df [2 × 9]&gt;  &lt;list [0]&gt;        VIOS FERTILITY INSTIT… &lt;df&gt;       &lt;list [0]&gt; 
+ 2 &lt;df [2 × 9]&gt;  &lt;list [0]&gt;        PEACH STATE MEDICAL P… &lt;df&gt;       &lt;list [0]&gt; 
+ 3 &lt;df [2 × 10]&gt; &lt;list [0]&gt;        VIOS FERTILITY INSTIT… &lt;df&gt;       &lt;list [0]&gt; 
+ 4 &lt;df [2 × 9]&gt;  &lt;list [0]&gt;        PEACH STATE MEDICAL P… &lt;df&gt;       &lt;list [0]&gt; 
+ 5 &lt;df [2 × 10]&gt; &lt;list [0]&gt;        PEACH STATE MEDICAL P… &lt;df&gt;       &lt;list [0]&gt; 
+ 6 &lt;df [2 × 9]&gt;  &lt;list [0]&gt;        PEACH STATE MEDICAL P… &lt;df&gt;       &lt;list [0]&gt; 
+ 7 &lt;df [2 × 10]&gt; &lt;list [0]&gt;        KINDBODY OF FL MEDICA… &lt;df&gt;       &lt;list [0]&gt; 
+ 8 &lt;df [2 × 9]&gt;  &lt;df [2 × 9]&gt;      PEACH STATE MEDICAL P… &lt;df&gt;       &lt;list [0]&gt; 
+ 9 &lt;df [2 × 9]&gt;  &lt;list [0]&gt;        PEACH STATE MEDICAL P… &lt;df&gt;       &lt;list [0]&gt; 
+10 &lt;df [2 × 9]&gt;  &lt;list [0]&gt;        PEACH STATE MEDICAL P… &lt;df&gt;       &lt;list [0]&gt; 
+11 &lt;df [2 × 9]&gt;  &lt;list [0]&gt;        PEACH STATE MEDICAL P… &lt;df&gt;       &lt;list [0]&gt; 
+12 &lt;df [2 × 9]&gt;  &lt;list [0]&gt;        GARDEN STATE MEDICAL … &lt;df&gt;       &lt;list [0]&gt; 
+13 &lt;df [2 × 9]&gt;  &lt;df [3 × 10]&gt;     FAHIMEH SASAN,D.O., P… &lt;df&gt;       &lt;list [0]&gt; 
+14 &lt;df [2 × 9]&gt;  &lt;list [0]&gt;        EMPIRE MEDICAL PRACTI… &lt;df&gt;       &lt;list [0]&gt; 
+15 &lt;df [2 × 11]&gt; &lt;list [0]&gt;        VIOS FERTILITY INSTIT… &lt;df&gt;       &lt;list [0]&gt; 
+16 &lt;df [2 × 10]&gt; &lt;list [0]&gt;        CENTERS FOR REPRODUCT… &lt;df&gt;       &lt;list [0]&gt; 
+17 &lt;df [2 × 10]&gt; &lt;list [0]&gt;        VIOS FERTILITY INSTIT… &lt;df&gt;       &lt;list [0]&gt; 
+18 &lt;df [2 × 10]&gt; &lt;list [0]&gt;        VIOS FERTILITY INSTIT… &lt;df&gt;       &lt;list [0]&gt; 
+# ℹ abbreviated name: ¹​basic$organization_name
+# ℹ 19 more variables: basic$organizational_subpart &lt;chr&gt;,
+#   $enumeration_date &lt;chr&gt;, $last_updated &lt;chr&gt;, $certification_date &lt;chr&gt;,
+#   $status &lt;chr&gt;, $authorized_official_first_name &lt;chr&gt;,
+#   $authorized_official_last_name &lt;chr&gt;,
+#   $authorized_official_telephone_number &lt;chr&gt;,
+#   $authorized_official_title_or_position &lt;chr&gt;, …</code></pre>
 </div>
 </div>
 
