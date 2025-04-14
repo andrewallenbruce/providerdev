@@ -26,8 +26,6 @@ options(scipen = 999)
 ## Load Packages
 
 ```{r}
-library(tidyverse)
-# library(provider)
 library(tidygeocoder)
 library(tigris)
 library(rmapshaper)
@@ -35,7 +33,42 @@ library(sf)
 options(tigris_use_cache = TRUE)
 ```
 
-## Retrieve Addresses of all RHCs in Georgia
+## Rural Health Clinics
+
+> RHC Enrollments
+
+• __Rows__ [5.3k]
+• __Pages__ [2]
+• __Fields__ [20]
+
+```{r}
+rhc_enrollments <- careGroup("rural_health")@groups |> 
+  _[["rural_health_clinic_enrollments"]] |> 
+  _[["endpoints"]] |> 
+  _[["identifier"]] |> 
+  providertwo:::quick_care()
+
+rhc_enrollments
+```
+
+> RHC Owners
+
+• __Rows__ [62.7k]
+• __Pages__ [13]
+• __Fields__ [34]
+
+```{r}
+rhc_owners <- careGroup("rural_health")@groups |> 
+  _[["rural_health_clinic_all_owners"]] |> 
+  _[["endpoints"]] |> 
+  _[["identifier"]] |> 
+  providertwo:::quick_care()
+
+rhc_owners
+```
+
+
+## All RHCs in Georgia
 
 ```{r}
 x <- careMain("enrollees")

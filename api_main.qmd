@@ -4,6 +4,7 @@
 #| label: setup-common-01
 #| include: false
 source("includes/_common.R")
+remove_at_symbol <- \(x) fuimus::sf_remove(s = x, p = "@", fix = TRUE)
 ```
 
 ## Links
@@ -152,12 +153,12 @@ dataset |>
   unnest_wider(contactPoint, names_sep = "_") |>
   unnest_wider(publisher, names_sep = "_") |>
   mutate(
-    bureauCode  = delist(bureauCode),
-    keyword     = flatten_column(keyword),
-    language    = delist(language),
-    programCode = delist(programCode),
-    references  = delist(references),
-    theme       = delist(theme)) |> 
+    bureauCode  = unlist(bureauCode, use.names = FALSE),
+    keyword     = map_chr(keyword, \(x) paste0(unlist(x, use.names = FALSE), collapse = ", ")),
+    language    = unlist(language, use.names = FALSE),
+    programCode = unlist(programCode, use.names = FALSE),
+    references  = unlist(references, use.names = FALSE),
+    theme       = unlist(theme, use.names = FALSE)) |> 
   rename_with(remove_at_symbol) |> 
   purse()
 ```
@@ -317,12 +318,12 @@ dataset |>
   unnest_wider(contactPoint, names_sep = "_") |>
   unnest_wider(publisher, names_sep = "_") |>
   mutate(
-    bureauCode  = delist(bureauCode),
-    keyword     = flatten_column(keyword),
-    language    = delist(language),
-    programCode = delist(programCode),
-    references  = delist(references),
-    theme       = delist(theme)) |> 
+    bureauCode  = unlist(bureauCode, use.names = FALSE),
+    keyword     = map_chr(keyword, \(x) paste0(unlist(x, use.names = FALSE), collapse = ", ")),
+    language    = unlist(language, use.names = FALSE),
+    programCode = unlist(programCode, use.names = FALSE),
+    references  = unlist(references, use.names = FALSE),
+    theme       = unlist(theme, use.names = FALSE)) |> 
   rename_with(remove_at_symbol) |> 
   purse()
 ```
@@ -357,13 +358,13 @@ stats <- stats |>
 stats |> 
   purse()
 
-offset_sequence(stats$found_rows, 5000)
+sq <- providertwo:::offset_seq(stats$found_rows, 5000)
 
 glue::glue(
   "{base$url}",
   "?size=5000&",
   "offset=",
-  "{offset_sequence(stats$found_rows, 5000)}"
+  "{sq}"
 )
 ```
 
@@ -500,9 +501,9 @@ resp_resources <- distribution |>
   list_flatten()
 
 reassign_url <- tibble(
-  name = gelm(resp_resources, "name$") |> delist(),
-  size = gelm(resp_resources, "fileSize$") |> delist(),
-  url =  gelm(resp_resources, "downloadURL$") |> delist())
+  name = fuimus::gelm(resp_resources, "name$") |> unlist(use.names = FALSE),
+  size = fuimus::gelm(resp_resources, "fileSize$") |> unlist(use.names = FALSE),
+  url =  fuimus::gelm(resp_resources, "downloadURL$") |> unlist(use.names = FALSE))
 
 reassign_url
 
