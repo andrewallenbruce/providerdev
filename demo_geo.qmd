@@ -1,16 +1,33 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
 # Geospatial {#sec-demogeo}
 
 ```{r}
 #| label: setup-common-01
 #| include: false
 source("includes/_common.R")
+
+knitr::opts_chunk$set(
+  collapse  = FALSE,
+  echo      = TRUE, 
+  message   = TRUE, 
+  warning   = FALSE,
+  error     = TRUE,
+  comment   = "#>",
+  dpi       = 600, 
+  out.width = "100%"
+)
+options(scipen = 999)
 ```
 
 ## Load Packages
 
 ```{r}
 library(tidyverse)
-library(provider)
+# library(provider)
 library(tidygeocoder)
 library(tigris)
 library(rmapshaper)
@@ -21,21 +38,85 @@ options(tigris_use_cache = TRUE)
 ## Retrieve Addresses of all RHCs in Georgia
 
 ```{r}
-rhcs <- provider::providers(state = "GA", specialty_code = "00-17") |> 
-  pull(npi) |> 
-  map_dfr(\(x) provider::nppes(npi = x)) |> 
-  select(organization, address:zip) |> 
-  mutate(address = paste0(address, " ", city, ", ", state)) |> 
-  distinct()
+x <- careMain("enrollees")
 
-rhcs_ga <- sbt(rhcs, state != "FL")
+req <- x@identifier |> 
+  request() |> 
+  req_url_query(
+    "filter[STATE_CD]" = "GA",
+    "filter[PROVIDER_TYPE_CD]" = "00-17"
+  )
 
-rhcs_ga
+nres <- req |> 
+  req_url_path_append("stats") |>
+  providertwo:::perform_simple() |> 
+  _[["data"]] |> 
+  _[["found_rows"]]
+
+nres
+
+res <- req |> 
+  req_url_query(
+    offset = 0L,
+    size = 5000L
+    ) |> 
+  req_perform() |> 
+  providertwo:::resp_simple_json() |> 
+  get_elem("^data$|headers", regex = TRUE)
+
+rhc_res <- as_tbl(res$data) |> 
+  set_names(res$meta) |> 
+  providertwo:::map_na_if() |> 
+  sbt(ORG_NAME != "UNIVERSITY OF FLORIDA JACKSONVILLE PHYSICIANS, INC.") |>
+  slt(ORG_NAME, NPI:STATE_CD) |>
+  roworder(ORG_NAME)
+
+rhc_res |> print(n = 100)
+```
+
+
+```{r}
+tictoc::tic()
+rhc_nppes <- npi_nppes(npi = rhc_res$NPI)
+tictoc::toc()
+
+rhc_nppes |> 
+  slt(-endpoints, -enumeration_type) |> 
+  print(n = 100)
+
+rhc_nppes |> 
+  slt(number, addresses) |> 
+  unnest(addresses)
+
+rhc_nppes |> 
+  slt(number, basic) |> 
+  unnest_wider(basic)
+
+rhc_nppes |> 
+  slt(number, taxonomies) |> 
+  unnest(taxonomies)
+
+rhc_nppes |> 
+  slt(number, identifiers) |> 
+  unnest(identifiers) |> 
+  print(n = 100)
+
+rhc_nppes |> 
+  slt(number, other_names) |> 
+  unnest(other_names) |> 
+  print(n = 100)
+
+rhc_nppes |> 
+  slt(number, practiceLocations) |> 
+  unnest_wider(practiceLocations) |> 
+  sbt(!is.na(state)) |> 
+  print(n = 100)
 ```
 
 ## Geocode with {tidygeocoder}
 
 ```{r}
+#| eval: false
 geo_add <- tidygeocoder::geocode(
   rhcs_ga,
   address = address,
@@ -52,6 +133,7 @@ mapbox
 ## Retrieve Georgia counties shapefile from {tigris}
 
 ```{r}
+#| eval: false
 tig_cnt <- tigris::counties(
   state = "GA",
   year = 2022,
@@ -62,13 +144,11 @@ tig_cnt
 
 
 ```{r}
+#| eval: false
 sf_cnt <- ms_simplify(tig_cnt)
 
 sf_cnt
-```
 
-
-```{r}
 sf_cnt$mid <- st_centroid(sf_cnt$geometry)
 
 sf_cnt
@@ -77,6 +157,7 @@ sf_cnt
 ## Map with {ggplot}
 
 ```{r}
+#| eval: false
 ggplot(sf_cnt) +
   geom_sf(
     fill = "skyblue",

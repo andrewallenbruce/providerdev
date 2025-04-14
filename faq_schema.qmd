@@ -9,13 +9,13 @@ editor_options:
 #| include: false
 source("includes/_common.R")
 
-htmltools::tagList(
-  btn_link(
-    "https://resources.data.gov/resources/dcat-us/", 
-    "DCAT Schema"),
-  btn_link(
-    "https://resources.data.gov/schemas/dcat-us/v1.1/iso8601_guidance/#accrualperiodicity", 
-    "ISO8601"))
+# htmltools::tagList(
+#   btn_link(
+#     "https://resources.data.gov/resources/dcat-us/", 
+#     "DCAT Schema"),
+#   btn_link(
+#     "https://resources.data.gov/schemas/dcat-us/v1.1/iso8601_guidance/#accrualperiodicity", 
+#     "ISO8601"))
 ```
 
 ## DCAT Schemas
@@ -27,7 +27,11 @@ htmltools::tagList(
 ```{r}
 #| label: schema_catalog
 #| echo: false
-listview(fload(here("data/dcat-us_v1.1_schema_catalog.json")))
+
+# listview(fload(here("data/dcat-us_v1.1_schema_catalog.json")))
+
+fload(here("data/dcat-us_v1.1_schema_catalog.json")) |> 
+  listviewer::jsonedit()
 ```
 
 ## Dataset
@@ -35,7 +39,11 @@ listview(fload(here("data/dcat-us_v1.1_schema_catalog.json")))
 ```{r}
 #| label: schema_dataset
 #| echo: false
-listview(fload(here("data/dcat-us_v1.1_schema_dataset.json")))
+
+# listview(fload(here("data/dcat-us_v1.1_schema_dataset.json")))
+
+fload(here("data/dcat-us_v1.1_schema_dataset.json")) |> 
+  listviewer::jsonedit()
 ```
 
 ## Distribution
@@ -43,10 +51,15 @@ listview(fload(here("data/dcat-us_v1.1_schema_dataset.json")))
 ```{r}
 #| label: schema_distribution
 #| echo: false
-listview(fload(here("data/dcat-us_v1.1_schema_distribution.json")))
+
+# listview(fload(here("data/dcat-us_v1.1_schema_distribution.json")))
+
+fload(here("data/dcat-us_v1.1_schema_distribution.json")) |> 
+  listviewer::jsonedit()
 ```
 
 ::: 
+
 
 ## `dataset` Fields
 
@@ -60,7 +73,34 @@ Federal agencies, combined agency and bureau code from [OMB Circular A-11, Appen
 
 ```{r}
 #| label: bureauCodes
-bureau_code()
+read_csv(
+  here("data/omb_bureau_codes.csv"),
+  show_col_types  = FALSE,
+  col_types       = cols(
+    `Agency Name`   = col_character(),
+    `Bureau Name`   = col_character(),
+    `Agency Code`   = col_character(),
+    `Bureau Code`   = col_character(),
+    `Treasury Code` = col_character(),
+    `CGAC Code`     = col_character()
+  )
+) |>
+  setNames(
+    c(
+      "agencyName",
+      "bureauName",
+      "agencyCode",
+      "bureauCode",
+      "treasuryCode",
+      "cgacCode"
+    )
+  ) |>
+  mutate(
+    agencyCode   = str_pad(agencyCode, width = 3, pad = "0"),
+    bureauCode   = str_pad(bureauCode, width = 2, pad = "0"),
+    treasuryCode = str_pad(treasuryCode, width = 2, pad = "0"),
+    cgacCode     = str_pad(cgacCode, width = 3, pad = "0")
+  )
 ```
 
 ### `programCode`
@@ -71,7 +111,30 @@ Federal agencies, list the primary program related to this data asset, from the 
 
 ```{r}
 #| label: programCodes
-program_code()
+read_csv(
+  here(
+    "data/FederalProgramInventory_FY13_MachineReadable_091613.csv"
+  ),
+  show_col_types                      = FALSE,
+  col_types                           = cols(
+    `Agency Name`                       = col_character(),
+    `Program Name`                      = col_character(),
+    `Additional Information (optional)` = col_character(),
+    agencyCode                          = col_character(),
+    ProgramCode                         = col_character(),
+    ProgramCodePODFormat                = col_character()
+  )
+) |>
+  setNames(
+    c(
+      "agencyName",
+      "programName",
+      "additionalInfo",
+      "agencyCode",
+      "programCode",
+      "programCodePODfmt"
+    )
+  )
 ```
 
 ### `accrualPeriodicity`
@@ -79,11 +142,33 @@ program_code()
 ```{r}
 #| label: accrualPeriodicity
 tibble(
-  accrualPeriodicity = c(
-  "R/PT1S",   "R/PT1H",  "R/P1D", "R/P3.5D", 
-  "R/P0.33W", "R/P0.5W", "R/P1W", "R/P2W", 
-  "R/P0.33M", "R/P0.5M", "R/P1M", "R/P2M",
-  "R/P3M",    "R/P4M",   "R/P6M", "R/P1Y",
-  "R/P2Y",    "R/P3Y",   "R/P4Y", "R/P10Y"),
-  accrualDescription = recode_iso8601(accrualPeriodicity))
+  Periodicity = c(
+    "R/PT1S",
+    "R/PT1H",
+    "R/P1D",
+    "R/P3.5D",
+    "R/P0.33W",
+    "R/P0.5W",
+    "R/P1W",
+    "R/P2W",
+    "R/P0.33M",
+    "R/P0.5M",
+    "R/P1M",
+    "R/P2M",
+    "R/P3M",
+    "R/P4M",
+    "R/P6M",
+    "R/P1Y",
+    "R/P2Y",
+    "R/P3Y",
+    "R/P4Y",
+    "R/P10Y"
+  ),
+  Description = providertwo:::fmt_periodicity(Periodicity)
+) |> 
+  gt() |> 
+  opt_table_font(font = google_font(name = "JetBrains Mono")) |> 
+  tab_options(quarto.disable_processing = TRUE,
+              column_labels.font.weight = "bolder") |> 
+  opt_stylize(color = "red")
 ```

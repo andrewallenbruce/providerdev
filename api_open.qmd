@@ -20,6 +20,18 @@ quick_open_temp <- providertwo:::quick_open_temp
    * [CMS: Open Payments API](https://openpaymentsdata.cms.gov/about/api)
    * [University of Illinois-Chicago: Sunshine Act](https://research.uic.edu/compliance/coi/organizational-coi/faqs-sunshine)
 
+
+```{r}
+"https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids" |> 
+  request() |>
+  req_perform() |>
+  resp_body_json(check_type = FALSE, simplifyVector = FALSE) |>
+  jsonify::to_json() |> 
+  jsonify::pretty_json() |> 
+  listviewer::jsonedit()
+```
+
+
 ## Load Catalog
 
 ```{r}
