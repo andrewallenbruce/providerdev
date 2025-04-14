@@ -18,117 +18,47 @@ source("includes/_common.R")
 #     "ISO8601"))
 ```
 
-## DCAT Schemas
 
-## Catalog
+## DCAT JSON Schemas
+
+::: panel-tabset
+
+### Catalog
 
 ```{r}
 #| label: schema_catalog
 here::here("data/dcat-us_v1.1_schema_catalog.json") |> 
   RcppSimdJson::fload() |> 
-  jsonify::to_json() |> 
-  jsonify::pretty_json() |> 
-  listviewer::jsonedit()
+  jsonify::pretty_json()
 ```
 
-## Dataset
+
+### Dataset
+
+   * [Data Catalog Vocabulary (DCAT) - Version 3](https://www.w3.org/TR/vocab-dcat/)
+
 
 ```{r}
 #| label: schema_dataset
 here::here("data/dcat-us_v1.1_schema_dataset.json") |> 
   RcppSimdJson::fload() |> 
-  jsonify::to_json() |> 
-  jsonify::pretty_json() |> 
-  listviewer::jsonedit()
+  jsonify::pretty_json()
 ```
 
-## Distribution
+### Distribution
 
 ```{r}
 #| label: schema_distribution
 here::here("data/dcat-us_v1.1_schema_distribution.json") |> 
   RcppSimdJson::fload() |> 
-  jsonify::to_json() |>
-  jsonify::pretty_json() |>
-  listviewer::jsonedit()
+  jsonify::pretty_json()
 ```
 
+:::
 
-## `dataset` Fields
+## Reference Datasets
 
-   * [Data Catalog Vocabulary (DCAT) - Version 3](https://www.w3.org/TR/vocab-dcat/)
-
-### `bureauCode`
-
-Federal agencies, combined agency and bureau code from [OMB Circular A-11, Appendix C](https://obamawhitehouse.archives.gov/sites/default/files/omb/assets/a11_current_year/app_c.pdf). 
-
-> __Format__: `015:11`
-
-```{r}
-#| label: bureauCodes
-read_csv(
-  here("data/omb_bureau_codes.csv"),
-  show_col_types  = FALSE,
-  col_types       = cols(
-    `Agency Name`   = col_character(),
-    `Bureau Name`   = col_character(),
-    `Agency Code`   = col_character(),
-    `Bureau Code`   = col_character(),
-    `Treasury Code` = col_character(),
-    `CGAC Code`     = col_character()
-  )
-) |>
-  setNames(
-    c(
-      "agencyName",
-      "bureauName",
-      "agencyCode",
-      "bureauCode",
-      "treasuryCode",
-      "cgacCode"
-    )
-  ) |>
-  mutate(
-    agencyCode   = str_pad(agencyCode, width = 3, pad = "0"),
-    bureauCode   = str_pad(bureauCode, width = 2, pad = "0"),
-    treasuryCode = str_pad(treasuryCode, width = 2, pad = "0"),
-    cgacCode     = str_pad(cgacCode, width = 3, pad = "0")
-  )
-```
-
-### `programCode`
-
-Federal agencies, list the primary program related to this data asset, from the [Federal Program Inventory](https://resources.data.gov/schemas/dcat-us/v1.1/FederalProgramInventory_FY13_MachineReadable_091613.csv). 
-
-> __Format__: `015:001`
-
-```{r}
-#| label: programCodes
-read_csv(
-  here(
-    "data/FederalProgramInventory_FY13_MachineReadable_091613.csv"
-  ),
-  show_col_types                      = FALSE,
-  col_types                           = cols(
-    `Agency Name`                       = col_character(),
-    `Program Name`                      = col_character(),
-    `Additional Information (optional)` = col_character(),
-    agencyCode                          = col_character(),
-    ProgramCode                         = col_character(),
-    ProgramCodePODFormat                = col_character()
-  )
-) |>
-  setNames(
-    c(
-      "agencyName",
-      "programName",
-      "additionalInfo",
-      "agencyCode",
-      "programCode",
-      "programCodePODfmt"
-    )
-  )
-```
+::: panel-tabset
 
 ### `accrualPeriodicity`
 
@@ -165,3 +95,91 @@ tibble(
               column_labels.font.weight = "bolder") |> 
   opt_stylize(color = "red")
 ```
+
+### `bureauCode`
+
+Federal agencies, combined agency and bureau code from [OMB Circular A-11, Appendix C](https://obamawhitehouse.archives.gov/sites/default/files/omb/assets/a11_current_year/app_c.pdf).
+
+> **Format**: `015:11`
+
+```{r}
+#| label: bureauCodes
+read_csv(
+  here("data/omb_bureau_codes.csv"),
+  show_col_types  = FALSE,
+  col_types       = cols(
+    `Agency Name`   = col_character(),
+    `Bureau Name`   = col_character(),
+    `Agency Code`   = col_character(),
+    `Bureau Code`   = col_character(),
+    `Treasury Code` = col_character(),
+    `CGAC Code`     = col_character()
+  )
+) |>
+  setNames(
+    c(
+      "agencyName",
+      "bureauName",
+      "agencyCode",
+      "bureauCode",
+      "treasuryCode",
+      "cgacCode"
+    )
+  ) |>
+  mutate(
+    agencyCode   = str_pad(agencyCode, width = 3, pad = "0"),
+    bureauCode   = str_pad(bureauCode, width = 2, pad = "0"),
+    treasuryCode = str_pad(treasuryCode, width = 2, pad = "0"),
+    cgacCode     = str_pad(cgacCode, width = 3, pad = "0")
+  ) |> 
+  gt() |> 
+  opt_table_font(font = google_font(name = "JetBrains Mono")) |> 
+  tab_options(quarto.disable_processing = TRUE,
+              column_labels.font.weight = "bolder") |> 
+  opt_stylize(color = "red")
+```
+
+### `programCode`
+
+Federal agencies, list the primary program related to this data asset, from the [Federal Program Inventory](https://resources.data.gov/schemas/dcat-us/v1.1/FederalProgramInventory_FY13_MachineReadable_091613.csv).
+
+> **Format**: `015:001`
+
+```{r}
+#| label: programCodes
+read_csv(
+  here(
+    "data/FederalProgramInventory_FY13_MachineReadable_091613.csv"
+  ),
+  show_col_types                      = FALSE,
+  col_types                           = cols(
+    `Agency Name`                       = col_character(),
+    `Program Name`                      = col_character(),
+    `Additional Information (optional)` = col_character(),
+    agencyCode                          = col_character(),
+    ProgramCode                         = col_character(),
+    ProgramCodePODFormat                = col_character()
+  )
+) |>
+  setNames(
+    c(
+      "agencyName",
+      "programName",
+      "additionalInfo",
+      "agencyCode",
+      "programCode",
+      "programCodePODfmt"
+    )
+  ) |> 
+  gt() |> 
+  opt_table_font(font = google_font(name = "JetBrains Mono")) |> 
+  tab_options(quarto.disable_processing = TRUE,
+              column_labels.font.weight = "bolder") |> 
+  opt_stylize(color = "red")
+```
+
+
+::: 
+
+
+<hr>

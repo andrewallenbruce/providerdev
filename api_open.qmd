@@ -17,68 +17,104 @@ quick_open_temp <- providertwo:::quick_open_temp
 
 ## Links
 
-   * [CMS: Open Payments API](https://openpaymentsdata.cms.gov/about/api)
-   * [University of Illinois-Chicago: Sunshine Act](https://research.uic.edu/compliance/coi/organizational-coi/faqs-sunshine)
+-   [CMS: Open Payments API](https://openpaymentsdata.cms.gov/about/api)
+-   [University of Illinois-Chicago: Sunshine Act](https://research.uic.edu/compliance/coi/organizational-coi/faqs-sunshine)
 
+
+::: {#nte-open-json .callout-note collapse="true"}
+
+## `JSON`: _Open Payments Catalog_
 
 ```{r}
+#| echo: false
 "https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids" |> 
   request() |>
   req_perform() |>
   resp_body_json(check_type = FALSE, simplifyVector = FALSE) |>
-  jsonify::to_json() |> 
-  jsonify::pretty_json() |> 
-  listviewer::jsonedit()
+  jsonify::to_json() |>
+  jsonify::pretty_json()
 ```
 
 
-## Load Catalog
+:::
+
+
+
+## Open Profiles
 
 ```{r}
-openMain("profile_covered")@identifier |> 
-  quick_open()
-
-openMain("profile_physician")@identifier |> 
-  quick_open()
-
-openMain("profile_information")@identifier |> 
-  quick_open()
-
-openMain("profile_mapping")@identifier |> 
-  quick_open()
-
-openMain("profile_entity")@identifier |> 
-  quick_open()
-
-openMain("profile_teaching")@identifier |> 
-  quick_open()
-
-openMain("state_total")@identifier |> 
-  quick_open()
-
-openMain("state_group")@identifier |> 
-  quick_open()
-
-openMain("national_group")@identifier |> 
-  quick_open()
-
-openMain("national_total")@identifier |> 
-  quick_open()
-
-openTemp("general")@endpoints$identifier |> _[[1]] |> 
-  quick_open_temp()
-
-openTemp("ownership")@endpoints$identifier |> _[[1]] |> 
-  quick_open_temp()
-
-openTemp("research")@endpoints$identifier |> _[[1]] |> 
-  quick_open_temp()
-
-providertwo:::open_temp_group("grouped_payments") |> 
-  slt(-description, -contact, -download) |> 
-  rsplit(~ title)
+#| label: endpoint_examples
+open_quick <- \(alias) {
+  stopifnot(length(alias) == 1L)
+  
+  if (grepl("^profile|^state|^national", alias, perl = TRUE))
+    return(prop(openMain(alias), "identifier") |> quick_open())
+  else
+    return(prop(openTemp("general"), "endpoints") |> _[["identifier"]] |> _[[1]] |> quick_open_temp())
+}
 ```
 
+### Covered Recipient Profile Supplement
+
+• Rows 1,530,412
+• Pages 3,061
+• Fields 32
+
+```{r}
+open_quick("profile_covered")
+```
+
+### Physician (Distinct) Profile Information
+
+• Rows 1,528,054
+• Pages 3,057
+• Fields 33
+
+```{r}
+open_quick("profile_physician")
+```
+
+### Profile Information
+
+• Rows 1,534,695
+• Pages 3,070
+• Fields 20
+
+```{r}
+open_quick("profile_information")
+```
+
+### Provider Profile ID Mapping Table
+
+• Rows 2,358
+• Pages 5
+• Fields 2
+
+```{r}
+open_quick("profile_mapping")
+```
+
+### Reporting Entity Profile Information
+
+• Rows 2,843
+• Pages 6
+• Fields 9
+
+```{r}
+open_quick("profile_entity")
+```
+
+### Teaching Hospital Profile Information
+
+• Rows 1,440
+• Pages 3
+• Fields 12
+
+```{r}
+open_quick("profile_teaching")
+```
+
+## Open Summaries
 
 ### Summary Dashboard
 
@@ -86,10 +122,59 @@ providertwo:::open_temp_group("grouped_payments") |>
 open_dashboard()
 ```
 
-### National Summary
+### State Level Payment Total and Averages for all Years
+
+• Rows 2,765
+• Pages 6
+• Fields 28
 
 ```{r}
+open_quick("state_total")
+```
+
+### State Payment Totals and Averages Grouped by Nature of Payment for all Years
+
+• Rows 16,758
+• Pages 34
+• Fields 28
+
+```{r}
+open_quick("state_group")
+```
+
+### National Level Payment Total and Averages by Provider Specialty for all Years
+
+• Rows 4,188
+• Pages 9
+• Fields 21
+
+```{r}
+open_quick("national_group")
+```
+
+### National Level Payment Total and Averages for all Years
+
+• Rows 24
+• Pages 1
+• Fields 18
+
+```{r}
+open_quick("national_total")
+
 open_national()
+```
+
+### Grouped Payment Aggregations
+
+```{r}
+grp_pmts <- providertwo:::open_temp_group("grouped_payments") |> 
+  filter(year == fmax(year), .by = title) |> 
+  slt(title, identifier) |> 
+  rsplit(~ title) |> 
+  map(providertwo:::open_url) |> 
+  map(quick_open)
+
+grp_pmts
 ```
 
 ### Data Dictionary
@@ -97,6 +182,47 @@ open_national()
 ```{r}
 open_dictionary()
 ```
+
+## Detailed Sets by Year
+
+### General Payment Data
+
+• Rows 14,607,336
+• Pages 29,215
+• Fields 91
+• Years 2017 - 2023
+
+```{r}
+open_quick("general")
+```
+
+
+### Ownership Payment Data
+
+• Rows 4,013
+• Pages 9
+• Fields 30
+• Years 2017 - 2023
+
+
+```{r}
+open_quick("ownership")
+```
+
+### Research Payment Data
+
+• Rows 1,027,926
+• Pages 9
+• Fields 252
+• Years 2017 - 2023
+
+```{r}
+open_quick("research")
+```
+
+
+<hr>
+
 
 ## Querying
 
@@ -169,7 +295,7 @@ format_query_open(
   fuimus::print_ls()
 ```
 
-## Query Format
+### Query Format
 
 ```{r}
 #| eval: false
@@ -189,7 +315,6 @@ request("https://openpaymentsdata.cms.gov/api/1/datastore/sql") |>
   handle_na()
 tictoc::toc()
 ```
-
 
 ```{r}
 #| eval: false
@@ -219,8 +344,6 @@ as_tbl(ex_res$results) |>
   purse()
 ```
 
-
-
 ```{r}
 #| eval: false
 tictoc::tic()
@@ -244,7 +367,6 @@ url_parse(
   _[["count"]]
 tictoc::toc()
 ```
-
 
 ```{r}
 #| eval: false
