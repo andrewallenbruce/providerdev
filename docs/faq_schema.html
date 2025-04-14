@@ -342,11 +342,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#dcat-schemas" id="toc-dcat-schemas" class="nav-link active" data-scroll-target="#dcat-schemas"><span class="header-section-number">19.1</span> DCAT Schemas</a></li>
-  <li><a href="#dataset-fields" id="toc-dataset-fields" class="nav-link" data-scroll-target="#dataset-fields"><span class="header-section-number">19.2</span> <code>dataset</code> Fields</a>
+  <li><a href="#catalog" id="toc-catalog" class="nav-link" data-scroll-target="#catalog"><span class="header-section-number">19.2</span> Catalog</a></li>
+  <li><a href="#dataset" id="toc-dataset" class="nav-link" data-scroll-target="#dataset"><span class="header-section-number">19.3</span> Dataset</a></li>
+  <li><a href="#distribution" id="toc-distribution" class="nav-link" data-scroll-target="#distribution"><span class="header-section-number">19.4</span> Distribution</a></li>
+  <li><a href="#dataset-fields" id="toc-dataset-fields" class="nav-link" data-scroll-target="#dataset-fields"><span class="header-section-number">19.5</span> <code>dataset</code> Fields</a>
   <ul class="collapse">
-  <li><a href="#bureaucode" id="toc-bureaucode" class="nav-link" data-scroll-target="#bureaucode"><span class="header-section-number">19.2.1</span> <code>bureauCode</code></a></li>
-  <li><a href="#programcode" id="toc-programcode" class="nav-link" data-scroll-target="#programcode"><span class="header-section-number">19.2.2</span> <code>programCode</code></a></li>
-  <li><a href="#accrualperiodicity" id="toc-accrualperiodicity" class="nav-link" data-scroll-target="#accrualperiodicity"><span class="header-section-number">19.2.3</span> <code>accrualPeriodicity</code></a></li>
+  <li><a href="#bureaucode" id="toc-bureaucode" class="nav-link" data-scroll-target="#bureaucode"><span class="header-section-number">19.5.1</span> <code>bureauCode</code></a></li>
+  <li><a href="#programcode" id="toc-programcode" class="nav-link" data-scroll-target="#programcode"><span class="header-section-number">19.5.2</span> <code>programCode</code></a></li>
+  <li><a href="#accrualperiodicity" id="toc-accrualperiodicity" class="nav-link" data-scroll-target="#accrualperiodicity"><span class="header-section-number">19.5.3</span> <code>accrualPeriodicity</code></a></li>
   </ul></li>
   </ul>
 <div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li><li><a href="https://github.com/andrewallenbruce/providertwo"><i class="bi bi-file-code"></i>providertwo</a></li></ul></div></nav>
@@ -375,76 +378,988 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="dcat-schemas" class="level2" data-number="19.1">
 <h2 data-number="19.1" class="anchored" data-anchor-id="dcat-schemas"><span class="header-section-number">19.1</span> DCAT Schemas</h2>
-<div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" aria-current="page">Catalog</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Dataset</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false">Distribution</a></li></ul>
-<div class="tab-content">
-<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+</section>
+<section id="catalog" class="level2" data-number="19.2">
+<h2 data-number="19.2" class="anchored" data-anchor-id="catalog"><span class="header-section-number">19.2</span> Catalog</h2>
 <div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data/dcat-us_v1.1_schema_catalog.json"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  RcppSimdJson<span class="sc">::</span><span class="fu">fload</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  jsonify<span class="sc">::</span><span class="fu">to_json</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  jsonify<span class="sc">::</span><span class="fu">pretty_json</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  listviewer<span class="sc">::</span><span class="fu">jsonedit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="jsonedit html-widget html-fill-item" id="htmlwidget-cd08634ba458db5d901c" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-cd08634ba458db5d901c">{"x":{"data":{"$schema":"http://json-schema.org/draft-04/schema#","id":"https://project-open-data.cio.gov/v1.1/schema/catalog.json#","title":"Project Open Data Catalog","description":"Validates an entire collection of Project Open Data metadata JSON objects. Agencies produce said collections in the form of Data.json files.","type":"object","dependencies":{"@type":"@context"},"required":["conformsTo","dataset"],"properties":{"@context":{"title":"Metadata Context","description":"URL or JSON object for the JSON-LD Context that defines the schema used","type":"string","format":"uri"},"@id":{"title":"Metadata Catalog ID","description":"IRI for the JSON-LD Node Identifier of the Catalog. This should be the URL of the data.json file itself.","type":"string","format":"uri"},"@type":{"title":"Metadata Context","description":"IRI for the JSON-LD data type. This should be dcat:Catalog for the Catalog","enum":"dcat:Catalog"},"conformsTo":{"description":"Version of Schema","title":"Version of Schema","enum":"https://project-open-data.cio.gov/v1.1/schema"},"describedBy":{"description":"URL for the JSON Schema file that defines the schema used","title":"Data Dictionary","type":"string","format":"uri"},"dataset":{"type":"array","items":{"$ref":"dataset.json","minItems":1,"uniqueItems":true}}}},"options":{"mode":"tree","modes":["text","tree","table"]}},"evals":[],"jsHooks":[]}</script>
-</div>
-</div>
-</div>
-<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<div class="cell">
-<div class="cell-output-display">
-<div class="jsonedit html-widget html-fill-item" id="htmlwidget-0173b8c293986e5ec679" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-0173b8c293986e5ec679">{"x":{"data":{"$schema":"http://json-schema.org/draft-04/schema#","id":"https://project-open-data.cio.gov/v1.1/schema/dataset.json#","title":"Project Open Data Dataset","description":"The metadata format for all federal open data. Validates a single JSON object entry (as opposed to entire Data.json catalog).","type":"object","required":["bureauCode","programCode","title","description","keyword","modified","publisher","contactPoint","identifier","accessLevel"],"properties":{"@type":{"title":"Metadata Context","description":"IRI for the JSON-LD data type. This should be dcat:Dataset for each Dataset","enum":"dcat:Dataset"},"accessLevel":{"description":"The degree to which this dataset could be made publicly-available, regardless of whether it has been made available. Choices: public (Data asset is or could be made publicly available to all without restrictions), restricted public (Data asset is available under certain use restrictions), or non-public (Data asset is not available to members of the public)","title":"Public Access Level","enum":["public","restricted public","non-public"]},"rights":{"title":"Rights","description":"This may include information regarding access or restrictions based on privacy, security, or other policies. This should also provide an explanation for the selected \"accessLevel\" including instructions for how to access a restricted file, if applicable, or explanation for why a \"non-public\" or \"restricted public\" data assetis not \"public,\" if applicable. Text, 255 characters.","anyOf":{"type":["string","null"],"minLength":[1,null],"maxLength":[255,null]}},"accrualPeriodicity":{"title":"Frequency","description":"Frequency with which dataset is published.","anyOf":{"enum":["irregular",null,null],"type":[null,"string","null"],"pattern":[null,"^R\\/P(?:\\d+(?:\\.\\d+)?Y)?(?:\\d+(?:\\.\\d+)?M)?(?:\\d+(?:\\.\\d+)?W)?(?:\\d+(?:\\.\\d+)?D)?(?:T(?:\\d+(?:\\.\\d+)?H)?(?:\\d+(?:\\.\\d+)?M)?(?:\\d+(?:\\.\\d+)?S)?)?$",null]}},"bureauCode":{"title":"Bureau Code","description":"Federal agencies, combined agency and bureau code from <a href=\"http://www.whitehouse.gov/sites/default/files/omb/assets/a11_current_year/app_c.pdf\">OMB Circular A-11, Appendix C<\/a> in the format of <code>015:010<\/code>.","type":"array","items":{"type":"string","pattern":"[0-9]{3}:[0-9]{2}"},"minItems":1,"uniqueItems":true},"contactPoint":{"$ref":"vcard.json"},"describedBy":{"title":"Data Dictionary","description":"URL to the data dictionary for the dataset or API. Note that documentation other than a data dictionary can be referenced using Related Documents as shown in the expanded fields.","anyOf":{"type":["string","null"],"format":["uri",null]}},"describedByType":{"title":"Data Dictionary Type","description":"The machine-readable file format (IANA Media Type or MIME Type) of the distribution’s describedBy URL","anyOf":{"pattern":["^[-\\w]+/[-\\w]+(\\.[-\\w]+)*([+][-\\w]+)?$",null],"type":["string","null"]}},"conformsTo":{"title":"Data Standard","description":"URI used to identify a standardized specification the dataset conforms to","anyOf":{"type":["string","null"],"format":["uri",null]}},"dataQuality":{"title":"Data Quality","description":"Whether the dataset meets the agency’s Information Quality Guidelines (true/false).","anyOf":{"type":["boolean","null"]}},"description":{"title":"Description","description":"Human-readable description (e.g., an abstract) with sufficient detail to enable a user to quickly understand whether the asset is of interest.","type":"string","minLength":1},"distribution":{"title":"Distribution","description":"A container for the array of Distribution objects","anyOf":{"type":["array","null"],"items":[{"$ref":"distribution.json","minItems":1,"uniqueItems":true},null]}},"identifier":{"title":"Unique Identifier","description":"A unique identifier for the dataset or API as maintained within an Agency catalog or database.","type":"string","minLength":1},"issued":{"title":"Release Date","description":"Date of formal issuance.","anyOf":{"type":["string","null"],"pattern":["^([\\+-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\17[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?$",null]}},"keyword":{"title":"Tags","description":"Tags (or keywords) help users discover your dataset; please include terms that would be used by technical and non-technical users.","type":"array","items":{"type":"string","minLength":1},"minItems":1},"landingPage":{"title":"Homepage URL","description":"Alternative landing page used to redirect user to a contextual, Agency-hosted “homepage” for the Dataset or API when selecting this resource from the Data.gov user interface.","anyOf":{"type":["string","null"],"format":["uri",null]}},"language":{"title":"Language","description":"The language of the dataset.","anyOf":{"type":["array","null"],"items":[{"type":"string","pattern":"^(((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+)|((en-GB-oed|i-ami|i-bnn|i-default|i-enochian|i-hak|i-klingon|i-lux|i-mingo|i-navajo|i-pwn|i-tao|i-tay|i-tsu|sgn-BE-FR|sgn-BE-NL|sgn-CH-DE)|(art-lojban|cel-gaulish|no-bok|no-nyn|zh-guoyu|zh-hakka|zh-min|zh-min-nan|zh-xiang)))$"},null]}},"license":{"title":"License","description":"The license dataset or API is published with. See <a href=\"https://project-open-data.cio.gov/open-licenses/\">Open Licenses<\/a> for more information.","anyOf":{"type":["string","null"],"format":["uri",null]}},"modified":{"title":"Last Update","description":"Most recent date on which the dataset was changed, updated or modified.","anyOf":{"type":["string","string","string"],"pattern":["^([\\+-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\17[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?$","^(R\\d*\\/)?P(?:\\d+(?:\\.\\d+)?Y)?(?:\\d+(?:\\.\\d+)?M)?(?:\\d+(?:\\.\\d+)?W)?(?:\\d+(?:\\.\\d+)?D)?(?:T(?:\\d+(?:\\.\\d+)?H)?(?:\\d+(?:\\.\\d+)?M)?(?:\\d+(?:\\.\\d+)?S)?)?$","^(R\\d*\\/)?([\\+-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\4([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\18[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?(\\/)P(?:\\d+(?:\\.\\d+)?Y)?(?:\\d+(?:\\.\\d+)?M)?(?:\\d+(?:\\.\\d+)?W)?(?:\\d+(?:\\.\\d+)?D)?(?:T(?:\\d+(?:\\.\\d+)?H)?(?:\\d+(?:\\.\\d+)?M)?(?:\\d+(?:\\.\\d+)?S)?)?$"]}},"primaryITInvestmentUII":{"title":"Primary IT Investment UII","description":"For linking a dataset with an IT Unique Investment Identifier (UII)","anyOf":{"type":["string","null"],"pattern":["[0-9]{3}-[0-9]{9}",null]}},"programCode":{"title":"Program Code","description":"Federal agencies, list the primary program related to this data asset, from the <a href=\"http://goals.performance.gov/sites/default/files/images/FederalProgramInventory_FY13_MachineReadable_091613.xls\">Federal Program Inventory<\/a>. Use the format of <code>015:001<\/code>","type":"array","items":{"type":"string","pattern":"[0-9]{3}:[0-9]{3}"},"minItems":1,"uniqueItems":true},"publisher":{"$ref":"organization.json"},"references":{"title":"Related Documents","description":"Related documents such as technical information about a dataset, developer documentation, etc.","anyOf":{"type":["array","null"],"items":[{"type":"string","format":"uri"},null],"minItems":[1,null],"uniqueItems":[true,null]}},"spatial":{"title":"Spatial","description":"The range of spatial applicability of a dataset. Could include a spatial region like a bounding box or a named place.","anyOf":{"type":["string","null"],"minLength":[1,null]}},"systemOfRecords":{"title":"System of Records","description":"If the systems is designated as a system of records under the Privacy Act of 1974, provide the URL to the System of Records Notice related to this dataset.","anyOf":{"type":["string","null"],"minLength":[1,null]}},"temporal":{"title":"Temporal","description":"The range of temporal applicability of a dataset (i.e., a start and end date of applicability for the data).","anyOf":{"type":["string","string","string","null"],"pattern":["^([\\+-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\17[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?(\\/)([\\+-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\17[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?$","^(R\\d*\\/)?([\\+-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\4([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\18[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?(\\/)P(?:\\d+(?:\\.\\d+)?Y)?(?:\\d+(?:\\.\\d+)?M)?(?:\\d+(?:\\.\\d+)?W)?(?:\\d+(?:\\.\\d+)?D)?(?:T(?:\\d+(?:\\.\\d+)?H)?(?:\\d+(?:\\.\\d+)?M)?(?:\\d+(?:\\.\\d+)?S)?)?$","^(R\\d*\\/)?P(?:\\d+(?:\\.\\d+)?Y)?(?:\\d+(?:\\.\\d+)?M)?(?:\\d+(?:\\.\\d+)?W)?(?:\\d+(?:\\.\\d+)?D)?(?:T(?:\\d+(?:\\.\\d+)?H)?(?:\\d+(?:\\.\\d+)?M)?(?:\\d+(?:\\.\\d+)?S)?)?\\/([\\+-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\4([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\18[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?$",null]}},"isPartOf":{"title":"Collection","description":"The collection of which the dataset is a subset","anyOf":{"type":"string","minLength":1}},"theme":{"title":"Category","description":"Main thematic category of the dataset.","anyOf":{"type":["array","null"],"items":[{"type":"string","minLength":1},null],"minItems":[1,null],"uniqueItems":[true,null]}},"title":{"title":"Title","description":"Human-readable name of the asset. Should be in plain English and include sufficient detail to facilitate search and discovery.","type":"string","minLength":1}}},"options":{"mode":"tree","modes":["text","tree","table"]}},"evals":[],"jsHooks":[]}</script>
-</div>
-</div>
-</div>
-<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
-<div class="cell">
-<div class="cell-output-display">
-<div class="jsonedit html-widget html-fill-item" id="htmlwidget-498e6cbd688743e75c1c" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-498e6cbd688743e75c1c">{"x":{"data":{"$schema":"http://json-schema.org/draft-04/schema#","id":"https://project-open-data.cio.gov/v1.1/schema/distribution.json#","title":"Project Open Data Distribution","description":"Validates an entire collection of common core metadata JSON objects. Agencies produce said collections in the form of Data.json files.","type":"object","dependencies":{"downloadURL":{"properties":{"mediaType":{"type":"string","pattern":"^[-\\w]+/[-\\w]+(\\.[-\\w]+)*([+][-\\w]+)?$"}},"required":"mediaType"}},"properties":{"@type":{"title":"Metadata Context","description":"IRI for the JSON-LD data type. This should be dcat:Distribution for each Distribution","enum":"dcat:Distribution"},"downloadURL":{"title":"Download URL","description":"URL providing direct access to a downloadable file of a dataset","type":"string","format":"uri"},"mediaType":{"title":"Media Type","description":"The machine-readable file format (IANA Media Type or MIME Type) of the distribution’s downloadURL","anyOf":{"pattern":["^[-\\w]+/[-\\w]+(\\.[-\\w]+)*([+][-\\w]+)?$",null],"type":["string","null"]}},"format":{"title":"Format","description":"A human-readable description of the file format of a distribution","anyOf":{"type":["string","null"],"minLength":[1,null]}},"accessURL":{"title":"Access URL","description":"URL providing indirect access to a dataset","anyOf":{"type":["string","null"],"format":["uri",null]}},"description":{"title":"Description","description":"Human-readable description of the distribution","anyOf":{"type":["string","null"],"minLength":[1,null]}},"title":{"title":"Title","description":"Human-readable name of the distribution","anyOf":{"type":["string","null"],"minLength":[1,null]}},"conformsTo":{"title":"Data Standard","description":"URL providing indirect access to a dataset","anyOf":{"type":["string","null"],"format":["uri",null]}},"describedBy":{"title":"Data Dictionary","description":"URL to the data dictionary for the distribution found at the downloadURL","anyOf":{"type":["string","null"],"format":["uri",null]}},"describedByType":{"title":"Data Dictionary Type","description":"The machine-readable file format (IANA Media Type or MIME Type) of the distribution’s describedBy URL","anyOf":{"pattern":["^[-\\w]+/[-\\w]+(\\.[-\\w]+)*([+][-\\w]+)?$",null],"type":["string","null"]}}}},"options":{"mode":"tree","modes":["text","tree","table"]}},"evals":[],"jsHooks":[]}</script>
-</div>
-</div>
-</div>
+<div class="jsonedit html-widget html-fill-item" id="htmlwidget-2fc994eb45078eea14f0" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-2fc994eb45078eea14f0">{"x":{"data":{
+    "$schema": [
+        "http://json-schema.org/draft-04/schema#"
+    ],
+    "id": [
+        "https://project-open-data.cio.gov/v1.1/schema/catalog.json#"
+    ],
+    "title": [
+        "Project Open Data Catalog"
+    ],
+    "description": [
+        "Validates an entire collection of Project Open Data metadata JSON objects. Agencies produce said collections in the form of Data.json files."
+    ],
+    "type": [
+        "object"
+    ],
+    "dependencies": {
+        "@type": [
+            "@context"
+        ]
+    },
+    "required": [
+        "conformsTo",
+        "dataset"
+    ],
+    "properties": {
+        "@context": {
+            "title": [
+                "Metadata Context"
+            ],
+            "description": [
+                "URL or JSON object for the JSON-LD Context that defines the schema used"
+            ],
+            "type": [
+                "string"
+            ],
+            "format": [
+                "uri"
+            ]
+        },
+        "@id": {
+            "title": [
+                "Metadata Catalog ID"
+            ],
+            "description": [
+                "IRI for the JSON-LD Node Identifier of the Catalog. This should be the URL of the data.json file itself."
+            ],
+            "type": [
+                "string"
+            ],
+            "format": [
+                "uri"
+            ]
+        },
+        "@type": {
+            "title": [
+                "Metadata Context"
+            ],
+            "description": [
+                "IRI for the JSON-LD data type. This should be dcat:Catalog for the Catalog"
+            ],
+            "enum": [
+                "dcat:Catalog"
+            ]
+        },
+        "conformsTo": {
+            "description": [
+                "Version of Schema"
+            ],
+            "title": [
+                "Version of Schema"
+            ],
+            "enum": [
+                "https://project-open-data.cio.gov/v1.1/schema"
+            ]
+        },
+        "describedBy": {
+            "description": [
+                "URL for the JSON Schema file that defines the schema used"
+            ],
+            "title": [
+                "Data Dictionary"
+            ],
+            "type": [
+                "string"
+            ],
+            "format": [
+                "uri"
+            ]
+        },
+        "dataset": {
+            "type": [
+                "array"
+            ],
+            "items": {
+                "$ref": [
+                    "dataset.json"
+                ],
+                "minItems": [
+                    1
+                ],
+                "uniqueItems": [
+                    true
+                ]
+            }
+        }
+    }
+},"options":{"mode":"tree","modes":["text","tree","table"]}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </section>
-<section id="dataset-fields" class="level2" data-number="19.2">
-<h2 data-number="19.2" class="anchored" data-anchor-id="dataset-fields"><span class="header-section-number">19.2</span> <code>dataset</code> Fields</h2>
+<section id="dataset" class="level2" data-number="19.3">
+<h2 data-number="19.3" class="anchored" data-anchor-id="dataset"><span class="header-section-number">19.3</span> Dataset</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data/dcat-us_v1.1_schema_dataset.json"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  RcppSimdJson<span class="sc">::</span><span class="fu">fload</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  jsonify<span class="sc">::</span><span class="fu">to_json</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  jsonify<span class="sc">::</span><span class="fu">pretty_json</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  listviewer<span class="sc">::</span><span class="fu">jsonedit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="jsonedit html-widget html-fill-item" id="htmlwidget-b75ed327a46a99894f98" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-b75ed327a46a99894f98">{"x":{"data":{
+    "$schema": [
+        "http://json-schema.org/draft-04/schema#"
+    ],
+    "id": [
+        "https://project-open-data.cio.gov/v1.1/schema/dataset.json#"
+    ],
+    "title": [
+        "Project Open Data Dataset"
+    ],
+    "description": [
+        "The metadata format for all federal open data. Validates a single JSON object entry (as opposed to entire Data.json catalog)."
+    ],
+    "type": [
+        "object"
+    ],
+    "required": [
+        "bureauCode",
+        "programCode",
+        "title",
+        "description",
+        "keyword",
+        "modified",
+        "publisher",
+        "contactPoint",
+        "identifier",
+        "accessLevel"
+    ],
+    "properties": {
+        "@type": {
+            "title": [
+                "Metadata Context"
+            ],
+            "description": [
+                "IRI for the JSON-LD data type. This should be dcat:Dataset for each Dataset"
+            ],
+            "enum": [
+                "dcat:Dataset"
+            ]
+        },
+        "accessLevel": {
+            "description": [
+                "The degree to which this dataset could be made publicly-available, regardless of whether it has been made available. Choices: public (Data asset is or could be made publicly available to all without restrictions), restricted public (Data asset is available under certain use restrictions), or non-public (Data asset is not available to members of the public)"
+            ],
+            "title": [
+                "Public Access Level"
+            ],
+            "enum": [
+                "public",
+                "restricted public",
+                "non-public"
+            ]
+        },
+        "rights": {
+            "title": [
+                "Rights"
+            ],
+            "description": [
+                "This may include information regarding access or restrictions based on privacy, security, or other policies. This should also provide an explanation for the selected \"accessLevel\" including instructions for how to access a restricted file, if applicable, or explanation for why a \"non-public\" or \"restricted public\" data assetis not \"public,\" if applicable. Text, 255 characters."
+            ],
+            "anyOf": [
+                {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255
+                },
+                {
+                    "type": "null",
+                    "minLength": null,
+                    "maxLength": null
+                }
+            ]
+        },
+        "accrualPeriodicity": {
+            "title": [
+                "Frequency"
+            ],
+            "description": [
+                "Frequency with which dataset is published."
+            ],
+            "anyOf": [
+                {
+                    "enum": [
+                        "irregular"
+                    ],
+                    "type": null,
+                    "pattern": null
+                },
+                {
+                    "enum": [
+                        null
+                    ],
+                    "type": "string",
+                    "pattern": "^R\\/P(?:\\d+(?:\\.\\d+)?Y)?(?:\\d+(?:\\.\\d+)?M)?(?:\\d+(?:\\.\\d+)?W)?(?:\\d+(?:\\.\\d+)?D)?(?:T(?:\\d+(?:\\.\\d+)?H)?(?:\\d+(?:\\.\\d+)?M)?(?:\\d+(?:\\.\\d+)?S)?)?$"
+                },
+                {
+                    "enum": [
+                        null
+                    ],
+                    "type": "null",
+                    "pattern": null
+                }
+            ]
+        },
+        "bureauCode": {
+            "title": [
+                "Bureau Code"
+            ],
+            "description": [
+                "Federal agencies, combined agency and bureau code from <a href=\"http://www.whitehouse.gov/sites/default/files/omb/assets/a11_current_year/app_c.pdf\">OMB Circular A-11, Appendix C\u003c/a> in the format of <code>015:010\u003c/code>."
+            ],
+            "type": [
+                "array"
+            ],
+            "items": {
+                "type": [
+                    "string"
+                ],
+                "pattern": [
+                    "[0-9]{3}:[0-9]{2}"
+                ]
+            },
+            "minItems": [
+                1
+            ],
+            "uniqueItems": [
+                true
+            ]
+        },
+        "contactPoint": {
+            "$ref": [
+                "vcard.json"
+            ]
+        },
+        "describedBy": {
+            "title": [
+                "Data Dictionary"
+            ],
+            "description": [
+                "URL to the data dictionary for the dataset or API. Note that documentation other than a data dictionary can be referenced using Related Documents as shown in the expanded fields."
+            ],
+            "anyOf": [
+                {
+                    "type": "string",
+                    "format": "uri"
+                },
+                {
+                    "type": "null",
+                    "format": null
+                }
+            ]
+        },
+        "describedByType": {
+            "title": [
+                "Data Dictionary Type"
+            ],
+            "description": [
+                "The machine-readable file format (IANA Media Type or MIME Type) of the distribution’s describedBy URL"
+            ],
+            "anyOf": [
+                {
+                    "pattern": "^[-\\w]+/[-\\w]+(\\.[-\\w]+)*([+][-\\w]+)?$",
+                    "type": "string"
+                },
+                {
+                    "pattern": null,
+                    "type": "null"
+                }
+            ]
+        },
+        "conformsTo": {
+            "title": [
+                "Data Standard"
+            ],
+            "description": [
+                "URI used to identify a standardized specification the dataset conforms to"
+            ],
+            "anyOf": [
+                {
+                    "type": "string",
+                    "format": "uri"
+                },
+                {
+                    "type": "null",
+                    "format": null
+                }
+            ]
+        },
+        "dataQuality": {
+            "title": [
+                "Data Quality"
+            ],
+            "description": [
+                "Whether the dataset meets the agency’s Information Quality Guidelines (true/false)."
+            ],
+            "anyOf": [
+                {
+                    "type": "boolean"
+                },
+                {
+                    "type": "null"
+                }
+            ]
+        },
+        "description": {
+            "title": [
+                "Description"
+            ],
+            "description": [
+                "Human-readable description (e.g., an abstract) with sufficient detail to enable a user to quickly understand whether the asset is of interest."
+            ],
+            "type": [
+                "string"
+            ],
+            "minLength": [
+                1
+            ]
+        },
+        "distribution": {
+            "title": [
+                "Distribution"
+            ],
+            "description": [
+                "A container for the array of Distribution objects"
+            ],
+            "anyOf": [
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": [
+                            "distribution.json"
+                        ],
+                        "minItems": [
+                            1
+                        ],
+                        "uniqueItems": [
+                            true
+                        ]
+                    }
+                },
+                {
+                    "type": "null",
+                    "items": [
+                        null
+                    ]
+                }
+            ]
+        },
+        "identifier": {
+            "title": [
+                "Unique Identifier"
+            ],
+            "description": [
+                "A unique identifier for the dataset or API as maintained within an Agency catalog or database."
+            ],
+            "type": [
+                "string"
+            ],
+            "minLength": [
+                1
+            ]
+        },
+        "issued": {
+            "title": [
+                "Release Date"
+            ],
+            "description": [
+                "Date of formal issuance."
+            ],
+            "anyOf": [
+                {
+                    "type": "string",
+                    "pattern": "^([\\+-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\17[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?$"
+                },
+                {
+                    "type": "null",
+                    "pattern": null
+                }
+            ]
+        },
+        "keyword": {
+            "title": [
+                "Tags"
+            ],
+            "description": [
+                "Tags (or keywords) help users discover your dataset; please include terms that would be used by technical and non-technical users."
+            ],
+            "type": [
+                "array"
+            ],
+            "items": {
+                "type": [
+                    "string"
+                ],
+                "minLength": [
+                    1
+                ]
+            },
+            "minItems": [
+                1
+            ]
+        },
+        "landingPage": {
+            "title": [
+                "Homepage URL"
+            ],
+            "description": [
+                "Alternative landing page used to redirect user to a contextual, Agency-hosted “homepage” for the Dataset or API when selecting this resource from the Data.gov user interface."
+            ],
+            "anyOf": [
+                {
+                    "type": "string",
+                    "format": "uri"
+                },
+                {
+                    "type": "null",
+                    "format": null
+                }
+            ]
+        },
+        "language": {
+            "title": [
+                "Language"
+            ],
+            "description": [
+                "The language of the dataset."
+            ],
+            "anyOf": [
+                {
+                    "type": "array",
+                    "items": {
+                        "type": [
+                            "string"
+                        ],
+                        "pattern": [
+                            "^(((([A-Za-z]{2,3}(-([A-Za-z]{3}(-[A-Za-z]{3}){0,2}))?)|[A-Za-z]{4}|[A-Za-z]{5,8})(-([A-Za-z]{4}))?(-([A-Za-z]{2}|[0-9]{3}))?(-([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3}))*(-([0-9A-WY-Za-wy-z](-[A-Za-z0-9]{2,8})+))*(-(x(-[A-Za-z0-9]{1,8})+))?)|(x(-[A-Za-z0-9]{1,8})+)|((en-GB-oed|i-ami|i-bnn|i-default|i-enochian|i-hak|i-klingon|i-lux|i-mingo|i-navajo|i-pwn|i-tao|i-tay|i-tsu|sgn-BE-FR|sgn-BE-NL|sgn-CH-DE)|(art-lojban|cel-gaulish|no-bok|no-nyn|zh-guoyu|zh-hakka|zh-min|zh-min-nan|zh-xiang)))$"
+                        ]
+                    }
+                },
+                {
+                    "type": "null",
+                    "items": [
+                        null
+                    ]
+                }
+            ]
+        },
+        "license": {
+            "title": [
+                "License"
+            ],
+            "description": [
+                "The license dataset or API is published with. See <a href=\"https://project-open-data.cio.gov/open-licenses/\">Open Licenses\u003c/a> for more information."
+            ],
+            "anyOf": [
+                {
+                    "type": "string",
+                    "format": "uri"
+                },
+                {
+                    "type": "null",
+                    "format": null
+                }
+            ]
+        },
+        "modified": {
+            "title": [
+                "Last Update"
+            ],
+            "description": [
+                "Most recent date on which the dataset was changed, updated or modified."
+            ],
+            "anyOf": [
+                {
+                    "type": "string",
+                    "pattern": "^([\\+-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\17[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?$"
+                },
+                {
+                    "type": "string",
+                    "pattern": "^(R\\d*\\/)?P(?:\\d+(?:\\.\\d+)?Y)?(?:\\d+(?:\\.\\d+)?M)?(?:\\d+(?:\\.\\d+)?W)?(?:\\d+(?:\\.\\d+)?D)?(?:T(?:\\d+(?:\\.\\d+)?H)?(?:\\d+(?:\\.\\d+)?M)?(?:\\d+(?:\\.\\d+)?S)?)?$"
+                },
+                {
+                    "type": "string",
+                    "pattern": "^(R\\d*\\/)?([\\+-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\4([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\18[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?(\\/)P(?:\\d+(?:\\.\\d+)?Y)?(?:\\d+(?:\\.\\d+)?M)?(?:\\d+(?:\\.\\d+)?W)?(?:\\d+(?:\\.\\d+)?D)?(?:T(?:\\d+(?:\\.\\d+)?H)?(?:\\d+(?:\\.\\d+)?M)?(?:\\d+(?:\\.\\d+)?S)?)?$"
+                }
+            ]
+        },
+        "primaryITInvestmentUII": {
+            "title": [
+                "Primary IT Investment UII"
+            ],
+            "description": [
+                "For linking a dataset with an IT Unique Investment Identifier (UII)"
+            ],
+            "anyOf": [
+                {
+                    "type": "string",
+                    "pattern": "[0-9]{3}-[0-9]{9}"
+                },
+                {
+                    "type": "null",
+                    "pattern": null
+                }
+            ]
+        },
+        "programCode": {
+            "title": [
+                "Program Code"
+            ],
+            "description": [
+                "Federal agencies, list the primary program related to this data asset, from the <a href=\"http://goals.performance.gov/sites/default/files/images/FederalProgramInventory_FY13_MachineReadable_091613.xls\">Federal Program Inventory\u003c/a>. Use the format of <code>015:001\u003c/code>"
+            ],
+            "type": [
+                "array"
+            ],
+            "items": {
+                "type": [
+                    "string"
+                ],
+                "pattern": [
+                    "[0-9]{3}:[0-9]{3}"
+                ]
+            },
+            "minItems": [
+                1
+            ],
+            "uniqueItems": [
+                true
+            ]
+        },
+        "publisher": {
+            "$ref": [
+                "organization.json"
+            ]
+        },
+        "references": {
+            "title": [
+                "Related Documents"
+            ],
+            "description": [
+                "Related documents such as technical information about a dataset, developer documentation, etc."
+            ],
+            "anyOf": [
+                {
+                    "type": "array",
+                    "items": {
+                        "type": [
+                            "string"
+                        ],
+                        "format": [
+                            "uri"
+                        ]
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true
+                },
+                {
+                    "type": "null",
+                    "items": [
+                        null
+                    ],
+                    "minItems": null,
+                    "uniqueItems": null
+                }
+            ]
+        },
+        "spatial": {
+            "title": [
+                "Spatial"
+            ],
+            "description": [
+                "The range of spatial applicability of a dataset. Could include a spatial region like a bounding box or a named place."
+            ],
+            "anyOf": [
+                {
+                    "type": "string",
+                    "minLength": 1
+                },
+                {
+                    "type": "null",
+                    "minLength": null
+                }
+            ]
+        },
+        "systemOfRecords": {
+            "title": [
+                "System of Records"
+            ],
+            "description": [
+                "If the systems is designated as a system of records under the Privacy Act of 1974, provide the URL to the System of Records Notice related to this dataset."
+            ],
+            "anyOf": [
+                {
+                    "type": "string",
+                    "minLength": 1
+                },
+                {
+                    "type": "null",
+                    "minLength": null
+                }
+            ]
+        },
+        "temporal": {
+            "title": [
+                "Temporal"
+            ],
+            "description": [
+                "The range of temporal applicability of a dataset (i.e., a start and end date of applicability for the data)."
+            ],
+            "anyOf": [
+                {
+                    "type": "string",
+                    "pattern": "^([\\+-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\17[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?(\\/)([\\+-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\3([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\17[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?$"
+                },
+                {
+                    "type": "string",
+                    "pattern": "^(R\\d*\\/)?([\\+-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\4([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\18[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?(\\/)P(?:\\d+(?:\\.\\d+)?Y)?(?:\\d+(?:\\.\\d+)?M)?(?:\\d+(?:\\.\\d+)?W)?(?:\\d+(?:\\.\\d+)?D)?(?:T(?:\\d+(?:\\.\\d+)?H)?(?:\\d+(?:\\.\\d+)?M)?(?:\\d+(?:\\.\\d+)?S)?)?$"
+                },
+                {
+                    "type": "string",
+                    "pattern": "^(R\\d*\\/)?P(?:\\d+(?:\\.\\d+)?Y)?(?:\\d+(?:\\.\\d+)?M)?(?:\\d+(?:\\.\\d+)?W)?(?:\\d+(?:\\.\\d+)?D)?(?:T(?:\\d+(?:\\.\\d+)?H)?(?:\\d+(?:\\.\\d+)?M)?(?:\\d+(?:\\.\\d+)?S)?)?\\/([\\+-]?\\d{4}(?!\\d{2}\\b))((-?)((0[1-9]|1[0-2])(\\4([12]\\d|0[1-9]|3[01]))?|W([0-4]\\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\\d|[12]\\d{2}|3([0-5]\\d|6[1-6])))([T\\s]((([01]\\d|2[0-3])((:?)[0-5]\\d)?|24\\:?00)([\\.,]\\d+(?!:))?)?(\\18[0-5]\\d([\\.,]\\d+)?)?([zZ]|([\\+-])([01]\\d|2[0-3]):?([0-5]\\d)?)?)?)?$"
+                },
+                {
+                    "type": "null",
+                    "pattern": null
+                }
+            ]
+        },
+        "isPartOf": {
+            "title": [
+                "Collection"
+            ],
+            "description": [
+                "The collection of which the dataset is a subset"
+            ],
+            "anyOf": [
+                {
+                    "type": "string",
+                    "minLength": 1
+                }
+            ]
+        },
+        "theme": {
+            "title": [
+                "Category"
+            ],
+            "description": [
+                "Main thematic category of the dataset."
+            ],
+            "anyOf": [
+                {
+                    "type": "array",
+                    "items": {
+                        "type": [
+                            "string"
+                        ],
+                        "minLength": [
+                            1
+                        ]
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true
+                },
+                {
+                    "type": "null",
+                    "items": [
+                        null
+                    ],
+                    "minItems": null,
+                    "uniqueItems": null
+                }
+            ]
+        },
+        "title": {
+            "title": [
+                "Title"
+            ],
+            "description": [
+                "Human-readable name of the asset. Should be in plain English and include sufficient detail to facilitate search and discovery."
+            ],
+            "type": [
+                "string"
+            ],
+            "minLength": [
+                1
+            ]
+        }
+    }
+},"options":{"mode":"tree","modes":["text","tree","table"]}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="distribution" class="level2" data-number="19.4">
+<h2 data-number="19.4" class="anchored" data-anchor-id="distribution"><span class="header-section-number">19.4</span> Distribution</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"data/dcat-us_v1.1_schema_distribution.json"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  RcppSimdJson<span class="sc">::</span><span class="fu">fload</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  jsonify<span class="sc">::</span><span class="fu">to_json</span>() <span class="sc">|&gt;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  jsonify<span class="sc">::</span><span class="fu">pretty_json</span>() <span class="sc">|&gt;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  listviewer<span class="sc">::</span><span class="fu">jsonedit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="jsonedit html-widget html-fill-item" id="htmlwidget-f9324898378d730efc60" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-f9324898378d730efc60">{"x":{"data":{
+    "$schema": [
+        "http://json-schema.org/draft-04/schema#"
+    ],
+    "id": [
+        "https://project-open-data.cio.gov/v1.1/schema/distribution.json#"
+    ],
+    "title": [
+        "Project Open Data Distribution"
+    ],
+    "description": [
+        "Validates an entire collection of common core metadata JSON objects. Agencies produce said collections in the form of Data.json files."
+    ],
+    "type": [
+        "object"
+    ],
+    "dependencies": {
+        "downloadURL": {
+            "properties": {
+                "mediaType": {
+                    "type": [
+                        "string"
+                    ],
+                    "pattern": [
+                        "^[-\\w]+/[-\\w]+(\\.[-\\w]+)*([+][-\\w]+)?$"
+                    ]
+                }
+            },
+            "required": [
+                "mediaType"
+            ]
+        }
+    },
+    "properties": {
+        "@type": {
+            "title": [
+                "Metadata Context"
+            ],
+            "description": [
+                "IRI for the JSON-LD data type. This should be dcat:Distribution for each Distribution"
+            ],
+            "enum": [
+                "dcat:Distribution"
+            ]
+        },
+        "downloadURL": {
+            "title": [
+                "Download URL"
+            ],
+            "description": [
+                "URL providing direct access to a downloadable file of a dataset"
+            ],
+            "type": [
+                "string"
+            ],
+            "format": [
+                "uri"
+            ]
+        },
+        "mediaType": {
+            "title": [
+                "Media Type"
+            ],
+            "description": [
+                "The machine-readable file format (IANA Media Type or MIME Type) of the distribution’s downloadURL"
+            ],
+            "anyOf": [
+                {
+                    "pattern": "^[-\\w]+/[-\\w]+(\\.[-\\w]+)*([+][-\\w]+)?$",
+                    "type": "string"
+                },
+                {
+                    "pattern": null,
+                    "type": "null"
+                }
+            ]
+        },
+        "format": {
+            "title": [
+                "Format"
+            ],
+            "description": [
+                "A human-readable description of the file format of a distribution"
+            ],
+            "anyOf": [
+                {
+                    "type": "string",
+                    "minLength": 1
+                },
+                {
+                    "type": "null",
+                    "minLength": null
+                }
+            ]
+        },
+        "accessURL": {
+            "title": [
+                "Access URL"
+            ],
+            "description": [
+                "URL providing indirect access to a dataset"
+            ],
+            "anyOf": [
+                {
+                    "type": "string",
+                    "format": "uri"
+                },
+                {
+                    "type": "null",
+                    "format": null
+                }
+            ]
+        },
+        "description": {
+            "title": [
+                "Description"
+            ],
+            "description": [
+                "Human-readable description of the distribution"
+            ],
+            "anyOf": [
+                {
+                    "type": "string",
+                    "minLength": 1
+                },
+                {
+                    "type": "null",
+                    "minLength": null
+                }
+            ]
+        },
+        "title": {
+            "title": [
+                "Title"
+            ],
+            "description": [
+                "Human-readable name of the distribution"
+            ],
+            "anyOf": [
+                {
+                    "type": "string",
+                    "minLength": 1
+                },
+                {
+                    "type": "null",
+                    "minLength": null
+                }
+            ]
+        },
+        "conformsTo": {
+            "title": [
+                "Data Standard"
+            ],
+            "description": [
+                "URL providing indirect access to a dataset"
+            ],
+            "anyOf": [
+                {
+                    "type": "string",
+                    "format": "uri"
+                },
+                {
+                    "type": "null",
+                    "format": null
+                }
+            ]
+        },
+        "describedBy": {
+            "title": [
+                "Data Dictionary"
+            ],
+            "description": [
+                "URL to the data dictionary for the distribution found at the downloadURL"
+            ],
+            "anyOf": [
+                {
+                    "type": "string",
+                    "format": "uri"
+                },
+                {
+                    "type": "null",
+                    "format": null
+                }
+            ]
+        },
+        "describedByType": {
+            "title": [
+                "Data Dictionary Type"
+            ],
+            "description": [
+                "The machine-readable file format (IANA Media Type or MIME Type) of the distribution’s describedBy URL"
+            ],
+            "anyOf": [
+                {
+                    "pattern": "^[-\\w]+/[-\\w]+(\\.[-\\w]+)*([+][-\\w]+)?$",
+                    "type": "string"
+                },
+                {
+                    "pattern": null,
+                    "type": "null"
+                }
+            ]
+        }
+    }
+},"options":{"mode":"tree","modes":["text","tree","table"]}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="dataset-fields" class="level2" data-number="19.5">
+<h2 data-number="19.5" class="anchored" data-anchor-id="dataset-fields"><span class="header-section-number">19.5</span> <code>dataset</code> Fields</h2>
 <ul>
 <li><a href="https://www.w3.org/TR/vocab-dcat/">Data Catalog Vocabulary (DCAT) - Version 3</a></li>
 </ul>
-<section id="bureaucode" class="level3" data-number="19.2.1">
-<h3 data-number="19.2.1" class="anchored" data-anchor-id="bureaucode"><span class="header-section-number">19.2.1</span> <code>bureauCode</code></h3>
+<section id="bureaucode" class="level3" data-number="19.5.1">
+<h3 data-number="19.5.1" class="anchored" data-anchor-id="bureaucode"><span class="header-section-number">19.5.1</span> <code>bureauCode</code></h3>
 <p>Federal agencies, combined agency and bureau code from <a href="https://obamawhitehouse.archives.gov/sites/default/files/omb/assets/a11_current_year/app_c.pdf">OMB Circular A-11, Appendix C</a>.</p>
 <blockquote class="blockquote">
 <p><strong>Format</strong>: <code>015:11</code></p>
 </blockquote>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_csv</span>(</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"data/omb_bureau_codes.csv"</span>),</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types  =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_types       =</span> <span class="fu">cols</span>(</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Agency Name</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">col_character</span>(),</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Bureau Name</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">col_character</span>(),</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Agency Code</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">col_character</span>(),</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Bureau Code</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">col_character</span>(),</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Treasury Code</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">col_character</span>(),</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">CGAC Code</span><span class="st">`</span>     <span class="ot">=</span> <span class="fu">col_character</span>()</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setNames</span>(</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>      <span class="st">"agencyName"</span>,</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>      <span class="st">"bureauName"</span>,</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>      <span class="st">"agencyCode"</span>,</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>      <span class="st">"bureauCode"</span>,</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>      <span class="st">"treasuryCode"</span>,</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>      <span class="st">"cgacCode"</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">agencyCode   =</span> <span class="fu">str_pad</span>(agencyCode, <span class="at">width =</span> <span class="dv">3</span>, <span class="at">pad =</span> <span class="st">"0"</span>),</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">bureauCode   =</span> <span class="fu">str_pad</span>(bureauCode, <span class="at">width =</span> <span class="dv">2</span>, <span class="at">pad =</span> <span class="st">"0"</span>),</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">treasuryCode =</span> <span class="fu">str_pad</span>(treasuryCode, <span class="at">width =</span> <span class="dv">2</span>, <span class="at">pad =</span> <span class="st">"0"</span>),</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">cgacCode     =</span> <span class="fu">str_pad</span>(cgacCode, <span class="at">width =</span> <span class="dv">3</span>, <span class="at">pad =</span> <span class="st">"0"</span>)</span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_csv</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"data/omb_bureau_codes.csv"</span>),</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types  =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_types       =</span> <span class="fu">cols</span>(</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Agency Name</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">col_character</span>(),</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Bureau Name</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">col_character</span>(),</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Agency Code</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">col_character</span>(),</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Bureau Code</span><span class="st">`</span>   <span class="ot">=</span> <span class="fu">col_character</span>(),</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Treasury Code</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">col_character</span>(),</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">CGAC Code</span><span class="st">`</span>     <span class="ot">=</span> <span class="fu">col_character</span>()</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setNames</span>(</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>      <span class="st">"agencyName"</span>,</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>      <span class="st">"bureauName"</span>,</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>      <span class="st">"agencyCode"</span>,</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>      <span class="st">"bureauCode"</span>,</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>      <span class="st">"treasuryCode"</span>,</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>      <span class="st">"cgacCode"</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">agencyCode   =</span> <span class="fu">str_pad</span>(agencyCode, <span class="at">width =</span> <span class="dv">3</span>, <span class="at">pad =</span> <span class="st">"0"</span>),</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">bureauCode   =</span> <span class="fu">str_pad</span>(bureauCode, <span class="at">width =</span> <span class="dv">2</span>, <span class="at">pad =</span> <span class="st">"0"</span>),</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">treasuryCode =</span> <span class="fu">str_pad</span>(treasuryCode, <span class="at">width =</span> <span class="dv">2</span>, <span class="at">pad =</span> <span class="st">"0"</span>),</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">cgacCode     =</span> <span class="fu">str_pad</span>(cgacCode, <span class="at">width =</span> <span class="dv">3</span>, <span class="at">pad =</span> <span class="st">"0"</span>)</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 368 × 6
    agencyName         bureauName     agencyCode bureauCode treasuryCode cgacCode
@@ -463,37 +1378,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="programcode" class="level3" data-number="19.2.2">
-<h3 data-number="19.2.2" class="anchored" data-anchor-id="programcode"><span class="header-section-number">19.2.2</span> <code>programCode</code></h3>
+<section id="programcode" class="level3" data-number="19.5.2">
+<h3 data-number="19.5.2" class="anchored" data-anchor-id="programcode"><span class="header-section-number">19.5.2</span> <code>programCode</code></h3>
 <p>Federal agencies, list the primary program related to this data asset, from the <a href="https://resources.data.gov/schemas/dcat-us/v1.1/FederalProgramInventory_FY13_MachineReadable_091613.csv">Federal Program Inventory</a>.</p>
 <blockquote class="blockquote">
 <p><strong>Format</strong>: <code>015:001</code></p>
 </blockquote>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_csv</span>(</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/FederalProgramInventory_FY13_MachineReadable_091613.csv"</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types                      =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_types                           =</span> <span class="fu">cols</span>(</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Agency Name</span><span class="st">`</span>                       <span class="ot">=</span> <span class="fu">col_character</span>(),</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Program Name</span><span class="st">`</span>                      <span class="ot">=</span> <span class="fu">col_character</span>(),</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Additional Information (optional)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">col_character</span>(),</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">agencyCode                          =</span> <span class="fu">col_character</span>(),</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">ProgramCode                         =</span> <span class="fu">col_character</span>(),</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">ProgramCodePODFormat                =</span> <span class="fu">col_character</span>()</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setNames</span>(</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>      <span class="st">"agencyName"</span>,</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>      <span class="st">"programName"</span>,</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>      <span class="st">"additionalInfo"</span>,</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>      <span class="st">"agencyCode"</span>,</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>      <span class="st">"programCode"</span>,</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>      <span class="st">"programCodePODfmt"</span></span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">read_csv</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"data/FederalProgramInventory_FY13_MachineReadable_091613.csv"</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types                      =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_types                           =</span> <span class="fu">cols</span>(</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Agency Name</span><span class="st">`</span>                       <span class="ot">=</span> <span class="fu">col_character</span>(),</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Program Name</span><span class="st">`</span>                      <span class="ot">=</span> <span class="fu">col_character</span>(),</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Additional Information (optional)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">col_character</span>(),</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">agencyCode                          =</span> <span class="fu">col_character</span>(),</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">ProgramCode                         =</span> <span class="fu">col_character</span>(),</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">ProgramCodePODFormat                =</span> <span class="fu">col_character</span>()</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setNames</span>(</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>      <span class="st">"agencyName"</span>,</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>      <span class="st">"programName"</span>,</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>      <span class="st">"additionalInfo"</span>,</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>      <span class="st">"agencyCode"</span>,</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>      <span class="st">"programCode"</span>,</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>      <span class="st">"programCodePODfmt"</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1,554 × 6
    agencyName                programName   additionalInfo agencyCode programCode
@@ -513,58 +1428,58 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="accrualperiodicity" class="level3" data-number="19.2.3">
-<h3 data-number="19.2.3" class="anchored" data-anchor-id="accrualperiodicity"><span class="header-section-number">19.2.3</span> <code>accrualPeriodicity</code></h3>
+<section id="accrualperiodicity" class="level3" data-number="19.5.3">
+<h3 data-number="19.5.3" class="anchored" data-anchor-id="accrualperiodicity"><span class="header-section-number">19.5.3</span> <code>accrualPeriodicity</code></h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">Periodicity =</span> <span class="fu">c</span>(</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/PT1S"</span>,</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/PT1H"</span>,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P1D"</span>,</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P3.5D"</span>,</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P0.33W"</span>,</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P0.5W"</span>,</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P1W"</span>,</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P2W"</span>,</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P0.33M"</span>,</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P0.5M"</span>,</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P1M"</span>,</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P2M"</span>,</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P3M"</span>,</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P4M"</span>,</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P6M"</span>,</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P1Y"</span>,</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P2Y"</span>,</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P3Y"</span>,</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P4Y"</span>,</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P10Y"</span></span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">Description =</span> providertwo<span class="sc">:::</span><span class="fu">fmt_periodicity</span>(Periodicity)</span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">opt_table_font</span>(<span class="at">font =</span> <span class="fu">google_font</span>(<span class="at">name =</span> <span class="st">"JetBrains Mono"</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_options</span>(<span class="at">quarto.disable_processing =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>              <span class="at">column_labels.font.weight =</span> <span class="st">"bolder"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">opt_stylize</span>(<span class="at">color =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">Periodicity =</span> <span class="fu">c</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/PT1S"</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/PT1H"</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P1D"</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P3.5D"</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P0.33W"</span>,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P0.5W"</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P1W"</span>,</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P2W"</span>,</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P0.33M"</span>,</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P0.5M"</span>,</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P1M"</span>,</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P2M"</span>,</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P3M"</span>,</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P4M"</span>,</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P6M"</span>,</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P1Y"</span>,</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P2Y"</span>,</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P3Y"</span>,</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P4Y"</span>,</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"R/P10Y"</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">Description =</span> providertwo<span class="sc">:::</span><span class="fu">fmt_periodicity</span>(Periodicity)</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">opt_table_font</span>(<span class="at">font =</span> <span class="fu">google_font</span>(<span class="at">name =</span> <span class="st">"JetBrains Mono"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_options</span>(<span class="at">quarto.disable_processing =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>              <span class="at">column_labels.font.weight =</span> <span class="st">"bolder"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">opt_stylize</span>(<span class="at">color =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="nidleyqbty" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="pjulfhokuq" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
-#nidleyqbty table {
+#pjulfhokuq table {
   font-family: 'JetBrains Mono', system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#nidleyqbty thead, #nidleyqbty tbody, #nidleyqbty tfoot, #nidleyqbty tr, #nidleyqbty td, #nidleyqbty th {
+#pjulfhokuq thead, #pjulfhokuq tbody, #pjulfhokuq tfoot, #pjulfhokuq tr, #pjulfhokuq td, #pjulfhokuq th {
   border-style: none;
 }
 
-#nidleyqbty p {
+#pjulfhokuq p {
   margin: 0;
   padding: 0;
 }
 
-#nidleyqbty .gt_table {
+#pjulfhokuq .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -590,12 +1505,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-left-color: #D3D3D3;
 }
 
-#nidleyqbty .gt_caption {
+#pjulfhokuq .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#nidleyqbty .gt_title {
+#pjulfhokuq .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -607,7 +1522,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-width: 0;
 }
 
-#nidleyqbty .gt_subtitle {
+#pjulfhokuq .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -619,7 +1534,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-top-width: 0;
 }
 
-#nidleyqbty .gt_heading {
+#pjulfhokuq .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -631,13 +1546,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#nidleyqbty .gt_bottom_border {
+#pjulfhokuq .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #E4220C;
 }
 
-#nidleyqbty .gt_col_headings {
+#pjulfhokuq .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #E4220C;
@@ -652,7 +1567,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#nidleyqbty .gt_col_heading {
+#pjulfhokuq .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -672,7 +1587,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   overflow-x: hidden;
 }
 
-#nidleyqbty .gt_column_spanner_outer {
+#pjulfhokuq .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -684,15 +1599,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 4px;
 }
 
-#nidleyqbty .gt_column_spanner_outer:first-child {
+#pjulfhokuq .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#nidleyqbty .gt_column_spanner_outer:last-child {
+#pjulfhokuq .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#nidleyqbty .gt_column_spanner {
+#pjulfhokuq .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #E4220C;
@@ -704,11 +1619,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   width: 100%;
 }
 
-#nidleyqbty .gt_spanner_row {
+#pjulfhokuq .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#nidleyqbty .gt_group_heading {
+#pjulfhokuq .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -734,7 +1649,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   text-align: left;
 }
 
-#nidleyqbty .gt_empty_group_heading {
+#pjulfhokuq .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -749,15 +1664,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   vertical-align: middle;
 }
 
-#nidleyqbty .gt_from_md > :first-child {
+#pjulfhokuq .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#nidleyqbty .gt_from_md > :last-child {
+#pjulfhokuq .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#nidleyqbty .gt_row {
+#pjulfhokuq .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -776,7 +1691,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   overflow-x: hidden;
 }
 
-#nidleyqbty .gt_stub {
+#pjulfhokuq .gt_stub {
   color: #FFFFFF;
   background-color: #E4220C;
   font-size: 100%;
@@ -789,7 +1704,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#nidleyqbty .gt_stub_row_group {
+#pjulfhokuq .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -803,15 +1718,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   vertical-align: top;
 }
 
-#nidleyqbty .gt_row_group_first td {
+#pjulfhokuq .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#nidleyqbty .gt_row_group_first th {
+#pjulfhokuq .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#nidleyqbty .gt_summary_row {
+#pjulfhokuq .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -821,16 +1736,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#nidleyqbty .gt_first_summary_row {
+#pjulfhokuq .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #E4220C;
 }
 
-#nidleyqbty .gt_first_summary_row.thick {
+#pjulfhokuq .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#nidleyqbty .gt_last_summary_row {
+#pjulfhokuq .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -840,7 +1755,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #E4220C;
 }
 
-#nidleyqbty .gt_grand_summary_row {
+#pjulfhokuq .gt_grand_summary_row {
   color: #333333;
   background-color: #FFCCC7;
   text-transform: inherit;
@@ -850,7 +1765,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#nidleyqbty .gt_first_grand_summary_row {
+#pjulfhokuq .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -860,7 +1775,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-top-color: #E4220C;
 }
 
-#nidleyqbty .gt_last_grand_summary_row_top {
+#pjulfhokuq .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -870,11 +1785,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #E4220C;
 }
 
-#nidleyqbty .gt_striped {
+#pjulfhokuq .gt_striped {
   background-color: #F4F4F4;
 }
 
-#nidleyqbty .gt_table_body {
+#pjulfhokuq .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #E4220C;
@@ -883,7 +1798,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #E4220C;
 }
 
-#nidleyqbty .gt_footnotes {
+#pjulfhokuq .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -897,7 +1812,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#nidleyqbty .gt_footnote {
+#pjulfhokuq .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -906,7 +1821,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#nidleyqbty .gt_sourcenotes {
+#pjulfhokuq .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -920,7 +1835,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#nidleyqbty .gt_sourcenote {
+#pjulfhokuq .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -928,72 +1843,72 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#nidleyqbty .gt_left {
+#pjulfhokuq .gt_left {
   text-align: left;
 }
 
-#nidleyqbty .gt_center {
+#pjulfhokuq .gt_center {
   text-align: center;
 }
 
-#nidleyqbty .gt_right {
+#pjulfhokuq .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#nidleyqbty .gt_font_normal {
+#pjulfhokuq .gt_font_normal {
   font-weight: normal;
 }
 
-#nidleyqbty .gt_font_bold {
+#pjulfhokuq .gt_font_bold {
   font-weight: bold;
 }
 
-#nidleyqbty .gt_font_italic {
+#pjulfhokuq .gt_font_italic {
   font-style: italic;
 }
 
-#nidleyqbty .gt_super {
+#pjulfhokuq .gt_super {
   font-size: 65%;
 }
 
-#nidleyqbty .gt_footnote_marks {
+#pjulfhokuq .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#nidleyqbty .gt_asterisk {
+#pjulfhokuq .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#nidleyqbty .gt_indent_1 {
+#pjulfhokuq .gt_indent_1 {
   text-indent: 5px;
 }
 
-#nidleyqbty .gt_indent_2 {
+#pjulfhokuq .gt_indent_2 {
   text-indent: 10px;
 }
 
-#nidleyqbty .gt_indent_3 {
+#pjulfhokuq .gt_indent_3 {
   text-indent: 15px;
 }
 
-#nidleyqbty .gt_indent_4 {
+#pjulfhokuq .gt_indent_4 {
   text-indent: 20px;
 }
 
-#nidleyqbty .gt_indent_5 {
+#pjulfhokuq .gt_indent_5 {
   text-indent: 25px;
 }
 
-#nidleyqbty .katex-display {
+#pjulfhokuq .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#nidleyqbty div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#pjulfhokuq div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
