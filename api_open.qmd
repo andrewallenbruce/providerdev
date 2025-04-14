@@ -5,6 +5,9 @@
 #| include: false
 source("includes/_common.R")
 
+quick_open      <- providertwo:::quick_open
+quick_open_temp <- providertwo:::quick_open_temp
+
 # "[^\\x00-\\x7F]"
 # 
 # open_payments(year = 2021, npi = 1023630738)
@@ -20,76 +23,67 @@ source("includes/_common.R")
 ## Load Catalog
 
 ```{r}
-#| label: open_catalog
-.c(open_curr, open_temp) %=% catalog_open()
+openMain("profile_covered")@identifier |> 
+  quick_open()
 
-open_curr
+openMain("profile_physician")@identifier |> 
+  quick_open()
 
-open_temp
+openMain("profile_information")@identifier |> 
+  quick_open()
 
-subset_detect(open_curr, title, "^Covered")
-```
+openMain("profile_mapping")@identifier |> 
+  quick_open()
 
-## S7 Classes
+openMain("profile_entity")@identifier |> 
+  quick_open()
 
-```{r}
-CurrentOpen("prof_cov")
-CurrentOpen("prof_phys")
-CurrentOpen("prof_info")
-CurrentOpen("prof_map")
-CurrentOpen("prof_entity")
-CurrentOpen("prof_teach")
-CurrentOpen("dashboard")
-CurrentOpen("pay_state_total")
-CurrentOpen("pay_state_group")
-CurrentOpen("pay_nat_group")
-CurrentOpen("pay_nat_total")
-```
+openMain("profile_teaching")@identifier |> 
+  quick_open()
 
-```{r}
-TemporalOpen("general")
-TemporalOpen("ownership")
-TemporalOpen("research")
-TemporalOpen("recipient_nature")
-TemporalOpen("recipient_entity")
-TemporalOpen("entity_nature")
-TemporalOpen("entity_recipient_nature")
-TemporalOpen("state_nature")
-```
+openMain("state_total")@identifier |> 
+  quick_open()
 
-```{r}
-#| message: true
-providertwo:::new_request(CurrentOpen("dashboard"))
-```
+openMain("state_group")@identifier |> 
+  quick_open()
 
-### Dashboard
+openMain("national_group")@identifier |> 
+  quick_open()
 
-```{r}
-dashboard <- data.table::fread(CurrentOpen("dashboard")@download)
+openMain("national_total")@identifier |> 
+  quick_open()
 
-dashboard |> 
-  as_tbl() |> 
-  f_select(Data_Metrics, Total) |> 
-  f_arrange(-Total) |> 
-  print(n = Inf)
+openTemp("general")@endpoints$identifier |> _[[1]] |> 
+  quick_open_temp()
+
+openTemp("ownership")@endpoints$identifier |> _[[1]] |> 
+  quick_open_temp()
+
+openTemp("research")@endpoints$identifier |> _[[1]] |> 
+  quick_open_temp()
+
+providertwo:::open_temp_group("grouped_payments") |> 
+  slt(-description, -contact, -download) |> 
+  rsplit(~ title)
 ```
 
 
+### Summary Dashboard
+
 ```{r}
-dash <- dashboard |> 
-  as_tbl() |> 
-  slt(-Dashboard_Row_Number) |>
-  pivot(ids = 1) |> 
-  roworder(Data_Metrics) |> 
-  mtt(year = delist(stri_extract_all_regex(variable, "[0-9]{4}")))
+open_dashboard()
+```
 
-dash |> 
-  sbt(na(year), metrics = Data_Metrics, amount = value)
+### National Summary
 
-dash |> 
-  sbt(not_na(year), year, metrics = Data_Metrics, amount = value) |> 
-  mtt(year = as_int(year)) |> 
-  rsplit(~ metrics)
+```{r}
+open_national()
+```
+
+### Data Dictionary
+
+```{r}
+open_dictionary()
 ```
 
 ## Querying
@@ -166,6 +160,7 @@ format_query_open(
 ## Query Format
 
 ```{r}
+#| eval: false
 tictoc::tic()
 request("https://openpaymentsdata.cms.gov/api/1/datastore/sql") |> 
   req_url_query(
@@ -185,6 +180,7 @@ tictoc::toc()
 
 
 ```{r}
+#| eval: false
 ex_url <- url_parse(
   base_url = "https://openpaymentsdata.cms.gov/api/1/datastore/", 
   url      = "query/fdc3c773-018a-412c-8a81-d7b8a13a037b/0") |> 
@@ -214,6 +210,7 @@ as_tbl(ex_res$results) |>
 
 
 ```{r}
+#| eval: false
 tictoc::tic()
 url_parse(
   base_url = "https://openpaymentsdata.cms.gov/api/1/datastore/", 
@@ -238,6 +235,7 @@ tictoc::toc()
 
 
 ```{r}
+#| eval: false
 tictoc::tic()
 request("https://openpaymentsdata.cms.gov/api/1/datastore/query/fdc3c773-018a-412c-8a81-d7b8a13a037b/0") |> 
   req_url_query(
@@ -254,6 +252,7 @@ tictoc::toc()
 ```
 
 ```{r}
+#| eval: false
 tictoc::tic()
 url_parse(
   base_url = "https://openpaymentsdata.cms.gov/api/1/datastore/", 
