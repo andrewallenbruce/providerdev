@@ -26,6 +26,8 @@ options(scipen = 999)
 ## Load Packages
 
 ```{r}
+#| message: false
+#| warning: false
 library(tidygeocoder)
 library(tigris)
 library(rmapshaper)
@@ -42,13 +44,40 @@ options(tigris_use_cache = TRUE)
 • __Fields__ [20]
 
 ```{r}
-rhc_enrollments <- careGroup("rural_health")@groups |> 
-  _[["rural_health_clinic_enrollments"]] |> 
-  _[["endpoints"]] |> 
-  _[["identifier"]] |> 
-  providertwo:::quick_care()
+rhc_enroll <- careGroup("rural_health")@groups |>
+  _[["rural_health_clinic_enrollments"]] |>
+  _[["endpoints"]] |>
+  _[["identifier"]] |>
+  providertwo:::quick_care() |>
+  mtt(
+    incorporation_date = providertwo:::as_date(incorporation_date),
+    address = cheapr_if_else(
+      cheapr::is_na(address_line_2),
+      address_line_1,
+      paste(address_line_1, address_line_2)
+    )
+  ) |>
+  slt(
+    npi,
+    npi_multi = multiple_npi_flag,
+    ccn,
+    pac = associate_id,
+    enid = enrollment_id,
+    enid_state = enrollment_state,
+    org_name = organization_name,
+    dba_name = doing_business_as_name,
+    inc_date = incorporation_date,
+    inc_state = incorporation_state,
+    org_type = organization_type_structure,
+    org_type_2 = organization_other_type_text,
+    prop_non = proprietary_nonprofit,
+    address,
+    city,
+    state,
+    zip = zip_code
+  )
 
-rhc_enrollments
+rhc_enroll
 ```
 
 > RHC Owners
@@ -58,11 +87,75 @@ rhc_enrollments
 • __Fields__ [34]
 
 ```{r}
+underscore <- \(x) gsub("___owner$", "", x, perl = TRUE)
+char_binary <- \(x) val_match(x, "N" ~ 0L, "Y" ~ 1L)
+
 rhc_owners <- careGroup("rural_health")@groups |> 
   _[["rural_health_clinic_all_owners"]] |> 
   _[["endpoints"]] |> 
   _[["identifier"]] |> 
-  providertwo:::quick_care()
+  providertwo:::quick_care() |>
+  rnm(
+    enid = enrollment_id,
+    pac = associate_id, 
+    org_name = organization_name) |>
+  set_names(underscore) |> 
+  mtt(
+    association_date = providertwo:::as_date(association_date),
+    address = cheapr_if_else(cheapr::is_na(address_line_2), address_line_1, paste(address_line_1, address_line_2)),
+    percentage_ownership = as.numeric(percentage_ownership),
+    role_code = as.integer(role_code)
+  ) |>
+  slt(
+    pac,
+    enid,
+    org_name,
+    pac_owner = associate_id, 
+    org_name_owner = organization_name,
+    entity = type,
+    role_code,
+    role_text,
+    association_date,
+    first_name,
+    middle_name,
+    last_name,
+    title,
+    dba_name = doing_business_as_name,
+    address,
+    city,
+    state,
+    zip = zip_code,
+    ownership_pct = percentage_ownership,
+    is_for_acq = created_for_acquisition,
+    is_corp = corporation,
+    is_llc = llc,
+    is_med_prov_supp = medical_provider_supplier,
+    is_mgmt_serv_co = management_services_company,
+    is_med_staff_co = medical_staffing_company,
+    is_holding_co = holding_company,
+    is_invest_firm = investment_firm,
+    is_fin_inst = financial_institution,
+    is_consult_firm = consulting_firm,
+    is_for_profit = for_profit,
+    is_non_profit = non_profit,
+    is_other_type = other_type,
+    other_type = other_type_text
+  ) |> 
+  mtt(
+    is_for_acq = char_binary(is_for_acq),
+    is_corp = char_binary(is_corp),
+    is_llc = char_binary(is_llc),
+    is_med_prov_supp = char_binary(is_med_prov_supp),
+    is_mgmt_serv_co = char_binary(is_mgmt_serv_co),
+    is_med_staff_co = char_binary(is_med_staff_co),
+    is_holding_co = char_binary(is_holding_co),
+    is_invest_firm = char_binary(is_invest_firm),
+    is_fin_inst = char_binary(is_fin_inst),
+    is_consult_firm = char_binary(is_consult_firm),
+    is_for_profit = char_binary(is_for_profit),
+    is_non_profit = char_binary(is_non_profit),
+    is_other_type = char_binary(is_other_type)
+  )
 
 rhc_owners
 ```
@@ -71,9 +164,9 @@ rhc_owners
 ## All RHCs in Georgia
 
 ```{r}
-x <- careMain("enrollees")
-
-req <- x@identifier |> 
+tictoc::tic()
+req <- careMain("enrollees") |> 
+  prop("identifier") |> 
   request() |> 
   req_url_query(
     "filter[STATE_CD]" = "GA",
@@ -86,13 +179,8 @@ nres <- req |>
   _[["data"]] |> 
   _[["found_rows"]]
 
-nres
-
 res <- req |> 
-  req_url_query(
-    offset = 0L,
-    size = 5000L
-    ) |> 
+  req_url_query(offset = 0L, size = 5000L) |> 
   req_perform() |> 
   providertwo:::resp_simple_json() |> 
   get_elem("^data$|headers", regex = TRUE)
@@ -101,10 +189,12 @@ rhc_res <- as_tbl(res$data) |>
   set_names(res$meta) |> 
   providertwo:::map_na_if() |> 
   sbt(ORG_NAME != "UNIVERSITY OF FLORIDA JACKSONVILLE PHYSICIANS, INC.") |>
-  slt(ORG_NAME, NPI:STATE_CD) |>
+  slt(ORG_NAME, NPI:ENRLMT_ID, STATE_CD) |>
   roworder(ORG_NAME)
+tictoc::toc()
 
-rhc_res |> print(n = 100)
+rhc_res |> 
+  overview()
 ```
 
 
@@ -119,7 +209,9 @@ rhc_nppes |>
 
 rhc_nppes |> 
   slt(number, addresses) |> 
-  unnest(addresses)
+  unnest(addresses) |> 
+  mtt(address = cheapr_if_else(cheapr::is_na(address_2), address_1, paste(address_1, address_2))) |> 
+  slt(-address_1, -address_2, -address_type, -country_code, -country_name)
 
 rhc_nppes |> 
   slt(number, basic) |> 
