@@ -1,5 +1,5 @@
 ---
-title: "DCAT Metadata Schema"
+title: "DCAT Metadata"
 editor_options: 
    chunk_output_type: console
 ---
@@ -18,8 +18,9 @@ source("includes/_common.R")
 #     "ISO8601"))
 ```
 
+* [Data Catalog Vocabulary (DCAT) - Version 3](https://www.w3.org/TR/vocab-dcat/)
 
-## DCAT JSON Schemas
+## JSON Schemas
 
 ::: panel-tabset
 
@@ -34,9 +35,6 @@ here::here("data/dcat-us_v1.1_schema_catalog.json") |>
 
 
 ### Dataset
-
-   * [Data Catalog Vocabulary (DCAT) - Version 3](https://www.w3.org/TR/vocab-dcat/)
-
 
 ```{r}
 #| label: schema_dataset
@@ -90,10 +88,11 @@ tibble(
   Description = providertwo:::fmt_periodicity(Periodicity)
 ) |> 
   gt() |> 
-  opt_table_font(font = google_font(name = "JetBrains Mono")) |> 
   tab_options(quarto.disable_processing = TRUE,
-              column_labels.font.weight = "bolder") |> 
-  opt_stylize(color = "red")
+              column_labels.font.weight = "bolder",
+              table.font.size = 14) |>
+  gtUtils::gt_theme_athletic() |> 
+  cols_align(align = "left", columns = everything())
 ```
 
 ### `bureauCode`
@@ -132,11 +131,12 @@ read_csv(
     treasuryCode = str_pad(treasuryCode, width = 2, pad = "0"),
     cgacCode     = str_pad(cgacCode, width = 3, pad = "0")
   ) |> 
-  gt() |> 
-  opt_table_font(font = google_font(name = "JetBrains Mono")) |> 
+  gt(groupname_col = "agencyName") |> 
   tab_options(quarto.disable_processing = TRUE,
-              column_labels.font.weight = "bolder") |> 
-  opt_stylize(color = "red")
+              column_labels.font.weight = "bolder",
+              table.font.size = 14) |>
+  gtUtils::gt_theme_athletic() |> 
+  cols_align(align = "left", columns = everything())
 ```
 
 ### `programCode`
@@ -171,11 +171,13 @@ read_csv(
       "programCodePODfmt"
     )
   ) |> 
-  gt() |> 
-  opt_table_font(font = google_font(name = "JetBrains Mono")) |> 
+  gt(groupname_col = "agencyName") |> 
   tab_options(quarto.disable_processing = TRUE,
-              column_labels.font.weight = "bolder") |> 
-  opt_stylize(color = "red")
+              column_labels.font.weight = "bolder",
+              table.font.size = 14) |>
+  gtUtils::gt_theme_athletic() |> 
+  cols_align(align = "left", columns = everything()) |> 
+  sub_missing(columns = everything(), missing_text = "--")
 ```
 
 
