@@ -9,6 +9,24 @@ editor_options:
 #| include: false
 source("includes/_common.R")
 
+gt_tab <- \(x, size = 14) {
+  x |>
+    gt::gt() |>
+    gtUtils::gt_theme_athletic() |>
+    gt::tab_options(
+      quarto.disable_processing = TRUE,
+      column_labels.font.weight = "bolder",
+      column_labels.font.size = (size + 4),
+      column_labels.background.color = "black",
+      column_labels.border.bottom.color = "white",
+      table.font.size = size,
+      row_group.font.size = (size + 2),
+      table.width = gt::pct(100)) |> 
+    gt::cols_align(align = "left", columns = gt::everything()) |> 
+    gt::sub_missing(columns = gt::everything(), missing_text = "-")
+}
+
+
 # htmltools::tagList(
 #   btn_link(
 #     "https://resources.data.gov/resources/dcat-us/", 
@@ -28,6 +46,7 @@ source("includes/_common.R")
 
 ```{r}
 #| label: schema_catalog
+#| echo: false
 here::here("data/dcat-us_v1.1_schema_catalog.json") |> 
   RcppSimdJson::fload() |> 
   jsonify::pretty_json()
@@ -38,6 +57,7 @@ here::here("data/dcat-us_v1.1_schema_catalog.json") |>
 
 ```{r}
 #| label: schema_dataset
+#| echo: false
 here::here("data/dcat-us_v1.1_schema_dataset.json") |> 
   RcppSimdJson::fload() |> 
   jsonify::pretty_json()
@@ -47,6 +67,7 @@ here::here("data/dcat-us_v1.1_schema_dataset.json") |>
 
 ```{r}
 #| label: schema_distribution
+#| echo: false
 here::here("data/dcat-us_v1.1_schema_distribution.json") |> 
   RcppSimdJson::fload() |> 
   jsonify::pretty_json()
@@ -62,6 +83,7 @@ here::here("data/dcat-us_v1.1_schema_distribution.json") |>
 
 ```{r}
 #| label: accrualPeriodicity
+#| echo: false
 tibble(
   Periodicity = c(
     "R/PT1S",
@@ -87,12 +109,7 @@ tibble(
   ),
   Description = providertwo:::fmt_periodicity(Periodicity)
 ) |> 
-  gt() |> 
-  tab_options(quarto.disable_processing = TRUE,
-              column_labels.font.weight = "bolder",
-              table.font.size = 14) |>
-  gtUtils::gt_theme_athletic() |> 
-  cols_align(align = "left", columns = everything())
+  gt_tab()
 ```
 
 ### `bureauCode`
@@ -103,6 +120,7 @@ Federal agencies, combined agency and bureau code from [OMB Circular A-11, Appen
 
 ```{r}
 #| label: bureauCodes
+#| echo: false
 read_csv(
   here("data/omb_bureau_codes.csv"),
   show_col_types  = FALSE,
@@ -115,28 +133,18 @@ read_csv(
     `CGAC Code`     = col_character()
   )
 ) |>
-  setNames(
-    c(
-      "agencyName",
-      "bureauName",
-      "agencyCode",
-      "bureauCode",
-      "treasuryCode",
-      "cgacCode"
-    )
-  ) |>
   mutate(
-    agencyCode   = str_pad(agencyCode, width = 3, pad = "0"),
-    bureauCode   = str_pad(bureauCode, width = 2, pad = "0"),
-    treasuryCode = str_pad(treasuryCode, width = 2, pad = "0"),
-    cgacCode     = str_pad(cgacCode, width = 3, pad = "0")
-  ) |> 
-  gt(groupname_col = "agencyName") |> 
-  tab_options(quarto.disable_processing = TRUE,
-              column_labels.font.weight = "bolder",
-              table.font.size = 14) |>
-  gtUtils::gt_theme_athletic() |> 
-  cols_align(align = "left", columns = everything())
+    `Agency Code`   = str_pad(`Agency Code`, width = 3, pad = "0"),
+    `Bureau Code`   = str_pad(`Bureau Code`, width = 2, pad = "0"),
+    `Treasury Code` = str_pad(`Treasury Code`, width = 2, pad = "0"),
+    `CGAC Code`     = str_pad(`CGAC Code`, width = 3, pad = "0"),
+    `Agency Name`   = paste0(`Agency Name`, " [", `Agency Code`, "]"),
+    `Agency Code`   = NULL,
+    `Bureau Name`   = paste0(`Bureau Name`, " [", `Bureau Code`, "]"),
+    `Bureau Code`   = NULL
+  ) |>
+  group_by(`Agency Name`) |> 
+  gt_tab()
 ```
 
 ### `programCode`
@@ -161,23 +169,13 @@ read_csv(
     ProgramCodePODFormat                = col_character()
   )
 ) |>
-  setNames(
-    c(
-      "agencyName",
-      "programName",
-      "additionalInfo",
-      "agencyCode",
-      "programCode",
-      "programCodePODfmt"
-    )
-  ) |> 
-  gt(groupname_col = "agencyName") |> 
-  tab_options(quarto.disable_processing = TRUE,
-              column_labels.font.weight = "bolder",
-              table.font.size = 14) |>
-  gtUtils::gt_theme_athletic() |> 
-  cols_align(align = "left", columns = everything()) |> 
-  sub_missing(columns = everything(), missing_text = "--")
+  reframe(
+    `Agency Name`   = paste0(`Agency Name`, " [", agencyCode, "]"),
+    `Program Name`   = paste0(`Program Name`, " [", ProgramCodePODFormat, "]"),
+    "Additional Information"   = `Additional Information (optional)`
+  ) |>
+  group_by(`Agency Name`) |> 
+  gt_tab()
 ```
 
 
