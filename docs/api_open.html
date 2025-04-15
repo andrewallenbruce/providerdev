@@ -617,10 +617,10 @@ Note&nbsp;3.1: <code>JSON</code>: <em>Open Payments Catalog</em>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>open_quick <span class="ot">&lt;-</span> \(alias) {</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stopifnot</span>(<span class="fu">length</span>(alias) <span class="sc">==</span> <span class="dv">1</span>L)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">grepl</span>(<span class="st">"^profile|^state|^national"</span>, alias, <span class="at">perl =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">grepl</span>(<span class="st">"^profile|^state|^national|^dashboard"</span>, alias, <span class="at">perl =</span> <span class="cn">TRUE</span>))</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">prop</span>(<span class="fu">openMain</span>(alias), <span class="st">"identifier"</span>) <span class="sc">|&gt;</span> <span class="fu">quick_open</span>())</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">prop</span>(<span class="fu">openTemp</span>(<span class="st">"general"</span>), <span class="st">"endpoints"</span>) <span class="sc">|&gt;</span> _[[<span class="st">"identifier"</span>]] <span class="sc">|&gt;</span> _[[<span class="dv">1</span>]] <span class="sc">|&gt;</span> <span class="fu">quick_open_temp</span>())</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">prop</span>(<span class="fu">openTemp</span>(alias), <span class="st">"endpoints"</span>) <span class="sc">|&gt;</span> _[[<span class="st">"identifier"</span>]] <span class="sc">|&gt;</span> _[[<span class="dv">1</span>]] <span class="sc">|&gt;</span> <span class="fu">quick_open_temp</span>())</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <section id="data-dictionary" class="level3" data-number="3.1.1">
@@ -868,26 +868,21 @@ $`Covered Recipient Profile Supplement`
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_quick</span>(<span class="st">"dashboard"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 500 × 91
-   change_type covered_recipient_type teaching_hospital_ccn teaching_hospital_id
- * &lt;chr&gt;       &lt;chr&gt;                  &lt;chr&gt;                 &lt;chr&gt;               
- 1 CHANGED     Covered Recipient Tea… 220162                9984                
- 2 CHANGED     Covered Recipient Tea… 220162                9984                
- 3 CHANGED     Covered Recipient Tea… 220162                9984                
- 4 CHANGED     Covered Recipient Tea… 220162                9984                
- 5 CHANGED     Covered Recipient Tea… 220162                9984                
- 6 CHANGED     Covered Recipient Tea… 220162                9984                
- 7 CHANGED     Covered Recipient Tea… 220162                9984                
- 8 CHANGED     Covered Recipient Tea… 220162                9984                
- 9 CHANGED     Covered Recipient Tea… 220162                9984                
-10 CHANGED     Covered Recipient Tea… 220162                9984                
-# ℹ 490 more rows
-# ℹ 87 more variables: teaching_hospital_name &lt;chr&gt;,
-#   covered_recipient_profile_id &lt;chr&gt;, covered_recipient_npi &lt;chr&gt;,
-#   covered_recipient_first_name &lt;chr&gt;, covered_recipient_middle_name &lt;chr&gt;,
-#   covered_recipient_last_name &lt;chr&gt;, covered_recipient_name_suffix &lt;chr&gt;,
-#   recipient_primary_business_street_address_line1 &lt;chr&gt;,
-#   recipient_primary_business_street_address_line2 &lt;chr&gt;, …</code></pre>
+<pre><code># A tibble: 90 × 10
+   dashboard_row_number data_metrics     py_2017 py_2018 py_2019 py_2020 py_2021
+ * &lt;chr&gt;                &lt;chr&gt;            &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;  
+ 1 2                    Total Dollar Am… 998344… 109882… 118794… 100519… 124674…
+ 2 3                    Total Dollar Am… 296470… 311980… 371116… 218672… 325478…
+ 3 4                    Total Dollar Am… 160510… 231246… 748979… 184671… 237104…
+ 4 5                    Total Dollar Am… 296309… 311749… 371041… 218487… 325240…
+ 5 6                    Total Dollar Am… 594550… 621907… 654725… 648136… 766416…
+ 6 7                    Total Dollar Am… 139533… 155362… 176525… 169179… 174644…
+ 7 8                    Total Dollar Am… 455016… 466545… 478199… 478957… 591771…
+ 8 9                    Total Dollar Am… 466174… 477411… 488186… 487109… 599788…
+ 9 10                   Total Dollar Am… 455016… 466545… 478199… 478957… 591814…
+10 11                   Total Dollar Am… 362794… 275792… 799696… 496954… 140845…
+# ℹ 80 more rows
+# ℹ 3 more variables: py_2022 &lt;chr&gt;, py_2023 &lt;chr&gt;, total &lt;chr&gt;</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_dashboard</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1334,26 +1329,26 @@ $`Payments Grouped by Reporting Entities, Covered Recipient, and Nature of Payme
 <div class="cell">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_quick</span>(<span class="st">"ownership"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 500 × 91
-   change_type covered_recipient_type teaching_hospital_ccn teaching_hospital_id
- * &lt;chr&gt;       &lt;chr&gt;                  &lt;chr&gt;                 &lt;chr&gt;               
- 1 CHANGED     Covered Recipient Tea… 220162                9984                
- 2 CHANGED     Covered Recipient Tea… 220162                9984                
- 3 CHANGED     Covered Recipient Tea… 220162                9984                
- 4 CHANGED     Covered Recipient Tea… 220162                9984                
- 5 CHANGED     Covered Recipient Tea… 220162                9984                
- 6 CHANGED     Covered Recipient Tea… 220162                9984                
- 7 CHANGED     Covered Recipient Tea… 220162                9984                
- 8 CHANGED     Covered Recipient Tea… 220162                9984                
- 9 CHANGED     Covered Recipient Tea… 220162                9984                
-10 CHANGED     Covered Recipient Tea… 220162                9984                
+<pre><code># A tibble: 500 × 30
+   change_type physician_profile_id physician_npi physician_first_name
+ * &lt;chr&gt;       &lt;chr&gt;                &lt;chr&gt;         &lt;chr&gt;               
+ 1 UNCHANGED   329721               1275588246    Frank               
+ 2 UNCHANGED   4213213              1952690257    Edward              
+ 3 UNCHANGED   170314               1750495099    ERIK                
+ 4 UNCHANGED   151386               1336161561    Cindy               
+ 5 UNCHANGED   130749               1871710756    Nikhil              
+ 6 UNCHANGED   1237732              1720038334    Elizabeth           
+ 7 UNCHANGED   911126               1255329009    MARK                
+ 8 UNCHANGED   498003               1720029465    William             
+ 9 UNCHANGED   343028               1548349566    Robert              
+10 UNCHANGED   312675               1902822638    LAWRENCE            
 # ℹ 490 more rows
-# ℹ 87 more variables: teaching_hospital_name &lt;chr&gt;,
-#   covered_recipient_profile_id &lt;chr&gt;, covered_recipient_npi &lt;chr&gt;,
-#   covered_recipient_first_name &lt;chr&gt;, covered_recipient_middle_name &lt;chr&gt;,
-#   covered_recipient_last_name &lt;chr&gt;, covered_recipient_name_suffix &lt;chr&gt;,
+# ℹ 26 more variables: physician_middle_name &lt;chr&gt;, physician_last_name &lt;chr&gt;,
+#   physician_name_suffix &lt;chr&gt;,
 #   recipient_primary_business_street_address_line1 &lt;chr&gt;,
-#   recipient_primary_business_street_address_line2 &lt;chr&gt;, …</code></pre>
+#   recipient_primary_business_street_address_line2 &lt;chr&gt;,
+#   recipient_city &lt;chr&gt;, recipient_state &lt;chr&gt;, recipient_zip_code &lt;chr&gt;,
+#   recipient_country &lt;chr&gt;, recipient_province &lt;chr&gt;, …</code></pre>
 </div>
 </div>
 </section>
@@ -1363,26 +1358,26 @@ $`Payments Grouped by Reporting Entities, Covered Recipient, and Nature of Payme
 <div class="cell">
 <div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">open_quick</span>(<span class="st">"research"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 500 × 91
-   change_type covered_recipient_type teaching_hospital_ccn teaching_hospital_id
- * &lt;chr&gt;       &lt;chr&gt;                  &lt;chr&gt;                 &lt;chr&gt;               
- 1 CHANGED     Covered Recipient Tea… 220162                9984                
- 2 CHANGED     Covered Recipient Tea… 220162                9984                
- 3 CHANGED     Covered Recipient Tea… 220162                9984                
- 4 CHANGED     Covered Recipient Tea… 220162                9984                
- 5 CHANGED     Covered Recipient Tea… 220162                9984                
- 6 CHANGED     Covered Recipient Tea… 220162                9984                
- 7 CHANGED     Covered Recipient Tea… 220162                9984                
- 8 CHANGED     Covered Recipient Tea… 220162                9984                
- 9 CHANGED     Covered Recipient Tea… 220162                9984                
-10 CHANGED     Covered Recipient Tea… 220162                9984                
+<pre><code># A tibble: 500 × 252
+   change_type covered_recipient_type              noncovered_recipient_entity…¹
+ * &lt;chr&gt;       &lt;chr&gt;                               &lt;chr&gt;                        
+ 1 CHANGED     Covered Recipient Teaching Hospital &lt;NA&gt;                         
+ 2 CHANGED     Covered Recipient Teaching Hospital &lt;NA&gt;                         
+ 3 UNCHANGED   Non-covered Recipient Entity        SARAH CANNON CANCER INSTITUT…
+ 4 CHANGED     Non-covered Recipient Entity        Health Partners              
+ 5 UNCHANGED   Covered Recipient Teaching Hospital &lt;NA&gt;                         
+ 6 UNCHANGED   Covered Recipient Teaching Hospital &lt;NA&gt;                         
+ 7 UNCHANGED   Non-covered Recipient Entity        ONCOLOGY HEMATOLOGY CONSULTA…
+ 8 UNCHANGED   Non-covered Recipient Entity        MEMORIAL SLOAN KETTERING CAN…
+ 9 UNCHANGED   Non-covered Recipient Entity        BOARD OF REGENTS OF THE UNIV…
+10 UNCHANGED   Non-covered Recipient Entity        SARAH CANNON CANCER INSTITUT…
 # ℹ 490 more rows
-# ℹ 87 more variables: teaching_hospital_name &lt;chr&gt;,
+# ℹ abbreviated name: ¹​noncovered_recipient_entity_name
+# ℹ 249 more variables: teaching_hospital_ccn &lt;chr&gt;,
+#   teaching_hospital_id &lt;chr&gt;, teaching_hospital_name &lt;chr&gt;,
 #   covered_recipient_profile_id &lt;chr&gt;, covered_recipient_npi &lt;chr&gt;,
 #   covered_recipient_first_name &lt;chr&gt;, covered_recipient_middle_name &lt;chr&gt;,
-#   covered_recipient_last_name &lt;chr&gt;, covered_recipient_name_suffix &lt;chr&gt;,
-#   recipient_primary_business_street_address_line1 &lt;chr&gt;,
-#   recipient_primary_business_street_address_line2 &lt;chr&gt;, …</code></pre>
+#   covered_recipient_last_name &lt;chr&gt;, covered_recipient_name_suffix &lt;chr&gt;, …</code></pre>
 </div>
 </div>
 <p><br><br><br></p>

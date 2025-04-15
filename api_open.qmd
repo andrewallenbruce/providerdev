@@ -52,10 +52,10 @@ c(open_JSON[[1]], open_JSON[[2]], open_JSON[[3]], open_JSON[[4]]) |>
 open_quick <- \(alias) {
   stopifnot(length(alias) == 1L)
   
-  if (grepl("^profile|^state|^national", alias, perl = TRUE))
+  if (grepl("^profile|^state|^national|^dashboard", alias, perl = TRUE))
     return(prop(openMain(alias), "identifier") |> quick_open())
   else
-    return(prop(openTemp("general"), "endpoints") |> _[["identifier"]] |> _[[1]] |> quick_open_temp())
+    return(prop(openTemp(alias), "endpoints") |> _[["identifier"]] |> _[[1]] |> quick_open_temp())
 }
 ```
 
