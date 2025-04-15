@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.7.14">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
 <meta name="description" content="This is a personal, informal guide to rewriting an R package. It is a work in progress and will be updated as I learn more about the process.">
-
 <title>14&nbsp; Comprehensive Search – Refactoring Provider</title>
 <style>
 code{white-space: pre-wrap;}
@@ -57,9 +54,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
-
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
 <script src="site_libs/quarto-search/fuse.min.js"></script>
@@ -73,11 +68,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-5593775d84e4d2a8ea12ac38bba8f48d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-6c7643998826233573c41560c556b328.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-2c34dd33a6f7ed8a94e2f4b60f66364e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
-<script id="quarto-search-options" type="application/json">{
+<link href="site_libs/bootstrap/bootstrap-c325f46859a2c93c0c7b3ce9213fe84b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
@@ -103,28 +97,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script>
-<style>html{ scroll-behavior: smooth; }</style>
+}</script><style>html{ scroll-behavior: smooth; }</style>
 <link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
-
-<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
-
-<script src="site_libs/viz-1.8.2/viz.js"></script>
-
-<link href="site_libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet">
-
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script><script src="site_libs/viz-1.8.2/viz.js"></script><link href="site_libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet">
 <script src="site_libs/grViz-binding-1.0.11/grViz.js"></script>
-
-
-
 </head>
-
 <body class="nav-sidebar floating">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav">
-    <div class="container-fluid d-flex">
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
@@ -135,13 +116,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <i class="bi bi-search"></i>
       </button>
     </div>
-  </nav>
-</header>
-<!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Refactoring Provider</a> 
         <div class="sidebar-tools-main">
@@ -161,7 +138,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
-        <li class="sidebar-item">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Preface</span></a>
@@ -181,8 +158,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./api_main.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Main</span></span></a>
@@ -231,7 +208,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
@@ -240,8 +217,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./wk_backend.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Backend</span></span></a>
@@ -278,7 +255,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
@@ -287,8 +264,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./end_affiliations.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title"><code>affiliations</code></span></span></a>
@@ -301,7 +278,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
@@ -310,15 +287,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./demo_geo.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Geospatial</span></span></a>
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
@@ -327,42 +304,36 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./faq_syntax.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">JSON:API Syntax</span></span></a>
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">JSON:API Syntax</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./faq_schema.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">DCAT Metadata Schema</span></span></a>
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">DCAT Metadata Schema</span></span></a>
   </div>
 </li>
       </ul>
-  </li>
+</li>
     </ul>
-    </div>
-</nav>
-<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#individual-provider" id="toc-individual-provider" class="nav-link active" data-scroll-target="#individual-provider"><span class="header-section-number">14.0.1</span> Individual Provider</a></li>
-  <li><a href="#organizational-provider" id="toc-organizational-provider" class="nav-link" data-scroll-target="#organizational-provider"><span class="header-section-number">14.0.2</span> Organizational Provider</a></li>
-  </ul>
-<div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li><li><a href="https://github.com/andrewallenbruce/providertwo"><i class="bi bi-file-code"></i>providertwo</a></li></ul></div></nav>
+<li><a href="#individual-provider" id="toc-individual-provider" class="nav-link active" data-scroll-target="#individual-provider">Individual Provider</a></li>
+  <li><a href="#organizational-provider" id="toc-organizational-provider" class="nav-link" data-scroll-target="#organizational-provider">Organizational Provider</a></li>
+  </ul><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li><li><a href="https://github.com/andrewallenbruce/providertwo"><i class="bi bi-file-code"></i>providertwo</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./wk_backend.html">Work Areas</a></li><li class="breadcrumb-item"><a href="./wk_search.html"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Comprehensive Search</span></a></li></ol></nav>
-<div class="quarto-title">
-<h1 class="title"><span id="sec-compsearch" class="quarto-section-identifier"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Comprehensive Search</span></span></h1>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./wk_backend.html">Work Areas</a></li><li class="breadcrumb-item"><a href="./wk_search.html"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Comprehensive Search</span></a></li></ol></nav><div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title"><span id="sec-compsearch" class="quarto-section-identifier"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Comprehensive Search</span></span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i></button></div></div>
 </div>
 
 
@@ -376,34 +347,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
 
 
-</header>
-
-
-<section id="individual-provider" class="level3" data-number="14.0.1">
-<h3 data-number="14.0.1" class="anchored" data-anchor-id="individual-provider"><span class="header-section-number">14.0.1</span> Individual Provider</h3>
+</header><section id="individual-provider" class="level3"><h3 class="anchored" data-anchor-id="individual-provider">Individual Provider</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>individual_search <span class="ot">&lt;-</span> <span class="cf">function</span>(npi) {</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">lst</span>(</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">nppes        =</span> provider<span class="sc">::</span><span class="fu">nppes</span>(<span class="at">npi =</span> npi),</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">enrollment   =</span> provider<span class="sc">::</span><span class="fu">providers</span>(<span class="at">npi =</span> npi),</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">order_refer  =</span> provider<span class="sc">::</span><span class="fu">order_refer</span>(<span class="at">npi =</span> npi, <span class="at">pivot =</span> <span class="cn">FALSE</span>),</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">reassignment =</span> provider<span class="sc">::</span><span class="fu">reassignments</span>(<span class="at">npi =</span> npi),</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">clinician    =</span> provider<span class="sc">::</span><span class="fu">clinicians</span>(<span class="at">npi =</span> npi),</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">affiliations =</span> provider<span class="sc">::</span><span class="fu">affiliations</span>(<span class="at">npi =</span> npi) <span class="sc">|&gt;</span> </span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>      _[[<span class="st">"facility_ccn"</span>]] <span class="sc">|&gt;</span> </span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>      purrr<span class="sc">::</span><span class="fu">map_dfr</span>(\(x) provider<span class="sc">::</span><span class="fu">hospitals</span>(<span class="at">facility_ccn =</span> x)) <span class="sc">|&gt;</span> </span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">funique</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>)),</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">taxonomy =</span> <span class="fu">handle_na</span>(<span class="fu">sbt</span>(</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        arktax<span class="sc">::</span><span class="fu">taxonomy_raw</span>(<span class="at">taxonomy_code =</span> nppes<span class="sc">$</span>tx_code), </span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>        year <span class="sc">==</span> <span class="fu">fmax</span>(year) <span class="sc">&amp;</span> version <span class="sc">==</span> <span class="fu">fmax</span>(version))</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>      ))</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">individual_search</span>(<span class="at">npi =</span> <span class="dv">1043245657</span>)</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>x <span class="sc">|&gt;</span> </span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">individual_search</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">npi</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/lst.html">lst</a></span><span class="op">(</span></span>
+<span>    nppes        <span class="op">=</span> <span class="fu">provider</span><span class="fu">::</span><span class="fu"><a href="https://andrewallenbruce.github.io/provider/reference/nppes.html">nppes</a></span><span class="op">(</span>npi <span class="op">=</span> <span class="va">npi</span><span class="op">)</span>,</span>
+<span>    enrollment   <span class="op">=</span> <span class="fu">provider</span><span class="fu">::</span><span class="fu"><a href="https://andrewallenbruce.github.io/provider/reference/providers.html">providers</a></span><span class="op">(</span>npi <span class="op">=</span> <span class="va">npi</span><span class="op">)</span>,</span>
+<span>    order_refer  <span class="op">=</span> <span class="fu">provider</span><span class="fu">::</span><span class="fu"><a href="https://andrewallenbruce.github.io/provider/reference/order_refer.html">order_refer</a></span><span class="op">(</span>npi <span class="op">=</span> <span class="va">npi</span>, pivot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
+<span>    reassignment <span class="op">=</span> <span class="fu">provider</span><span class="fu">::</span><span class="fu"><a href="https://andrewallenbruce.github.io/provider/reference/reassignments.html">reassignments</a></span><span class="op">(</span>npi <span class="op">=</span> <span class="va">npi</span><span class="op">)</span>,</span>
+<span>    clinician    <span class="op">=</span> <span class="fu">provider</span><span class="fu">::</span><span class="fu"><a href="https://andrewallenbruce.github.io/provider/reference/clinicians.html">clinicians</a></span><span class="op">(</span>npi <span class="op">=</span> <span class="va">npi</span><span class="op">)</span>,</span>
+<span>    affiliations <span class="op">=</span> <span class="fu">provider</span><span class="fu">::</span><span class="fu"><a href="https://andrewallenbruce.github.io/provider/reference/affiliations.html">affiliations</a></span><span class="op">(</span>npi <span class="op">=</span> <span class="va">npi</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>      <span class="va">_</span><span class="op">[[</span><span class="st">"facility_ccn"</span><span class="op">]</span><span class="op">]</span> <span class="op">|&gt;</span> </span>
+<span>      <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map_dfr.html">map_dfr</a></span><span class="op">(</span>\<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">provider</span><span class="fu">::</span><span class="fu"><a href="https://andrewallenbruce.github.io/provider/reference/hospitals.html">hospitals</a></span><span class="op">(</span>facility_ccn <span class="op">=</span> <span class="va">x</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>      <span class="fu">funique</span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    taxonomy <span class="op">=</span> <span class="fu">handle_na</span><span class="op">(</span><span class="fu">sbt</span><span class="op">(</span></span>
+<span>        <span class="fu">arktax</span><span class="fu">::</span><span class="fu"><a href="https://andrewallenbruce.github.io/arktax/reference/taxonomy_raw.html">taxonomy_raw</a></span><span class="op">(</span>taxonomy_code <span class="op">=</span> <span class="va">nppes</span><span class="op">$</span><span class="va">tx_code</span><span class="op">)</span>, </span>
+<span>        <span class="va">year</span> <span class="op">==</span> <span class="fu">fmax</span><span class="op">(</span><span class="va">year</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">version</span> <span class="op">==</span> <span class="fu">fmax</span><span class="op">(</span><span class="va">version</span><span class="op">)</span><span class="op">)</span></span>
+<span>      <span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">individual_search</span><span class="op">(</span>npi <span class="op">=</span> <span class="fl">1043245657</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">x</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">purse</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>- $nppes       $npi                   c1  1043245657                        ...
 - $nppes       $entity_type           f1  Individual                        ...
@@ -517,66 +484,64 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dm)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>xdm <span class="ot">&lt;-</span> <span class="fu">new_dm</span>(x) <span class="sc">|&gt;</span> </span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_pk</span>(nppes, npi) <span class="sc">|&gt;</span> </span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_pk</span>(enrollment, npi) <span class="sc">|&gt;</span> </span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_pk</span>(reassignment, npi) <span class="sc">|&gt;</span> </span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_pk</span>(order_refer, npi) <span class="sc">|&gt;</span> </span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_pk</span>(clinician, npi) <span class="sc">|&gt;</span> </span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_pk</span>(affiliations, facility_ccn) <span class="sc">|&gt;</span> </span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># dm_add_pk(hospitals, facility_ccn) |&gt; </span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_pk</span>(taxonomy, code) <span class="sc">|&gt;</span> </span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_fk</span>(nppes, npi, enrollment) <span class="sc">|&gt;</span> </span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_fk</span>(nppes, tx_code, taxonomy, code) <span class="sc">|&gt;</span> </span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># dm_add_fk(nppes, npi, affiliations, npi) |&gt; </span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_fk</span>(enrollment, npi, clinician) <span class="sc">|&gt;</span> </span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_fk</span>(enrollment, npi, order_refer) <span class="sc">|&gt;</span> </span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_fk</span>(order_refer, npi, reassignment) <span class="sc">|&gt;</span> </span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># dm_add_fk(clinician, npi, affiliations, npi) |&gt; </span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_fk</span>(clinician, pac_org, affiliations, pac_org) <span class="sc">|&gt;</span> </span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_fk</span>(reassignment, pac_org, affiliations, pac_org) <span class="sc">|&gt;</span> </span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_fk</span>(affiliations, facility_ccn, affiliations)</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>xdm <span class="sc">|&gt;</span> </span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_set_colors</span>(</span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">darkblue =</span> nppes,</span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">tomato =</span> taxonomy,</span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">mediumpurple =</span> <span class="fu">c</span>(enrollment, order_refer, reassignment),</span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">seagreen =</span> <span class="fu">c</span>(clinician, affiliations)) <span class="sc">|&gt;</span> </span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_draw</span>(</span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">font_size =</span> <span class="fu">c</span>(</span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>      <span class="at">header =</span> <span class="dv">18</span>L, </span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>      <span class="at">table_description =</span> <span class="dv">9</span>L, </span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>      <span class="at">column =</span> <span class="dv">15</span>L),</span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">column_types =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">rankdir =</span> <span class="st">"TB"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dm.cynkra.com/">dm</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">xdm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dm.cynkra.com/reference/dm.html">new_dm</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dm.cynkra.com/reference/dm_add_pk.html">dm_add_pk</a></span><span class="op">(</span><span class="va">nppes</span>, <span class="va">npi</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dm.cynkra.com/reference/dm_add_pk.html">dm_add_pk</a></span><span class="op">(</span><span class="va">enrollment</span>, <span class="va">npi</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dm.cynkra.com/reference/dm_add_pk.html">dm_add_pk</a></span><span class="op">(</span><span class="va">reassignment</span>, <span class="va">npi</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dm.cynkra.com/reference/dm_add_pk.html">dm_add_pk</a></span><span class="op">(</span><span class="va">order_refer</span>, <span class="va">npi</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dm.cynkra.com/reference/dm_add_pk.html">dm_add_pk</a></span><span class="op">(</span><span class="va">clinician</span>, <span class="va">npi</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dm.cynkra.com/reference/dm_add_pk.html">dm_add_pk</a></span><span class="op">(</span><span class="va">affiliations</span>, <span class="va">facility_ccn</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="co"># dm_add_pk(hospitals, facility_ccn) |&gt; </span></span>
+<span>  <span class="fu"><a href="https://dm.cynkra.com/reference/dm_add_pk.html">dm_add_pk</a></span><span class="op">(</span><span class="va">taxonomy</span>, <span class="va">code</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dm.cynkra.com/reference/dm_add_fk.html">dm_add_fk</a></span><span class="op">(</span><span class="va">nppes</span>, <span class="va">npi</span>, <span class="va">enrollment</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dm.cynkra.com/reference/dm_add_fk.html">dm_add_fk</a></span><span class="op">(</span><span class="va">nppes</span>, <span class="va">tx_code</span>, <span class="va">taxonomy</span>, <span class="va">code</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="co"># dm_add_fk(nppes, npi, affiliations, npi) |&gt; </span></span>
+<span>  <span class="fu"><a href="https://dm.cynkra.com/reference/dm_add_fk.html">dm_add_fk</a></span><span class="op">(</span><span class="va">enrollment</span>, <span class="va">npi</span>, <span class="va">clinician</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dm.cynkra.com/reference/dm_add_fk.html">dm_add_fk</a></span><span class="op">(</span><span class="va">enrollment</span>, <span class="va">npi</span>, <span class="va">order_refer</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dm.cynkra.com/reference/dm_add_fk.html">dm_add_fk</a></span><span class="op">(</span><span class="va">order_refer</span>, <span class="va">npi</span>, <span class="va">reassignment</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="co"># dm_add_fk(clinician, npi, affiliations, npi) |&gt; </span></span>
+<span>  <span class="fu"><a href="https://dm.cynkra.com/reference/dm_add_fk.html">dm_add_fk</a></span><span class="op">(</span><span class="va">clinician</span>, <span class="va">pac_org</span>, <span class="va">affiliations</span>, <span class="va">pac_org</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dm.cynkra.com/reference/dm_add_fk.html">dm_add_fk</a></span><span class="op">(</span><span class="va">reassignment</span>, <span class="va">pac_org</span>, <span class="va">affiliations</span>, <span class="va">pac_org</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dm.cynkra.com/reference/dm_add_fk.html">dm_add_fk</a></span><span class="op">(</span><span class="va">affiliations</span>, <span class="va">facility_ccn</span>, <span class="va">affiliations</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">xdm</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dm.cynkra.com/reference/dm_set_colors.html">dm_set_colors</a></span><span class="op">(</span></span>
+<span>    darkblue <span class="op">=</span> <span class="va">nppes</span>,</span>
+<span>    tomato <span class="op">=</span> <span class="va">taxonomy</span>,</span>
+<span>    mediumpurple <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">enrollment</span>, <span class="va">order_refer</span>, <span class="va">reassignment</span><span class="op">)</span>,</span>
+<span>    seagreen <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">clinician</span>, <span class="va">affiliations</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dm.cynkra.com/reference/dm_draw.html">dm_draw</a></span><span class="op">(</span></span>
+<span>    font_size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span></span>
+<span>      header <span class="op">=</span> <span class="fl">18L</span>, </span>
+<span>      table_description <span class="op">=</span> <span class="fl">9L</span>, </span>
+<span>      column <span class="op">=</span> <span class="fl">15L</span><span class="op">)</span>,</span>
+<span>    column_types <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>    rankdir <span class="op">=</span> <span class="st">"TB"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="grViz html-widget html-fill-item" id="htmlwidget-8805915874df100a754d" style="width:100%;height:464px;"></div>
 <script type="application/json" data-for="htmlwidget-8805915874df100a754d">{"x":{"diagram":"#data_model\ndigraph {\ngraph [rankdir=TB tooltip=\"Data Model\" ]\n\nnode [margin=0 fontcolor = \"#444444\" ]\n\nedge [color = \"#555555\", arrowsize = 1, ]\n\npack=true\npackmode= \"node\"\n\n  \"affiliations\" [id = \"affiliations\", label = <<TABLE ALIGN=\"LEFT\" BORDER=\"1\" CELLBORDER=\"0\" CELLSPACING=\"0\" COLOR=\"#1E5C3AAA\">\n    <TR>\n      <TD COLSPAN=\"2\" BGCOLOR=\"#2E8B57FF\" BORDER=\"0\"><FONT COLOR=\"#FFFFFF\" POINT-SIZE=\"18\">affiliations<\/FONT>\n<\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#D5E7DDFF\" PORT=\"pac_org\"><FONT POINT-SIZE=\"15\"><I>pac_org<\/I><\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#D5E7DDFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#D5E7DDFF\" PORT=\"facility_ccn\"><FONT POINT-SIZE=\"15\"><U>facility_ccn<\/U><\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#D5E7DDFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n  <\/TABLE>>, shape = \"plaintext\"] \n\n  \"clinician\" [id = \"clinician\", label = <<TABLE ALIGN=\"LEFT\" BORDER=\"1\" CELLBORDER=\"0\" CELLSPACING=\"0\" COLOR=\"#1E5C3AAA\">\n    <TR>\n      <TD COLSPAN=\"2\" BGCOLOR=\"#2E8B57FF\" BORDER=\"0\"><FONT COLOR=\"#FFFFFF\" POINT-SIZE=\"18\">clinician<\/FONT>\n<\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#D5E7DDFF\" PORT=\"npi\"><FONT POINT-SIZE=\"15\"><U>npi<\/U><\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#D5E7DDFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#D5E7DDFF\" PORT=\"pac_org\"><FONT POINT-SIZE=\"15\">pac_org<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#D5E7DDFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n  <\/TABLE>>, shape = \"plaintext\"] \n\n  \"enrollment\" [id = \"enrollment\", label = <<TABLE ALIGN=\"LEFT\" BORDER=\"1\" CELLBORDER=\"0\" CELLSPACING=\"0\" COLOR=\"#624A92AA\">\n    <TR>\n      <TD COLSPAN=\"2\" BGCOLOR=\"#9370DBFF\" BORDER=\"0\"><FONT COLOR=\"#FFFFFF\" POINT-SIZE=\"18\">enrollment<\/FONT>\n<\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#E9E2F7FF\" PORT=\"npi\"><FONT POINT-SIZE=\"15\"><U>npi<\/U><\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#E9E2F7FF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n  <\/TABLE>>, shape = \"plaintext\"] \n\n  \"nppes\" [id = \"nppes\", label = <<TABLE ALIGN=\"LEFT\" BORDER=\"1\" CELLBORDER=\"0\" CELLSPACING=\"0\" COLOR=\"#00005CAA\">\n    <TR>\n      <TD COLSPAN=\"2\" BGCOLOR=\"#00008BFF\" BORDER=\"0\"><FONT COLOR=\"#FFFFFF\" POINT-SIZE=\"18\">nppes<\/FONT>\n<\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#CCCCE7FF\" PORT=\"npi\"><FONT POINT-SIZE=\"15\"><U>npi<\/U><\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#CCCCE7FF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#CCCCE7FF\" PORT=\"tx_code\"><FONT POINT-SIZE=\"15\">tx_code<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#CCCCE7FF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n  <\/TABLE>>, shape = \"plaintext\"] \n\n  \"order_refer\" [id = \"order_refer\", label = <<TABLE ALIGN=\"LEFT\" BORDER=\"1\" CELLBORDER=\"0\" CELLSPACING=\"0\" COLOR=\"#624A92AA\">\n    <TR>\n      <TD COLSPAN=\"2\" BGCOLOR=\"#9370DBFF\" BORDER=\"0\"><FONT COLOR=\"#FFFFFF\" POINT-SIZE=\"18\">order_refer<\/FONT>\n<\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#E9E2F7FF\" PORT=\"npi\"><FONT POINT-SIZE=\"15\"><U>npi<\/U><\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#E9E2F7FF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n  <\/TABLE>>, shape = \"plaintext\"] \n\n  \"reassignment\" [id = \"reassignment\", label = <<TABLE ALIGN=\"LEFT\" BORDER=\"1\" CELLBORDER=\"0\" CELLSPACING=\"0\" COLOR=\"#624A92AA\">\n    <TR>\n      <TD COLSPAN=\"2\" BGCOLOR=\"#9370DBFF\" BORDER=\"0\"><FONT COLOR=\"#FFFFFF\" POINT-SIZE=\"18\">reassignment<\/FONT>\n<\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#E9E2F7FF\" PORT=\"npi\"><FONT POINT-SIZE=\"15\"><U>npi<\/U><\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#E9E2F7FF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#E9E2F7FF\" PORT=\"pac_org\"><FONT POINT-SIZE=\"15\">pac_org<\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#E9E2F7FF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n  <\/TABLE>>, shape = \"plaintext\"] \n\n  \"taxonomy\" [id = \"taxonomy\", label = <<TABLE ALIGN=\"LEFT\" BORDER=\"1\" CELLBORDER=\"0\" CELLSPACING=\"0\" COLOR=\"#AA422FAA\">\n    <TR>\n      <TD COLSPAN=\"2\" BGCOLOR=\"#FF6347FF\" BORDER=\"0\"><FONT COLOR=\"#FFFFFF\" POINT-SIZE=\"18\">taxonomy<\/FONT>\n<\/TD>\n    <\/TR>\n    <TR>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFDFDAFF\" PORT=\"code\"><FONT POINT-SIZE=\"15\"><U>code<\/U><\/FONT><\/TD>\n      <TD ALIGN=\"LEFT\" BGCOLOR=\"#FFDFDAFF\"><FONT POINT-SIZE=\"15\">chr<\/FONT><\/TD>\n    <\/TR>\n  <\/TABLE>>, shape = \"plaintext\"] \n\n\"nppes\":\"npi\"->\"enrollment\":\"npi\" [id=\"nppes_1\"]\n\"enrollment\":\"npi\"->\"order_refer\":\"npi\" [id=\"enrollment_1\"]\n\"order_refer\":\"npi\"->\"reassignment\":\"npi\" [id=\"order_refer_1\"]\n\"enrollment\":\"npi\"->\"clinician\":\"npi\" [id=\"enrollment_2\"]\n\"clinician\":\"pac_org\"->\"affiliations\":\"pac_org\" [id=\"clinician_1\", style=\"dashed\"]\n\"reassignment\":\"pac_org\"->\"affiliations\":\"pac_org\" [id=\"reassignment_1\", style=\"dashed\"]\n\"affiliations\":\"facility_ccn\"->\"affiliations\":\"facility_ccn\" [id=\"affiliations_1\"]\n\"nppes\":\"tx_code\"->\"taxonomy\":\"code\" [id=\"nppes_2\"]\n}","config":{"engine":null,"options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
-</section>
-<section id="organizational-provider" class="level3" data-number="14.0.2">
-<h3 data-number="14.0.2" class="anchored" data-anchor-id="organizational-provider"><span class="header-section-number">14.0.2</span> Organizational Provider</h3>
+</section><section id="organizational-provider" class="level3"><h3 class="anchored" data-anchor-id="organizational-provider">Organizational Provider</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>organizational_search <span class="ot">&lt;-</span> \(org) {</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">lst</span>(</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">hospitals    =</span> provider<span class="sc">::</span><span class="fu">hospitals</span>(<span class="at">organization =</span> org),</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">affiliations =</span> purrr<span class="sc">::</span><span class="fu">map_dfr</span>(</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">uniq_narm</span>(hospitals<span class="sc">$</span>facility_ccn),</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>      \(x) provider<span class="sc">::</span><span class="fu">affiliations</span>(<span class="at">facility_ccn =</span> x)) <span class="sc">|&gt;</span> </span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">handle_na</span>() <span class="co">#,</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># providers = purrr::map_dfr(</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">#   uniq_narm(affiliations$npi),</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">#   \(x) provider::providers(npi = x)) |&gt; </span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">#   handle_na()</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="fu">organizational_search</span>(<span class="at">org =</span> <span class="st">"Elizabethtown Community Hospital"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">organizational_search</span> <span class="op">&lt;-</span> \<span class="op">(</span><span class="va">org</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/lst.html">lst</a></span><span class="op">(</span></span>
+<span>    hospitals    <span class="op">=</span> <span class="fu">provider</span><span class="fu">::</span><span class="fu"><a href="https://andrewallenbruce.github.io/provider/reference/hospitals.html">hospitals</a></span><span class="op">(</span>organization <span class="op">=</span> <span class="va">org</span><span class="op">)</span>,</span>
+<span>    affiliations <span class="op">=</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map_dfr.html">map_dfr</a></span><span class="op">(</span></span>
+<span>      <span class="fu">uniq_narm</span><span class="op">(</span><span class="va">hospitals</span><span class="op">$</span><span class="va">facility_ccn</span><span class="op">)</span>,</span>
+<span>      \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">provider</span><span class="fu">::</span><span class="fu"><a href="https://andrewallenbruce.github.io/provider/reference/affiliations.html">affiliations</a></span><span class="op">(</span>facility_ccn <span class="op">=</span> <span class="va">x</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>      <span class="fu">handle_na</span><span class="op">(</span><span class="op">)</span> <span class="co">#,</span></span>
+<span>    <span class="co"># providers = purrr::map_dfr(</span></span>
+<span>    <span class="co">#   uniq_narm(affiliations$npi),</span></span>
+<span>    <span class="co">#   \(x) provider::providers(npi = x)) |&gt; </span></span>
+<span>    <span class="co">#   handle_na()</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu">organizational_search</span><span class="op">(</span>org <span class="op">=</span> <span class="st">"Elizabethtown Community Hospital"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">purse</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>- $hospitals   $npi_org        c2  1891785184                               ...
 - $hospitals   $pac_org        c2  3577554138                               ...
@@ -611,10 +576,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 
 
-</section>
+<!-- -->
 
-</main> <!-- /main -->
-<script id="quarto-html-after-body" type="application/javascript">
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -701,6 +665,57 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       container: window.document.getElementById('quarto-embedded-source-code-modal')
     });
     clipboardModal.on('success', onCopySuccess);
+  }
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
@@ -1030,9 +1045,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>
-<nav class="page-navigation">
-  <div class="nav-page nav-page-previous">
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
       <a href="./wk_download.html" class="pagination-link" aria-label="Downloads">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Downloads</span></span>
       </a>          
@@ -1042,9 +1055,106 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title"><code>affiliations</code></span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
-</nav>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb6" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Comprehensive Search {#sec-compsearch}</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup-common-01</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"includes/_common.R"</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="fu">### Individual Provider</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: individual_search</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>individual_search <span class="ot">&lt;-</span> <span class="cf">function</span>(npi) {</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">lst</span>(</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">nppes        =</span> provider<span class="sc">::</span><span class="fu">nppes</span>(<span class="at">npi =</span> npi),</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">enrollment   =</span> provider<span class="sc">::</span><span class="fu">providers</span>(<span class="at">npi =</span> npi),</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">order_refer  =</span> provider<span class="sc">::</span><span class="fu">order_refer</span>(<span class="at">npi =</span> npi, <span class="at">pivot =</span> <span class="cn">FALSE</span>),</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">reassignment =</span> provider<span class="sc">::</span><span class="fu">reassignments</span>(<span class="at">npi =</span> npi),</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">clinician    =</span> provider<span class="sc">::</span><span class="fu">clinicians</span>(<span class="at">npi =</span> npi),</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">affiliations =</span> provider<span class="sc">::</span><span class="fu">affiliations</span>(<span class="at">npi =</span> npi) <span class="sc">|&gt;</span> </span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>      _[[<span class="st">"facility_ccn"</span>]] <span class="sc">|&gt;</span> </span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>      purrr<span class="sc">::</span><span class="fu">map_dfr</span>(\(x) provider<span class="sc">::</span><span class="fu">hospitals</span>(<span class="at">facility_ccn =</span> x)) <span class="sc">|&gt;</span> </span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>      <span class="fu">funique</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>)),</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">taxonomy =</span> <span class="fu">handle_na</span>(<span class="fu">sbt</span>(</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>        arktax<span class="sc">::</span><span class="fu">taxonomy_raw</span>(<span class="at">taxonomy_code =</span> nppes<span class="sc">$</span>tx_code), </span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>        year <span class="sc">==</span> <span class="fu">fmax</span>(year) <span class="sc">&amp;</span> version <span class="sc">==</span> <span class="fu">fmax</span>(version))</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>      ))</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">individual_search</span>(<span class="at">npi =</span> <span class="dv">1043245657</span>)</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>x <span class="sc">|&gt;</span> </span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dm)</span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>xdm <span class="ot">&lt;-</span> <span class="fu">new_dm</span>(x) <span class="sc">|&gt;</span> </span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_pk</span>(nppes, npi) <span class="sc">|&gt;</span> </span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_pk</span>(enrollment, npi) <span class="sc">|&gt;</span> </span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_pk</span>(reassignment, npi) <span class="sc">|&gt;</span> </span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_pk</span>(order_refer, npi) <span class="sc">|&gt;</span> </span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_pk</span>(clinician, npi) <span class="sc">|&gt;</span> </span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_pk</span>(affiliations, facility_ccn) <span class="sc">|&gt;</span> </span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>  <span class="co"># dm_add_pk(hospitals, facility_ccn) |&gt; </span></span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_pk</span>(taxonomy, code) <span class="sc">|&gt;</span> </span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_fk</span>(nppes, npi, enrollment) <span class="sc">|&gt;</span> </span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_fk</span>(nppes, tx_code, taxonomy, code) <span class="sc">|&gt;</span> </span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>  <span class="co"># dm_add_fk(nppes, npi, affiliations, npi) |&gt; </span></span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_fk</span>(enrollment, npi, clinician) <span class="sc">|&gt;</span> </span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_fk</span>(enrollment, npi, order_refer) <span class="sc">|&gt;</span> </span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_fk</span>(order_refer, npi, reassignment) <span class="sc">|&gt;</span> </span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>  <span class="co"># dm_add_fk(clinician, npi, affiliations, npi) |&gt; </span></span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_fk</span>(clinician, pac_org, affiliations, pac_org) <span class="sc">|&gt;</span> </span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_fk</span>(reassignment, pac_org, affiliations, pac_org) <span class="sc">|&gt;</span> </span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_add_fk</span>(affiliations, facility_ccn, affiliations)</span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a>xdm <span class="sc">|&gt;</span> </span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_set_colors</span>(</span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a>    <span class="at">darkblue =</span> nppes,</span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a>    <span class="at">tomato =</span> taxonomy,</span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a>    <span class="at">mediumpurple =</span> <span class="fu">c</span>(enrollment, order_refer, reassignment),</span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a>    <span class="at">seagreen =</span> <span class="fu">c</span>(clinician, affiliations)) <span class="sc">|&gt;</span> </span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a>  <span class="fu">dm_draw</span>(</span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>    <span class="at">font_size =</span> <span class="fu">c</span>(</span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a>      <span class="at">header =</span> <span class="dv">18</span>L, </span>
+<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a>      <span class="at">table_description =</span> <span class="dv">9</span>L, </span>
+<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a>      <span class="at">column =</span> <span class="dv">15</span>L),</span>
+<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a>    <span class="at">column_types =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a>    <span class="at">rankdir =</span> <span class="st">"TB"</span>)</span>
+<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a><span class="fu">### Organizational Provider</span></span>
+<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: organizational_search</span></span>
+<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a>organizational_search <span class="ot">&lt;-</span> \(org) {</span>
+<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">lst</span>(</span>
+<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a>    <span class="at">hospitals    =</span> provider<span class="sc">::</span><span class="fu">hospitals</span>(<span class="at">organization =</span> org),</span>
+<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a>    <span class="at">affiliations =</span> purrr<span class="sc">::</span><span class="fu">map_dfr</span>(</span>
+<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a>      <span class="fu">uniq_narm</span>(hospitals<span class="sc">$</span>facility_ccn),</span>
+<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a>      \(x) provider<span class="sc">::</span><span class="fu">affiliations</span>(<span class="at">facility_ccn =</span> x)) <span class="sc">|&gt;</span> </span>
+<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a>      <span class="fu">handle_na</span>() <span class="co">#,</span></span>
+<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a>    <span class="co"># providers = purrr::map_dfr(</span></span>
+<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a>    <span class="co">#   uniq_narm(affiliations$npi),</span></span>
+<span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a>    <span class="co">#   \(x) provider::providers(npi = x)) |&gt; </span></span>
+<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a>    <span class="co">#   handle_na()</span></span>
+<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a><span class="fu">organizational_search</span>(<span class="at">org =</span> <span class="st">"Elizabethtown Community Hospital"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span>
+<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
 </div> <!-- /content -->
-
 
 
 

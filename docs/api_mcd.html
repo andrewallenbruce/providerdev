@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.7.14">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
 <meta name="description" content="This is a personal, informal guide to rewriting an R package. It is a work in progress and will be updated as I learn more about the process.">
-
 <title>4&nbsp; Medicaid – Refactoring Provider</title>
 <style>
 code{white-space: pre-wrap;}
@@ -57,9 +54,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
-
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
 <script src="site_libs/quarto-search/fuse.min.js"></script>
@@ -73,11 +68,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-5593775d84e4d2a8ea12ac38bba8f48d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-6c7643998826233573c41560c556b328.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-2c34dd33a6f7ed8a94e2f4b60f66364e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
-<script id="quarto-search-options" type="application/json">{
+<link href="site_libs/bootstrap/bootstrap-c325f46859a2c93c0c7b3ce9213fe84b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
@@ -103,18 +97,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script>
-<style>html{ scroll-behavior: smooth; }</style>
-
-
+}</script><style>html{ scroll-behavior: smooth; }</style>
 </head>
-
 <body class="nav-sidebar floating">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav">
-    <div class="container-fluid d-flex">
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
@@ -125,13 +113,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <i class="bi bi-search"></i>
       </button>
     </div>
-  </nav>
-</header>
-<!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Refactoring Provider</a> 
         <div class="sidebar-tools-main">
@@ -151,7 +135,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
-        <li class="sidebar-item">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Preface</span></a>
@@ -171,8 +155,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./api_main.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Main</span></span></a>
@@ -221,7 +205,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
@@ -230,8 +214,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./wk_backend.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Backend</span></span></a>
@@ -268,7 +252,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
@@ -277,8 +261,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./end_affiliations.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title"><code>affiliations</code></span></span></a>
@@ -291,7 +275,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
@@ -300,15 +284,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./demo_geo.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Geospatial</span></span></a>
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
@@ -317,42 +301,36 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./faq_syntax.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">JSON:API Syntax</span></span></a>
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">JSON:API Syntax</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./faq_schema.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">DCAT Metadata Schema</span></span></a>
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">DCAT Metadata Schema</span></span></a>
   </div>
 </li>
       </ul>
-  </li>
+</li>
     </ul>
-    </div>
-</nav>
-<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#links" id="toc-links" class="nav-link active" data-scroll-target="#links"><span class="header-section-number">4.1</span> Links</a></li>
-  <li><a href="#load-catalog" id="toc-load-catalog" class="nav-link" data-scroll-target="#load-catalog"><span class="header-section-number">4.2</span> Load Catalog</a></li>
-  </ul>
-<div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li><li><a href="https://github.com/andrewallenbruce/providertwo"><i class="bi bi-file-code"></i>providertwo</a></li></ul></div></nav>
+<li><a href="#links" id="toc-links" class="nav-link active" data-scroll-target="#links">Links</a></li>
+  <li><a href="#load-catalog" id="toc-load-catalog" class="nav-link" data-scroll-target="#load-catalog">Load Catalog</a></li>
+  </ul><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li><li><a href="https://github.com/andrewallenbruce/providertwo"><i class="bi bi-file-code"></i>providertwo</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./api_main.html">APIs</a></li><li class="breadcrumb-item"><a href="./api_mcd.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Medicaid</span></a></li></ol></nav>
-<div class="quarto-title">
-<h1 class="title"><span id="sec-mcdapi" class="quarto-section-identifier"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Medicaid</span></span></h1>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./api_main.html">APIs</a></li><li class="breadcrumb-item"><a href="./api_mcd.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Medicaid</span></a></li></ol></nav><div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title"><span id="sec-mcdapi" class="quarto-section-identifier"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Medicaid</span></span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i></button></div></div>
 </div>
 
 
@@ -366,89 +344,83 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
 
 
-</header>
-
-
-<section id="links" class="level2" data-number="4.1">
-<h2 data-number="4.1" class="anchored" data-anchor-id="links"><span class="header-section-number">4.1</span> Links</h2>
+</header><section id="links" class="level2"><h2 class="anchored" data-anchor-id="links">Links</h2>
 <ul>
 <li><a href="https://data.medicaid.gov/about/api">Medicaid.gov API</a></li>
-<li>Limit: <code>8000L</code></li>
-</ul>
-</section>
-<section id="load-catalog" class="level2" data-number="4.2">
-<h2 data-number="4.2" class="anchored" data-anchor-id="load-catalog"><span class="header-section-number">4.2</span> Load Catalog</h2>
+<li>Limit: <code>8000L</code>
+</li>
+</ul></section><section id="load-catalog" class="level2"><h2 class="anchored" data-anchor-id="load-catalog">Load Catalog</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>join_title <span class="ot">&lt;-</span> \(a, b) <span class="fu">join</span>(<span class="at">x =</span> a, <span class="at">y =</span> b, <span class="at">on =</span> <span class="st">"title"</span>, <span class="at">verbose =</span> <span class="dv">0</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>make_join_col <span class="ot">&lt;-</span> \(x, col) {</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na_if</span>(<span class="fu">flatten_column</span>(<span class="fu">map</span>(x[[<span class="fu">ensym</span>(col)]], \(x) <span class="fu">get_elem</span>(<span class="fu">as.list</span>(x), <span class="st">"data"</span>))), <span class="st">""</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>dict_title <span class="ot">&lt;-</span> \(x) {</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">perform_simple</span>(<span class="fu">request</span>(x)) <span class="sc">|&gt;</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    _[[<span class="st">"data"</span>]] <span class="sc">|&gt;</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    _[[<span class="st">"title"</span>]]</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">join_title</span> <span class="op">&lt;-</span> \<span class="op">(</span><span class="va">a</span>, <span class="va">b</span><span class="op">)</span> <span class="fu">join</span><span class="op">(</span>x <span class="op">=</span> <span class="va">a</span>, y <span class="op">=</span> <span class="va">b</span>, on <span class="op">=</span> <span class="st">"title"</span>, verbose <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">make_join_col</span> <span class="op">&lt;-</span> \<span class="op">(</span><span class="va">x</span>, <span class="va">col</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">na_if</span><span class="op">(</span><span class="fu">flatten_column</span><span class="op">(</span><span class="fu">map</span><span class="op">(</span><span class="va">x</span><span class="op">[[</span><span class="fu">ensym</span><span class="op">(</span><span class="va">col</span><span class="op">)</span><span class="op">]</span><span class="op">]</span>, \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">get_elem</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">as.list</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="st">"data"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="st">""</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">dict_title</span> <span class="op">&lt;-</span> \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">perform_simple</span><span class="op">(</span><span class="fu">request</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="va">_</span><span class="op">[[</span><span class="st">"data"</span><span class="op">]</span><span class="op">]</span> <span class="op">|&gt;</span></span>
+<span>    <span class="va">_</span><span class="op">[[</span><span class="st">"title"</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>catalog_mcd <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">fload</span>(<span class="st">"https://data.medicaid.gov/api/1/metastore/schemas/dataset/items?show-reference-ids"</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> x <span class="sc">|&gt;</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as_tbl</span>() <span class="sc">|&gt;</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mtt</span>(</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">modified    =</span> <span class="fu">as_date</span>(modified),</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">issued      =</span> <span class="fu">as_date</span>(issued),</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">periodicity =</span> <span class="fu">recode_iso8601</span>(accrualPeriodicity),</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">contact     =</span> <span class="fu">reduce_contact</span>(x<span class="sc">$</span>contactPoint)</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">slt</span>(</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>      title,</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>      identifier,</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>      description,</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>      periodicity,</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>      issued,</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>      modified,</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>      contact,</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>      theme,</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>      keyword,</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>      distribution,</span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>      temporal,</span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>      references</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>  groups <span class="ot">&lt;-</span> <span class="fu">new_df</span>(<span class="at">title =</span> x<span class="sc">$</span>title, <span class="at">group =</span> <span class="fu">make_join_col</span>(x, theme)) <span class="sc">|&gt;</span></span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sbt</span>(<span class="fu">not_na</span>(group) <span class="sc">&amp;</span> group <span class="sc">!=</span> <span class="st">"Uncategorized"</span>)</span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>  keys <span class="ot">&lt;-</span> <span class="fu">new_df</span>(<span class="at">title =</span> x<span class="sc">$</span>title, <span class="at">keyword =</span> <span class="fu">make_join_col</span>(x, keyword))</span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>  refs <span class="ot">&lt;-</span> <span class="fu">new_df</span>(<span class="at">title =</span> x<span class="sc">$</span>title,</span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>                 <span class="at">references =</span> <span class="fu">na_if</span>(<span class="fu">flatten_column</span>(x<span class="sc">$</span>references), <span class="st">"NA"</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sbt</span>(<span class="fu">not_na</span>(references) <span class="sc">&amp;</span> <span class="fu">stri_detect_regex</span>(references, <span class="st">"^https://www.mathematica.org/"</span>, <span class="at">negate =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(<span class="at">references =</span> <span class="fu">stri_replace_all_fixed</span>(references, <span class="st">", https://www.mathematica.org/"</span>, <span class="st">""</span>))</span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>  d <span class="ot">&lt;-</span> <span class="fu">rowbind</span>(x<span class="sc">$</span>distribution, <span class="at">fill =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>  tvec <span class="ot">&lt;-</span> vctrs<span class="sc">::</span><span class="fu">vec_rep_each</span>(x<span class="sc">$</span>title, <span class="fu">fnobs</span>(<span class="fu">get_elem</span>(x<span class="sc">$</span>distribution, <span class="st">"data"</span>, <span class="at">DF.as.list =</span> <span class="cn">TRUE</span>)))</span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>  download <span class="ot">&lt;-</span> <span class="fu">new_tbl</span>(<span class="at">title =</span> tvec, <span class="at">download =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(d<span class="sc">$</span>data, <span class="st">"downloadURL"</span>))) <span class="sc">|&gt;</span> <span class="fu">fcount</span>(title, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
-<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">sets       =</span> <span class="fu">reduce</span>(<span class="fu">list</span>(<span class="fu">slt</span>(x, <span class="sc">-</span>theme, <span class="sc">-</span>keyword, <span class="sc">-</span>references, <span class="sc">-</span>distribution), groups, keys, refs, <span class="fu">sbt</span>(download, N <span class="sc">==</span> <span class="dv">1</span>, <span class="sc">-</span>N)), join_title),</span>
-<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">download   =</span> <span class="fu">funique</span>(<span class="fu">sbt</span>(download, N <span class="sc">&gt;</span> <span class="dv">1</span>), <span class="at">cols =</span> <span class="st">"download"</span>),</span>
-<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">dictionary =</span> <span class="fu">new_tbl</span>(<span class="at">url =</span> <span class="fu">funique</span>(<span class="fu">delist</span>(<span class="fu">get_elem</span>(d<span class="sc">$</span>data, <span class="st">"describedBy"</span>)))) <span class="sc">|&gt;</span> </span>
-<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mtt</span>(<span class="at">identifier =</span> stringi<span class="sc">::</span><span class="fu">stri_extract</span>(url,</span>
-<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>      <span class="at">regex =</span> <span class="st">"(?:[0-9a-fA-F]){8}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){12}"</span>)) <span class="sc">|&gt;</span> </span>
-<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mtt</span>(<span class="at">title =</span> <span class="fu">map_chr</span>(url, \(x) <span class="fu">dict_title</span>(x))) <span class="sc">|&gt;</span> </span>
-<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>      <span class="fu">colorder</span>(title, identifier)</span>
-<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">catalog_mcd</span>()</span>
-<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">catalog_mcd</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
+<span></span>
+<span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">fload</span><span class="op">(</span><span class="st">"https://data.medicaid.gov/api/1/metastore/schemas/dataset/items?show-reference-ids"</span><span class="op">)</span></span>
+<span>    </span>
+<span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">as_tbl</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">mtt</span><span class="op">(</span></span>
+<span>      modified    <span class="op">=</span> <span class="fu">as_date</span><span class="op">(</span><span class="va">modified</span><span class="op">)</span>,</span>
+<span>      issued      <span class="op">=</span> <span class="fu">as_date</span><span class="op">(</span><span class="va">issued</span><span class="op">)</span>,</span>
+<span>      periodicity <span class="op">=</span> <span class="fu">recode_iso8601</span><span class="op">(</span><span class="va">accrualPeriodicity</span><span class="op">)</span>,</span>
+<span>      contact     <span class="op">=</span> <span class="fu">reduce_contact</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">contactPoint</span><span class="op">)</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">slt</span><span class="op">(</span></span>
+<span>      <span class="va">title</span>,</span>
+<span>      <span class="va">identifier</span>,</span>
+<span>      <span class="va">description</span>,</span>
+<span>      <span class="va">periodicity</span>,</span>
+<span>      <span class="va">issued</span>,</span>
+<span>      <span class="va">modified</span>,</span>
+<span>      <span class="va">contact</span>,</span>
+<span>      <span class="va">theme</span>,</span>
+<span>      <span class="va">keyword</span>,</span>
+<span>      <span class="va">distribution</span>,</span>
+<span>      <span class="va">temporal</span>,</span>
+<span>      <span class="va">references</span></span>
+<span>    <span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="va">groups</span> <span class="op">&lt;-</span> <span class="fu">new_df</span><span class="op">(</span>title <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">title</span>, group <span class="op">=</span> <span class="fu">make_join_col</span><span class="op">(</span><span class="va">x</span>, <span class="va">theme</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">sbt</span><span class="op">(</span><span class="fu">not_na</span><span class="op">(</span><span class="va">group</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">group</span> <span class="op">!=</span> <span class="st">"Uncategorized"</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="va">keys</span> <span class="op">&lt;-</span> <span class="fu">new_df</span><span class="op">(</span>title <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">title</span>, keyword <span class="op">=</span> <span class="fu">make_join_col</span><span class="op">(</span><span class="va">x</span>, <span class="va">keyword</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="va">refs</span> <span class="op">&lt;-</span> <span class="fu">new_df</span><span class="op">(</span>title <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">title</span>,</span>
+<span>                 references <span class="op">=</span> <span class="fu">na_if</span><span class="op">(</span><span class="fu">flatten_column</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">references</span><span class="op">)</span>, <span class="st">"NA"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">sbt</span><span class="op">(</span><span class="fu">not_na</span><span class="op">(</span><span class="va">references</span><span class="op">)</span> <span class="op">&amp;</span> <span class="fu">stri_detect_regex</span><span class="op">(</span><span class="va">references</span>, <span class="st">"^https://www.mathematica.org/"</span>, negate <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">mtt</span><span class="op">(</span>references <span class="op">=</span> <span class="fu">stri_replace_all_fixed</span><span class="op">(</span><span class="va">references</span>, <span class="st">", https://www.mathematica.org/"</span>, <span class="st">""</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="va">d</span> <span class="op">&lt;-</span> <span class="fu">rowbind</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">distribution</span>, fill <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="va">tvec</span> <span class="op">&lt;-</span> <span class="fu">vctrs</span><span class="fu">::</span><span class="fu"><a href="https://vctrs.r-lib.org/reference/vec-rep.html">vec_rep_each</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">title</span>, <span class="fu">fnobs</span><span class="op">(</span><span class="fu">get_elem</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">distribution</span>, <span class="st">"data"</span>, DF.as.list <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="va">download</span> <span class="op">&lt;-</span> <span class="fu">new_tbl</span><span class="op">(</span>title <span class="op">=</span> <span class="va">tvec</span>, download <span class="op">=</span> <span class="fu">delist</span><span class="op">(</span><span class="fu">get_elem</span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">data</span>, <span class="st">"downloadURL"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">fcount</span><span class="op">(</span><span class="va">title</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>    sets       <span class="op">=</span> <span class="fu">reduce</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu">slt</span><span class="op">(</span><span class="va">x</span>, <span class="op">-</span><span class="va">theme</span>, <span class="op">-</span><span class="va">keyword</span>, <span class="op">-</span><span class="va">references</span>, <span class="op">-</span><span class="va">distribution</span><span class="op">)</span>, <span class="va">groups</span>, <span class="va">keys</span>, <span class="va">refs</span>, <span class="fu">sbt</span><span class="op">(</span><span class="va">download</span>, <span class="va">N</span> <span class="op">==</span> <span class="fl">1</span>, <span class="op">-</span><span class="va">N</span><span class="op">)</span><span class="op">)</span>, <span class="va">join_title</span><span class="op">)</span>,</span>
+<span>    download   <span class="op">=</span> <span class="fu">funique</span><span class="op">(</span><span class="fu">sbt</span><span class="op">(</span><span class="va">download</span>, <span class="va">N</span> <span class="op">&gt;</span> <span class="fl">1</span><span class="op">)</span>, cols <span class="op">=</span> <span class="st">"download"</span><span class="op">)</span>,</span>
+<span>    dictionary <span class="op">=</span> <span class="fu">new_tbl</span><span class="op">(</span>url <span class="op">=</span> <span class="fu">funique</span><span class="op">(</span><span class="fu">delist</span><span class="op">(</span><span class="fu">get_elem</span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">data</span>, <span class="st">"describedBy"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>      <span class="fu">mtt</span><span class="op">(</span>identifier <span class="op">=</span> <span class="fu">stringi</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/stringi/man/stri_extract.html">stri_extract</a></span><span class="op">(</span><span class="va">url</span>,</span>
+<span>      regex <span class="op">=</span> <span class="st">"(?:[0-9a-fA-F]){8}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){12}"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>      <span class="fu">mtt</span><span class="op">(</span>title <span class="op">=</span> <span class="fu">map_chr</span><span class="op">(</span><span class="va">url</span>, \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">dict_title</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>      <span class="fu">colorder</span><span class="op">(</span><span class="va">title</span>, <span class="va">identifier</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">catalog_mcd</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">x</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$sets
 # A tibble: 483 × 12
@@ -502,37 +474,37 @@ $dictionary
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>mcd_url <span class="ot">&lt;-</span> <span class="cf">function</span>(uuid) {</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">"https://data.medicaid.gov/api/1/datastore/query/"</span>, uuid, <span class="st">"/0"</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>mcd_dims <span class="ot">&lt;-</span> <span class="cf">function</span>(uuid) {</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> uuid <span class="sc">|&gt;</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mcd_url</span>() <span class="sc">|&gt;</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">request</span>() <span class="sc">|&gt;</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">req_url_query</span>(</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">schema  =</span> <span class="st">"false"</span>,</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">keys    =</span> <span class="st">"false"</span>,</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">results =</span> <span class="st">"true"</span>,</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">count   =</span> <span class="st">"true"</span>,</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>      <span class="at">format  =</span> <span class="st">"json"</span>,</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">rowIds  =</span> <span class="st">"false"</span>,</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">limit   =</span> <span class="dv">1</span>,</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">offset  =</span> <span class="dv">0</span></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">perform_simple</span>()</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list_tidy</span>(</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">rows   =</span> x<span class="sc">$</span>count,</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">fields =</span> x<span class="sc">$</span>query<span class="sc">$</span>properties,</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">pages  =</span> <span class="fu">offset_length</span>(rows, <span class="dv">8000</span>L))</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>identifier <span class="ot">&lt;-</span> <span class="fu">sbt</span>(x<span class="sc">$</span>sets, title <span class="sc">==</span> <span class="st">"State Drug Utilization Data 2020"</span>) <span class="sc">|&gt;</span> _[[<span class="st">"identifier"</span>]]</span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a><span class="fu">mcd_dims</span>(identifier)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">mcd_url</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">uuid</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"https://data.medicaid.gov/api/1/datastore/query/"</span>, <span class="va">uuid</span>, <span class="st">"/0"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">mcd_dims</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">uuid</span><span class="op">)</span> <span class="op">{</span></span>
+<span></span>
+<span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="va">uuid</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">mcd_url</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">request</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">req_url_query</span><span class="op">(</span></span>
+<span>      schema  <span class="op">=</span> <span class="st">"false"</span>,</span>
+<span>      keys    <span class="op">=</span> <span class="st">"false"</span>,</span>
+<span>      results <span class="op">=</span> <span class="st">"true"</span>,</span>
+<span>      count   <span class="op">=</span> <span class="st">"true"</span>,</span>
+<span>      format  <span class="op">=</span> <span class="st">"json"</span>,</span>
+<span>      rowIds  <span class="op">=</span> <span class="st">"false"</span>,</span>
+<span>      limit   <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>      offset  <span class="op">=</span> <span class="fl">0</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">perform_simple</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="fu">list_tidy</span><span class="op">(</span></span>
+<span>    rows   <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">count</span>,</span>
+<span>    fields <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">query</span><span class="op">$</span><span class="va">properties</span>,</span>
+<span>    pages  <span class="op">=</span> <span class="fu">offset_length</span><span class="op">(</span><span class="va">rows</span>, <span class="fl">8000L</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">identifier</span> <span class="op">&lt;-</span> <span class="fu">sbt</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">sets</span>, <span class="va">title</span> <span class="op">==</span> <span class="st">"State Drug Utilization Data 2020"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="va">_</span><span class="op">[[</span><span class="st">"identifier"</span><span class="op">]</span><span class="op">]</span></span>
+<span></span>
+<span><span class="fu">mcd_dims</span><span class="op">(</span><span class="va">identifier</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$rows
 [1] 4917338
@@ -550,23 +522,23 @@ $fields
 $pages
 [1] 615</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mcd_url</span>(identifier) <span class="sc">|&gt;</span> </span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">request</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_query</span>(</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">limit =</span> <span class="dv">10</span>,</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">offset =</span> <span class="dv">0</span>,</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">count =</span> <span class="st">"true"</span>,</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">results =</span> <span class="st">"true"</span>,</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">schema =</span> <span class="st">"false"</span>,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">keys =</span> <span class="st">"true"</span>,</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">format =</span> <span class="st">"json"</span>,</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">rowIds =</span> <span class="st">"false"</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">perform_simple</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"results"</span>]] <span class="sc">|&gt;</span> </span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_na_if</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tbl</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">mcd_url</span><span class="op">(</span><span class="va">identifier</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">request</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">req_url_query</span><span class="op">(</span></span>
+<span>    limit <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>    offset <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>    count <span class="op">=</span> <span class="st">"true"</span>,</span>
+<span>    results <span class="op">=</span> <span class="st">"true"</span>,</span>
+<span>    schema <span class="op">=</span> <span class="st">"false"</span>,</span>
+<span>    keys <span class="op">=</span> <span class="st">"true"</span>,</span>
+<span>    format <span class="op">=</span> <span class="st">"json"</span>,</span>
+<span>    rowIds <span class="op">=</span> <span class="st">"false"</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">perform_simple</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="va">_</span><span class="op">[[</span><span class="st">"results"</span><span class="op">]</span><span class="op">]</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">map_na_if</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">as_tbl</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">purse</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>- $utilization_type               c10 FFSU        FFSU        FFSU        F ...
 - $state                          c10 AK          AK          AK          A ...
@@ -586,16 +558,16 @@ $pages
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> x<span class="sc">$</span>dictionary<span class="sc">$</span>url[[<span class="dv">1</span>]] <span class="sc">|&gt;</span> </span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">request</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">perform_simple</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"data"</span>]]</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="fu">new_tbl</span>(</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">fields =</span> ex<span class="sc">$</span>fields<span class="sc">$</span>name,</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">description =</span> <span class="fu">gsub</span>(<span class="st">"</span><span class="sc">\r\n</span><span class="st">"</span>, <span class="st">" "</span>, ex<span class="sc">$</span>fields<span class="sc">$</span>description)) <span class="sc">|&gt;</span> </span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_na_if</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ex</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">$</span><span class="va">dictionary</span><span class="op">$</span><span class="va">url</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">request</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">perform_simple</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="va">_</span><span class="op">[[</span><span class="st">"data"</span><span class="op">]</span><span class="op">]</span></span>
+<span></span>
+<span></span>
+<span><span class="fu">new_tbl</span><span class="op">(</span></span>
+<span>  fields <span class="op">=</span> <span class="va">ex</span><span class="op">$</span><span class="va">fields</span><span class="op">$</span><span class="va">name</span>,</span>
+<span>  description <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span><span class="op">(</span><span class="st">"\r\n"</span>, <span class="st">" "</span>, <span class="va">ex</span><span class="op">$</span><span class="va">fields</span><span class="op">$</span><span class="va">description</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">map_na_if</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 15 × 2
    fields                         description                                   
@@ -618,10 +590,10 @@ $pages
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>utils<span class="sc">::</span><span class="fu">formatOL</span>(</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  x<span class="sc">$</span>dictionary<span class="sc">$</span>title</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/format.html">formatOL</a></span><span class="op">(</span></span>
+<span>  <span class="va">x</span><span class="op">$</span><span class="va">dictionary</span><span class="op">$</span><span class="va">title</span></span>
+<span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/writeLines.html">writeLines</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> 1. State Drug Utilization Data Data Dictionary
  2. NADAC Data Dictionary
@@ -704,10 +676,10 @@ $pages
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>utils<span class="sc">::</span><span class="fu">formatOL</span>(</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  x<span class="sc">$</span>sets<span class="sc">$</span>title</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/format.html">formatOL</a></span><span class="op">(</span></span>
+<span>  <span class="va">x</span><span class="op">$</span><span class="va">sets</span><span class="op">$</span><span class="va">title</span></span>
+<span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/writeLines.html">writeLines</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  1. State Drug Utilization Data 1991
   2. State Drug Utilization Data 1992
@@ -1334,10 +1306,9 @@ $pages
 </div>
 
 
-</section>
+<!-- -->
 
-</main> <!-- /main -->
-<script id="quarto-html-after-body" type="application/javascript">
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -1424,6 +1395,57 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       container: window.document.getElementById('quarto-embedded-source-code-modal')
     });
     clipboardModal.on('success', onCopySuccess);
+  }
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
@@ -1753,9 +1775,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>
-<nav class="page-navigation">
-  <div class="nav-page nav-page-previous">
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
       <a href="./api_open.html" class="pagination-link" aria-label="Open Payments">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Open Payments</span></span>
       </a>          
@@ -1765,9 +1785,184 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">HealthCare.Gov</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
-</nav>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb14" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="an">output:</span><span class="co"> html_document</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co">  chunk_output_type: console</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="fu"># Medicaid {#sec-mcdapi}</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup-common-01</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"includes/_common.R"</span>)</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="fu">## Links</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="ss">   * </span><span class="co">[</span><span class="ot">Medicaid.gov API</span><span class="co">](https://data.medicaid.gov/about/api)</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="ss">   * </span>Limit: <span class="in">`8000L`</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="fu">## Load Catalog</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>join_title <span class="ot">&lt;-</span> \(a, b) <span class="fu">join</span>(<span class="at">x =</span> a, <span class="at">y =</span> b, <span class="at">on =</span> <span class="st">"title"</span>, <span class="at">verbose =</span> <span class="dv">0</span>)</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>make_join_col <span class="ot">&lt;-</span> \(x, col) {</span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na_if</span>(<span class="fu">flatten_column</span>(<span class="fu">map</span>(x[[<span class="fu">ensym</span>(col)]], \(x) <span class="fu">get_elem</span>(<span class="fu">as.list</span>(x), <span class="st">"data"</span>))), <span class="st">""</span>)</span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>dict_title <span class="ot">&lt;-</span> \(x) {</span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">perform_simple</span>(<span class="fu">request</span>(x)) <span class="sc">|&gt;</span></span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>    _[[<span class="st">"data"</span>]] <span class="sc">|&gt;</span></span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>    _[[<span class="st">"title"</span>]]</span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: mcd_catalog</span></span>
+<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a>catalog_mcd <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">fload</span>(<span class="st">"https://data.medicaid.gov/api/1/metastore/schemas/dataset/items?show-reference-ids"</span>)</span>
+<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> x <span class="sc">|&gt;</span></span>
+<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as_tbl</span>() <span class="sc">|&gt;</span></span>
+<span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mtt</span>(</span>
+<span id="cb14-51"><a href="#cb14-51" aria-hidden="true" tabindex="-1"></a>      <span class="at">modified    =</span> <span class="fu">as_date</span>(modified),</span>
+<span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a>      <span class="at">issued      =</span> <span class="fu">as_date</span>(issued),</span>
+<span id="cb14-53"><a href="#cb14-53" aria-hidden="true" tabindex="-1"></a>      <span class="at">periodicity =</span> <span class="fu">recode_iso8601</span>(accrualPeriodicity),</span>
+<span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a>      <span class="at">contact     =</span> <span class="fu">reduce_contact</span>(x<span class="sc">$</span>contactPoint)</span>
+<span id="cb14-55"><a href="#cb14-55" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb14-56"><a href="#cb14-56" aria-hidden="true" tabindex="-1"></a>    <span class="fu">slt</span>(</span>
+<span id="cb14-57"><a href="#cb14-57" aria-hidden="true" tabindex="-1"></a>      title,</span>
+<span id="cb14-58"><a href="#cb14-58" aria-hidden="true" tabindex="-1"></a>      identifier,</span>
+<span id="cb14-59"><a href="#cb14-59" aria-hidden="true" tabindex="-1"></a>      description,</span>
+<span id="cb14-60"><a href="#cb14-60" aria-hidden="true" tabindex="-1"></a>      periodicity,</span>
+<span id="cb14-61"><a href="#cb14-61" aria-hidden="true" tabindex="-1"></a>      issued,</span>
+<span id="cb14-62"><a href="#cb14-62" aria-hidden="true" tabindex="-1"></a>      modified,</span>
+<span id="cb14-63"><a href="#cb14-63" aria-hidden="true" tabindex="-1"></a>      contact,</span>
+<span id="cb14-64"><a href="#cb14-64" aria-hidden="true" tabindex="-1"></a>      theme,</span>
+<span id="cb14-65"><a href="#cb14-65" aria-hidden="true" tabindex="-1"></a>      keyword,</span>
+<span id="cb14-66"><a href="#cb14-66" aria-hidden="true" tabindex="-1"></a>      distribution,</span>
+<span id="cb14-67"><a href="#cb14-67" aria-hidden="true" tabindex="-1"></a>      temporal,</span>
+<span id="cb14-68"><a href="#cb14-68" aria-hidden="true" tabindex="-1"></a>      references</span>
+<span id="cb14-69"><a href="#cb14-69" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb14-70"><a href="#cb14-70" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-71"><a href="#cb14-71" aria-hidden="true" tabindex="-1"></a>  groups <span class="ot">&lt;-</span> <span class="fu">new_df</span>(<span class="at">title =</span> x<span class="sc">$</span>title, <span class="at">group =</span> <span class="fu">make_join_col</span>(x, theme)) <span class="sc">|&gt;</span></span>
+<span id="cb14-72"><a href="#cb14-72" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sbt</span>(<span class="fu">not_na</span>(group) <span class="sc">&amp;</span> group <span class="sc">!=</span> <span class="st">"Uncategorized"</span>)</span>
+<span id="cb14-73"><a href="#cb14-73" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-74"><a href="#cb14-74" aria-hidden="true" tabindex="-1"></a>  keys <span class="ot">&lt;-</span> <span class="fu">new_df</span>(<span class="at">title =</span> x<span class="sc">$</span>title, <span class="at">keyword =</span> <span class="fu">make_join_col</span>(x, keyword))</span>
+<span id="cb14-75"><a href="#cb14-75" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-76"><a href="#cb14-76" aria-hidden="true" tabindex="-1"></a>  refs <span class="ot">&lt;-</span> <span class="fu">new_df</span>(<span class="at">title =</span> x<span class="sc">$</span>title,</span>
+<span id="cb14-77"><a href="#cb14-77" aria-hidden="true" tabindex="-1"></a>                 <span class="at">references =</span> <span class="fu">na_if</span>(<span class="fu">flatten_column</span>(x<span class="sc">$</span>references), <span class="st">"NA"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb14-78"><a href="#cb14-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sbt</span>(<span class="fu">not_na</span>(references) <span class="sc">&amp;</span> <span class="fu">stri_detect_regex</span>(references, <span class="st">"^https://www.mathematica.org/"</span>, <span class="at">negate =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb14-79"><a href="#cb14-79" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(<span class="at">references =</span> <span class="fu">stri_replace_all_fixed</span>(references, <span class="st">", https://www.mathematica.org/"</span>, <span class="st">""</span>))</span>
+<span id="cb14-80"><a href="#cb14-80" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-81"><a href="#cb14-81" aria-hidden="true" tabindex="-1"></a>  d <span class="ot">&lt;-</span> <span class="fu">rowbind</span>(x<span class="sc">$</span>distribution, <span class="at">fill =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb14-82"><a href="#cb14-82" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-83"><a href="#cb14-83" aria-hidden="true" tabindex="-1"></a>  tvec <span class="ot">&lt;-</span> vctrs<span class="sc">::</span><span class="fu">vec_rep_each</span>(x<span class="sc">$</span>title, <span class="fu">fnobs</span>(<span class="fu">get_elem</span>(x<span class="sc">$</span>distribution, <span class="st">"data"</span>, <span class="at">DF.as.list =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb14-84"><a href="#cb14-84" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-85"><a href="#cb14-85" aria-hidden="true" tabindex="-1"></a>  download <span class="ot">&lt;-</span> <span class="fu">new_tbl</span>(<span class="at">title =</span> tvec, <span class="at">download =</span> <span class="fu">delist</span>(<span class="fu">get_elem</span>(d<span class="sc">$</span>data, <span class="st">"downloadURL"</span>))) <span class="sc">|&gt;</span> <span class="fu">fcount</span>(title, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb14-86"><a href="#cb14-86" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb14-87"><a href="#cb14-87" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb14-88"><a href="#cb14-88" aria-hidden="true" tabindex="-1"></a>    <span class="at">sets       =</span> <span class="fu">reduce</span>(<span class="fu">list</span>(<span class="fu">slt</span>(x, <span class="sc">-</span>theme, <span class="sc">-</span>keyword, <span class="sc">-</span>references, <span class="sc">-</span>distribution), groups, keys, refs, <span class="fu">sbt</span>(download, N <span class="sc">==</span> <span class="dv">1</span>, <span class="sc">-</span>N)), join_title),</span>
+<span id="cb14-89"><a href="#cb14-89" aria-hidden="true" tabindex="-1"></a>    <span class="at">download   =</span> <span class="fu">funique</span>(<span class="fu">sbt</span>(download, N <span class="sc">&gt;</span> <span class="dv">1</span>), <span class="at">cols =</span> <span class="st">"download"</span>),</span>
+<span id="cb14-90"><a href="#cb14-90" aria-hidden="true" tabindex="-1"></a>    <span class="at">dictionary =</span> <span class="fu">new_tbl</span>(<span class="at">url =</span> <span class="fu">funique</span>(<span class="fu">delist</span>(<span class="fu">get_elem</span>(d<span class="sc">$</span>data, <span class="st">"describedBy"</span>)))) <span class="sc">|&gt;</span> </span>
+<span id="cb14-91"><a href="#cb14-91" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mtt</span>(<span class="at">identifier =</span> stringi<span class="sc">::</span><span class="fu">stri_extract</span>(url,</span>
+<span id="cb14-92"><a href="#cb14-92" aria-hidden="true" tabindex="-1"></a>      <span class="at">regex =</span> <span class="st">"(?:[0-9a-fA-F]){8}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){4}-?(?:[0-9a-fA-F]){12}"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb14-93"><a href="#cb14-93" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mtt</span>(<span class="at">title =</span> <span class="fu">map_chr</span>(url, \(x) <span class="fu">dict_title</span>(x))) <span class="sc">|&gt;</span> </span>
+<span id="cb14-94"><a href="#cb14-94" aria-hidden="true" tabindex="-1"></a>      <span class="fu">colorder</span>(title, identifier)</span>
+<span id="cb14-95"><a href="#cb14-95" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-96"><a href="#cb14-96" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-97"><a href="#cb14-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-98"><a href="#cb14-98" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">catalog_mcd</span>()</span>
+<span id="cb14-99"><a href="#cb14-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-100"><a href="#cb14-100" aria-hidden="true" tabindex="-1"></a>x</span>
+<span id="cb14-101"><a href="#cb14-101" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb14-102"><a href="#cb14-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-105"><a href="#cb14-105" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb14-106"><a href="#cb14-106" aria-hidden="true" tabindex="-1"></a>mcd_url <span class="ot">&lt;-</span> <span class="cf">function</span>(uuid) {</span>
+<span id="cb14-107"><a href="#cb14-107" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="st">"https://data.medicaid.gov/api/1/datastore/query/"</span>, uuid, <span class="st">"/0"</span>)</span>
+<span id="cb14-108"><a href="#cb14-108" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-109"><a href="#cb14-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-110"><a href="#cb14-110" aria-hidden="true" tabindex="-1"></a>mcd_dims <span class="ot">&lt;-</span> <span class="cf">function</span>(uuid) {</span>
+<span id="cb14-111"><a href="#cb14-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-112"><a href="#cb14-112" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> uuid <span class="sc">|&gt;</span></span>
+<span id="cb14-113"><a href="#cb14-113" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mcd_url</span>() <span class="sc">|&gt;</span></span>
+<span id="cb14-114"><a href="#cb14-114" aria-hidden="true" tabindex="-1"></a>    <span class="fu">request</span>() <span class="sc">|&gt;</span></span>
+<span id="cb14-115"><a href="#cb14-115" aria-hidden="true" tabindex="-1"></a>    <span class="fu">req_url_query</span>(</span>
+<span id="cb14-116"><a href="#cb14-116" aria-hidden="true" tabindex="-1"></a>      <span class="at">schema  =</span> <span class="st">"false"</span>,</span>
+<span id="cb14-117"><a href="#cb14-117" aria-hidden="true" tabindex="-1"></a>      <span class="at">keys    =</span> <span class="st">"false"</span>,</span>
+<span id="cb14-118"><a href="#cb14-118" aria-hidden="true" tabindex="-1"></a>      <span class="at">results =</span> <span class="st">"true"</span>,</span>
+<span id="cb14-119"><a href="#cb14-119" aria-hidden="true" tabindex="-1"></a>      <span class="at">count   =</span> <span class="st">"true"</span>,</span>
+<span id="cb14-120"><a href="#cb14-120" aria-hidden="true" tabindex="-1"></a>      <span class="at">format  =</span> <span class="st">"json"</span>,</span>
+<span id="cb14-121"><a href="#cb14-121" aria-hidden="true" tabindex="-1"></a>      <span class="at">rowIds  =</span> <span class="st">"false"</span>,</span>
+<span id="cb14-122"><a href="#cb14-122" aria-hidden="true" tabindex="-1"></a>      <span class="at">limit   =</span> <span class="dv">1</span>,</span>
+<span id="cb14-123"><a href="#cb14-123" aria-hidden="true" tabindex="-1"></a>      <span class="at">offset  =</span> <span class="dv">0</span></span>
+<span id="cb14-124"><a href="#cb14-124" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb14-125"><a href="#cb14-125" aria-hidden="true" tabindex="-1"></a>    <span class="fu">perform_simple</span>()</span>
+<span id="cb14-126"><a href="#cb14-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-127"><a href="#cb14-127" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list_tidy</span>(</span>
+<span id="cb14-128"><a href="#cb14-128" aria-hidden="true" tabindex="-1"></a>    <span class="at">rows   =</span> x<span class="sc">$</span>count,</span>
+<span id="cb14-129"><a href="#cb14-129" aria-hidden="true" tabindex="-1"></a>    <span class="at">fields =</span> x<span class="sc">$</span>query<span class="sc">$</span>properties,</span>
+<span id="cb14-130"><a href="#cb14-130" aria-hidden="true" tabindex="-1"></a>    <span class="at">pages  =</span> <span class="fu">offset_length</span>(rows, <span class="dv">8000</span>L))</span>
+<span id="cb14-131"><a href="#cb14-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-132"><a href="#cb14-132" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-133"><a href="#cb14-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-134"><a href="#cb14-134" aria-hidden="true" tabindex="-1"></a>identifier <span class="ot">&lt;-</span> <span class="fu">sbt</span>(x<span class="sc">$</span>sets, title <span class="sc">==</span> <span class="st">"State Drug Utilization Data 2020"</span>) <span class="sc">|&gt;</span> _[[<span class="st">"identifier"</span>]]</span>
+<span id="cb14-135"><a href="#cb14-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-136"><a href="#cb14-136" aria-hidden="true" tabindex="-1"></a><span class="fu">mcd_dims</span>(identifier)</span>
+<span id="cb14-137"><a href="#cb14-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-138"><a href="#cb14-138" aria-hidden="true" tabindex="-1"></a><span class="fu">mcd_url</span>(identifier) <span class="sc">|&gt;</span> </span>
+<span id="cb14-139"><a href="#cb14-139" aria-hidden="true" tabindex="-1"></a>  <span class="fu">request</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb14-140"><a href="#cb14-140" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_query</span>(</span>
+<span id="cb14-141"><a href="#cb14-141" aria-hidden="true" tabindex="-1"></a>    <span class="at">limit =</span> <span class="dv">10</span>,</span>
+<span id="cb14-142"><a href="#cb14-142" aria-hidden="true" tabindex="-1"></a>    <span class="at">offset =</span> <span class="dv">0</span>,</span>
+<span id="cb14-143"><a href="#cb14-143" aria-hidden="true" tabindex="-1"></a>    <span class="at">count =</span> <span class="st">"true"</span>,</span>
+<span id="cb14-144"><a href="#cb14-144" aria-hidden="true" tabindex="-1"></a>    <span class="at">results =</span> <span class="st">"true"</span>,</span>
+<span id="cb14-145"><a href="#cb14-145" aria-hidden="true" tabindex="-1"></a>    <span class="at">schema =</span> <span class="st">"false"</span>,</span>
+<span id="cb14-146"><a href="#cb14-146" aria-hidden="true" tabindex="-1"></a>    <span class="at">keys =</span> <span class="st">"true"</span>,</span>
+<span id="cb14-147"><a href="#cb14-147" aria-hidden="true" tabindex="-1"></a>    <span class="at">format =</span> <span class="st">"json"</span>,</span>
+<span id="cb14-148"><a href="#cb14-148" aria-hidden="true" tabindex="-1"></a>    <span class="at">rowIds =</span> <span class="st">"false"</span></span>
+<span id="cb14-149"><a href="#cb14-149" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb14-150"><a href="#cb14-150" aria-hidden="true" tabindex="-1"></a>  <span class="fu">perform_simple</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb14-151"><a href="#cb14-151" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"results"</span>]] <span class="sc">|&gt;</span> </span>
+<span id="cb14-152"><a href="#cb14-152" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_na_if</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb14-153"><a href="#cb14-153" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tbl</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb14-154"><a href="#cb14-154" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span>
+<span id="cb14-155"><a href="#cb14-155" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb14-156"><a href="#cb14-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-159"><a href="#cb14-159" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb14-160"><a href="#cb14-160" aria-hidden="true" tabindex="-1"></a>ex <span class="ot">&lt;-</span> x<span class="sc">$</span>dictionary<span class="sc">$</span>url[[<span class="dv">1</span>]] <span class="sc">|&gt;</span> </span>
+<span id="cb14-161"><a href="#cb14-161" aria-hidden="true" tabindex="-1"></a>  <span class="fu">request</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb14-162"><a href="#cb14-162" aria-hidden="true" tabindex="-1"></a>  <span class="fu">perform_simple</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb14-163"><a href="#cb14-163" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"data"</span>]]</span>
+<span id="cb14-164"><a href="#cb14-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-165"><a href="#cb14-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-166"><a href="#cb14-166" aria-hidden="true" tabindex="-1"></a><span class="fu">new_tbl</span>(</span>
+<span id="cb14-167"><a href="#cb14-167" aria-hidden="true" tabindex="-1"></a>  <span class="at">fields =</span> ex<span class="sc">$</span>fields<span class="sc">$</span>name,</span>
+<span id="cb14-168"><a href="#cb14-168" aria-hidden="true" tabindex="-1"></a>  <span class="at">description =</span> <span class="fu">gsub</span>(<span class="st">"</span><span class="sc">\r\n</span><span class="st">"</span>, <span class="st">" "</span>, ex<span class="sc">$</span>fields<span class="sc">$</span>description)) <span class="sc">|&gt;</span> </span>
+<span id="cb14-169"><a href="#cb14-169" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_na_if</span>()</span>
+<span id="cb14-170"><a href="#cb14-170" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb14-171"><a href="#cb14-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-174"><a href="#cb14-174" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb14-175"><a href="#cb14-175" aria-hidden="true" tabindex="-1"></a>utils<span class="sc">::</span><span class="fu">formatOL</span>(</span>
+<span id="cb14-176"><a href="#cb14-176" aria-hidden="true" tabindex="-1"></a>  x<span class="sc">$</span>dictionary<span class="sc">$</span>title</span>
+<span id="cb14-177"><a href="#cb14-177" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
+<span id="cb14-178"><a href="#cb14-178" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>()</span>
+<span id="cb14-179"><a href="#cb14-179" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb14-180"><a href="#cb14-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-183"><a href="#cb14-183" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb14-184"><a href="#cb14-184" aria-hidden="true" tabindex="-1"></a>utils<span class="sc">::</span><span class="fu">formatOL</span>(</span>
+<span id="cb14-185"><a href="#cb14-185" aria-hidden="true" tabindex="-1"></a>  x<span class="sc">$</span>sets<span class="sc">$</span>title</span>
+<span id="cb14-186"><a href="#cb14-186" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
+<span id="cb14-187"><a href="#cb14-187" aria-hidden="true" tabindex="-1"></a>  <span class="fu">writeLines</span>()</span>
+<span id="cb14-188"><a href="#cb14-188" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
 </div> <!-- /content -->
-
 
 
 

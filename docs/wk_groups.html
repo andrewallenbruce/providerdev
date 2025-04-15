@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.7.14">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
 <meta name="description" content="This is a personal, informal guide to rewriting an R package. It is a work in progress and will be updated as I learn more about the process.">
-
 <title>10&nbsp; Groups – Refactoring Provider</title>
 <style>
 code{white-space: pre-wrap;}
@@ -57,9 +54,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
-
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
 <script src="site_libs/quarto-search/fuse.min.js"></script>
@@ -73,11 +68,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-5593775d84e4d2a8ea12ac38bba8f48d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-6c7643998826233573c41560c556b328.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-2c34dd33a6f7ed8a94e2f4b60f66364e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
-<script id="quarto-search-options" type="application/json">{
+<link href="site_libs/bootstrap/bootstrap-c325f46859a2c93c0c7b3ce9213fe84b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
@@ -103,18 +97,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script>
-<style>html{ scroll-behavior: smooth; }</style>
-
-
+}</script><style>html{ scroll-behavior: smooth; }</style>
 </head>
-
 <body class="nav-sidebar floating">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav">
-    <div class="container-fluid d-flex">
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
@@ -125,13 +113,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <i class="bi bi-search"></i>
       </button>
     </div>
-  </nav>
-</header>
-<!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Refactoring Provider</a> 
         <div class="sidebar-tools-main">
@@ -151,7 +135,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
-        <li class="sidebar-item">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Preface</span></a>
@@ -171,8 +155,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./api_main.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Main</span></span></a>
@@ -221,7 +205,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
@@ -230,8 +214,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./wk_backend.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Backend</span></span></a>
@@ -268,7 +252,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
@@ -277,8 +261,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./end_affiliations.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title"><code>affiliations</code></span></span></a>
@@ -291,7 +275,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
@@ -300,15 +284,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./demo_geo.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">Geospatial</span></span></a>
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
@@ -317,48 +301,46 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./faq_syntax.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">JSON:API Syntax</span></span></a>
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">JSON:API Syntax</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./faq_schema.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">DCAT Metadata Schema</span></span></a>
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">DCAT Metadata Schema</span></span></a>
   </div>
 </li>
       </ul>
-  </li>
+</li>
     </ul>
-    </div>
-</nav>
-<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#provider-api" id="toc-provider-api" class="nav-link active" data-scroll-target="#provider-api"><span class="header-section-number">10.1</span> Provider API</a>
+<li>
+<a href="#provider-api" id="toc-provider-api" class="nav-link active" data-scroll-target="#provider-api">Provider API</a>
   <ul class="collapse">
-  <li><a href="#subgroups" id="toc-subgroups" class="nav-link" data-scroll-target="#subgroups"><span class="header-section-number">10.1.1</span> Subgroups</a></li>
-  </ul></li>
-  <li><a href="#main-api" id="toc-main-api" class="nav-link" data-scroll-target="#main-api"><span class="header-section-number">10.2</span> Main API</a>
-  <ul class="collapse">
-  <li><a href="#possible-groups" id="toc-possible-groups" class="nav-link" data-scroll-target="#possible-groups"><span class="header-section-number">10.2.1</span> Possible Groups</a></li>
-  </ul></li>
+<li><a href="#subgroups" id="toc-subgroups" class="nav-link" data-scroll-target="#subgroups">Subgroups</a></li>
   </ul>
-<div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li><li><a href="https://github.com/andrewallenbruce/providertwo"><i class="bi bi-file-code"></i>providertwo</a></li></ul></div></nav>
+</li>
+  <li>
+<a href="#main-api" id="toc-main-api" class="nav-link" data-scroll-target="#main-api">Main API</a>
+  <ul class="collapse">
+<li><a href="#possible-groups" id="toc-possible-groups" class="nav-link" data-scroll-target="#possible-groups">Possible Groups</a></li>
+  </ul>
+</li>
+  </ul><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li><li><a href="https://github.com/andrewallenbruce/providertwo"><i class="bi bi-file-code"></i>providertwo</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./wk_backend.html">Work Areas</a></li><li class="breadcrumb-item"><a href="./wk_groups.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Groups</span></a></li></ol></nav>
-<div class="quarto-title">
-<h1 class="title"><span id="sec-keygroups" class="quarto-section-identifier"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Groups</span></span></h1>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./wk_backend.html">Work Areas</a></li><li class="breadcrumb-item"><a href="./wk_groups.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Groups</span></a></li></ol></nav><div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title"><span id="sec-keygroups" class="quarto-section-identifier"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Groups</span></span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i></button></div></div>
 </div>
 
 
@@ -372,48 +354,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
 
 
-</header>
-
-
-<section id="provider-api" class="level2" data-number="10.1">
-<h2 data-number="10.1" class="anchored" data-anchor-id="provider-api"><span class="header-section-number">10.1</span> Provider API</h2>
+</header><section id="provider-api" class="level2"><h2 class="anchored" data-anchor-id="provider-api">Provider API</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>aff_fields <span class="ot">&lt;-</span> \(x) {</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">val_match</span>(</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    x,</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"npi"</span> <span class="sc">~</span> <span class="st">"npi"</span>,</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ind_pac_id"</span> <span class="sc">~</span> <span class="st">"pac"</span>,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"provider_last_name"</span> <span class="sc">~</span> <span class="st">"last_name"</span>,</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"provider_first_name"</span> <span class="sc">~</span> <span class="st">"first_name"</span>,</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"provider_middle_name"</span> <span class="sc">~</span> <span class="st">"middle_name"</span>,</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"suff"</span> <span class="sc">~</span> <span class="st">"suffix"</span>,</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"facility_type"</span> <span class="sc">~</span> <span class="st">"facility_type"</span>,</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"facility_affiliations_certification_number"</span> <span class="sc">~</span> <span class="st">"ccn_facility"</span>,</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"facility_type_certification_number"</span> <span class="sc">~</span> <span class="st">"ccn_parent"</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># set_names(aff@fields, aff_fields(aff@fields))</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>aff_fn <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">npi           =</span> <span class="cn">NULL</span>,</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>                   <span class="at">pac           =</span> <span class="cn">NULL</span>,</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>                   <span class="at">first_name    =</span> <span class="cn">NULL</span>,</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>                   <span class="at">middle_name   =</span> <span class="cn">NULL</span>,</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>                   <span class="at">last_name     =</span> <span class="cn">NULL</span>,</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>                   <span class="at">suffix        =</span> <span class="cn">NULL</span>,</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>                   <span class="at">facility_type =</span> <span class="cn">NULL</span>,</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>                   <span class="at">ccn_facility  =</span> <span class="cn">NULL</span>,</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>                   <span class="at">ccn_parent    =</span> <span class="cn">NULL</span>) {</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">CurrentProvider</span>(<span class="st">"affiliations"</span>)</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>  xargs <span class="ot">&lt;-</span> <span class="fu">set_names</span>(x<span class="sc">@</span>fields, <span class="fu">aff_fields</span>(x<span class="sc">@</span>fields))</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unname</span>(xargs[<span class="fu">fn_fmls_names</span>()])</span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="fu">aff_fn</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">aff_fields</span> <span class="op">&lt;-</span> \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">val_match</span><span class="op">(</span></span>
+<span>    <span class="va">x</span>,</span>
+<span>    <span class="st">"npi"</span> <span class="op">~</span> <span class="st">"npi"</span>,</span>
+<span>    <span class="st">"ind_pac_id"</span> <span class="op">~</span> <span class="st">"pac"</span>,</span>
+<span>    <span class="st">"provider_last_name"</span> <span class="op">~</span> <span class="st">"last_name"</span>,</span>
+<span>    <span class="st">"provider_first_name"</span> <span class="op">~</span> <span class="st">"first_name"</span>,</span>
+<span>    <span class="st">"provider_middle_name"</span> <span class="op">~</span> <span class="st">"middle_name"</span>,</span>
+<span>    <span class="st">"suff"</span> <span class="op">~</span> <span class="st">"suffix"</span>,</span>
+<span>    <span class="st">"facility_type"</span> <span class="op">~</span> <span class="st">"facility_type"</span>,</span>
+<span>    <span class="st">"facility_affiliations_certification_number"</span> <span class="op">~</span> <span class="st">"ccn_facility"</span>,</span>
+<span>    <span class="st">"facility_type_certification_number"</span> <span class="op">~</span> <span class="st">"ccn_parent"</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co"># set_names(aff@fields, aff_fields(aff@fields))</span></span>
+<span></span>
+<span><span class="va">aff_fn</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">npi</span>           <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                   <span class="va">pac</span>           <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                   <span class="va">first_name</span>    <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                   <span class="va">middle_name</span>   <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                   <span class="va">last_name</span>     <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                   <span class="va">suffix</span>        <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                   <span class="va">facility_type</span> <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                   <span class="va">ccn_facility</span>  <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                   <span class="va">ccn_parent</span>    <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  </span>
+<span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">CurrentProvider</span><span class="op">(</span><span class="st">"affiliations"</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="va">xargs</span> <span class="op">&lt;-</span> <span class="fu">set_names</span><span class="op">(</span><span class="va">x</span><span class="op">@</span><span class="va">fields</span>, <span class="fu">aff_fields</span><span class="op">(</span><span class="va">x</span><span class="op">@</span><span class="va">fields</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/unname.html">unname</a></span><span class="op">(</span><span class="va">xargs</span><span class="op">[</span><span class="fu">fn_fmls_names</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span>  </span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu">aff_fn</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "npi"                                       
 [2] "ind_pac_id"                                
@@ -427,7 +405,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">CurrentProvider</span>(<span class="st">"clinicians"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">CurrentProvider</span><span class="op">(</span><span class="st">"clinicians"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;providertwo::CurrentProvider&gt;
  @ title      : chr "National Downloadable File"
@@ -445,7 +423,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  @ uuid       : chr "mj5m-pzi6"
  @ site       : chr "https://data.cms.gov/provider-data/dataset/mj5m-pzi6"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">CurrentProvider</span>(<span class="st">"utilization"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">CurrentProvider</span><span class="op">(</span><span class="st">"utilization"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;providertwo::CurrentProvider&gt;
  @ title      : chr "Utilization Data"
@@ -463,9 +441,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  @ uuid       : chr "n0yb-util"
  @ site       : chr "https://data.cms.gov/provider-data/dataset/n0yb-util"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">provider_current_group</span>(<span class="st">"mips"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(title, description) <span class="sc">|&gt;</span> </span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rsplit</span>(<span class="sc">~</span> title)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">provider_current_group</span><span class="op">(</span><span class="st">"mips"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">slt</span><span class="op">(</span><span class="va">title</span>, <span class="va">description</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">rsplit</span><span class="op">(</span><span class="op">~</span> <span class="va">title</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$`PY 2022 Clinician Public Reporting: MIPS Measures and Attestations`
 [1] "This file contains performance information for Merit-Based Incentive Payment System (MIPS) Quality, Promoting Interoperability, and Improvement Activities performance information submitted by clinicians."
@@ -484,16 +462,16 @@ $`PY 2022 Virtual Group Public Reporting: MIPS Measures and Attestations`
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>pro_group <span class="ot">&lt;-</span> \(x) {</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">subset_detect</span>(</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    pro, </span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    title, </span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> x)</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>pro <span class="ot">&lt;-</span> <span class="fu">catalog_provider</span>()</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>pro</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pro_group</span> <span class="op">&lt;-</span> \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">subset_detect</span><span class="op">(</span></span>
+<span>    <span class="va">pro</span>, </span>
+<span>    <span class="va">title</span>, </span>
+<span>    p <span class="op">=</span> <span class="va">x</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span></span>
+<span><span class="va">pro</span> <span class="op">&lt;-</span> <span class="fu">catalog_provider</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">pro</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 237 × 10
    title   group description issued     modified   released   identifier contact
@@ -512,10 +490,9 @@ $`PY 2022 Virtual Group Public Reporting: MIPS Measures and Attestations`
 # ℹ 2 more variables: download &lt;chr&gt;, site &lt;chr&gt;</code></pre>
 </div>
 </div>
-<section id="subgroups" class="level3" data-number="10.1.1">
-<h3 data-number="10.1.1" class="anchored" data-anchor-id="subgroups"><span class="header-section-number">10.1.1</span> Subgroups</h3>
+<section id="subgroups" class="level3"><h3 class="anchored" data-anchor-id="subgroups">Subgroups</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pro_group</span>(<span class="st">"Quality Measures - |Quality Measure Data - "</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">pro_group</span><span class="op">(</span><span class="st">"Quality Measures - |Quality Measure Data - "</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 10
   title    group description issued     modified   released   identifier contact
@@ -528,7 +505,7 @@ $`PY 2022 Virtual Group Public Reporting: MIPS Measures and Attestations`
 6 Inpatie… Hosp… This datas… 2025-01-08 2025-01-08 2025-02-19 dc76-gh7x  Hospit…
 # ℹ 2 more variables: download &lt;chr&gt;, site &lt;chr&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pro_group</span>(<span class="st">"^Hospital Value-Based Purchasing"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">pro_group</span><span class="op">(</span><span class="st">"^Hospital Value-Based Purchasing"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 10
   title    group description issued     modified   released   identifier contact
@@ -540,7 +517,7 @@ $`PY 2022 Virtual Group Public Reporting: MIPS Measures and Attestations`
 5 Hospita… Hosp… A list of … 2023-07-05 2025-01-17 2025-02-19 ypbt-wvdk  Hospit…
 # ℹ 2 more variables: download &lt;chr&gt;, site &lt;chr&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pro_group</span>(<span class="st">"^(Medicare Spending Per Beneficiary|Medicare Hospital|Payment)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">pro_group</span><span class="op">(</span><span class="st">"^(Medicare Spending Per Beneficiary|Medicare Hospital|Payment)"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 8 × 10
   title    group description issued     modified   released   identifier contact
@@ -555,7 +532,7 @@ $`PY 2022 Virtual Group Public Reporting: MIPS Measures and Attestations`
 8 Payment… Hosp… Payment me… 2023-07-05 2025-01-08 2025-02-19 c7us-v4mf  Hospit…
 # ℹ 2 more variables: download &lt;chr&gt;, site &lt;chr&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pro_group</span>(<span class="st">"^(Complications|Hospital Readmissions|Hospital-Acquired|Safety and Healthcare|Unplanned|Timely|Healthcare Associated)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">pro_group</span><span class="op">(</span><span class="st">"^(Complications|Hospital Readmissions|Hospital-Acquired|Safety and Healthcare|Unplanned|Timely|Healthcare Associated)"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 17 × 10
    title   group description issued     modified   released   identifier contact
@@ -579,7 +556,7 @@ $`PY 2022 Virtual Group Public Reporting: MIPS Measures and Attestations`
 17 Unplan… Hosp… Unplanned … 2020-12-10 2025-01-08 2025-02-19 4gkm-5ypv  Hospit…
 # ℹ 2 more variables: download &lt;chr&gt;, site &lt;chr&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pro_group</span>(<span class="st">"^Veterans Health Administration"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">pro_group</span><span class="op">(</span><span class="st">"^Veterans Health Administration"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 10
   title    group description issued     modified   released   identifier contact
@@ -589,7 +566,7 @@ $`PY 2022 Virtual Group Public Reporting: MIPS Measures and Attestations`
 3 Veteran… Hosp… A list of … 2023-07-05 2025-01-08 2025-02-19 ptds-r8im  Hospit…
 # ℹ 2 more variables: download &lt;chr&gt;, site &lt;chr&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pro_group</span>(<span class="st">"^Patient [Ss]urvey"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">pro_group</span><span class="op">(</span><span class="st">"^Patient [Ss]urvey"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 9 × 10
   title    group description issued     modified   released   identifier contact
@@ -605,7 +582,7 @@ $`PY 2022 Virtual Group Public Reporting: MIPS Measures and Attestations`
 9 Patient… Hosp… A list of … 2020-12-10 2025-01-08 2025-02-19 84jm-wiui  Hospit…
 # ℹ 2 more variables: download &lt;chr&gt;, site &lt;chr&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pro_group</span>(<span class="st">"OAS CAHPS"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">pro_group</span><span class="op">(</span><span class="st">"OAS CAHPS"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 7 × 10
   title    group description issued     modified   released   identifier contact
@@ -619,7 +596,7 @@ $`PY 2022 Virtual Group Public Reporting: MIPS Measures and Attestations`
 7 Outpati… Hosp… A list of … 2020-12-10 2025-01-08 2025-02-19 6pfg-whmx  Hospit…
 # ℹ 2 more variables: download &lt;chr&gt;, site &lt;chr&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pro_group</span>(<span class="st">"^Table"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">pro_group</span><span class="op">(</span><span class="st">"^Table"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 10
   title    group description issued     modified   released   identifier contact
@@ -631,16 +608,13 @@ $`PY 2022 Virtual Group Public Reporting: MIPS Measures and Attestations`
 # ℹ 2 more variables: download &lt;chr&gt;, site &lt;chr&gt;</code></pre>
 </div>
 </div>
-</section>
-</section>
-<section id="main-api" class="level2" data-number="10.2">
-<h2 data-number="10.2" class="anchored" data-anchor-id="main-api"><span class="header-section-number">10.2</span> Main API</h2>
+</section></section><section id="main-api" class="level2"><h2 class="anchored" data-anchor-id="main-api">Main API</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># TemporalMain("quality_payment")@fields</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>util_field <span class="ot">&lt;-</span> <span class="fu">get_elem</span>(<span class="fu">TemporalMainGroup</span>(<span class="st">"utilization"</span>)<span class="sc">@</span>endpoints, <span class="st">"fields"</span>, <span class="at">regex =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>cheapr<span class="sc">::</span><span class="fu">intersect_</span>(util_field<span class="sc">$</span>by_provider, util_field<span class="sc">$</span>by_provider_and_service)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># TemporalMain("quality_payment")@fields</span></span>
+<span></span>
+<span><span class="va">util_field</span> <span class="op">&lt;-</span> <span class="fu">get_elem</span><span class="op">(</span><span class="fu">TemporalMainGroup</span><span class="op">(</span><span class="st">"utilization"</span><span class="op">)</span><span class="op">@</span><span class="va">endpoints</span>, <span class="st">"fields"</span>, regex <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">cheapr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cheapr/man/extras.html">intersect_</a></span><span class="op">(</span><span class="va">util_field</span><span class="op">$</span><span class="va">by_provider</span>, <span class="va">util_field</span><span class="op">$</span><span class="va">by_provider_and_service</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "Rndrng_NPI"                    "Rndrng_Prvdr_Last_Org_Name"   
  [3] "Rndrng_Prvdr_First_Name"       "Rndrng_Prvdr_MI"              
@@ -653,37 +627,37 @@ $`PY 2022 Virtual Group Public Reporting: MIPS Measures and Attestations`
 [17] "Rndrng_Prvdr_Type"             "Rndrng_Prvdr_Mdcr_Prtcptg_Ind"
 [19] "Tot_Benes"                     "Tot_Srvcs"                    </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>cheapr<span class="sc">::</span><span class="fu">intersect_</span>(</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  cheapr<span class="sc">::</span><span class="fu">intersect_</span>(</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    util_field<span class="sc">$</span>by_provider, </span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    util_field<span class="sc">$</span>by_provider_and_service),</span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  util_field<span class="sc">$</span>by_geography_and_service)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">cheapr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cheapr/man/extras.html">intersect_</a></span><span class="op">(</span></span>
+<span>  <span class="fu">cheapr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cheapr/man/extras.html">intersect_</a></span><span class="op">(</span></span>
+<span>    <span class="va">util_field</span><span class="op">$</span><span class="va">by_provider</span>, </span>
+<span>    <span class="va">util_field</span><span class="op">$</span><span class="va">by_provider_and_service</span><span class="op">)</span>,</span>
+<span>  <span class="va">util_field</span><span class="op">$</span><span class="va">by_geography_and_service</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Tot_Benes" "Tot_Srvcs"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># TemporalMainGroup("prescribers")</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="co"># TemporalMainGroup("suppliers")</span></span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="co"># TemporalMainGroup("outpatient")</span></span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="co"># TemporalMainGroup("inpatient")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># TemporalMainGroup("prescribers")</span></span>
+<span><span class="co"># TemporalMainGroup("suppliers")</span></span>
+<span><span class="co"># TemporalMainGroup("outpatient")</span></span>
+<span><span class="co"># TemporalMainGroup("inpatient")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>curr_group <span class="ot">&lt;-</span> \(x) {</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">subset_detect</span>(</span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    main_curr, </span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    title, </span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> x)</span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>temp_group <span class="ot">&lt;-</span> \(x) {</span>
-<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">subset_detect</span>(</span>
-<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>    main_temp, </span>
-<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>    title, </span>
-<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> x)</span>
-<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a><span class="fu">.c</span>(main_curr, main_temp) <span class="sc">%=%</span> <span class="fu">catalog_main</span>()</span>
-<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>main_curr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">curr_group</span> <span class="op">&lt;-</span> \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">subset_detect</span><span class="op">(</span></span>
+<span>    <span class="va">main_curr</span>, </span>
+<span>    <span class="va">title</span>, </span>
+<span>    p <span class="op">=</span> <span class="va">x</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">temp_group</span> <span class="op">&lt;-</span> \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu">subset_detect</span><span class="op">(</span></span>
+<span>    <span class="va">main_temp</span>, </span>
+<span>    <span class="va">title</span>, </span>
+<span>    p <span class="op">=</span> <span class="va">x</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span></span>
+<span><span class="fu">.c</span><span class="op">(</span><span class="va">main_curr</span>, <span class="va">main_temp</span><span class="op">)</span> <span class="op">%=%</span> <span class="fu">catalog_main</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">main_curr</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 139 × 14
    title          description modified   periodicity temporal contact identifier
@@ -702,7 +676,7 @@ $`PY 2022 Virtual Group Public Reporting: MIPS Measures and Attestations`
 # ℹ 7 more variables: dictionary &lt;chr&gt;, site &lt;chr&gt;, references &lt;chr&gt;,
 #   year &lt;int&gt;, download &lt;chr&gt;, filetype &lt;chr&gt;, resources &lt;chr&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>main_temp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">main_temp</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 112 × 7
    title                   data description periodicity contact dictionary site 
@@ -720,10 +694,9 @@ $`PY 2022 Virtual Group Public Reporting: MIPS Measures and Attestations`
 # ℹ 102 more rows</code></pre>
 </div>
 </div>
-<section id="possible-groups" class="level3" data-number="10.2.1">
-<h3 data-number="10.2.1" class="anchored" data-anchor-id="possible-groups"><span class="header-section-number">10.2.1</span> Possible Groups</h3>
+<section id="possible-groups" class="level3"><h3 class="anchored" data-anchor-id="possible-groups">Possible Groups</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">curr_group</span>(<span class="st">"Provider of Services File"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">curr_group</span><span class="op">(</span><span class="st">"Provider of Services File"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 14
   title           description modified   periodicity temporal contact identifier
@@ -734,7 +707,7 @@ $`PY 2022 Virtual Group Public Reporting: MIPS Measures and Attestations`
 # ℹ 7 more variables: dictionary &lt;chr&gt;, site &lt;chr&gt;, references &lt;chr&gt;,
 #   year &lt;int&gt;, download &lt;chr&gt;, filetype &lt;chr&gt;, resources &lt;chr&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">temp_group</span>(<span class="st">"Provider of Services File"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">temp_group</span><span class="op">(</span><span class="st">"Provider of Services File"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 7
   title                    data description periodicity contact dictionary site 
@@ -743,7 +716,7 @@ $`PY 2022 Virtual Group Public Reporting: MIPS Measures and Attestations`
 2 Provider of Service… [14 × 7] "Please be… Quarterly … QIESDa… https://d… http…
 3 Provider of Service…  [2 × 7] "The Provi… Quarterly … QIESDa… https://d… http…</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">curr_group</span>(<span class="st">"by Geography|by Provider|by Referring|by Drug|Physician/Supplier Procedure Summary|Hospital Provider Cost Report"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">curr_group</span><span class="op">(</span><span class="st">"by Geography|by Provider|by Referring|by Drug|Physician/Supplier Procedure Summary|Hospital Provider Cost Report"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 22 × 14
    title          description modified   periodicity temporal contact identifier
@@ -762,7 +735,7 @@ $`PY 2022 Virtual Group Public Reporting: MIPS Measures and Attestations`
 # ℹ 7 more variables: dictionary &lt;chr&gt;, site &lt;chr&gt;, references &lt;chr&gt;,
 #   year &lt;int&gt;, download &lt;chr&gt;, filetype &lt;chr&gt;, resources &lt;chr&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">temp_group</span>(<span class="st">"by Geography|by Provider|by Referring|by Drug|Physician/Supplier Procedure Summary|Hospital Provider Cost Report"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">temp_group</span><span class="op">(</span><span class="st">"by Geography|by Provider|by Referring|by Drug|Physician/Supplier Procedure Summary|Hospital Provider Cost Report"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 22 × 7
    title                   data description periodicity contact dictionary site 
@@ -779,7 +752,7 @@ $`PY 2022 Virtual Group Public Reporting: MIPS Measures and Attestations`
 10 Medicare Outpatien…  [8 × 7] "The Medic… Annually [… Medica… https://d… http…
 # ℹ 12 more rows</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">temp_group</span>(<span class="st">"Accountable Care Organization|ACO Realizing Equity|Pioneer ACO Model"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">temp_group</span><span class="op">(</span><span class="st">"Accountable Care Organization|ACO Realizing Equity|Pioneer ACO Model"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 9 × 7
   title                    data description periodicity contact dictionary site 
@@ -794,8 +767,8 @@ $`PY 2022 Virtual Group Public Reporting: MIPS Measures and Attestations`
 8 Number of Accountab…  [8 × 7] "The Share… Annually [… Shared… https://d… http…
 9 Pioneer ACO Model     [5 × 7] "The Pione… Annually [… ACO RE… https://d… http…</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">curr_group</span>(<span class="st">"CMS Program Statistics"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">handle_na</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">curr_group</span><span class="op">(</span><span class="st">"CMS Program Statistics"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">handle_na</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 21 × 10
    title          description modified   periodicity temporal contact identifier
@@ -813,7 +786,7 @@ $`PY 2022 Virtual Group Public Reporting: MIPS Measures and Attestations`
 # ℹ 11 more rows
 # ℹ 3 more variables: dictionary &lt;chr&gt;, site &lt;chr&gt;, references &lt;chr&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">curr_group</span>(<span class="st">"^(Federally Qualified Health Center|Rural Health Clinic|Home Health Agency|Hospice|Skilled Nursing Facility|Long-Term Care Facility|Hospital|Home Infusion)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">curr_group</span><span class="op">(</span><span class="st">"^(Federally Qualified Health Center|Rural Health Clinic|Home Health Agency|Hospice|Skilled Nursing Facility|Long-Term Care Facility|Hospital|Home Infusion)"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 23 × 14
    title          description modified   periodicity temporal contact identifier
@@ -832,7 +805,7 @@ $`PY 2022 Virtual Group Public Reporting: MIPS Measures and Attestations`
 # ℹ 7 more variables: dictionary &lt;chr&gt;, site &lt;chr&gt;, references &lt;chr&gt;,
 #   year &lt;int&gt;, download &lt;chr&gt;, filetype &lt;chr&gt;, resources &lt;chr&gt;</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">temp_group</span>(<span class="st">"Innovation Center"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">temp_group</span><span class="op">(</span><span class="st">"Innovation Center"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 7 × 7
   title                    data description periodicity contact dictionary site 
@@ -845,7 +818,7 @@ $`PY 2022 Virtual Group Public Reporting: MIPS Measures and Attestations`
 6 Innovation Center Mo… [1 × 7] The Innova… Monthly [R… CMS In… https://d… http…
 7 Innovation Center We… [1 × 7] The Innova… Monthly [R… CMS In… https://d… http…</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">temp_group</span>(<span class="st">"Market Saturation &amp; Utilization"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">temp_group</span><span class="op">(</span><span class="st">"Market Saturation &amp; Utilization"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 7
   title                    data description periodicity contact dictionary site 
@@ -853,7 +826,7 @@ $`PY 2022 Virtual Group Public Reporting: MIPS Measures and Attestations`
 1 Market Saturation &amp; … [1 × 7] "The Marke… Annually [… Market… https://d… http…
 2 Market Saturation &amp; … [1 × 7] "The Marke… Annually [… Market… https://d… http…</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">temp_group</span>(<span class="st">"End-Stage|Medicare Dialysis Facilities"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">temp_group</span><span class="op">(</span><span class="st">"End-Stage|Medicare Dialysis Facilities"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 7
   title                    data description periodicity contact dictionary site 
@@ -864,11 +837,9 @@ $`PY 2022 Virtual Group Public Reporting: MIPS Measures and Attestations`
 </div>
 
 
-</section>
-</section>
+<!-- -->
 
-</main> <!-- /main -->
-<script id="quarto-html-after-body" type="application/javascript">
+</section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -955,6 +926,57 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       container: window.document.getElementById('quarto-embedded-source-code-modal')
     });
     clipboardModal.on('success', onCopySuccess);
+  }
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
@@ -1284,9 +1306,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>
-<nav class="page-navigation">
-  <div class="nav-page nav-page-previous">
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
       <a href="./wk_backend.html" class="pagination-link" aria-label="Backend">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Backend</span></span>
       </a>          
@@ -1296,9 +1316,173 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">URL Object</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
-</nav>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb56" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Groups {#sec-keygroups}</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup-common-01</span></span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"includes/_common.R"</span>)</span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-11"><a href="#cb56-11" aria-hidden="true" tabindex="-1"></a><span class="fu">## Provider API</span></span>
+<span id="cb56-12"><a href="#cb56-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-15"><a href="#cb56-15" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb56-16"><a href="#cb56-16" aria-hidden="true" tabindex="-1"></a>aff_fields <span class="ot">&lt;-</span> \(x) {</span>
+<span id="cb56-17"><a href="#cb56-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">val_match</span>(</span>
+<span id="cb56-18"><a href="#cb56-18" aria-hidden="true" tabindex="-1"></a>    x,</span>
+<span id="cb56-19"><a href="#cb56-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"npi"</span> <span class="sc">~</span> <span class="st">"npi"</span>,</span>
+<span id="cb56-20"><a href="#cb56-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ind_pac_id"</span> <span class="sc">~</span> <span class="st">"pac"</span>,</span>
+<span id="cb56-21"><a href="#cb56-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">"provider_last_name"</span> <span class="sc">~</span> <span class="st">"last_name"</span>,</span>
+<span id="cb56-22"><a href="#cb56-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"provider_first_name"</span> <span class="sc">~</span> <span class="st">"first_name"</span>,</span>
+<span id="cb56-23"><a href="#cb56-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">"provider_middle_name"</span> <span class="sc">~</span> <span class="st">"middle_name"</span>,</span>
+<span id="cb56-24"><a href="#cb56-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">"suff"</span> <span class="sc">~</span> <span class="st">"suffix"</span>,</span>
+<span id="cb56-25"><a href="#cb56-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">"facility_type"</span> <span class="sc">~</span> <span class="st">"facility_type"</span>,</span>
+<span id="cb56-26"><a href="#cb56-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">"facility_affiliations_certification_number"</span> <span class="sc">~</span> <span class="st">"ccn_facility"</span>,</span>
+<span id="cb56-27"><a href="#cb56-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">"facility_type_certification_number"</span> <span class="sc">~</span> <span class="st">"ccn_parent"</span></span>
+<span id="cb56-28"><a href="#cb56-28" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb56-29"><a href="#cb56-29" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb56-30"><a href="#cb56-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-31"><a href="#cb56-31" aria-hidden="true" tabindex="-1"></a><span class="co"># set_names(aff@fields, aff_fields(aff@fields))</span></span>
+<span id="cb56-32"><a href="#cb56-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-33"><a href="#cb56-33" aria-hidden="true" tabindex="-1"></a>aff_fn <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">npi           =</span> <span class="cn">NULL</span>,</span>
+<span id="cb56-34"><a href="#cb56-34" aria-hidden="true" tabindex="-1"></a>                   <span class="at">pac           =</span> <span class="cn">NULL</span>,</span>
+<span id="cb56-35"><a href="#cb56-35" aria-hidden="true" tabindex="-1"></a>                   <span class="at">first_name    =</span> <span class="cn">NULL</span>,</span>
+<span id="cb56-36"><a href="#cb56-36" aria-hidden="true" tabindex="-1"></a>                   <span class="at">middle_name   =</span> <span class="cn">NULL</span>,</span>
+<span id="cb56-37"><a href="#cb56-37" aria-hidden="true" tabindex="-1"></a>                   <span class="at">last_name     =</span> <span class="cn">NULL</span>,</span>
+<span id="cb56-38"><a href="#cb56-38" aria-hidden="true" tabindex="-1"></a>                   <span class="at">suffix        =</span> <span class="cn">NULL</span>,</span>
+<span id="cb56-39"><a href="#cb56-39" aria-hidden="true" tabindex="-1"></a>                   <span class="at">facility_type =</span> <span class="cn">NULL</span>,</span>
+<span id="cb56-40"><a href="#cb56-40" aria-hidden="true" tabindex="-1"></a>                   <span class="at">ccn_facility  =</span> <span class="cn">NULL</span>,</span>
+<span id="cb56-41"><a href="#cb56-41" aria-hidden="true" tabindex="-1"></a>                   <span class="at">ccn_parent    =</span> <span class="cn">NULL</span>) {</span>
+<span id="cb56-42"><a href="#cb56-42" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb56-43"><a href="#cb56-43" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">CurrentProvider</span>(<span class="st">"affiliations"</span>)</span>
+<span id="cb56-44"><a href="#cb56-44" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb56-45"><a href="#cb56-45" aria-hidden="true" tabindex="-1"></a>  xargs <span class="ot">&lt;-</span> <span class="fu">set_names</span>(x<span class="sc">@</span>fields, <span class="fu">aff_fields</span>(x<span class="sc">@</span>fields))</span>
+<span id="cb56-46"><a href="#cb56-46" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb56-47"><a href="#cb56-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unname</span>(xargs[<span class="fu">fn_fmls_names</span>()])</span>
+<span id="cb56-48"><a href="#cb56-48" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb56-49"><a href="#cb56-49" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb56-50"><a href="#cb56-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-51"><a href="#cb56-51" aria-hidden="true" tabindex="-1"></a><span class="fu">aff_fn</span>()</span>
+<span id="cb56-52"><a href="#cb56-52" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb56-53"><a href="#cb56-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-54"><a href="#cb56-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-57"><a href="#cb56-57" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb56-58"><a href="#cb56-58" aria-hidden="true" tabindex="-1"></a><span class="fu">CurrentProvider</span>(<span class="st">"clinicians"</span>)</span>
+<span id="cb56-59"><a href="#cb56-59" aria-hidden="true" tabindex="-1"></a><span class="fu">CurrentProvider</span>(<span class="st">"utilization"</span>)</span>
+<span id="cb56-60"><a href="#cb56-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-61"><a href="#cb56-61" aria-hidden="true" tabindex="-1"></a><span class="fu">provider_current_group</span>(<span class="st">"mips"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb56-62"><a href="#cb56-62" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(title, description) <span class="sc">|&gt;</span> </span>
+<span id="cb56-63"><a href="#cb56-63" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rsplit</span>(<span class="sc">~</span> title)</span>
+<span id="cb56-64"><a href="#cb56-64" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb56-65"><a href="#cb56-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-66"><a href="#cb56-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-69"><a href="#cb56-69" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb56-70"><a href="#cb56-70" aria-hidden="true" tabindex="-1"></a>pro_group <span class="ot">&lt;-</span> \(x) {</span>
+<span id="cb56-71"><a href="#cb56-71" aria-hidden="true" tabindex="-1"></a>  <span class="fu">subset_detect</span>(</span>
+<span id="cb56-72"><a href="#cb56-72" aria-hidden="true" tabindex="-1"></a>    pro, </span>
+<span id="cb56-73"><a href="#cb56-73" aria-hidden="true" tabindex="-1"></a>    title, </span>
+<span id="cb56-74"><a href="#cb56-74" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> x)</span>
+<span id="cb56-75"><a href="#cb56-75" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb56-76"><a href="#cb56-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-77"><a href="#cb56-77" aria-hidden="true" tabindex="-1"></a>pro <span class="ot">&lt;-</span> <span class="fu">catalog_provider</span>()</span>
+<span id="cb56-78"><a href="#cb56-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-79"><a href="#cb56-79" aria-hidden="true" tabindex="-1"></a>pro</span>
+<span id="cb56-80"><a href="#cb56-80" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb56-81"><a href="#cb56-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-82"><a href="#cb56-82" aria-hidden="true" tabindex="-1"></a><span class="fu">### Subgroups</span></span>
+<span id="cb56-83"><a href="#cb56-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-86"><a href="#cb56-86" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb56-87"><a href="#cb56-87" aria-hidden="true" tabindex="-1"></a><span class="fu">pro_group</span>(<span class="st">"Quality Measures - |Quality Measure Data - "</span>)</span>
+<span id="cb56-88"><a href="#cb56-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-89"><a href="#cb56-89" aria-hidden="true" tabindex="-1"></a><span class="fu">pro_group</span>(<span class="st">"^Hospital Value-Based Purchasing"</span>)</span>
+<span id="cb56-90"><a href="#cb56-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-91"><a href="#cb56-91" aria-hidden="true" tabindex="-1"></a><span class="fu">pro_group</span>(<span class="st">"^(Medicare Spending Per Beneficiary|Medicare Hospital|Payment)"</span>)</span>
+<span id="cb56-92"><a href="#cb56-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-93"><a href="#cb56-93" aria-hidden="true" tabindex="-1"></a><span class="fu">pro_group</span>(<span class="st">"^(Complications|Hospital Readmissions|Hospital-Acquired|Safety and Healthcare|Unplanned|Timely|Healthcare Associated)"</span>)</span>
+<span id="cb56-94"><a href="#cb56-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-95"><a href="#cb56-95" aria-hidden="true" tabindex="-1"></a><span class="fu">pro_group</span>(<span class="st">"^Veterans Health Administration"</span>)</span>
+<span id="cb56-96"><a href="#cb56-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-97"><a href="#cb56-97" aria-hidden="true" tabindex="-1"></a><span class="fu">pro_group</span>(<span class="st">"^Patient [Ss]urvey"</span>)</span>
+<span id="cb56-98"><a href="#cb56-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-99"><a href="#cb56-99" aria-hidden="true" tabindex="-1"></a><span class="fu">pro_group</span>(<span class="st">"OAS CAHPS"</span>)</span>
+<span id="cb56-100"><a href="#cb56-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-101"><a href="#cb56-101" aria-hidden="true" tabindex="-1"></a><span class="fu">pro_group</span>(<span class="st">"^Table"</span>)</span>
+<span id="cb56-102"><a href="#cb56-102" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb56-103"><a href="#cb56-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-104"><a href="#cb56-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-105"><a href="#cb56-105" aria-hidden="true" tabindex="-1"></a><span class="fu">## Main API</span></span>
+<span id="cb56-106"><a href="#cb56-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-109"><a href="#cb56-109" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb56-110"><a href="#cb56-110" aria-hidden="true" tabindex="-1"></a><span class="co"># TemporalMain("quality_payment")@fields</span></span>
+<span id="cb56-111"><a href="#cb56-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-112"><a href="#cb56-112" aria-hidden="true" tabindex="-1"></a>util_field <span class="ot">&lt;-</span> <span class="fu">get_elem</span>(<span class="fu">TemporalMainGroup</span>(<span class="st">"utilization"</span>)<span class="sc">@</span>endpoints, <span class="st">"fields"</span>, <span class="at">regex =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb56-113"><a href="#cb56-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-114"><a href="#cb56-114" aria-hidden="true" tabindex="-1"></a>cheapr<span class="sc">::</span><span class="fu">intersect_</span>(util_field<span class="sc">$</span>by_provider, util_field<span class="sc">$</span>by_provider_and_service)</span>
+<span id="cb56-115"><a href="#cb56-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-116"><a href="#cb56-116" aria-hidden="true" tabindex="-1"></a>cheapr<span class="sc">::</span><span class="fu">intersect_</span>(</span>
+<span id="cb56-117"><a href="#cb56-117" aria-hidden="true" tabindex="-1"></a>  cheapr<span class="sc">::</span><span class="fu">intersect_</span>(</span>
+<span id="cb56-118"><a href="#cb56-118" aria-hidden="true" tabindex="-1"></a>    util_field<span class="sc">$</span>by_provider, </span>
+<span id="cb56-119"><a href="#cb56-119" aria-hidden="true" tabindex="-1"></a>    util_field<span class="sc">$</span>by_provider_and_service),</span>
+<span id="cb56-120"><a href="#cb56-120" aria-hidden="true" tabindex="-1"></a>  util_field<span class="sc">$</span>by_geography_and_service)</span>
+<span id="cb56-121"><a href="#cb56-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-122"><a href="#cb56-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-123"><a href="#cb56-123" aria-hidden="true" tabindex="-1"></a><span class="co"># TemporalMainGroup("prescribers")</span></span>
+<span id="cb56-124"><a href="#cb56-124" aria-hidden="true" tabindex="-1"></a><span class="co"># TemporalMainGroup("suppliers")</span></span>
+<span id="cb56-125"><a href="#cb56-125" aria-hidden="true" tabindex="-1"></a><span class="co"># TemporalMainGroup("outpatient")</span></span>
+<span id="cb56-126"><a href="#cb56-126" aria-hidden="true" tabindex="-1"></a><span class="co"># TemporalMainGroup("inpatient")</span></span>
+<span id="cb56-127"><a href="#cb56-127" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb56-128"><a href="#cb56-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-129"><a href="#cb56-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-132"><a href="#cb56-132" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb56-133"><a href="#cb56-133" aria-hidden="true" tabindex="-1"></a>curr_group <span class="ot">&lt;-</span> \(x) {</span>
+<span id="cb56-134"><a href="#cb56-134" aria-hidden="true" tabindex="-1"></a>  <span class="fu">subset_detect</span>(</span>
+<span id="cb56-135"><a href="#cb56-135" aria-hidden="true" tabindex="-1"></a>    main_curr, </span>
+<span id="cb56-136"><a href="#cb56-136" aria-hidden="true" tabindex="-1"></a>    title, </span>
+<span id="cb56-137"><a href="#cb56-137" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> x)</span>
+<span id="cb56-138"><a href="#cb56-138" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb56-139"><a href="#cb56-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-140"><a href="#cb56-140" aria-hidden="true" tabindex="-1"></a>temp_group <span class="ot">&lt;-</span> \(x) {</span>
+<span id="cb56-141"><a href="#cb56-141" aria-hidden="true" tabindex="-1"></a>  <span class="fu">subset_detect</span>(</span>
+<span id="cb56-142"><a href="#cb56-142" aria-hidden="true" tabindex="-1"></a>    main_temp, </span>
+<span id="cb56-143"><a href="#cb56-143" aria-hidden="true" tabindex="-1"></a>    title, </span>
+<span id="cb56-144"><a href="#cb56-144" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> x)</span>
+<span id="cb56-145"><a href="#cb56-145" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb56-146"><a href="#cb56-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-147"><a href="#cb56-147" aria-hidden="true" tabindex="-1"></a><span class="fu">.c</span>(main_curr, main_temp) <span class="sc">%=%</span> <span class="fu">catalog_main</span>()</span>
+<span id="cb56-148"><a href="#cb56-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-149"><a href="#cb56-149" aria-hidden="true" tabindex="-1"></a>main_curr</span>
+<span id="cb56-150"><a href="#cb56-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-151"><a href="#cb56-151" aria-hidden="true" tabindex="-1"></a>main_temp</span>
+<span id="cb56-152"><a href="#cb56-152" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb56-153"><a href="#cb56-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-154"><a href="#cb56-154" aria-hidden="true" tabindex="-1"></a><span class="fu">### Possible Groups</span></span>
+<span id="cb56-155"><a href="#cb56-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-158"><a href="#cb56-158" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb56-159"><a href="#cb56-159" aria-hidden="true" tabindex="-1"></a><span class="fu">curr_group</span>(<span class="st">"Provider of Services File"</span>)</span>
+<span id="cb56-160"><a href="#cb56-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-161"><a href="#cb56-161" aria-hidden="true" tabindex="-1"></a><span class="fu">temp_group</span>(<span class="st">"Provider of Services File"</span>)</span>
+<span id="cb56-162"><a href="#cb56-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-163"><a href="#cb56-163" aria-hidden="true" tabindex="-1"></a><span class="fu">curr_group</span>(<span class="st">"by Geography|by Provider|by Referring|by Drug|Physician/Supplier Procedure Summary|Hospital Provider Cost Report"</span>)</span>
+<span id="cb56-164"><a href="#cb56-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-165"><a href="#cb56-165" aria-hidden="true" tabindex="-1"></a><span class="fu">temp_group</span>(<span class="st">"by Geography|by Provider|by Referring|by Drug|Physician/Supplier Procedure Summary|Hospital Provider Cost Report"</span>)</span>
+<span id="cb56-166"><a href="#cb56-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-167"><a href="#cb56-167" aria-hidden="true" tabindex="-1"></a><span class="fu">temp_group</span>(<span class="st">"Accountable Care Organization|ACO Realizing Equity|Pioneer ACO Model"</span>)</span>
+<span id="cb56-168"><a href="#cb56-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-169"><a href="#cb56-169" aria-hidden="true" tabindex="-1"></a><span class="fu">curr_group</span>(<span class="st">"CMS Program Statistics"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb56-170"><a href="#cb56-170" aria-hidden="true" tabindex="-1"></a>  <span class="fu">handle_na</span>()</span>
+<span id="cb56-171"><a href="#cb56-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-172"><a href="#cb56-172" aria-hidden="true" tabindex="-1"></a><span class="fu">curr_group</span>(<span class="st">"^(Federally Qualified Health Center|Rural Health Clinic|Home Health Agency|Hospice|Skilled Nursing Facility|Long-Term Care Facility|Hospital|Home Infusion)"</span>)</span>
+<span id="cb56-173"><a href="#cb56-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-174"><a href="#cb56-174" aria-hidden="true" tabindex="-1"></a><span class="fu">temp_group</span>(<span class="st">"Innovation Center"</span>)</span>
+<span id="cb56-175"><a href="#cb56-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-176"><a href="#cb56-176" aria-hidden="true" tabindex="-1"></a><span class="fu">temp_group</span>(<span class="st">"Market Saturation &amp; Utilization"</span>)</span>
+<span id="cb56-177"><a href="#cb56-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-178"><a href="#cb56-178" aria-hidden="true" tabindex="-1"></a><span class="fu">temp_group</span>(<span class="st">"End-Stage|Medicare Dialysis Facilities"</span>)</span>
+<span id="cb56-179"><a href="#cb56-179" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
 </div> <!-- /content -->
-
 
 
 
