@@ -25,13 +25,20 @@ quick_open_temp <- providertwo:::quick_open_temp
 ## `JSON`: _Open Payments Catalog_
 
 ```{r}
+#| label: open_json
 #| echo: false
-"https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids" |> 
+#| message: true
+open_JSON <- "https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids" |> 
   request() |>
   req_perform() |>
-  resp_body_json(check_type = FALSE, simplifyVector = FALSE) |>
-  jsonify::to_json() |>
-  jsonify::pretty_json()
+  resp_body_json(check_type = FALSE, simplifyVector = FALSE)
+
+c(open_JSON[[1]], open_JSON[[2]], open_JSON[[3]], open_JSON[[4]]) |> 
+  lobstr::tree(max_length = 1000L, max_depth = 10L)
+
+# open_JSON |>
+#   jsonify::to_json() |>
+#   jsonify::pretty_json()
 ```
 
 
