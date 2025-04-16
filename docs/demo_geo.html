@@ -562,7 +562,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span><span class="va">rhc_nppes</span> <span class="op">&lt;-</span> <span class="fu">npi_nppes</span><span class="op">(</span>npi <span class="op">=</span> <span class="va">rhc_enr</span><span class="op">$</span><span class="va">npi</span><span class="op">)</span></span>
 <span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html">toc</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>#&gt; 1.17 sec elapsed</code></pre>
+<pre><code>#&gt; 1.13 sec elapsed</code></pre>
 </div>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rhc_nppes</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">slt</span><span class="op">(</span><span class="op">-</span><span class="va">endpoints</span>, <span class="op">-</span><span class="va">enumeration_type</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -893,7 +893,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>#&gt; Passing 84 addresses to the US Census batch geocoder</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>#&gt; Query completed in: 1.3 seconds</code></pre>
+<pre><code>#&gt; Query completed in: 1 seconds</code></pre>
 </div>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">geo_census</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -929,7 +929,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>#&gt; Passing 84 addresses to the ArcGIS single address geocoder</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>#&gt; Query completed in: 36.2 seconds</code></pre>
+<pre><code>#&gt; Query completed in: 35.6 seconds</code></pre>
 </div>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">geo_arcgis</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1841,28 +1841,29 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb39-298"><a href="#cb39-298" aria-hidden="true" tabindex="-1"></a><span class="fu">## Map with {ggplot}</span></span>
 <span id="cb39-299"><a href="#cb39-299" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb39-302"><a href="#cb39-302" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-303"><a href="#cb39-303" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.width: 10</span></span>
-<span id="cb39-304"><a href="#cb39-304" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sf_cnt) <span class="sc">+</span></span>
-<span id="cb39-305"><a href="#cb39-305" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(</span>
-<span id="cb39-306"><a href="#cb39-306" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"skyblue"</span>,</span>
-<span id="cb39-307"><a href="#cb39-307" aria-hidden="true" tabindex="-1"></a>    <span class="at">colour =</span> <span class="st">"white"</span>,</span>
-<span id="cb39-308"><a href="#cb39-308" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb39-309"><a href="#cb39-309" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf_text</span>(</span>
-<span id="cb39-310"><a href="#cb39-310" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">geometry =</span> geometry, </span>
-<span id="cb39-311"><a href="#cb39-311" aria-hidden="true" tabindex="-1"></a>        <span class="at">label =</span> NAME),</span>
-<span id="cb39-312"><a href="#cb39-312" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb39-313"><a href="#cb39-313" aria-hidden="true" tabindex="-1"></a>    <span class="at">check_overlap =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
-<span id="cb39-314"><a href="#cb39-314" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(</span>
-<span id="cb39-315"><a href="#cb39-315" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> geo_census,</span>
-<span id="cb39-316"><a href="#cb39-316" aria-hidden="true" tabindex="-1"></a>    <span class="at">mapping =</span> <span class="fu">aes</span>(long, lat),</span>
-<span id="cb39-317"><a href="#cb39-317" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"yellow"</span>,</span>
-<span id="cb39-318"><a href="#cb39-318" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"darkred"</span>,</span>
-<span id="cb39-319"><a href="#cb39-319" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.75</span>,</span>
-<span id="cb39-320"><a href="#cb39-320" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">4</span>,</span>
-<span id="cb39-321"><a href="#cb39-321" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape =</span> <span class="dv">21</span>,</span>
-<span id="cb39-322"><a href="#cb39-322" aria-hidden="true" tabindex="-1"></a>    <span class="at">stroke =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb39-323"><a href="#cb39-323" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span>
-<span id="cb39-324"><a href="#cb39-324" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-303"><a href="#cb39-303" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.width: 5</span></span>
+<span id="cb39-304"><a href="#cb39-304" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.height: 8</span></span>
+<span id="cb39-305"><a href="#cb39-305" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sf_cnt) <span class="sc">+</span></span>
+<span id="cb39-306"><a href="#cb39-306" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(</span>
+<span id="cb39-307"><a href="#cb39-307" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"skyblue"</span>,</span>
+<span id="cb39-308"><a href="#cb39-308" aria-hidden="true" tabindex="-1"></a>    <span class="at">colour =</span> <span class="st">"white"</span>,</span>
+<span id="cb39-309"><a href="#cb39-309" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb39-310"><a href="#cb39-310" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf_text</span>(</span>
+<span id="cb39-311"><a href="#cb39-311" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">geometry =</span> geometry, </span>
+<span id="cb39-312"><a href="#cb39-312" aria-hidden="true" tabindex="-1"></a>        <span class="at">label =</span> NAME),</span>
+<span id="cb39-313"><a href="#cb39-313" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb39-314"><a href="#cb39-314" aria-hidden="true" tabindex="-1"></a>    <span class="at">check_overlap =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb39-315"><a href="#cb39-315" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(</span>
+<span id="cb39-316"><a href="#cb39-316" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> geo_census,</span>
+<span id="cb39-317"><a href="#cb39-317" aria-hidden="true" tabindex="-1"></a>    <span class="at">mapping =</span> <span class="fu">aes</span>(long, lat),</span>
+<span id="cb39-318"><a href="#cb39-318" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"yellow"</span>,</span>
+<span id="cb39-319"><a href="#cb39-319" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"darkred"</span>,</span>
+<span id="cb39-320"><a href="#cb39-320" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.75</span>,</span>
+<span id="cb39-321"><a href="#cb39-321" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">4</span>,</span>
+<span id="cb39-322"><a href="#cb39-322" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape =</span> <span class="dv">21</span>,</span>
+<span id="cb39-323"><a href="#cb39-323" aria-hidden="true" tabindex="-1"></a>    <span class="at">stroke =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb39-324"><a href="#cb39-324" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span>
+<span id="cb39-325"><a href="#cb39-325" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
