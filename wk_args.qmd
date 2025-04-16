@@ -6,6 +6,37 @@
 source("includes/_common.R")
 ```
 
+```{r}
+arg_npi <- new_class(
+  name    = "arg_npi",
+  package = NULL,
+  properties = list(
+    x = new_property(
+      class = new_union(NULL, class_character),
+      setter = function(self, value) {
+        self@x <- as.character(value[which_not_na(value)])
+        self
+      },
+      getter = function(self) {
+        as.character(self@x[which_not_na(self@x)])
+      }
+    ),
+    op = new_property(
+      class = class_character,
+      default = "=",
+      getter = function(self)
+        if (length(self@x) > 1) "IN" else "=")
+  ),
+  validator = function(self) {
+    if (not_null(self@x) && length(self@x) > 0) {
+      assert_nchars(self@x, 10L, "npi")
+      assert_digits(self@x)
+      assert_luhn(self@x)
+    }
+  }
+)
+```
+
 
 ```{r}
 #| eval: false
@@ -22,12 +53,11 @@ allv(nchar(as_chr(value)), 10L)
 prop_npi <- new_property(
   class = NULL | class_character | class_numeric,
   validator = function(value) {
-    if (not_null(value)) {
-      if (!allv(nchar(as_chr(value)), 10L)) "`npi` must be 10 characters long"
-      if (any(stri_detect_regex(value, "^[0-9]{1,10}$"))) "`npi` must be all digits"
-      if (any(!check_luhn(value))) "`npi` must pass Luhn algorithm"
-      if (any(!stri_startswith(value, "[12]"))) "`npi` must start with 1 or 2"
-    }
+    if (is.null(value)) return()
+    if (!allv(nchar(as_chr(value)), 10L)) "`npi` must be 10 characters long"
+    if (any(stri_detect_regex(value, "^[0-9]{1,10}$"))) "`npi` must be all digits"
+    if (any(!check_luhn(value))) "`npi` must pass Luhn algorithm"
+    if (any(!stri_startswith(value, "[12]"))) "`npi` must start with 1 or 2"
   }
 )
 
