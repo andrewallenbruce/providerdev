@@ -3,10 +3,28 @@
 ```{r}
 #| label: setup-common-01
 #| include: false
+#| warning: false
 source("includes/_common.R")
 
 quick_open      <- providertwo:::quick_open
 quick_open_temp <- providertwo:::quick_open_temp
+
+gt_tab <- \(x, size = 14) {
+  x |>
+    gt::gt() |>
+    gtUtils::gt_theme_athletic() |>
+    gt::tab_options(
+      quarto.disable_processing = TRUE,
+      column_labels.font.weight = "bolder",
+      column_labels.font.size = (size + 4),
+      column_labels.background.color = "black",
+      column_labels.border.bottom.color = "white",
+      table.font.size = size,
+      # row_group.font.size = (size + 2),
+      table.width = gt::pct(100)) |> 
+    gt::cols_align(align = "left", columns = gt::everything()) |> 
+    gt::sub_missing(columns = gt::everything(), missing_text = "-")
+}
 
 # "[^\\x00-\\x7F]"
 # 
@@ -22,28 +40,66 @@ quick_open_temp <- providertwo:::quick_open_temp
 
 ::: {#nte-open-json .callout-note collapse="true"}
 
-## `JSON`: _Open Payments Catalog_
+## __JSON__ Catalog
 
 ```{r}
 #| label: open_json
 #| echo: false
-#| message: true
+#| message: false
 open_JSON <- "https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids" |> 
   request() |>
   req_perform() |>
   resp_body_json(check_type = FALSE, simplifyVector = FALSE)
 
-c(open_JSON[[1]], open_JSON[[2]], open_JSON[[3]], open_JSON[[4]]) |> 
+c(open_JSON[[1]], open_JSON[[2]], open_JSON[[3]]) |> 
   lobstr::tree(max_length = 1000L, max_depth = 10L)
-
-# open_JSON |>
-#   jsonify::to_json() |>
-#   jsonify::pretty_json()
 ```
 
 
 :::
 
+
+## Data Dictionary
+
+```{r}
+dict <- open_dictionary()
+```
+
+::: panel-tabset
+
+### Covered Recipient Profile Supplement
+
+```{r}
+dict$`Covered Recipient Profile Supplement` |> 
+  slt(field, description) |> 
+  gt_tab()
+```
+
+### General Payment Data
+
+```{r}
+dict$`General Payment Data` |> 
+  slt(field, description) |> 
+  gt_tab()
+```
+
+### Ownership Payment Data
+
+```{r}
+dict$`Ownership Payment Data` |> 
+  slt(field, description) |> 
+  gt_tab()
+```
+
+### Research Payment Data
+
+```{r}
+dict$`Research Payment Data` |> 
+  slt(field, description) |> 
+  gt_tab()
+```
+
+:::
 
 ## Open Profiles
 
@@ -59,11 +115,7 @@ open_quick <- \(alias) {
 }
 ```
 
-### Data Dictionary
-
-```{r}
-open_dictionary()
-```
+::: panel-tabset
 
 ### Covered Recipient
 
@@ -125,7 +177,14 @@ open_quick("profile_entity")
 open_quick("profile_teaching")
 ```
 
-## Open Summary
+::: 
+
+
+## Open Summaries
+
+::: panel-tabset
+
+### Summary Dashboard
 
 ```{r}
 open_quick("dashboard")
@@ -142,7 +201,10 @@ open_dashboard()
 ```{r}
 open_quick("national_total")
 
-open_national()
+open_national() |> 
+  fuimus::describe2() |> 
+  # slt(column, n, uniq, top, distribution) |> 
+  gt_tab()
 ```
 
 ### National by Year & Specialty
@@ -152,7 +214,10 @@ open_national()
 • __Fields__ `[21]`
 
 ```{r}
-open_quick("national_group")
+open_quick("national_group") |> 
+  fuimus::describe2() |> 
+  slt(column, n, uniq, top, distribution) |> 
+  gt_tab()
 ```
 
 ### State by Year
@@ -162,7 +227,10 @@ open_quick("national_group")
 • __Fields__ `[28]`
 
 ```{r}
-open_quick("state_total")
+open_quick("state_total") |> 
+  fuimus::describe2() |> 
+  slt(column, n, uniq, top, distribution) |> 
+  gt_tab()
 ```
 
 ### State by Year & Nature of Payment
@@ -172,10 +240,15 @@ open_quick("state_total")
 • __Fields__ `[28]`
 
 ```{r}
-open_quick("state_group")
+open_quick("state_group") |> 
+  fuimus::describe2() |> 
+  slt(column, n, uniq, top, distribution) |> 
+  gt_tab()
 ```
 
-## Detailed Sets by Year
+::: 
+
+## Payment Group Summaries
 
 ```{r}
 grp_pmts <- providertwo:::open_temp_group("grouped_payments") |> 
@@ -184,9 +257,53 @@ grp_pmts <- providertwo:::open_temp_group("grouped_payments") |>
   rsplit(~ title) |> 
   map(providertwo:::open_url) |> 
   map(quick_open)
-
-grp_pmts
 ```
+
+::: panel-tabset
+
+#### Covered Recipient + Nature of Payments
+
+```{r}
+grp_pmts$`Payments Grouped by Covered Recipient and Nature of Payments` |> 
+  slt(-teaching_hospital_name) |> 
+  fuimus::describe2() |> 
+  slt(column, n, uniq, top, distribution, min, mean, med, max) |> 
+  gt_tab()
+```
+
+#### Covered Recipient + Reporting Entities
+
+```{r}
+grp_pmts$`Payments Grouped by Covered Recipient and Reporting Entities` |>
+  slt(-teaching_hospital_name) |> 
+  fuimus::describe2() |> 
+  slt(column, n, uniq, top, distribution, min, mean, med, max) |> 
+  gt_tab()
+```
+
+#### Reporting Entities + Nature of Payments
+
+```{r}
+grp_pmts$`Payments Grouped by Reporting Entities and Nature of Payments` |> 
+  fuimus::describe2() |> 
+  slt(column, n, uniq, top, distribution, min, mean, med, max) |> 
+  gt_tab()
+```
+
+#### Reporting Entities + Covered Recipient + Nature of Payments
+
+```{r}
+grp_pmts$`Payments Grouped by Reporting Entities, Covered Recipient, and Nature of Payments` |> 
+  fuimus::describe2() |> 
+  slt(column, n, uniq, top, distribution, min, mean, med, max) |> 
+  gt_tab()
+```
+
+::: 
+
+## Detailed Payment Data
+
+::: panel-tabset
 
 ### General Payment Data
 
@@ -196,7 +313,47 @@ grp_pmts
 • __Years__ `[2017 - 2023]`
 
 ```{r}
-open_quick("general")
+open_quick("general") |> 
+  slt(-recipient_province, 
+      -recipient_postal_code, 
+      -covered_recipient_primary_type_2,
+      -covered_recipient_primary_type_3,
+      -covered_recipient_primary_type_4,
+      -covered_recipient_primary_type_5,
+      -covered_recipient_primary_type_6,
+      -covered_recipient_specialty_2,
+      -covered_recipient_specialty_3,
+      -covered_recipient_specialty_4,
+      -covered_recipient_specialty_5,
+      -covered_recipient_specialty_6,
+      -city_of_travel,
+      -state_of_travel,
+      -country_of_travel,
+      -associated_drug_or_biological_ndc_2,
+      -name_of_drug_or_biological_or_device_or_medical_supply_3,
+      -associated_drug_or_biological_ndc_3,
+      -associated_device_or_medical_supply_pdi_3,
+      -name_of_drug_or_biological_or_device_or_medical_supply_4,
+      -associated_drug_or_biological_ndc_4,
+      -associated_device_or_medical_supply_pdi_4,
+      -covered_or_noncovered_indicator_5,
+      -indicate_drug_or_biological_or_device_or_medical_supply_5,
+      -product_category_or_therapeutic_area_5,
+      -name_of_drug_or_biological_or_device_or_medical_supply_5,
+      -associated_drug_or_biological_ndc_5,
+      -associated_device_or_medical_supply_pdi_5
+      ) |> 
+  fuimus::describe2() |> 
+  slt(column, 
+      n, 
+      uniq, 
+      top, 
+      distribution, 
+      min, 
+      mean, 
+      med, 
+      max) |> 
+  gt_tab()
 ```
 
 ### Ownership Payment Data
@@ -221,8 +378,9 @@ open_quick("ownership")
 open_quick("research")
 ```
 
+::: 
 
-<br><br>
+<br>
 
 ## Querying
 
