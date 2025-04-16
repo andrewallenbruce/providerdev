@@ -120,3 +120,59 @@ main_catalog <- \() {
 #     fuimus::remove_all_na() |>
 #     dplyr::filter(sf_ndetect(title, "Office Visit Costs$"))
 # }
+
+tibble(
+  ops = c(
+    "=",
+    "<>",
+    ">",
+    ">=",
+    "<",
+    "<=",
+    "STARTS_WITH",
+    "CONTAINS",
+    "ENDS_WITH",
+    "IN",
+    "NOT IN",
+    "BETWEEN",
+    "NOT BETWEEN",
+    "IS NULL",
+    "IS NOT NULL"
+  ),
+  impl = c(
+    "default",
+    "notequal(x)",
+    "greaterthan(x)",
+    "greater_or_equal(x)",
+    "lessthan(x)",
+    "less_or_equal(x)",
+    "startswith(x)",
+    "includes(x)",
+    "endswith(x)",
+    "in(x)",
+    "notin(x)",
+    "inside(x)",
+    "outside(x)",
+    "X",
+    "X"
+  )
+) |>
+  gt() |>
+  tab_header(
+    html(
+      '<i>JSON<b>:</b>API</i> <span style="color:gray;"><b>Allowed Operations</b></span>'
+    )
+  ) |>
+  opt_table_font(font = google_font(name = "JetBrains Mono")) |>
+  opt_all_caps() |>
+  opt_table_lines("none") |>
+  tab_options(quarto.disable_processing = TRUE,
+              column_labels.hidden = TRUE)
+
+distribution |>
+  count(description,
+        format,
+        mediaType) |>
+  emphatic::as_emphatic() |>
+  emphatic::hl(ggplot2::scale_colour_viridis_c(), cols = "n") |>
+  emphatic::hl_adjust(text_contrast = 0.5, na = "-")
