@@ -37,41 +37,87 @@ catalog: public
 ## Operators
 
 ```{r}
-#| label: allowed_operators
+#| label: emphatic
 #| echo: false
+#| eval: false
 tibble(
-  ops = c("=", "<>", ">", ">=", "<", "<=", 
-          "STARTS_WITH", "CONTAINS", "ENDS_WITH", 
-          "IN", "NOT IN", "BETWEEN", "NOT BETWEEN", 
-          "IS NULL", "IS NOT NULL"),
-  impl = c("default", 
-           "notequal(x)",
-           "greaterthan(x)",
-           "greater_or_equal(x)",
-           "lessthan(x)",
-           "less_or_equal(x)",
-           "startswith(x)",
-           "includes(x)",
-           "endswith(x)",
-           "in(x)",
-           "notin(x)",
-           "inside(x)",
-           "outside(x)",
-           "X",
-           "X"
-           )
-  ) |> 
-  gt() |> 
+  ops = c(
+    "=",
+    "<>",
+    ">",
+    ">=",
+    "<",
+    "<=",
+    "STARTS_WITH",
+    "CONTAINS",
+    "ENDS_WITH",
+    "IN",
+    "NOT IN",
+    "BETWEEN",
+    "NOT BETWEEN",
+    "IS NULL",
+    "IS NOT NULL"
+  ),
+  impl = c(
+    "default",
+    "notequal(x)",
+    "greaterthan(x)",
+    "greater_or_equal(x)",
+    "lessthan(x)",
+    "less_or_equal(x)",
+    "startswith(x)",
+    "includes(x)",
+    "endswith(x)",
+    "in(x)",
+    "notin(x)",
+    "inside(x)",
+    "outside(x)",
+    "X",
+    "X"
+  )
+) |>
+  gt() |>
   tab_header(
     html(
       '<i>JSON<b>:</b>API</i> <span style="color:gray;"><b>Allowed Operations</b></span>'
-      )
-    ) |> 
-  opt_table_font(font = google_font(name = "JetBrains Mono")) |> 
-  opt_all_caps() |> 
+    )
+  ) |>
+  opt_table_font(font = google_font(name = "JetBrains Mono")) |>
+  opt_all_caps() |>
   opt_table_lines("none") |>
-  tab_options(quarto.disable_processing = TRUE, 
+  tab_options(quarto.disable_processing = TRUE,
               column_labels.hidden = TRUE)
+
+distribution |> 
+  count(description, 
+        format, 
+        mediaType) |> 
+  emphatic::as_emphatic() |> 
+  emphatic::hl(ggplot2::scale_colour_viridis_c(), cols = "n") |>
+  emphatic::hl_adjust(text_contrast = 0.5, na = "-")
+```
+
+```{r}
+#| label: allowed_operators
+#| echo: false
+list(
+  "="           = "equals(x)",  
+  "<>"          = "equals(x, negate = TRUE)", 
+  ">"           = "greater_than(x)", 
+  ">="          = "greater_than(x, equals = TRUE)", 
+  "<"           = "less_than(x)",  
+  "<="          = "less_than(x, equals = TRUE)",  
+  "STARTS_WITH" = "starts_with(x)", 
+  "CONTAINS"    = "contains(x)",
+  "ENDS_WITH"   = "ends_with(x)",    
+  "IN"          = "is_in(x)", 
+  "NOT IN"      = "is_in(x, negate = TRUE)", 
+  "BETWEEN"     = "between(x)", 
+  "NOT BETWEEN" = "between(x, negate = TRUE)",  
+  "IS NULL"     = "blank(x)", 
+  "IS NOT NULL" = "blank(x, negate = TRUE)"
+) |> 
+  providertwo:::print_list()
 ```
 
 ## S7 Classes
@@ -81,8 +127,6 @@ tibble(
 value <- c("132456789", "1324567890", "132456789", "132456789")
 
 kit::pallv(nchar(value), value = 10L)
-
-all(stri_detect_regex(value, "^[0-9]{10}$"))
 
 allv(nchar(as_chr(value)), 10L)
 ```
@@ -125,7 +169,7 @@ prop_state <- new_property(
 ### `class_arg`
 
 ```{r}
-#| label: class_arg
+#| eval: false
 class_arg <- new_class(
   "class_arg",
   properties  = list(
@@ -261,7 +305,7 @@ try(class_args(
 ### `class_args`
 
 ```{r}
-#| label: class_args
+#| eval: false
 null_numeric    <- new_union(NULL, class_numeric)
 null_vector     <- new_union(NULL, class_vector)
 null_character  <- new_union(NULL, class_character)
@@ -345,7 +389,7 @@ query_comparison <- function(args,
   "
   filter[{seq_along(args)}][condition][path]={names(args)}
   filter[{seq_along(args)}][condition][operator]={operator}
-  filter[{seq_along(args)}][condition][value]={delist(args)}
+  filter[{seq_along(args)}][condition][value]={providertwo:::delist(args)}
   "
   )
 }
@@ -369,7 +413,7 @@ query_equals_simple <- function(args) {
   
   glue::glue(
   "
-  filter[{names(args)}]={delist(args)}
+  filter[{names(args)}]={providertwo:::delist(args)}
   "
   )
 }
@@ -396,7 +440,7 @@ query_in_notin <- function(args,
       glue::glue(
         "filter[f{seq_along(args)}]",
         "[condition][value]",
-        "[{seq_along(delist(args))}]={delist(args)}"
+        "[{seq_along(providertwo:::delist(args))}]={providertwo:::delist(args)}"
         )
       )
     )
@@ -415,6 +459,7 @@ glue::as_glue(c(query_in_notin(ex), query_comparison(ex)))
 ### Testing in a Function
 
 ```{r}
+#| eval: false
 protofunc <- function(id     = NULL, 
                       state  = NULL, 
                       name   = NULL, 
@@ -569,7 +614,7 @@ url_parse(
     limit                     = 500) |>
   url_build() |> 
   request() |> 
-  perform_simple() |>
+  providertwo:::perform_simple() |>
   _[["count"]]
 ```
 
@@ -590,7 +635,7 @@ url_parse(
     offset                    = 0) |>
   url_build() |> 
   request() |> 
-  perform_simple() |>
+  providertwo:::perform_simple() |>
   _[["count"]]
 ```
 
@@ -672,13 +717,13 @@ stats <- stats |>
 stats |> purse()
 
 # Offset shouldn't go to 50000
-offset_sequence(stats$found_rows, 5000)
+providertwo:::offset_seq(stats$found_rows, 5000)
 
 urls <- glue::glue(
   "{base$url}",
   "?size=5000&",
   "offset=",
-  "{offset_sequence(stats$found_rows, 5000)}"
+  "{providertwo:::offset_seq(stats$found_rows, 5000)}"
 )
 
 urls
@@ -727,10 +772,9 @@ distribution <- read_json_arrow(
   select(distribution) |> 
   as_tibble() |> 
   unnest(distribution) |> 
-  rename_with(remove_at_symbol) |> 
+  # rename_with(remove_at_symbol) |> 
   filter(format      == "API", 
-         description == "latest") |> 
-  handle_na()
+         description == "latest")
 
 distribution |> 
   filter(grepl("Enrollment", title)) |> 
@@ -775,7 +819,7 @@ nresults <- queryurl |>
   req_url_path_append("stats") |> 
   req_perform() |> 
   resp_body_json() |> 
-  gelm("found")
+  fuimus::gelm("found")
 
 nresults
 ```
@@ -793,7 +837,7 @@ reqs <- map(
     "{url}", 
     "&offset={off}", 
     url = queryurl$url, 
-    off = offset_sequence(nresults, 5000)), 
+    off = providertwo:::offset_seq(nresults, 5000)), 
   httr2::request)
 
 res <- req_perform_parallel(reqs) |> 
@@ -801,19 +845,57 @@ res <- req_perform_parallel(reqs) |>
   map(\(x) tibble(resp_body_json(x, simplifyVector = TRUE))) |> 
   bind_rows()
 
-set_clean(res, names(res)) |> 
-  map_na_if() |> 
+providertwo:::set_clean(res, names(res)) |> 
+  providertwo:::map_na_if() |> 
   mtt(
-    optout_effective_date = as_date(optout_effective_date, fmt = "%m/%d/%Y"),
-    optout_end_date = as_date(optout_end_date, fmt = "%m/%d/%Y"),
-    last_updated = as_date(last_updated, fmt = "%m/%d/%Y")
-    ) |> 
-  cheapr::overview()
+    optout_effective_date = providertwo:::as_date(optout_effective_date, fmt = "%m/%d/%Y"),
+    optout_end_date = providertwo:::as_date(optout_end_date, fmt = "%m/%d/%Y"),
+    last_updated = providertwo:::as_date(last_updated, fmt = "%m/%d/%Y")
+    )
 ```
 
 ## Try Again
 
 ```{r}
+arg_list <- new_class(
+  "arg_list",
+  properties = list(params = class_list),
+  constructor = function(...) new_object(S7_object(), params = rlang::list2(...)),
+  validator = function(self) if (!rlang::is_named(self@params)) "all @params must all be named")
+
+less_than <- function(x, equals = FALSE) {
+  `attr<-`(x, "operator", if (equals) "<=" else "<")
+}
+
+is_in <- function(x, negate = FALSE) {
+  `attr<-`(x, "operator", ifelse(negate, "NOT IN", "IN"))
+}
+
+a <- arg_list(
+  npi   = less_than("1234567890"),
+  state = is_in(state.abb),
+  name  = "Jerry")
+
+# get_operator <- purrr::attr_getter("operator")
+
+# attr(prop(a, "params")$npi, "operator")
+
+has_operator <- \(x) names(attributes(x)) %in% "operator"
+
+has_operator(a@params$npi)
+
+has_operator(a@params$name)
+
+map(a@params, has_operator) |> 
+  compact() |> 
+  names()
+
+a@params[names(a@params) %in% "npi"]
+```
+
+
+```{r}
+#| eval: false
 startswith <- \(x) {
   list(
     OPERATOR = "STARTS_WITH", 
