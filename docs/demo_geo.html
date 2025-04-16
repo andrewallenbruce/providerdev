@@ -562,7 +562,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span><span class="va">rhc_nppes</span> <span class="op">&lt;-</span> <span class="fu">npi_nppes</span><span class="op">(</span>npi <span class="op">=</span> <span class="va">rhc_enr</span><span class="op">$</span><span class="va">npi</span><span class="op">)</span></span>
 <span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html">toc</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>#&gt; 1.14 sec elapsed</code></pre>
+<pre><code>#&gt; 1.22 sec elapsed</code></pre>
 </div>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rhc_nppes</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">slt</span><span class="op">(</span><span class="op">-</span><span class="va">endpoints</span>, <span class="op">-</span><span class="va">enumeration_type</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -888,39 +888,167 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>  state   <span class="op">=</span> <span class="va">state</span>,</span>
 <span>  postalcode <span class="op">=</span> <span class="va">zip</span>,</span>
 <span>  method <span class="op">=</span> <span class="st">"census"</span>, </span>
-<span>  full_results <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">geo_census</span></span>
-<span></span>
-<span><span class="va">geo_arcgis</span> <span class="op">&lt;-</span> <span class="fu">tidygeocoder</span><span class="fu">::</span><span class="fu"><a href="https://jessecambon.github.io/tidygeocoder/reference/geocode.html">geocode</a></span><span class="op">(</span></span>
+<span>  full_results <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>#&gt; Passing 84 addresses to the US Census batch geocoder</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>#&gt; Query completed in: 1 seconds</code></pre>
+</div>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">geo_census</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 85 × 26
+#&gt;    npi    has_mult_npi ccn   pac   enid  enid_state org_name dba_name inc_date  
+#&gt;    &lt;chr&gt;         &lt;int&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt;    &lt;chr&gt;    &lt;date&gt;    
+#&gt;  1 16397…            0 1189… 2961… O202… GA         ACCESS … &lt;NA&gt;     2020-07-29
+#&gt;  2 11741…            0 1189… 2961… O202… GA         ACCESS … &lt;NA&gt;     2021-01-11
+#&gt;  3 15681…            0 1189… 2961… O202… GA         ACCESS … &lt;NA&gt;     2020-07-29
+#&gt;  4 18210…            1 1134… 1850… O200… GA         BACON C… BACON C… 1995-06-15
+#&gt;  5 15588…            0 1185… 1850… O201… GA         BACON C… NICHOLL… 1995-06-15
+#&gt;  6 17503…            0 1138… 2264… O200… GA         BOWDON-… CARROLL… 1980-10-09
+#&gt;  7 14179…            0 1138… 2264… O200… GA         BOWDON-… FRANLKI… 1980-10-09
+#&gt;  8 15381…            0 1138… 2264… O201… GA         BOWDON-… CARROLL… 1980-10-09
+#&gt;  9 18519…            0 1185… 3476… O202… GA         BURKE H… BURKE M… NA        
+#&gt; 10 16392…            0 1134… 4587… O201… GA         COFFEE … COFFEE … NA        
+#&gt; # ℹ 75 more rows
+#&gt; # ℹ 17 more variables: inc_state &lt;chr&gt;, org_type &lt;chr&gt;, org_type_2 &lt;chr&gt;,
+#&gt; #   proprietary_nonprofit &lt;chr&gt;, address &lt;chr&gt;, city &lt;chr&gt;, state &lt;chr&gt;,
+#&gt; #   zip &lt;chr&gt;, lat &lt;dbl&gt;, long &lt;dbl&gt;, id &lt;int&gt;, input_address &lt;chr&gt;,
+#&gt; #   match_indicator &lt;chr&gt;, match_type &lt;chr&gt;, matched_address &lt;chr&gt;,
+#&gt; #   tiger_line_id &lt;int&gt;, tiger_side &lt;chr&gt;</code></pre>
+</div>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">geo_arcgis</span> <span class="op">&lt;-</span> <span class="fu">tidygeocoder</span><span class="fu">::</span><span class="fu"><a href="https://jessecambon.github.io/tidygeocoder/reference/geocode.html">geocode</a></span><span class="op">(</span></span>
 <span>  <span class="va">rhc_enr</span>,</span>
 <span>  street <span class="op">=</span> <span class="va">address</span>,</span>
 <span>  city    <span class="op">=</span> <span class="va">city</span>,</span>
 <span>  state   <span class="op">=</span> <span class="va">state</span>,</span>
 <span>  postalcode <span class="op">=</span> <span class="va">zip</span>,</span>
 <span>  method <span class="op">=</span> <span class="st">"arcgis"</span>, </span>
-<span>  full_results <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">geo_arcgis</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  full_results <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>#&gt; Passing 84 addresses to the ArcGIS single address geocoder</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>#&gt; Query completed in: 43.2 seconds</code></pre>
+</div>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">geo_arcgis</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 85 × 87
+#&gt;    npi    has_mult_npi ccn   pac   enid  enid_state org_name dba_name inc_date  
+#&gt;    &lt;chr&gt;         &lt;int&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt;    &lt;chr&gt;    &lt;date&gt;    
+#&gt;  1 16397…            0 1189… 2961… O202… GA         ACCESS … &lt;NA&gt;     2020-07-29
+#&gt;  2 11741…            0 1189… 2961… O202… GA         ACCESS … &lt;NA&gt;     2021-01-11
+#&gt;  3 15681…            0 1189… 2961… O202… GA         ACCESS … &lt;NA&gt;     2020-07-29
+#&gt;  4 18210…            1 1134… 1850… O200… GA         BACON C… BACON C… 1995-06-15
+#&gt;  5 15588…            0 1185… 1850… O201… GA         BACON C… NICHOLL… 1995-06-15
+#&gt;  6 17503…            0 1138… 2264… O200… GA         BOWDON-… CARROLL… 1980-10-09
+#&gt;  7 14179…            0 1138… 2264… O200… GA         BOWDON-… FRANLKI… 1980-10-09
+#&gt;  8 15381…            0 1138… 2264… O201… GA         BOWDON-… CARROLL… 1980-10-09
+#&gt;  9 18519…            0 1185… 3476… O202… GA         BURKE H… BURKE M… NA        
+#&gt; 10 16392…            0 1134… 4587… O201… GA         COFFEE … COFFEE … NA        
+#&gt; # ℹ 75 more rows
+#&gt; # ℹ 78 more variables: inc_state &lt;chr&gt;, org_type &lt;chr&gt;, org_type_2 &lt;chr&gt;,
+#&gt; #   proprietary_nonprofit &lt;chr&gt;, address &lt;chr&gt;, city &lt;chr&gt;, state &lt;chr&gt;,
+#&gt; #   zip &lt;chr&gt;, lat &lt;dbl&gt;, long &lt;dbl&gt;, arcgis_address &lt;chr&gt;, score &lt;dbl&gt;,
+#&gt; #   location.x &lt;dbl&gt;, location.y &lt;dbl&gt;, attributes.Loc_name &lt;chr&gt;,
+#&gt; #   attributes.Status &lt;chr&gt;, attributes.Score &lt;dbl&gt;,
+#&gt; #   attributes.Match_addr &lt;chr&gt;, attributes.LongLabel &lt;chr&gt;, …</code></pre>
+</div>
 </div>
 </section><section id="retrieve-georgia-counties-shapefile-from-tigris" class="level2"><h2 class="anchored" data-anchor-id="retrieve-georgia-counties-shapefile-from-tigris">Retrieve Georgia counties shapefile from {tigris}</h2>
 <div class="cell">
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">tig_cnt</span> <span class="op">&lt;-</span> <span class="fu">tigris</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tigris/man/counties.html">counties</a></span><span class="op">(</span></span>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">tig_cnt</span> <span class="op">&lt;-</span> <span class="fu">tigris</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tigris/man/counties.html">counties</a></span><span class="op">(</span></span>
 <span>  state <span class="op">=</span> <span class="st">"GA"</span>,</span>
 <span>  year <span class="op">=</span> <span class="fl">2022</span>,</span>
 <span>  progress_bar <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">tig_cnt</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">tig_cnt</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">sf_cnt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rmapshaper/man/ms_simplify.html">ms_simplify</a></span><span class="op">(</span><span class="va">tig_cnt</span><span class="op">)</span></span>
+<span><span class="va">tig_cnt</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; Simple feature collection with 159 features and 17 fields
+#&gt; Geometry type: MULTIPOLYGON
+#&gt; Dimension:     XY
+#&gt; Bounding box:  xmin: -85.6 ymin: 30.4 xmax: -80.8 ymax: 35
+#&gt; Geodetic CRS:  NAD83
+#&gt; First 10 features:
+#&gt;     STATEFP COUNTYFP COUNTYNS GEOID     NAME        NAMELSAD LSAD CLASSFP MTFCC
+#&gt; 16       13      189 00348794 13189 McDuffie McDuffie County   06      H1 G4020
+#&gt; 53       13      025 00351605 13025 Brantley Brantley County   06      H1 G4020
+#&gt; 54       13      171 00326713 13171    Lamar    Lamar County   06      H1 G4020
+#&gt; 83       13      115 00353665 13115    Floyd    Floyd County   06      H1 G4020
+#&gt; 101      13      273 00352238 13273  Terrell  Terrell County   06      H1 G4020
+#&gt; 102      13      063 01672399 13063  Clayton  Clayton County   06      H1 G4020
+#&gt; 105      13      073 00348865 13073 Columbia Columbia County   06      H1 G4020
+#&gt; 126      13      193 00346957 13193    Macon    Macon County   06      H1 G4020
+#&gt; 146      13      049 00357747 13049 Charlton Charlton County   06      H1 G4020
+#&gt; 147      13      233 00343585 13233     Polk     Polk County   06      H1 G4020
+#&gt;     CSAFP CBSAFP METDIVFP FUNCSTAT      ALAND   AWATER    INTPTLAT     INTPTLON
+#&gt; 16   &lt;NA&gt;   &lt;NA&gt;     &lt;NA&gt;        A  666591525 23112523 +33.4806126 -082.4795333
+#&gt; 53   &lt;NA&gt;   &lt;NA&gt;     &lt;NA&gt;        A 1147972258 10291563 +31.1973339 -081.9829779
+#&gt; 54   &lt;NA&gt;   &lt;NA&gt;     &lt;NA&gt;        A  475264405  6044329 +33.0744405 -084.1466893
+#&gt; 83   &lt;NA&gt;   &lt;NA&gt;     &lt;NA&gt;        A 1320431515 22387093 +34.2636901 -085.2136849
+#&gt; 101  &lt;NA&gt;   &lt;NA&gt;     &lt;NA&gt;        A  869695791  4951325 +31.7771909 -084.4394464
+#&gt; 102  &lt;NA&gt;   &lt;NA&gt;     &lt;NA&gt;        A  367145192  6928044 +33.5516027 -084.4128678
+#&gt; 105  &lt;NA&gt;   &lt;NA&gt;     &lt;NA&gt;        A  751598754 45345677 +33.5520746 -082.2496077
+#&gt; 126  &lt;NA&gt;   &lt;NA&gt;     &lt;NA&gt;        A 1037709945 13841916 +32.3626859 -084.0512306
+#&gt; 146  &lt;NA&gt;   &lt;NA&gt;     &lt;NA&gt;        A 2020415648  5963237 +30.7799036 -082.1396442
+#&gt; 147  &lt;NA&gt;   &lt;NA&gt;     &lt;NA&gt;        A  803775591  4664760 +33.9960153 -085.1883384
+#&gt;                           geometry
+#&gt; 16  MULTIPOLYGON (((-82.6 33.6,...
+#&gt; 53  MULTIPOLYGON (((-81.9 31.1,...
+#&gt; 54  MULTIPOLYGON (((-84.2 33.1,...
+#&gt; 83  MULTIPOLYGON (((-85 34.3, -...
+#&gt; 101 MULTIPOLYGON (((-84.3 31.7,...
+#&gt; 102 MULTIPOLYGON (((-84.5 33.6,...
+#&gt; 105 MULTIPOLYGON (((-82.4 33.6,...
+#&gt; 126 MULTIPOLYGON (((-83.8 32.4,...
+#&gt; 146 MULTIPOLYGON (((-82.4 30.8,...
+#&gt; 147 MULTIPOLYGON (((-85.2 33.9,...</code></pre>
+</div>
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">tig_cnt</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt;    STATEFP            COUNTYFP           COUNTYNS            GEOID          
+#&gt;  Length:159         Length:159         Length:159         Length:159        
+#&gt;  Class :character   Class :character   Class :character   Class :character  
+#&gt;  Mode  :character   Mode  :character   Mode  :character   Mode  :character  
+#&gt;                                                                             
+#&gt;                                                                             
+#&gt;                                                                             
+#&gt;      NAME             NAMELSAD             LSAD             CLASSFP         
+#&gt;  Length:159         Length:159         Length:159         Length:159        
+#&gt;  Class :character   Class :character   Class :character   Class :character  
+#&gt;  Mode  :character   Mode  :character   Mode  :character   Mode  :character  
+#&gt;                                                                             
+#&gt;                                                                             
+#&gt;                                                                             
+#&gt;     MTFCC              CSAFP              CBSAFP            METDIVFP        
+#&gt;  Length:159         Length:159         Length:159         Length:159        
+#&gt;  Class :character   Class :character   Class :character   Class :character  
+#&gt;  Mode  :character   Mode  :character   Mode  :character   Mode  :character  
+#&gt;                                                                             
+#&gt;                                                                             
+#&gt;                                                                             
+#&gt;    FUNCSTAT             ALAND                AWATER            INTPTLAT        
+#&gt;  Length:159         Min.   : 308985572   Min.   :   488463   Length:159        
+#&gt;  Class :character   1st Qu.: 645741035   1st Qu.:  6553565   Class :character  
+#&gt;  Mode  :character   Median : 887636774   Median : 11818093   Mode  :character  
+#&gt;                     Mean   : 940165210   Mean   : 27790668                     
+#&gt;                     3rd Qu.:1151923513   3rd Qu.: 19959364                     
+#&gt;                     Max.   :2329020700   Max.   :509854701                     
+#&gt;    INTPTLON                  geometry  
+#&gt;  Length:159         MULTIPOLYGON :159  
+#&gt;  Class :character   epsg:4269    :  0  
+#&gt;  Mode  :character   +proj=long...:  0  
+#&gt;                                        
+#&gt;                                        
+#&gt; </code></pre>
+</div>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sf_cnt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rmapshaper/man/ms_simplify.html">ms_simplify</a></span><span class="op">(</span><span class="va">tig_cnt</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sf_cnt</span><span class="op">$</span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_centroid</a></span><span class="op">(</span><span class="va">sf_cnt</span><span class="op">$</span><span class="va">geometry</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section><section id="map-with-ggplot" class="level2"><h2 class="anchored" data-anchor-id="map-with-ggplot">Map with {ggplot}</h2>
 <div class="cell">
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sf_cnt</span><span class="op">)</span> <span class="op">+</span></span>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sf_cnt</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_sf</span><span class="op">(</span></span>
 <span>    fill <span class="op">=</span> <span class="st">"skyblue"</span>,</span>
 <span>    colour <span class="op">=</span> <span class="st">"white"</span>,</span>
@@ -940,8 +1068,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>    shape <span class="op">=</span> <span class="fl">21</span>,</span>
 <span>    stroke <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggthemes</span><span class="fu">::</span><span class="fu"><a href="http://jrnold.github.io/ggthemes/reference/theme_fivethirtyeight.html">theme_fivethirtyeight</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-error">
-<pre><code>#&gt; Error: object 'sf_cnt' not found</code></pre>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><img src="demo_geo_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
+</figure>
+</div>
 </div>
 </div>
 
@@ -1426,313 +1557,311 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb27" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="an">output:</span><span class="co"> html_document</span></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co">  chunk_output_type: console</span></span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="fu"># Geospatial {#sec-demogeo}</span></span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup-common-01</span></span>
-<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
-<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"includes/_common.R"</span>)</span>
-<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(</span>
-<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">collapse  =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">echo      =</span> <span class="cn">TRUE</span>, </span>
-<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">message   =</span> <span class="cn">TRUE</span>, </span>
-<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">warning   =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">error     =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">comment   =</span> <span class="st">"#&gt;"</span>,</span>
-<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">dpi       =</span> <span class="dv">600</span>, </span>
-<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">out.width =</span> <span class="st">"100%"</span></span>
-<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">scipen =</span> <span class="dv">999</span>)</span>
-<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-30"><a href="#cb27-30" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb27-31"><a href="#cb27-31" aria-hidden="true" tabindex="-1"></a>underscore <span class="ot">&lt;-</span> \(x) <span class="fu">gsub</span>(<span class="st">"___owner$"</span>, <span class="st">""</span>, x, <span class="at">perl =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb27-32"><a href="#cb27-32" aria-hidden="true" tabindex="-1"></a>char_binary <span class="ot">&lt;-</span> \(x) <span class="fu">val_match</span>(x, <span class="st">"N"</span> <span class="sc">~</span> <span class="dv">0</span>L, <span class="st">"Y"</span> <span class="sc">~</span> <span class="dv">1</span>L)</span>
-<span id="cb27-33"><a href="#cb27-33" aria-hidden="true" tabindex="-1"></a>pct_prop <span class="ot">&lt;-</span> \(x) {</span>
-<span id="cb27-34"><a href="#cb27-34" aria-hidden="true" tabindex="-1"></a>  cheapr<span class="sc">::</span><span class="fu">case</span>(</span>
-<span id="cb27-35"><a href="#cb27-35" aria-hidden="true" tabindex="-1"></a>    x <span class="sc">==</span> <span class="st">"0"</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
-<span id="cb27-36"><a href="#cb27-36" aria-hidden="true" tabindex="-1"></a>    cheapr<span class="sc">::</span><span class="fu">is_na</span>(x) <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
-<span id="cb27-37"><a href="#cb27-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">.default =</span> <span class="fu">as.double</span>(x) <span class="sc">/</span> <span class="dv">100</span></span>
-<span id="cb27-38"><a href="#cb27-38" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb27-39"><a href="#cb27-39" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb27-40"><a href="#cb27-40" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb27-41"><a href="#cb27-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-42"><a href="#cb27-42" aria-hidden="true" tabindex="-1"></a><span class="fu">## Load Packages</span></span>
-<span id="cb27-43"><a href="#cb27-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-46"><a href="#cb27-46" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb27-47"><a href="#cb27-47" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb27-48"><a href="#cb27-48" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb27-49"><a href="#cb27-49" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidygeocoder)</span>
-<span id="cb27-50"><a href="#cb27-50" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tigris)</span>
-<span id="cb27-51"><a href="#cb27-51" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rmapshaper)</span>
-<span id="cb27-52"><a href="#cb27-52" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
-<span id="cb27-53"><a href="#cb27-53" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">tigris_use_cache =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb27-54"><a href="#cb27-54" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb27-55"><a href="#cb27-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-56"><a href="#cb27-56" aria-hidden="true" tabindex="-1"></a><span class="fu">## Rural Health Clinics</span></span>
-<span id="cb27-57"><a href="#cb27-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-60"><a href="#cb27-60" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb27-61"><a href="#cb27-61" aria-hidden="true" tabindex="-1"></a>req <span class="ot">&lt;-</span> <span class="fu">careGroup</span>(<span class="st">"rural_health"</span>)<span class="sc">@</span>groups <span class="sc">|&gt;</span></span>
-<span id="cb27-62"><a href="#cb27-62" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"rural_health_clinic_enrollments"</span>]] <span class="sc">|&gt;</span></span>
-<span id="cb27-63"><a href="#cb27-63" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"endpoints"</span>]] <span class="sc">|&gt;</span></span>
-<span id="cb27-64"><a href="#cb27-64" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"identifier"</span>]] <span class="sc">|&gt;</span></span>
-<span id="cb27-65"><a href="#cb27-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">request</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb27-66"><a href="#cb27-66" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_query</span>(</span>
-<span id="cb27-67"><a href="#cb27-67" aria-hidden="true" tabindex="-1"></a>    <span class="st">"filter[STATE]"</span> <span class="ot">=</span> <span class="st">"GA"</span></span>
-<span id="cb27-68"><a href="#cb27-68" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb27-69"><a href="#cb27-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-70"><a href="#cb27-70" aria-hidden="true" tabindex="-1"></a>nres <span class="ot">&lt;-</span> req <span class="sc">|&gt;</span> </span>
-<span id="cb27-71"><a href="#cb27-71" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_path_append</span>(<span class="st">"stats"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb27-72"><a href="#cb27-72" aria-hidden="true" tabindex="-1"></a>  providertwo<span class="sc">:::</span><span class="fu">perform_simple</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb27-73"><a href="#cb27-73" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"data"</span>]] <span class="sc">|&gt;</span> </span>
-<span id="cb27-74"><a href="#cb27-74" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"found_rows"</span>]]</span>
-<span id="cb27-75"><a href="#cb27-75" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-76"><a href="#cb27-76" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> req <span class="sc">|&gt;</span> </span>
-<span id="cb27-77"><a href="#cb27-77" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_query</span>(<span class="at">offset =</span> <span class="dv">0</span>L, <span class="at">size =</span> <span class="dv">5000</span>L) <span class="sc">|&gt;</span> </span>
-<span id="cb27-78"><a href="#cb27-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb27-79"><a href="#cb27-79" aria-hidden="true" tabindex="-1"></a>  providertwo<span class="sc">:::</span><span class="fu">resp_simple_json</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb27-80"><a href="#cb27-80" aria-hidden="true" tabindex="-1"></a>  <span class="fu">get_elem</span>(<span class="st">"^data$|headers"</span>, <span class="at">regex =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb27-81"><a href="#cb27-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-82"><a href="#cb27-82" aria-hidden="true" tabindex="-1"></a>rhc_enr <span class="ot">&lt;-</span> <span class="fu">as_tbl</span>(res<span class="sc">$</span>data) <span class="sc">|&gt;</span> </span>
-<span id="cb27-83"><a href="#cb27-83" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(res<span class="sc">$</span>meta) <span class="sc">|&gt;</span> </span>
-<span id="cb27-84"><a href="#cb27-84" aria-hidden="true" tabindex="-1"></a>  providertwo<span class="sc">:::</span><span class="fu">map_na_if</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb27-85"><a href="#cb27-85" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roworder</span>(<span class="st">`</span><span class="at">ORGANIZATION NAME</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
-<span id="cb27-86"><a href="#cb27-86" aria-hidden="true" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>() <span class="sc">|&gt;</span></span>
-<span id="cb27-87"><a href="#cb27-87" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(<span class="at">incorporation_date =</span> providertwo<span class="sc">:::</span><span class="fu">as_date</span>(incorporation_date),</span>
-<span id="cb27-88"><a href="#cb27-88" aria-hidden="true" tabindex="-1"></a>      <span class="at">multiple_npi_flag =</span> <span class="fu">char_binary</span>(multiple_npi_flag),</span>
-<span id="cb27-89"><a href="#cb27-89" aria-hidden="true" tabindex="-1"></a>      <span class="at">address =</span> <span class="fu">cheapr_if_else</span>(</span>
-<span id="cb27-90"><a href="#cb27-90" aria-hidden="true" tabindex="-1"></a>        cheapr<span class="sc">::</span><span class="fu">is_na</span>(address_line_2), </span>
-<span id="cb27-91"><a href="#cb27-91" aria-hidden="true" tabindex="-1"></a>        address_line_1, </span>
-<span id="cb27-92"><a href="#cb27-92" aria-hidden="true" tabindex="-1"></a>        <span class="fu">paste</span>(address_line_1, address_line_2))) <span class="sc">|&gt;</span></span>
-<span id="cb27-93"><a href="#cb27-93" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(</span>
-<span id="cb27-94"><a href="#cb27-94" aria-hidden="true" tabindex="-1"></a>    npi,</span>
-<span id="cb27-95"><a href="#cb27-95" aria-hidden="true" tabindex="-1"></a>    <span class="at">has_mult_npi =</span> multiple_npi_flag,</span>
-<span id="cb27-96"><a href="#cb27-96" aria-hidden="true" tabindex="-1"></a>    ccn,</span>
-<span id="cb27-97"><a href="#cb27-97" aria-hidden="true" tabindex="-1"></a>    <span class="at">pac =</span> associate_id,</span>
-<span id="cb27-98"><a href="#cb27-98" aria-hidden="true" tabindex="-1"></a>    <span class="at">enid =</span> enrollment_id,</span>
-<span id="cb27-99"><a href="#cb27-99" aria-hidden="true" tabindex="-1"></a>    <span class="at">enid_state =</span> enrollment_state,</span>
-<span id="cb27-100"><a href="#cb27-100" aria-hidden="true" tabindex="-1"></a>    <span class="at">org_name =</span> organization_name,</span>
-<span id="cb27-101"><a href="#cb27-101" aria-hidden="true" tabindex="-1"></a>    <span class="at">dba_name =</span> doing_business_as_name,</span>
-<span id="cb27-102"><a href="#cb27-102" aria-hidden="true" tabindex="-1"></a>    <span class="at">inc_date =</span> incorporation_date,</span>
-<span id="cb27-103"><a href="#cb27-103" aria-hidden="true" tabindex="-1"></a>    <span class="at">inc_state =</span> incorporation_state,</span>
-<span id="cb27-104"><a href="#cb27-104" aria-hidden="true" tabindex="-1"></a>    <span class="at">org_type =</span> organization_type_structure,</span>
-<span id="cb27-105"><a href="#cb27-105" aria-hidden="true" tabindex="-1"></a>    <span class="at">org_type_2 =</span> organization_other_type_text,</span>
-<span id="cb27-106"><a href="#cb27-106" aria-hidden="true" tabindex="-1"></a>    proprietary_nonprofit,</span>
-<span id="cb27-107"><a href="#cb27-107" aria-hidden="true" tabindex="-1"></a>    address,</span>
-<span id="cb27-108"><a href="#cb27-108" aria-hidden="true" tabindex="-1"></a>    city,</span>
-<span id="cb27-109"><a href="#cb27-109" aria-hidden="true" tabindex="-1"></a>    state,</span>
-<span id="cb27-110"><a href="#cb27-110" aria-hidden="true" tabindex="-1"></a>    <span class="at">zip =</span> zip_code)</span>
-<span id="cb27-111"><a href="#cb27-111" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-112"><a href="#cb27-112" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-113"><a href="#cb27-113" aria-hidden="true" tabindex="-1"></a>rhc_enr <span class="sc">|&gt;</span> </span>
-<span id="cb27-114"><a href="#cb27-114" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span>
-<span id="cb27-115"><a href="#cb27-115" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb27-116"><a href="#cb27-116" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-119"><a href="#cb27-119" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb27-120"><a href="#cb27-120" aria-hidden="true" tabindex="-1"></a>req <span class="ot">&lt;-</span> <span class="fu">careGroup</span>(<span class="st">"rural_health"</span>)<span class="sc">@</span>groups <span class="sc">|&gt;</span></span>
-<span id="cb27-121"><a href="#cb27-121" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"rural_health_clinic_all_owners"</span>]] <span class="sc">|&gt;</span> </span>
-<span id="cb27-122"><a href="#cb27-122" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"endpoints"</span>]] <span class="sc">|&gt;</span></span>
-<span id="cb27-123"><a href="#cb27-123" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"identifier"</span>]] <span class="sc">|&gt;</span></span>
-<span id="cb27-124"><a href="#cb27-124" aria-hidden="true" tabindex="-1"></a>  <span class="fu">request</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb27-125"><a href="#cb27-125" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_query</span>(<span class="st">"filter[STATE - OWNER]"</span> <span class="ot">=</span> <span class="st">"GA"</span>)</span>
-<span id="cb27-126"><a href="#cb27-126" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-127"><a href="#cb27-127" aria-hidden="true" tabindex="-1"></a>nres <span class="ot">&lt;-</span> req <span class="sc">|&gt;</span> </span>
-<span id="cb27-128"><a href="#cb27-128" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_path_append</span>(<span class="st">"stats"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb27-129"><a href="#cb27-129" aria-hidden="true" tabindex="-1"></a>  providertwo<span class="sc">:::</span><span class="fu">perform_simple</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb27-130"><a href="#cb27-130" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"data"</span>]] <span class="sc">|&gt;</span> </span>
-<span id="cb27-131"><a href="#cb27-131" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"found_rows"</span>]]</span>
-<span id="cb27-132"><a href="#cb27-132" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-133"><a href="#cb27-133" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> req <span class="sc">|&gt;</span> </span>
-<span id="cb27-134"><a href="#cb27-134" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_query</span>(<span class="at">offset =</span> <span class="dv">0</span>L, <span class="at">size =</span> <span class="dv">5000</span>L) <span class="sc">|&gt;</span> </span>
-<span id="cb27-135"><a href="#cb27-135" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb27-136"><a href="#cb27-136" aria-hidden="true" tabindex="-1"></a>  providertwo<span class="sc">:::</span><span class="fu">resp_simple_json</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb27-137"><a href="#cb27-137" aria-hidden="true" tabindex="-1"></a>  <span class="fu">get_elem</span>(<span class="st">"^data$|headers"</span>, <span class="at">regex =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb27-138"><a href="#cb27-138" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-139"><a href="#cb27-139" aria-hidden="true" tabindex="-1"></a>rhc_owner <span class="ot">&lt;-</span> <span class="fu">as_tbl</span>(res<span class="sc">$</span>data) <span class="sc">|&gt;</span> </span>
-<span id="cb27-140"><a href="#cb27-140" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(res<span class="sc">$</span>meta) <span class="sc">|&gt;</span> </span>
-<span id="cb27-141"><a href="#cb27-141" aria-hidden="true" tabindex="-1"></a>  providertwo<span class="sc">:::</span><span class="fu">map_na_if</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb27-142"><a href="#cb27-142" aria-hidden="true" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb27-143"><a href="#cb27-143" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rnm</span>(</span>
-<span id="cb27-144"><a href="#cb27-144" aria-hidden="true" tabindex="-1"></a>    <span class="at">enid =</span> enrollment_id,</span>
-<span id="cb27-145"><a href="#cb27-145" aria-hidden="true" tabindex="-1"></a>    <span class="at">pac =</span> associate_id_owner, </span>
-<span id="cb27-146"><a href="#cb27-146" aria-hidden="true" tabindex="-1"></a>    <span class="at">org_name =</span> organization_name) <span class="sc">|&gt;</span></span>
-<span id="cb27-147"><a href="#cb27-147" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(</span>
-<span id="cb27-148"><a href="#cb27-148" aria-hidden="true" tabindex="-1"></a>    <span class="at">association_date =</span> providertwo<span class="sc">:::</span><span class="fu">as_date</span>(association_date_owner),</span>
-<span id="cb27-149"><a href="#cb27-149" aria-hidden="true" tabindex="-1"></a>    <span class="at">address =</span> <span class="fu">cheapr_if_else</span>(cheapr<span class="sc">::</span><span class="fu">is_na</span>(address_line_2_owner), address_line_1_owner, <span class="fu">paste</span>(address_line_1_owner, address_line_2_owner)),</span>
-<span id="cb27-150"><a href="#cb27-150" aria-hidden="true" tabindex="-1"></a>    <span class="at">percentage_ownership =</span> <span class="fu">as.numeric</span>(percentage_ownership),</span>
-<span id="cb27-151"><a href="#cb27-151" aria-hidden="true" tabindex="-1"></a>    <span class="at">role_code =</span> <span class="fu">as.integer</span>(role_code_owner)</span>
-<span id="cb27-152"><a href="#cb27-152" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb27-153"><a href="#cb27-153" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(</span>
-<span id="cb27-154"><a href="#cb27-154" aria-hidden="true" tabindex="-1"></a>    pac,</span>
-<span id="cb27-155"><a href="#cb27-155" aria-hidden="true" tabindex="-1"></a>    enid,</span>
-<span id="cb27-156"><a href="#cb27-156" aria-hidden="true" tabindex="-1"></a>    org_name,</span>
-<span id="cb27-157"><a href="#cb27-157" aria-hidden="true" tabindex="-1"></a>    <span class="at">pac_owner =</span> associate_id, </span>
-<span id="cb27-158"><a href="#cb27-158" aria-hidden="true" tabindex="-1"></a>    <span class="at">org_name_owner =</span> organization_name_owner,</span>
-<span id="cb27-159"><a href="#cb27-159" aria-hidden="true" tabindex="-1"></a>    <span class="at">entity =</span> type_owner,</span>
-<span id="cb27-160"><a href="#cb27-160" aria-hidden="true" tabindex="-1"></a>    role_code,</span>
-<span id="cb27-161"><a href="#cb27-161" aria-hidden="true" tabindex="-1"></a>    <span class="at">role_text =</span> role_text_owner,</span>
-<span id="cb27-162"><a href="#cb27-162" aria-hidden="true" tabindex="-1"></a>    association_date_owner,</span>
-<span id="cb27-163"><a href="#cb27-163" aria-hidden="true" tabindex="-1"></a>    first_name_owner,</span>
-<span id="cb27-164"><a href="#cb27-164" aria-hidden="true" tabindex="-1"></a>    middle_name_owner,</span>
-<span id="cb27-165"><a href="#cb27-165" aria-hidden="true" tabindex="-1"></a>    last_name_owner,</span>
-<span id="cb27-166"><a href="#cb27-166" aria-hidden="true" tabindex="-1"></a>    title_owner,</span>
-<span id="cb27-167"><a href="#cb27-167" aria-hidden="true" tabindex="-1"></a>    <span class="at">dba_name =</span> doing_business_as_name_owner,</span>
-<span id="cb27-168"><a href="#cb27-168" aria-hidden="true" tabindex="-1"></a>    address,</span>
-<span id="cb27-169"><a href="#cb27-169" aria-hidden="true" tabindex="-1"></a>    city_owner,</span>
-<span id="cb27-170"><a href="#cb27-170" aria-hidden="true" tabindex="-1"></a>    state_owner,</span>
-<span id="cb27-171"><a href="#cb27-171" aria-hidden="true" tabindex="-1"></a>    <span class="at">zip =</span> zip_code_owner,</span>
-<span id="cb27-172"><a href="#cb27-172" aria-hidden="true" tabindex="-1"></a>    percentage_ownership,</span>
-<span id="cb27-173"><a href="#cb27-173" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_for_acq =</span> created_for_acquisition_owner,</span>
-<span id="cb27-174"><a href="#cb27-174" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_corp =</span> corporation_owner,</span>
-<span id="cb27-175"><a href="#cb27-175" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_llc =</span> llc_owner,</span>
-<span id="cb27-176"><a href="#cb27-176" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_med_prov_supp =</span> medical_provider_supplier_owner,</span>
-<span id="cb27-177"><a href="#cb27-177" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_mgmt_serv_co =</span> management_services_company_owner,</span>
-<span id="cb27-178"><a href="#cb27-178" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_med_staff_co =</span> medical_staffing_company_owner,</span>
-<span id="cb27-179"><a href="#cb27-179" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_holding_co =</span> holding_company_owner,</span>
-<span id="cb27-180"><a href="#cb27-180" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_invest_firm =</span> investment_firm_owner,</span>
-<span id="cb27-181"><a href="#cb27-181" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_fin_inst =</span> financial_institution_owner,</span>
-<span id="cb27-182"><a href="#cb27-182" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_consult_firm =</span> consulting_firm_owner,</span>
-<span id="cb27-183"><a href="#cb27-183" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_for_profit =</span> for_profit_owner,</span>
-<span id="cb27-184"><a href="#cb27-184" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_non_profit =</span> non_profit_owner,</span>
-<span id="cb27-185"><a href="#cb27-185" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_other_type =</span> other_type_owner,</span>
-<span id="cb27-186"><a href="#cb27-186" aria-hidden="true" tabindex="-1"></a>    <span class="at">other_type =</span> other_type_text_owner</span>
-<span id="cb27-187"><a href="#cb27-187" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb27-188"><a href="#cb27-188" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(</span>
-<span id="cb27-189"><a href="#cb27-189" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_for_acq =</span> <span class="fu">char_binary</span>(is_for_acq),</span>
-<span id="cb27-190"><a href="#cb27-190" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_corp =</span> <span class="fu">char_binary</span>(is_corp),</span>
-<span id="cb27-191"><a href="#cb27-191" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_llc =</span> <span class="fu">char_binary</span>(is_llc),</span>
-<span id="cb27-192"><a href="#cb27-192" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_med_prov_supp =</span> <span class="fu">char_binary</span>(is_med_prov_supp),</span>
-<span id="cb27-193"><a href="#cb27-193" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_mgmt_serv_co =</span> <span class="fu">char_binary</span>(is_mgmt_serv_co),</span>
-<span id="cb27-194"><a href="#cb27-194" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_med_staff_co =</span> <span class="fu">char_binary</span>(is_med_staff_co),</span>
-<span id="cb27-195"><a href="#cb27-195" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_holding_co =</span> <span class="fu">char_binary</span>(is_holding_co),</span>
-<span id="cb27-196"><a href="#cb27-196" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_invest_firm =</span> <span class="fu">char_binary</span>(is_invest_firm),</span>
-<span id="cb27-197"><a href="#cb27-197" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_fin_inst =</span> <span class="fu">char_binary</span>(is_fin_inst),</span>
-<span id="cb27-198"><a href="#cb27-198" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_consult_firm =</span> <span class="fu">char_binary</span>(is_consult_firm),</span>
-<span id="cb27-199"><a href="#cb27-199" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_for_profit =</span> <span class="fu">char_binary</span>(is_for_profit),</span>
-<span id="cb27-200"><a href="#cb27-200" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_non_profit =</span> <span class="fu">char_binary</span>(is_non_profit),</span>
-<span id="cb27-201"><a href="#cb27-201" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_other_type =</span> <span class="fu">char_binary</span>(is_other_type)</span>
-<span id="cb27-202"><a href="#cb27-202" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb27-203"><a href="#cb27-203" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-204"><a href="#cb27-204" aria-hidden="true" tabindex="-1"></a>rhc_owner</span>
-<span id="cb27-205"><a href="#cb27-205" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb27-206"><a href="#cb27-206" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-207"><a href="#cb27-207" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-210"><a href="#cb27-210" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb27-211"><a href="#cb27-211" aria-hidden="true" tabindex="-1"></a>tictoc<span class="sc">::</span><span class="fu">tic</span>()</span>
-<span id="cb27-212"><a href="#cb27-212" aria-hidden="true" tabindex="-1"></a>rhc_nppes <span class="ot">&lt;-</span> <span class="fu">npi_nppes</span>(<span class="at">npi =</span> rhc_enr<span class="sc">$</span>npi)</span>
-<span id="cb27-213"><a href="#cb27-213" aria-hidden="true" tabindex="-1"></a>tictoc<span class="sc">::</span><span class="fu">toc</span>()</span>
-<span id="cb27-214"><a href="#cb27-214" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-215"><a href="#cb27-215" aria-hidden="true" tabindex="-1"></a>rhc_nppes <span class="sc">|&gt;</span> </span>
-<span id="cb27-216"><a href="#cb27-216" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(<span class="sc">-</span>endpoints, <span class="sc">-</span>enumeration_type) <span class="sc">|&gt;</span> </span>
-<span id="cb27-217"><a href="#cb27-217" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">100</span>)</span>
-<span id="cb27-218"><a href="#cb27-218" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-219"><a href="#cb27-219" aria-hidden="true" tabindex="-1"></a>rhc_nppes <span class="sc">|&gt;</span> </span>
-<span id="cb27-220"><a href="#cb27-220" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(number, addresses) <span class="sc">|&gt;</span> </span>
-<span id="cb27-221"><a href="#cb27-221" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(addresses) <span class="sc">|&gt;</span> </span>
-<span id="cb27-222"><a href="#cb27-222" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(<span class="at">address =</span> <span class="fu">cheapr_if_else</span>(cheapr<span class="sc">::</span><span class="fu">is_na</span>(address_2), address_1, <span class="fu">paste</span>(address_1, address_2))) <span class="sc">|&gt;</span> </span>
-<span id="cb27-223"><a href="#cb27-223" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(<span class="sc">-</span>address_1, <span class="sc">-</span>address_2, <span class="sc">-</span>address_type, <span class="sc">-</span>country_code, <span class="sc">-</span>country_name)</span>
-<span id="cb27-224"><a href="#cb27-224" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-225"><a href="#cb27-225" aria-hidden="true" tabindex="-1"></a>rhc_nppes <span class="sc">|&gt;</span> </span>
-<span id="cb27-226"><a href="#cb27-226" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(number, basic) <span class="sc">|&gt;</span> </span>
-<span id="cb27-227"><a href="#cb27-227" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(basic)</span>
-<span id="cb27-228"><a href="#cb27-228" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-229"><a href="#cb27-229" aria-hidden="true" tabindex="-1"></a>rhc_nppes <span class="sc">|&gt;</span> </span>
-<span id="cb27-230"><a href="#cb27-230" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(number, taxonomies) <span class="sc">|&gt;</span> </span>
-<span id="cb27-231"><a href="#cb27-231" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(taxonomies)</span>
-<span id="cb27-232"><a href="#cb27-232" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-233"><a href="#cb27-233" aria-hidden="true" tabindex="-1"></a>rhc_nppes <span class="sc">|&gt;</span> </span>
-<span id="cb27-234"><a href="#cb27-234" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(number, identifiers) <span class="sc">|&gt;</span> </span>
-<span id="cb27-235"><a href="#cb27-235" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(identifiers) <span class="sc">|&gt;</span> </span>
-<span id="cb27-236"><a href="#cb27-236" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">100</span>)</span>
-<span id="cb27-237"><a href="#cb27-237" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-238"><a href="#cb27-238" aria-hidden="true" tabindex="-1"></a>rhc_nppes <span class="sc">|&gt;</span> </span>
-<span id="cb27-239"><a href="#cb27-239" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(number, other_names) <span class="sc">|&gt;</span> </span>
-<span id="cb27-240"><a href="#cb27-240" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(other_names) <span class="sc">|&gt;</span> </span>
-<span id="cb27-241"><a href="#cb27-241" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">100</span>)</span>
-<span id="cb27-242"><a href="#cb27-242" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-243"><a href="#cb27-243" aria-hidden="true" tabindex="-1"></a>rhc_nppes <span class="sc">|&gt;</span> </span>
-<span id="cb27-244"><a href="#cb27-244" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(number, practiceLocations) <span class="sc">|&gt;</span> </span>
-<span id="cb27-245"><a href="#cb27-245" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(practiceLocations) <span class="sc">|&gt;</span> </span>
-<span id="cb27-246"><a href="#cb27-246" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sbt</span>(<span class="sc">!</span><span class="fu">is.na</span>(state)) <span class="sc">|&gt;</span> </span>
-<span id="cb27-247"><a href="#cb27-247" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">100</span>)</span>
-<span id="cb27-248"><a href="#cb27-248" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb27-249"><a href="#cb27-249" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-250"><a href="#cb27-250" aria-hidden="true" tabindex="-1"></a><span class="fu">## Geocode with {tidygeocoder}</span></span>
-<span id="cb27-251"><a href="#cb27-251" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-254"><a href="#cb27-254" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb27-255"><a href="#cb27-255" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb27-256"><a href="#cb27-256" aria-hidden="true" tabindex="-1"></a>geo_census <span class="ot">&lt;-</span> tidygeocoder<span class="sc">::</span><span class="fu">geocode</span>(</span>
-<span id="cb27-257"><a href="#cb27-257" aria-hidden="true" tabindex="-1"></a>  rhc_enr,</span>
-<span id="cb27-258"><a href="#cb27-258" aria-hidden="true" tabindex="-1"></a>  <span class="at">street =</span> address,</span>
-<span id="cb27-259"><a href="#cb27-259" aria-hidden="true" tabindex="-1"></a>  <span class="at">city    =</span> city,</span>
-<span id="cb27-260"><a href="#cb27-260" aria-hidden="true" tabindex="-1"></a>  <span class="at">state   =</span> state,</span>
-<span id="cb27-261"><a href="#cb27-261" aria-hidden="true" tabindex="-1"></a>  <span class="at">postalcode =</span> zip,</span>
-<span id="cb27-262"><a href="#cb27-262" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"census"</span>, </span>
-<span id="cb27-263"><a href="#cb27-263" aria-hidden="true" tabindex="-1"></a>  <span class="at">full_results =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb27-264"><a href="#cb27-264" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-265"><a href="#cb27-265" aria-hidden="true" tabindex="-1"></a>geo_census</span>
-<span id="cb27-266"><a href="#cb27-266" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-267"><a href="#cb27-267" aria-hidden="true" tabindex="-1"></a>geo_arcgis <span class="ot">&lt;-</span> tidygeocoder<span class="sc">::</span><span class="fu">geocode</span>(</span>
-<span id="cb27-268"><a href="#cb27-268" aria-hidden="true" tabindex="-1"></a>  rhc_enr,</span>
-<span id="cb27-269"><a href="#cb27-269" aria-hidden="true" tabindex="-1"></a>  <span class="at">street =</span> address,</span>
-<span id="cb27-270"><a href="#cb27-270" aria-hidden="true" tabindex="-1"></a>  <span class="at">city    =</span> city,</span>
-<span id="cb27-271"><a href="#cb27-271" aria-hidden="true" tabindex="-1"></a>  <span class="at">state   =</span> state,</span>
-<span id="cb27-272"><a href="#cb27-272" aria-hidden="true" tabindex="-1"></a>  <span class="at">postalcode =</span> zip,</span>
-<span id="cb27-273"><a href="#cb27-273" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"arcgis"</span>, </span>
-<span id="cb27-274"><a href="#cb27-274" aria-hidden="true" tabindex="-1"></a>  <span class="at">full_results =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb27-275"><a href="#cb27-275" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-276"><a href="#cb27-276" aria-hidden="true" tabindex="-1"></a>geo_arcgis</span>
-<span id="cb27-277"><a href="#cb27-277" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb27-278"><a href="#cb27-278" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-279"><a href="#cb27-279" aria-hidden="true" tabindex="-1"></a><span class="fu">## Retrieve Georgia counties shapefile from {tigris}</span></span>
-<span id="cb27-280"><a href="#cb27-280" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-283"><a href="#cb27-283" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb27-284"><a href="#cb27-284" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb27-285"><a href="#cb27-285" aria-hidden="true" tabindex="-1"></a>tig_cnt <span class="ot">&lt;-</span> tigris<span class="sc">::</span><span class="fu">counties</span>(</span>
-<span id="cb27-286"><a href="#cb27-286" aria-hidden="true" tabindex="-1"></a>  <span class="at">state =</span> <span class="st">"GA"</span>,</span>
-<span id="cb27-287"><a href="#cb27-287" aria-hidden="true" tabindex="-1"></a>  <span class="at">year =</span> <span class="dv">2022</span>,</span>
-<span id="cb27-288"><a href="#cb27-288" aria-hidden="true" tabindex="-1"></a>  <span class="at">progress_bar =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb27-289"><a href="#cb27-289" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-290"><a href="#cb27-290" aria-hidden="true" tabindex="-1"></a>tig_cnt</span>
-<span id="cb27-291"><a href="#cb27-291" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-292"><a href="#cb27-292" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(tig_cnt)</span>
-<span id="cb27-293"><a href="#cb27-293" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-294"><a href="#cb27-294" aria-hidden="true" tabindex="-1"></a>sf_cnt <span class="ot">&lt;-</span> <span class="fu">ms_simplify</span>(tig_cnt)</span>
-<span id="cb27-295"><a href="#cb27-295" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-296"><a href="#cb27-296" aria-hidden="true" tabindex="-1"></a>sf_cnt<span class="sc">$</span>mid <span class="ot">&lt;-</span> <span class="fu">st_centroid</span>(sf_cnt<span class="sc">$</span>geometry)</span>
-<span id="cb27-297"><a href="#cb27-297" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb27-298"><a href="#cb27-298" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-299"><a href="#cb27-299" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-300"><a href="#cb27-300" aria-hidden="true" tabindex="-1"></a><span class="fu">## Map with {ggplot}</span></span>
-<span id="cb27-301"><a href="#cb27-301" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-304"><a href="#cb27-304" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb27-305"><a href="#cb27-305" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sf_cnt) <span class="sc">+</span></span>
-<span id="cb27-306"><a href="#cb27-306" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(</span>
-<span id="cb27-307"><a href="#cb27-307" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"skyblue"</span>,</span>
-<span id="cb27-308"><a href="#cb27-308" aria-hidden="true" tabindex="-1"></a>    <span class="at">colour =</span> <span class="st">"white"</span>,</span>
-<span id="cb27-309"><a href="#cb27-309" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb27-310"><a href="#cb27-310" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf_text</span>(</span>
-<span id="cb27-311"><a href="#cb27-311" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">geometry =</span> geometry, </span>
-<span id="cb27-312"><a href="#cb27-312" aria-hidden="true" tabindex="-1"></a>        <span class="at">label =</span> NAME),</span>
-<span id="cb27-313"><a href="#cb27-313" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb27-314"><a href="#cb27-314" aria-hidden="true" tabindex="-1"></a>    <span class="at">check_overlap =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
-<span id="cb27-315"><a href="#cb27-315" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(</span>
-<span id="cb27-316"><a href="#cb27-316" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> geo_census,</span>
-<span id="cb27-317"><a href="#cb27-317" aria-hidden="true" tabindex="-1"></a>    <span class="at">mapping =</span> <span class="fu">aes</span>(long, lat),</span>
-<span id="cb27-318"><a href="#cb27-318" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"yellow"</span>,</span>
-<span id="cb27-319"><a href="#cb27-319" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"darkred"</span>,</span>
-<span id="cb27-320"><a href="#cb27-320" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.75</span>,</span>
-<span id="cb27-321"><a href="#cb27-321" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">4</span>,</span>
-<span id="cb27-322"><a href="#cb27-322" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape =</span> <span class="dv">21</span>,</span>
-<span id="cb27-323"><a href="#cb27-323" aria-hidden="true" tabindex="-1"></a>    <span class="at">stroke =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb27-324"><a href="#cb27-324" aria-hidden="true" tabindex="-1"></a>  ggthemes<span class="sc">::</span><span class="fu">theme_fivethirtyeight</span>()</span>
-<span id="cb27-325"><a href="#cb27-325" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<div class="sourceCode" id="cb39" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="an">output:</span><span class="co"> html_document</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="co">  chunk_output_type: console</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="fu"># Geospatial {#sec-demogeo}</span></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup-common-01</span></span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"includes/_common.R"</span>)</span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(</span>
+<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">collapse  =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">echo      =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">message   =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">warning   =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">error     =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">comment   =</span> <span class="st">"#&gt;"</span>,</span>
+<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">dpi       =</span> <span class="dv">600</span>, </span>
+<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">out.width =</span> <span class="st">"100%"</span></span>
+<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">scipen =</span> <span class="dv">999</span>)</span>
+<span id="cb39-26"><a href="#cb39-26" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-27"><a href="#cb39-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-30"><a href="#cb39-30" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-31"><a href="#cb39-31" aria-hidden="true" tabindex="-1"></a>underscore <span class="ot">&lt;-</span> \(x) <span class="fu">gsub</span>(<span class="st">"___owner$"</span>, <span class="st">""</span>, x, <span class="at">perl =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb39-32"><a href="#cb39-32" aria-hidden="true" tabindex="-1"></a>char_binary <span class="ot">&lt;-</span> \(x) <span class="fu">val_match</span>(x, <span class="st">"N"</span> <span class="sc">~</span> <span class="dv">0</span>L, <span class="st">"Y"</span> <span class="sc">~</span> <span class="dv">1</span>L)</span>
+<span id="cb39-33"><a href="#cb39-33" aria-hidden="true" tabindex="-1"></a>pct_prop <span class="ot">&lt;-</span> \(x) {</span>
+<span id="cb39-34"><a href="#cb39-34" aria-hidden="true" tabindex="-1"></a>  cheapr<span class="sc">::</span><span class="fu">case</span>(</span>
+<span id="cb39-35"><a href="#cb39-35" aria-hidden="true" tabindex="-1"></a>    x <span class="sc">==</span> <span class="st">"0"</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="cb39-36"><a href="#cb39-36" aria-hidden="true" tabindex="-1"></a>    cheapr<span class="sc">::</span><span class="fu">is_na</span>(x) <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb39-37"><a href="#cb39-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">.default =</span> <span class="fu">as.double</span>(x) <span class="sc">/</span> <span class="dv">100</span></span>
+<span id="cb39-38"><a href="#cb39-38" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb39-39"><a href="#cb39-39" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb39-40"><a href="#cb39-40" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-41"><a href="#cb39-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-42"><a href="#cb39-42" aria-hidden="true" tabindex="-1"></a><span class="fu">## Load Packages</span></span>
+<span id="cb39-43"><a href="#cb39-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-46"><a href="#cb39-46" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-47"><a href="#cb39-47" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb39-48"><a href="#cb39-48" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb39-49"><a href="#cb39-49" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidygeocoder)</span>
+<span id="cb39-50"><a href="#cb39-50" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tigris)</span>
+<span id="cb39-51"><a href="#cb39-51" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rmapshaper)</span>
+<span id="cb39-52"><a href="#cb39-52" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb39-53"><a href="#cb39-53" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">tigris_use_cache =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb39-54"><a href="#cb39-54" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-55"><a href="#cb39-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-56"><a href="#cb39-56" aria-hidden="true" tabindex="-1"></a><span class="fu">## Rural Health Clinics</span></span>
+<span id="cb39-57"><a href="#cb39-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-60"><a href="#cb39-60" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-61"><a href="#cb39-61" aria-hidden="true" tabindex="-1"></a>req <span class="ot">&lt;-</span> <span class="fu">careGroup</span>(<span class="st">"rural_health"</span>)<span class="sc">@</span>groups <span class="sc">|&gt;</span></span>
+<span id="cb39-62"><a href="#cb39-62" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"rural_health_clinic_enrollments"</span>]] <span class="sc">|&gt;</span></span>
+<span id="cb39-63"><a href="#cb39-63" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"endpoints"</span>]] <span class="sc">|&gt;</span></span>
+<span id="cb39-64"><a href="#cb39-64" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"identifier"</span>]] <span class="sc">|&gt;</span></span>
+<span id="cb39-65"><a href="#cb39-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">request</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb39-66"><a href="#cb39-66" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_query</span>(</span>
+<span id="cb39-67"><a href="#cb39-67" aria-hidden="true" tabindex="-1"></a>    <span class="st">"filter[STATE]"</span> <span class="ot">=</span> <span class="st">"GA"</span></span>
+<span id="cb39-68"><a href="#cb39-68" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb39-69"><a href="#cb39-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-70"><a href="#cb39-70" aria-hidden="true" tabindex="-1"></a>nres <span class="ot">&lt;-</span> req <span class="sc">|&gt;</span> </span>
+<span id="cb39-71"><a href="#cb39-71" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_path_append</span>(<span class="st">"stats"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb39-72"><a href="#cb39-72" aria-hidden="true" tabindex="-1"></a>  providertwo<span class="sc">:::</span><span class="fu">perform_simple</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb39-73"><a href="#cb39-73" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"data"</span>]] <span class="sc">|&gt;</span> </span>
+<span id="cb39-74"><a href="#cb39-74" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"found_rows"</span>]]</span>
+<span id="cb39-75"><a href="#cb39-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-76"><a href="#cb39-76" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> req <span class="sc">|&gt;</span> </span>
+<span id="cb39-77"><a href="#cb39-77" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_query</span>(<span class="at">offset =</span> <span class="dv">0</span>L, <span class="at">size =</span> <span class="dv">5000</span>L) <span class="sc">|&gt;</span> </span>
+<span id="cb39-78"><a href="#cb39-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb39-79"><a href="#cb39-79" aria-hidden="true" tabindex="-1"></a>  providertwo<span class="sc">:::</span><span class="fu">resp_simple_json</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb39-80"><a href="#cb39-80" aria-hidden="true" tabindex="-1"></a>  <span class="fu">get_elem</span>(<span class="st">"^data$|headers"</span>, <span class="at">regex =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb39-81"><a href="#cb39-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-82"><a href="#cb39-82" aria-hidden="true" tabindex="-1"></a>rhc_enr <span class="ot">&lt;-</span> <span class="fu">as_tbl</span>(res<span class="sc">$</span>data) <span class="sc">|&gt;</span> </span>
+<span id="cb39-83"><a href="#cb39-83" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(res<span class="sc">$</span>meta) <span class="sc">|&gt;</span> </span>
+<span id="cb39-84"><a href="#cb39-84" aria-hidden="true" tabindex="-1"></a>  providertwo<span class="sc">:::</span><span class="fu">map_na_if</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb39-85"><a href="#cb39-85" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roworder</span>(<span class="st">`</span><span class="at">ORGANIZATION NAME</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb39-86"><a href="#cb39-86" aria-hidden="true" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>() <span class="sc">|&gt;</span></span>
+<span id="cb39-87"><a href="#cb39-87" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(<span class="at">incorporation_date =</span> providertwo<span class="sc">:::</span><span class="fu">as_date</span>(incorporation_date),</span>
+<span id="cb39-88"><a href="#cb39-88" aria-hidden="true" tabindex="-1"></a>      <span class="at">multiple_npi_flag =</span> <span class="fu">char_binary</span>(multiple_npi_flag),</span>
+<span id="cb39-89"><a href="#cb39-89" aria-hidden="true" tabindex="-1"></a>      <span class="at">address =</span> <span class="fu">cheapr_if_else</span>(</span>
+<span id="cb39-90"><a href="#cb39-90" aria-hidden="true" tabindex="-1"></a>        cheapr<span class="sc">::</span><span class="fu">is_na</span>(address_line_2), </span>
+<span id="cb39-91"><a href="#cb39-91" aria-hidden="true" tabindex="-1"></a>        address_line_1, </span>
+<span id="cb39-92"><a href="#cb39-92" aria-hidden="true" tabindex="-1"></a>        <span class="fu">paste</span>(address_line_1, address_line_2))) <span class="sc">|&gt;</span></span>
+<span id="cb39-93"><a href="#cb39-93" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(</span>
+<span id="cb39-94"><a href="#cb39-94" aria-hidden="true" tabindex="-1"></a>    npi,</span>
+<span id="cb39-95"><a href="#cb39-95" aria-hidden="true" tabindex="-1"></a>    <span class="at">has_mult_npi =</span> multiple_npi_flag,</span>
+<span id="cb39-96"><a href="#cb39-96" aria-hidden="true" tabindex="-1"></a>    ccn,</span>
+<span id="cb39-97"><a href="#cb39-97" aria-hidden="true" tabindex="-1"></a>    <span class="at">pac =</span> associate_id,</span>
+<span id="cb39-98"><a href="#cb39-98" aria-hidden="true" tabindex="-1"></a>    <span class="at">enid =</span> enrollment_id,</span>
+<span id="cb39-99"><a href="#cb39-99" aria-hidden="true" tabindex="-1"></a>    <span class="at">enid_state =</span> enrollment_state,</span>
+<span id="cb39-100"><a href="#cb39-100" aria-hidden="true" tabindex="-1"></a>    <span class="at">org_name =</span> organization_name,</span>
+<span id="cb39-101"><a href="#cb39-101" aria-hidden="true" tabindex="-1"></a>    <span class="at">dba_name =</span> doing_business_as_name,</span>
+<span id="cb39-102"><a href="#cb39-102" aria-hidden="true" tabindex="-1"></a>    <span class="at">inc_date =</span> incorporation_date,</span>
+<span id="cb39-103"><a href="#cb39-103" aria-hidden="true" tabindex="-1"></a>    <span class="at">inc_state =</span> incorporation_state,</span>
+<span id="cb39-104"><a href="#cb39-104" aria-hidden="true" tabindex="-1"></a>    <span class="at">org_type =</span> organization_type_structure,</span>
+<span id="cb39-105"><a href="#cb39-105" aria-hidden="true" tabindex="-1"></a>    <span class="at">org_type_2 =</span> organization_other_type_text,</span>
+<span id="cb39-106"><a href="#cb39-106" aria-hidden="true" tabindex="-1"></a>    proprietary_nonprofit,</span>
+<span id="cb39-107"><a href="#cb39-107" aria-hidden="true" tabindex="-1"></a>    address,</span>
+<span id="cb39-108"><a href="#cb39-108" aria-hidden="true" tabindex="-1"></a>    city,</span>
+<span id="cb39-109"><a href="#cb39-109" aria-hidden="true" tabindex="-1"></a>    state,</span>
+<span id="cb39-110"><a href="#cb39-110" aria-hidden="true" tabindex="-1"></a>    <span class="at">zip =</span> zip_code)</span>
+<span id="cb39-111"><a href="#cb39-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-112"><a href="#cb39-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-113"><a href="#cb39-113" aria-hidden="true" tabindex="-1"></a>rhc_enr <span class="sc">|&gt;</span> </span>
+<span id="cb39-114"><a href="#cb39-114" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span>
+<span id="cb39-115"><a href="#cb39-115" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-116"><a href="#cb39-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-119"><a href="#cb39-119" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-120"><a href="#cb39-120" aria-hidden="true" tabindex="-1"></a>req <span class="ot">&lt;-</span> <span class="fu">careGroup</span>(<span class="st">"rural_health"</span>)<span class="sc">@</span>groups <span class="sc">|&gt;</span></span>
+<span id="cb39-121"><a href="#cb39-121" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"rural_health_clinic_all_owners"</span>]] <span class="sc">|&gt;</span> </span>
+<span id="cb39-122"><a href="#cb39-122" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"endpoints"</span>]] <span class="sc">|&gt;</span></span>
+<span id="cb39-123"><a href="#cb39-123" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"identifier"</span>]] <span class="sc">|&gt;</span></span>
+<span id="cb39-124"><a href="#cb39-124" aria-hidden="true" tabindex="-1"></a>  <span class="fu">request</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb39-125"><a href="#cb39-125" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_query</span>(<span class="st">"filter[STATE - OWNER]"</span> <span class="ot">=</span> <span class="st">"GA"</span>)</span>
+<span id="cb39-126"><a href="#cb39-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-127"><a href="#cb39-127" aria-hidden="true" tabindex="-1"></a>nres <span class="ot">&lt;-</span> req <span class="sc">|&gt;</span> </span>
+<span id="cb39-128"><a href="#cb39-128" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_path_append</span>(<span class="st">"stats"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb39-129"><a href="#cb39-129" aria-hidden="true" tabindex="-1"></a>  providertwo<span class="sc">:::</span><span class="fu">perform_simple</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb39-130"><a href="#cb39-130" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"data"</span>]] <span class="sc">|&gt;</span> </span>
+<span id="cb39-131"><a href="#cb39-131" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"found_rows"</span>]]</span>
+<span id="cb39-132"><a href="#cb39-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-133"><a href="#cb39-133" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> req <span class="sc">|&gt;</span> </span>
+<span id="cb39-134"><a href="#cb39-134" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_query</span>(<span class="at">offset =</span> <span class="dv">0</span>L, <span class="at">size =</span> <span class="dv">5000</span>L) <span class="sc">|&gt;</span> </span>
+<span id="cb39-135"><a href="#cb39-135" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb39-136"><a href="#cb39-136" aria-hidden="true" tabindex="-1"></a>  providertwo<span class="sc">:::</span><span class="fu">resp_simple_json</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb39-137"><a href="#cb39-137" aria-hidden="true" tabindex="-1"></a>  <span class="fu">get_elem</span>(<span class="st">"^data$|headers"</span>, <span class="at">regex =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb39-138"><a href="#cb39-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-139"><a href="#cb39-139" aria-hidden="true" tabindex="-1"></a>rhc_owner <span class="ot">&lt;-</span> <span class="fu">as_tbl</span>(res<span class="sc">$</span>data) <span class="sc">|&gt;</span> </span>
+<span id="cb39-140"><a href="#cb39-140" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(res<span class="sc">$</span>meta) <span class="sc">|&gt;</span> </span>
+<span id="cb39-141"><a href="#cb39-141" aria-hidden="true" tabindex="-1"></a>  providertwo<span class="sc">:::</span><span class="fu">map_na_if</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb39-142"><a href="#cb39-142" aria-hidden="true" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb39-143"><a href="#cb39-143" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rnm</span>(</span>
+<span id="cb39-144"><a href="#cb39-144" aria-hidden="true" tabindex="-1"></a>    <span class="at">enid =</span> enrollment_id,</span>
+<span id="cb39-145"><a href="#cb39-145" aria-hidden="true" tabindex="-1"></a>    <span class="at">pac =</span> associate_id_owner, </span>
+<span id="cb39-146"><a href="#cb39-146" aria-hidden="true" tabindex="-1"></a>    <span class="at">org_name =</span> organization_name) <span class="sc">|&gt;</span></span>
+<span id="cb39-147"><a href="#cb39-147" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(</span>
+<span id="cb39-148"><a href="#cb39-148" aria-hidden="true" tabindex="-1"></a>    <span class="at">association_date =</span> providertwo<span class="sc">:::</span><span class="fu">as_date</span>(association_date_owner),</span>
+<span id="cb39-149"><a href="#cb39-149" aria-hidden="true" tabindex="-1"></a>    <span class="at">address =</span> <span class="fu">cheapr_if_else</span>(cheapr<span class="sc">::</span><span class="fu">is_na</span>(address_line_2_owner), address_line_1_owner, <span class="fu">paste</span>(address_line_1_owner, address_line_2_owner)),</span>
+<span id="cb39-150"><a href="#cb39-150" aria-hidden="true" tabindex="-1"></a>    <span class="at">percentage_ownership =</span> <span class="fu">as.numeric</span>(percentage_ownership),</span>
+<span id="cb39-151"><a href="#cb39-151" aria-hidden="true" tabindex="-1"></a>    <span class="at">role_code =</span> <span class="fu">as.integer</span>(role_code_owner)</span>
+<span id="cb39-152"><a href="#cb39-152" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb39-153"><a href="#cb39-153" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(</span>
+<span id="cb39-154"><a href="#cb39-154" aria-hidden="true" tabindex="-1"></a>    pac,</span>
+<span id="cb39-155"><a href="#cb39-155" aria-hidden="true" tabindex="-1"></a>    enid,</span>
+<span id="cb39-156"><a href="#cb39-156" aria-hidden="true" tabindex="-1"></a>    org_name,</span>
+<span id="cb39-157"><a href="#cb39-157" aria-hidden="true" tabindex="-1"></a>    <span class="at">pac_owner =</span> associate_id, </span>
+<span id="cb39-158"><a href="#cb39-158" aria-hidden="true" tabindex="-1"></a>    <span class="at">org_name_owner =</span> organization_name_owner,</span>
+<span id="cb39-159"><a href="#cb39-159" aria-hidden="true" tabindex="-1"></a>    <span class="at">entity =</span> type_owner,</span>
+<span id="cb39-160"><a href="#cb39-160" aria-hidden="true" tabindex="-1"></a>    role_code,</span>
+<span id="cb39-161"><a href="#cb39-161" aria-hidden="true" tabindex="-1"></a>    <span class="at">role_text =</span> role_text_owner,</span>
+<span id="cb39-162"><a href="#cb39-162" aria-hidden="true" tabindex="-1"></a>    association_date_owner,</span>
+<span id="cb39-163"><a href="#cb39-163" aria-hidden="true" tabindex="-1"></a>    first_name_owner,</span>
+<span id="cb39-164"><a href="#cb39-164" aria-hidden="true" tabindex="-1"></a>    middle_name_owner,</span>
+<span id="cb39-165"><a href="#cb39-165" aria-hidden="true" tabindex="-1"></a>    last_name_owner,</span>
+<span id="cb39-166"><a href="#cb39-166" aria-hidden="true" tabindex="-1"></a>    title_owner,</span>
+<span id="cb39-167"><a href="#cb39-167" aria-hidden="true" tabindex="-1"></a>    <span class="at">dba_name =</span> doing_business_as_name_owner,</span>
+<span id="cb39-168"><a href="#cb39-168" aria-hidden="true" tabindex="-1"></a>    address,</span>
+<span id="cb39-169"><a href="#cb39-169" aria-hidden="true" tabindex="-1"></a>    city_owner,</span>
+<span id="cb39-170"><a href="#cb39-170" aria-hidden="true" tabindex="-1"></a>    state_owner,</span>
+<span id="cb39-171"><a href="#cb39-171" aria-hidden="true" tabindex="-1"></a>    <span class="at">zip =</span> zip_code_owner,</span>
+<span id="cb39-172"><a href="#cb39-172" aria-hidden="true" tabindex="-1"></a>    percentage_ownership,</span>
+<span id="cb39-173"><a href="#cb39-173" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_for_acq =</span> created_for_acquisition_owner,</span>
+<span id="cb39-174"><a href="#cb39-174" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_corp =</span> corporation_owner,</span>
+<span id="cb39-175"><a href="#cb39-175" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_llc =</span> llc_owner,</span>
+<span id="cb39-176"><a href="#cb39-176" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_med_prov_supp =</span> medical_provider_supplier_owner,</span>
+<span id="cb39-177"><a href="#cb39-177" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_mgmt_serv_co =</span> management_services_company_owner,</span>
+<span id="cb39-178"><a href="#cb39-178" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_med_staff_co =</span> medical_staffing_company_owner,</span>
+<span id="cb39-179"><a href="#cb39-179" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_holding_co =</span> holding_company_owner,</span>
+<span id="cb39-180"><a href="#cb39-180" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_invest_firm =</span> investment_firm_owner,</span>
+<span id="cb39-181"><a href="#cb39-181" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_fin_inst =</span> financial_institution_owner,</span>
+<span id="cb39-182"><a href="#cb39-182" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_consult_firm =</span> consulting_firm_owner,</span>
+<span id="cb39-183"><a href="#cb39-183" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_for_profit =</span> for_profit_owner,</span>
+<span id="cb39-184"><a href="#cb39-184" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_non_profit =</span> non_profit_owner,</span>
+<span id="cb39-185"><a href="#cb39-185" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_other_type =</span> other_type_owner,</span>
+<span id="cb39-186"><a href="#cb39-186" aria-hidden="true" tabindex="-1"></a>    <span class="at">other_type =</span> other_type_text_owner</span>
+<span id="cb39-187"><a href="#cb39-187" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb39-188"><a href="#cb39-188" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(</span>
+<span id="cb39-189"><a href="#cb39-189" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_for_acq =</span> <span class="fu">char_binary</span>(is_for_acq),</span>
+<span id="cb39-190"><a href="#cb39-190" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_corp =</span> <span class="fu">char_binary</span>(is_corp),</span>
+<span id="cb39-191"><a href="#cb39-191" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_llc =</span> <span class="fu">char_binary</span>(is_llc),</span>
+<span id="cb39-192"><a href="#cb39-192" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_med_prov_supp =</span> <span class="fu">char_binary</span>(is_med_prov_supp),</span>
+<span id="cb39-193"><a href="#cb39-193" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_mgmt_serv_co =</span> <span class="fu">char_binary</span>(is_mgmt_serv_co),</span>
+<span id="cb39-194"><a href="#cb39-194" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_med_staff_co =</span> <span class="fu">char_binary</span>(is_med_staff_co),</span>
+<span id="cb39-195"><a href="#cb39-195" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_holding_co =</span> <span class="fu">char_binary</span>(is_holding_co),</span>
+<span id="cb39-196"><a href="#cb39-196" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_invest_firm =</span> <span class="fu">char_binary</span>(is_invest_firm),</span>
+<span id="cb39-197"><a href="#cb39-197" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_fin_inst =</span> <span class="fu">char_binary</span>(is_fin_inst),</span>
+<span id="cb39-198"><a href="#cb39-198" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_consult_firm =</span> <span class="fu">char_binary</span>(is_consult_firm),</span>
+<span id="cb39-199"><a href="#cb39-199" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_for_profit =</span> <span class="fu">char_binary</span>(is_for_profit),</span>
+<span id="cb39-200"><a href="#cb39-200" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_non_profit =</span> <span class="fu">char_binary</span>(is_non_profit),</span>
+<span id="cb39-201"><a href="#cb39-201" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_other_type =</span> <span class="fu">char_binary</span>(is_other_type)</span>
+<span id="cb39-202"><a href="#cb39-202" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb39-203"><a href="#cb39-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-204"><a href="#cb39-204" aria-hidden="true" tabindex="-1"></a>rhc_owner</span>
+<span id="cb39-205"><a href="#cb39-205" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-206"><a href="#cb39-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-207"><a href="#cb39-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-210"><a href="#cb39-210" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-211"><a href="#cb39-211" aria-hidden="true" tabindex="-1"></a>tictoc<span class="sc">::</span><span class="fu">tic</span>()</span>
+<span id="cb39-212"><a href="#cb39-212" aria-hidden="true" tabindex="-1"></a>rhc_nppes <span class="ot">&lt;-</span> <span class="fu">npi_nppes</span>(<span class="at">npi =</span> rhc_enr<span class="sc">$</span>npi)</span>
+<span id="cb39-213"><a href="#cb39-213" aria-hidden="true" tabindex="-1"></a>tictoc<span class="sc">::</span><span class="fu">toc</span>()</span>
+<span id="cb39-214"><a href="#cb39-214" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-215"><a href="#cb39-215" aria-hidden="true" tabindex="-1"></a>rhc_nppes <span class="sc">|&gt;</span> </span>
+<span id="cb39-216"><a href="#cb39-216" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(<span class="sc">-</span>endpoints, <span class="sc">-</span>enumeration_type) <span class="sc">|&gt;</span> </span>
+<span id="cb39-217"><a href="#cb39-217" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">100</span>)</span>
+<span id="cb39-218"><a href="#cb39-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-219"><a href="#cb39-219" aria-hidden="true" tabindex="-1"></a>rhc_nppes <span class="sc">|&gt;</span> </span>
+<span id="cb39-220"><a href="#cb39-220" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(number, addresses) <span class="sc">|&gt;</span> </span>
+<span id="cb39-221"><a href="#cb39-221" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(addresses) <span class="sc">|&gt;</span> </span>
+<span id="cb39-222"><a href="#cb39-222" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(<span class="at">address =</span> <span class="fu">cheapr_if_else</span>(cheapr<span class="sc">::</span><span class="fu">is_na</span>(address_2), address_1, <span class="fu">paste</span>(address_1, address_2))) <span class="sc">|&gt;</span> </span>
+<span id="cb39-223"><a href="#cb39-223" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(<span class="sc">-</span>address_1, <span class="sc">-</span>address_2, <span class="sc">-</span>address_type, <span class="sc">-</span>country_code, <span class="sc">-</span>country_name)</span>
+<span id="cb39-224"><a href="#cb39-224" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-225"><a href="#cb39-225" aria-hidden="true" tabindex="-1"></a>rhc_nppes <span class="sc">|&gt;</span> </span>
+<span id="cb39-226"><a href="#cb39-226" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(number, basic) <span class="sc">|&gt;</span> </span>
+<span id="cb39-227"><a href="#cb39-227" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(basic)</span>
+<span id="cb39-228"><a href="#cb39-228" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-229"><a href="#cb39-229" aria-hidden="true" tabindex="-1"></a>rhc_nppes <span class="sc">|&gt;</span> </span>
+<span id="cb39-230"><a href="#cb39-230" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(number, taxonomies) <span class="sc">|&gt;</span> </span>
+<span id="cb39-231"><a href="#cb39-231" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(taxonomies)</span>
+<span id="cb39-232"><a href="#cb39-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-233"><a href="#cb39-233" aria-hidden="true" tabindex="-1"></a>rhc_nppes <span class="sc">|&gt;</span> </span>
+<span id="cb39-234"><a href="#cb39-234" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(number, identifiers) <span class="sc">|&gt;</span> </span>
+<span id="cb39-235"><a href="#cb39-235" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(identifiers) <span class="sc">|&gt;</span> </span>
+<span id="cb39-236"><a href="#cb39-236" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">100</span>)</span>
+<span id="cb39-237"><a href="#cb39-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-238"><a href="#cb39-238" aria-hidden="true" tabindex="-1"></a>rhc_nppes <span class="sc">|&gt;</span> </span>
+<span id="cb39-239"><a href="#cb39-239" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(number, other_names) <span class="sc">|&gt;</span> </span>
+<span id="cb39-240"><a href="#cb39-240" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(other_names) <span class="sc">|&gt;</span> </span>
+<span id="cb39-241"><a href="#cb39-241" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">100</span>)</span>
+<span id="cb39-242"><a href="#cb39-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-243"><a href="#cb39-243" aria-hidden="true" tabindex="-1"></a>rhc_nppes <span class="sc">|&gt;</span> </span>
+<span id="cb39-244"><a href="#cb39-244" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(number, practiceLocations) <span class="sc">|&gt;</span> </span>
+<span id="cb39-245"><a href="#cb39-245" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(practiceLocations) <span class="sc">|&gt;</span> </span>
+<span id="cb39-246"><a href="#cb39-246" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sbt</span>(<span class="sc">!</span><span class="fu">is.na</span>(state)) <span class="sc">|&gt;</span> </span>
+<span id="cb39-247"><a href="#cb39-247" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">100</span>)</span>
+<span id="cb39-248"><a href="#cb39-248" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-249"><a href="#cb39-249" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-250"><a href="#cb39-250" aria-hidden="true" tabindex="-1"></a><span class="fu">## Geocode with {tidygeocoder}</span></span>
+<span id="cb39-251"><a href="#cb39-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-254"><a href="#cb39-254" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-255"><a href="#cb39-255" aria-hidden="true" tabindex="-1"></a>geo_census <span class="ot">&lt;-</span> tidygeocoder<span class="sc">::</span><span class="fu">geocode</span>(</span>
+<span id="cb39-256"><a href="#cb39-256" aria-hidden="true" tabindex="-1"></a>  rhc_enr,</span>
+<span id="cb39-257"><a href="#cb39-257" aria-hidden="true" tabindex="-1"></a>  <span class="at">street =</span> address,</span>
+<span id="cb39-258"><a href="#cb39-258" aria-hidden="true" tabindex="-1"></a>  <span class="at">city    =</span> city,</span>
+<span id="cb39-259"><a href="#cb39-259" aria-hidden="true" tabindex="-1"></a>  <span class="at">state   =</span> state,</span>
+<span id="cb39-260"><a href="#cb39-260" aria-hidden="true" tabindex="-1"></a>  <span class="at">postalcode =</span> zip,</span>
+<span id="cb39-261"><a href="#cb39-261" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"census"</span>, </span>
+<span id="cb39-262"><a href="#cb39-262" aria-hidden="true" tabindex="-1"></a>  <span class="at">full_results =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb39-263"><a href="#cb39-263" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-264"><a href="#cb39-264" aria-hidden="true" tabindex="-1"></a>geo_census</span>
+<span id="cb39-265"><a href="#cb39-265" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-266"><a href="#cb39-266" aria-hidden="true" tabindex="-1"></a>geo_arcgis <span class="ot">&lt;-</span> tidygeocoder<span class="sc">::</span><span class="fu">geocode</span>(</span>
+<span id="cb39-267"><a href="#cb39-267" aria-hidden="true" tabindex="-1"></a>  rhc_enr,</span>
+<span id="cb39-268"><a href="#cb39-268" aria-hidden="true" tabindex="-1"></a>  <span class="at">street =</span> address,</span>
+<span id="cb39-269"><a href="#cb39-269" aria-hidden="true" tabindex="-1"></a>  <span class="at">city    =</span> city,</span>
+<span id="cb39-270"><a href="#cb39-270" aria-hidden="true" tabindex="-1"></a>  <span class="at">state   =</span> state,</span>
+<span id="cb39-271"><a href="#cb39-271" aria-hidden="true" tabindex="-1"></a>  <span class="at">postalcode =</span> zip,</span>
+<span id="cb39-272"><a href="#cb39-272" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"arcgis"</span>, </span>
+<span id="cb39-273"><a href="#cb39-273" aria-hidden="true" tabindex="-1"></a>  <span class="at">full_results =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb39-274"><a href="#cb39-274" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-275"><a href="#cb39-275" aria-hidden="true" tabindex="-1"></a>geo_arcgis</span>
+<span id="cb39-276"><a href="#cb39-276" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-277"><a href="#cb39-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-278"><a href="#cb39-278" aria-hidden="true" tabindex="-1"></a><span class="fu">## Retrieve Georgia counties shapefile from {tigris}</span></span>
+<span id="cb39-279"><a href="#cb39-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-282"><a href="#cb39-282" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-283"><a href="#cb39-283" aria-hidden="true" tabindex="-1"></a>tig_cnt <span class="ot">&lt;-</span> tigris<span class="sc">::</span><span class="fu">counties</span>(</span>
+<span id="cb39-284"><a href="#cb39-284" aria-hidden="true" tabindex="-1"></a>  <span class="at">state =</span> <span class="st">"GA"</span>,</span>
+<span id="cb39-285"><a href="#cb39-285" aria-hidden="true" tabindex="-1"></a>  <span class="at">year =</span> <span class="dv">2022</span>,</span>
+<span id="cb39-286"><a href="#cb39-286" aria-hidden="true" tabindex="-1"></a>  <span class="at">progress_bar =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb39-287"><a href="#cb39-287" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-288"><a href="#cb39-288" aria-hidden="true" tabindex="-1"></a>tig_cnt</span>
+<span id="cb39-289"><a href="#cb39-289" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-290"><a href="#cb39-290" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(tig_cnt)</span>
+<span id="cb39-291"><a href="#cb39-291" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-292"><a href="#cb39-292" aria-hidden="true" tabindex="-1"></a>sf_cnt <span class="ot">&lt;-</span> <span class="fu">ms_simplify</span>(tig_cnt)</span>
+<span id="cb39-293"><a href="#cb39-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-294"><a href="#cb39-294" aria-hidden="true" tabindex="-1"></a>sf_cnt<span class="sc">$</span>mid <span class="ot">&lt;-</span> <span class="fu">st_centroid</span>(sf_cnt<span class="sc">$</span>geometry)</span>
+<span id="cb39-295"><a href="#cb39-295" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb39-296"><a href="#cb39-296" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-297"><a href="#cb39-297" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-298"><a href="#cb39-298" aria-hidden="true" tabindex="-1"></a><span class="fu">## Map with {ggplot}</span></span>
+<span id="cb39-299"><a href="#cb39-299" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-302"><a href="#cb39-302" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb39-303"><a href="#cb39-303" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sf_cnt) <span class="sc">+</span></span>
+<span id="cb39-304"><a href="#cb39-304" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(</span>
+<span id="cb39-305"><a href="#cb39-305" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"skyblue"</span>,</span>
+<span id="cb39-306"><a href="#cb39-306" aria-hidden="true" tabindex="-1"></a>    <span class="at">colour =</span> <span class="st">"white"</span>,</span>
+<span id="cb39-307"><a href="#cb39-307" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb39-308"><a href="#cb39-308" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf_text</span>(</span>
+<span id="cb39-309"><a href="#cb39-309" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">geometry =</span> geometry, </span>
+<span id="cb39-310"><a href="#cb39-310" aria-hidden="true" tabindex="-1"></a>        <span class="at">label =</span> NAME),</span>
+<span id="cb39-311"><a href="#cb39-311" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">3.5</span>,</span>
+<span id="cb39-312"><a href="#cb39-312" aria-hidden="true" tabindex="-1"></a>    <span class="at">check_overlap =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb39-313"><a href="#cb39-313" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(</span>
+<span id="cb39-314"><a href="#cb39-314" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> geo_census,</span>
+<span id="cb39-315"><a href="#cb39-315" aria-hidden="true" tabindex="-1"></a>    <span class="at">mapping =</span> <span class="fu">aes</span>(long, lat),</span>
+<span id="cb39-316"><a href="#cb39-316" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"yellow"</span>,</span>
+<span id="cb39-317"><a href="#cb39-317" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"darkred"</span>,</span>
+<span id="cb39-318"><a href="#cb39-318" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.75</span>,</span>
+<span id="cb39-319"><a href="#cb39-319" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">4</span>,</span>
+<span id="cb39-320"><a href="#cb39-320" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape =</span> <span class="dv">21</span>,</span>
+<span id="cb39-321"><a href="#cb39-321" aria-hidden="true" tabindex="-1"></a>    <span class="at">stroke =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb39-322"><a href="#cb39-322" aria-hidden="true" tabindex="-1"></a>  ggthemes<span class="sc">::</span><span class="fu">theme_fivethirtyeight</span>()</span>
+<span id="cb39-323"><a href="#cb39-323" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
