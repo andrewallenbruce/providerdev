@@ -47,7 +47,7 @@ dict <- open_dictionary()
 
 ::: panel-tabset
 
-### Covered Recipient Profile Supplement
+### Covered
 
 ```{r}
 #| label: open_dictionary_covered
@@ -159,7 +159,8 @@ open_quick <- \(alias) {
   stopifnot(length(alias) == 1L)
   
   if (grepl("^profile|^state|^national|^dashboard", alias, perl = TRUE))
-    return(prop(openMain(alias), "identifier") |> quick_open())
+    return(
+      prop(openMain(alias), "identifier") |> quick_open())
   else
     return(prop(openTemp(alias), "endpoints") |> _[["identifier"]] |> _[[1]] |> quick_open_temp())
 }
@@ -174,7 +175,13 @@ open_quick <- \(alias) {
 • __Fields__ `[32]`
 
 ```{r}
-open_quick("profile_covered")
+open_quick("profile_covered") |> 
+  providertwo:::map_na_if() |> 
+  slt(-associated_covered_recipient_profile_id_2, 
+      -covered_recipient_profile_province_name) |>
+  fuimus::describe2() |> 
+  slt(column, type, n, uniq, top) |>
+  gt_tab()
 ```
 
 ### Physician
@@ -184,7 +191,15 @@ open_quick("profile_covered")
 • __Fields__ `[33]`
 
 ```{r}
-open_quick("profile_physician")
+open_quick("profile_physician") |> 
+  providertwo:::map_na_if() |> 
+  slt(-covered_recipient_profile_province_name,
+      -covered_recipient_profile_alternate_first_name5,
+      -covered_recipient_profile_alternate_last_name5
+  ) |>
+  fuimus::describe2() |> 
+  slt(column, type, n, uniq, top) |>
+  gt_tab()
 ```
 
 ### Entity
@@ -194,7 +209,16 @@ open_quick("profile_physician")
 • __Fields__ `[20]`
 
 ```{r}
-open_quick("profile_information")
+open_quick("profile_information") |> 
+  providertwo:::map_na_if() |> 
+  slt(-entity_alternate_name5,
+      -entity_address_line_2,
+      -entity_province_name,
+      -location
+  ) |>
+  fuimus::describe2() |> 
+  slt(column, type, n, uniq, top) |>
+  gt_tab()
 ```
 
 ### Mapping
@@ -204,7 +228,11 @@ open_quick("profile_information")
 • __Fields__ `[2]`
 
 ```{r}
-open_quick("profile_mapping")
+open_quick("profile_mapping") |> 
+  providertwo:::map_na_if() |> 
+  fuimus::describe2() |> 
+  slt(column, type, n, uniq, distribution, min, max) |>
+  gt_tab()
 ```
 
 ### Reporting
@@ -214,7 +242,14 @@ open_quick("profile_mapping")
 • __Fields__ `[9]`
 
 ```{r}
-open_quick("profile_entity")
+open_quick("profile_entity") |> 
+  providertwo:::map_na_if() |> 
+  slt(-amgpo_making_payment_alternate_name4,
+      -amgpo_making_payment_alternate_name5
+  ) |>
+  fuimus::describe2() |> 
+  slt(column, type, n, uniq, top, distribution, min:max) |>
+  gt_tab()
 ```
 
 ### Teaching
@@ -224,7 +259,14 @@ open_quick("profile_entity")
 • __Fields__ `[12]`
 
 ```{r}
-open_quick("profile_teaching")
+open_quick("profile_teaching") |> 
+  providertwo:::map_na_if() |> 
+  slt(-teaching_hospital_address2,
+      -teaching_hospital_alternate_name5
+  ) |>
+  fuimus::describe2() |> 
+  slt(column, type, n, uniq, top, distribution, min:max) |>
+  gt_tab()
 ```
 
 ::: 
@@ -237,8 +279,26 @@ open_quick("profile_teaching")
 ### Dashboard
 
 ```{r}
-open_quick("dashboard")
+open_quick("dashboard") |> 
+  providertwo:::map_na_if() |> 
+  mtt(
+    py_2017 = as.numeric(py_2017),
+    py_2018 = as.numeric(py_2018),
+    py_2019 = as.numeric(py_2019),
+    py_2020 = as.numeric(py_2020),
+    py_2021 = as.numeric(py_2021),
+    py_2022 = as.numeric(py_2022),
+    py_2023 = as.numeric(py_2023),
+    total = as.numeric(total)
+  ) |> 
+  slt(-dashboard_row_number) |>
+  fuimus::describe2() |> 
+  slt(column, type, n, uniq, top, distribution, min:max) |>
+  gt_tab()
+```
 
+
+```{r}
 open_dashboard()
 ```
 
@@ -249,11 +309,9 @@ open_dashboard()
 • __Fields__ `[18]`
 
 ```{r}
-open_quick("national_total")
-
+# open_quick("national_total")
 open_national() |> 
   fuimus::describe2() |> 
-  # slt(column, n, uniq, top, distribution) |> 
   gt_tab()
 ```
 
@@ -264,7 +322,7 @@ open_national() |>
 ```{r}
 open_quick("national_group") |> 
   fuimus::describe2() |> 
-  slt(column, n, uniq, top, distribution) |> 
+  slt(column, type, n, uniq, top, distribution, min:max) |>
   gt_tab()
 ```
 
@@ -277,7 +335,7 @@ open_quick("national_group") |>
 ```{r}
 open_quick("state_total") |> 
   fuimus::describe2() |> 
-  slt(column, n, uniq, top, distribution) |> 
+  slt(column, type, n, uniq, top, distribution, min:max) |>
   gt_tab()
 ```
 
@@ -288,7 +346,7 @@ open_quick("state_total") |>
 ```{r}
 open_quick("state_group") |> 
   fuimus::describe2() |> 
-  slt(column, n, uniq, top, distribution) |> 
+  slt(column, type, n, uniq, top, distribution, min:max) |>
   gt_tab()
 ```
 
@@ -315,8 +373,10 @@ grp_pmts <- providertwo:::open_temp_group("grouped_payments") |>
 #| echo: false
 grp_pmts$`Payments Grouped by Covered Recipient and Nature of Payments` |> 
   slt(-teaching_hospital_name) |> 
+  mtt(number_of_transaction = as.integer(number_of_transaction), 
+      total_amount = as.numeric(total_amount)) |> 
   fuimus::describe2() |> 
-  slt(column, n, uniq, top, distribution, min, mean, med, max) |> 
+  slt(column, type, n, uniq, top, distribution, min, mean, med, max) |> 
   gt_tab()
 ```
 
@@ -326,8 +386,10 @@ grp_pmts$`Payments Grouped by Covered Recipient and Nature of Payments` |>
 #| echo: false
 grp_pmts$`Payments Grouped by Covered Recipient and Reporting Entities` |>
   slt(-teaching_hospital_name) |> 
+  mtt(number_of_transaction = as.integer(number_of_transaction), 
+      total_amount = as.numeric(total_amount)) |> 
   fuimus::describe2() |> 
-  slt(column, n, uniq, top, distribution, min, mean, med, max) |> 
+  slt(column, type, n, uniq, top, distribution, min, mean, med, max) |> 
   gt_tab()
 ```
 
@@ -336,8 +398,11 @@ grp_pmts$`Payments Grouped by Covered Recipient and Reporting Entities` |>
 ```{r}
 #| echo: false
 grp_pmts$`Payments Grouped by Reporting Entities and Nature of Payments` |> 
+  mtt(nature_of_payment_type_code = cheapr::factor_(nature_of_payment_type_code),
+      number_of_transaction = as.integer(number_of_transaction), 
+      total_amount = as.numeric(total_amount)) |> 
   fuimus::describe2() |> 
-  slt(column, n, uniq, top, distribution, min, mean, med, max) |> 
+  slt(column, type, n, uniq, top, distribution, min, mean, med, max) |> 
   gt_tab()
 ```
 
@@ -346,6 +411,9 @@ grp_pmts$`Payments Grouped by Reporting Entities and Nature of Payments` |>
 ```{r}
 #| echo: false
 grp_pmts$`Payments Grouped by Reporting Entities, Covered Recipient, and Nature of Payments` |> 
+  mtt(nature_of_payment_type_code = cheapr::factor_(nature_of_payment_type_code),
+      number_of_transaction = as.integer(number_of_transaction), 
+      total_amount = as.numeric(total_amount)) |> 
   fuimus::describe2() |> 
   slt(column, n, uniq, top, distribution, min, mean, med, max) |> 
   gt_tab()
@@ -367,6 +435,8 @@ grp_pmts$`Payments Grouped by Reporting Entities, Covered Recipient, and Nature 
 ```{r}
 #| echo: false
 open_quick("general") |> 
+  mtt(number_of_payments_included_in_total_amount = as.integer(number_of_payments_included_in_total_amount), 
+      total_amount_of_payment_usdollars = as.numeric(total_amount_of_payment_usdollars)) |> 
   slt(-recipient_province, 
       -recipient_postal_code, 
       -covered_recipient_primary_type_2,
@@ -397,15 +467,7 @@ open_quick("general") |>
       -associated_device_or_medical_supply_pdi_5
       ) |> 
   fuimus::describe2() |> 
-  slt(column, 
-      n, 
-      uniq, 
-      top, 
-      distribution, 
-      min, 
-      mean, 
-      med, 
-      max) |> 
+  slt(column, type, n, uniq, top, distribution, min, mean, med, max) |> 
   gt_tab()
 ```
 
@@ -418,7 +480,14 @@ open_quick("general") |>
 
 ```{r}
 #| echo: false
-open_quick("ownership")
+open_quick("ownership") |> 
+  mtt(total_amount_invested_usdollars = as.numeric(total_amount_invested_usdollars),
+      value_of_interest = as.numeric(value_of_interest)) |> 
+  slt(-recipient_province,
+      -recipient_postal_code) |> 
+  fuimus::describe2() |> 
+  slt(column, type, n, uniq, top, distribution, min, mean, med, max) |> 
+  gt_tab()
 ```
 
 ### Research
@@ -430,7 +499,200 @@ open_quick("ownership")
 
 ```{r}
 #| echo: false
-open_quick("research")
+open_quick("research") |> 
+  mtt(total_amount_of_payment_usdollars = as.numeric(total_amount_of_payment_usdollars)) |> 
+  slt(-covered_recipient_name_suffix,
+      -recipient_province,
+      -recipient_postal_code,
+      -covered_recipient_primary_type_2,
+      -covered_recipient_primary_type_3,
+      -covered_recipient_primary_type_4,
+      -covered_recipient_primary_type_5,
+      -covered_recipient_primary_type_6,
+      -covered_recipient_specialty_2,
+      -covered_recipient_specialty_3,
+      -covered_recipient_specialty_4,
+      -covered_recipient_specialty_5,
+      -covered_recipient_specialty_6,
+      -covered_recipient_license_state_code2,
+      -covered_recipient_license_state_code3,
+      -covered_recipient_license_state_code4,
+      -covered_recipient_license_state_code5,
+      -principal_investigator_1_name_suffix,
+      -principal_investigator_1_province,
+      -principal_investigator_1_postal_code,
+      -principal_investigator_1_primary_type_2,
+      -principal_investigator_1_primary_type_3,
+      -principal_investigator_1_primary_type_4,
+      -principal_investigator_1_primary_type_5,
+      -principal_investigator_1_primary_type_6,
+      -principal_investigator_1_specialty_2,
+      -principal_investigator_1_specialty_3,
+      -principal_investigator_1_specialty_4,
+      -principal_investigator_1_specialty_5,
+      -principal_investigator_1_specialty_6,
+      -principal_investigator_2_covered_recipient_type,
+      -principal_investigator_2_profile_id,
+      -principal_investigator_2_npi,
+      -principal_investigator_2_first_name,
+      -principal_investigator_2_middle_name,
+      -principal_investigator_2_last_name,
+      -principal_investigator_2_name_suffix,
+      -principal_investigator_2_business_street_address_line1,
+      -principal_investigator_2_business_street_address_line2,
+      -principal_investigator_2_city,
+      -principal_investigator_2_state,
+      -principal_investigator_2_zip_code,
+      -principal_investigator_2_country,
+      -principal_investigator_2_province,
+      -principal_investigator_2_postal_code,
+      -principal_investigator_2_primary_type_1,
+      -principal_investigator_2_primary_type_2,
+      -principal_investigator_2_primary_type_3,
+      -principal_investigator_2_primary_type_4,
+      -principal_investigator_2_primary_type_5,
+      -principal_investigator_2_primary_type_6,
+      -principal_investigator_2_specialty_1,
+      -principal_investigator_2_specialty_2,
+      -principal_investigator_2_specialty_3,
+      -principal_investigator_2_specialty_4,
+      -principal_investigator_2_specialty_5,
+      -principal_investigator_2_specialty_6,
+      -principal_investigator_2_license_state_code1,
+      -principal_investigator_2_license_state_code2,
+      -principal_investigator_2_license_state_code3,
+      -principal_investigator_2_license_state_code4,
+      -principal_investigator_2_license_state_code5,
+      -principal_investigator_3_covered_recipient_type,
+      -principal_investigator_3_profile_id,
+      -principal_investigator_3_npi,
+      -principal_investigator_3_first_name,
+      -principal_investigator_3_middle_name,
+      -principal_investigator_3_last_name,
+      -principal_investigator_3_name_suffix,
+      -principal_investigator_3_business_street_address_line1,
+      -principal_investigator_3_business_street_address_line2,
+      -principal_investigator_3_city,
+      -principal_investigator_3_state,
+      -principal_investigator_3_zip_code,
+      -principal_investigator_3_country,
+      -principal_investigator_3_province,
+      -principal_investigator_3_postal_code,
+      -principal_investigator_3_primary_type_1,
+      -principal_investigator_3_primary_type_2,
+      -principal_investigator_3_primary_type_3,
+      -principal_investigator_3_primary_type_4,
+      -principal_investigator_3_primary_type_5,
+      -principal_investigator_3_primary_type_6,
+      -principal_investigator_3_specialty_1,
+      -principal_investigator_3_specialty_2,
+      -principal_investigator_3_specialty_3,
+      -principal_investigator_3_specialty_4,
+      -principal_investigator_3_specialty_5,
+      -principal_investigator_3_specialty_6,
+      -principal_investigator_3_license_state_code1,
+      -principal_investigator_3_license_state_code2,
+      -principal_investigator_3_license_state_code3,
+      -principal_investigator_3_license_state_code4,
+      -principal_investigator_3_license_state_code5,
+      -principal_investigator_4_covered_recipient_type,
+      -principal_investigator_4_profile_id,
+      -principal_investigator_4_npi,
+      -principal_investigator_4_first_name,
+      -principal_investigator_4_middle_name,
+      -principal_investigator_4_last_name,
+      -principal_investigator_4_name_suffix,
+      -principal_investigator_4_business_street_address_line1,
+      -principal_investigator_4_business_street_address_line2,
+      -principal_investigator_4_city,
+      -principal_investigator_4_state,
+      -principal_investigator_4_zip_code,
+      -principal_investigator_4_country,
+      -principal_investigator_4_province,
+      -principal_investigator_4_postal_code,
+      -principal_investigator_4_primary_type_1,
+      -principal_investigator_4_primary_type_2,
+      -principal_investigator_4_primary_type_3,
+      -principal_investigator_4_primary_type_4,
+      -principal_investigator_4_primary_type_5,
+      -principal_investigator_4_primary_type_6,
+      -principal_investigator_4_specialty_1,
+      -principal_investigator_4_specialty_2,
+      -principal_investigator_4_specialty_3,
+      -principal_investigator_4_specialty_4,
+      -principal_investigator_4_specialty_5,
+      -principal_investigator_4_specialty_6,
+      -principal_investigator_4_license_state_code1,
+      -principal_investigator_4_license_state_code2,
+      -principal_investigator_4_license_state_code3,
+      -principal_investigator_4_license_state_code4,
+      -principal_investigator_4_license_state_code5,
+      -principal_investigator_5_covered_recipient_type,
+      -principal_investigator_5_profile_id,
+      -principal_investigator_5_npi,
+      -principal_investigator_5_first_name,
+      -principal_investigator_5_middle_name,
+      -principal_investigator_5_last_name,
+      -principal_investigator_5_name_suffix,
+      -principal_investigator_5_business_street_address_line1,
+      -principal_investigator_5_business_street_address_line2,
+      -principal_investigator_5_city,
+      -principal_investigator_5_state,
+      -principal_investigator_5_zip_code,
+      -principal_investigator_5_country,
+      -principal_investigator_5_province,
+      -principal_investigator_5_postal_code,
+      -principal_investigator_5_primary_type_1,
+      -principal_investigator_5_primary_type_2,
+      -principal_investigator_5_primary_type_3,
+      -principal_investigator_5_primary_type_4,
+      -principal_investigator_5_primary_type_5,
+      -principal_investigator_5_primary_type_6,
+      -principal_investigator_5_specialty_1,
+      -principal_investigator_5_specialty_2,
+      -principal_investigator_5_specialty_3,
+      -principal_investigator_5_specialty_4,
+      -principal_investigator_5_specialty_5,
+      -principal_investigator_5_specialty_6,
+      -principal_investigator_5_license_state_code1,
+      -principal_investigator_5_license_state_code2,
+      -principal_investigator_5_license_state_code3,
+      -principal_investigator_5_license_state_code4,
+      -principal_investigator_5_license_state_code5,
+      -indicate_drug_or_biological_or_device_or_medical_supply_2,
+      -product_category_or_therapeutic_area_2,
+      -name_of_drug_or_biological_or_device_or_medical_supply_2,
+      -associated_drug_or_biological_ndc_2,
+      -associated_device_or_medical_supply_pdi_2,
+      -covered_or_noncovered_indicator_3,
+      -indicate_drug_or_biological_or_device_or_medical_supply_3,
+      -product_category_or_therapeutic_area_3,
+      -name_of_drug_or_biological_or_device_or_medical_supply_3,
+      -associated_drug_or_biological_ndc_3,
+      -associated_device_or_medical_supply_pdi_3,
+      -covered_or_noncovered_indicator_4,
+      -indicate_drug_or_biological_or_device_or_medical_supply_4,
+      -product_category_or_therapeutic_area_4,
+      -name_of_drug_or_biological_or_device_or_medical_supply_4,
+      -associated_drug_or_biological_ndc_4,
+      -associated_device_or_medical_supply_pdi_4,
+      -covered_or_noncovered_indicator_5,
+      -indicate_drug_or_biological_or_device_or_medical_supply_5,
+      -product_category_or_therapeutic_area_5,
+      -name_of_drug_or_biological_or_device_or_medical_supply_5,
+      -associated_drug_or_biological_ndc_5,
+      -associated_device_or_medical_supply_pdi_5,
+      -expenditure_category2,
+      -expenditure_category3,
+      -expenditure_category4,
+      -expenditure_category5,
+      -expenditure_category6,
+      -research_information_link
+      ) |> 
+  # colnames()
+  fuimus::describe2() |> 
+  slt(column, type, n, uniq, top, distribution, min, mean, med, max) |> 
+  gt_tab()
 ```
 
 ::: 
