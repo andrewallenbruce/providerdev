@@ -51,7 +51,7 @@ dict <- open_dictionary()
 
 ```{r}
 #| label: open_dictionary_covered
-#| include: false
+#| echo: false
 dict$`Covered Recipient Profile Supplement` |>
  roworder(field) |>
   mtt(description = gsub("\n", " ", gsub("[\"']", "", stringi::stri_trans_general(description, "latin-ascii"))),
@@ -77,7 +77,7 @@ dict$`Covered Recipient Profile Supplement` |>
 
 ```{r}
 #| label: open_dictionary_general
-#| include: false
+#| echo: false
 dict$`General Payment Data` |>
   roworder(field) |>
   mtt(description = gsub("\n", " ", gsub("[\"|']", "", stringi::stri_trans_general(description, "latin-ascii"))),
@@ -102,7 +102,7 @@ dict$`General Payment Data` |>
 
 ```{r}
 #| label: open_dictionary_ownership
-#| include: false
+#| echo: false
 dict$`Ownership Payment Data` |>
   roworder(field) |>
   mtt(description = gsub("\n", " ", gsub("[\"|']", "", stringi::stri_trans_general(description, "latin-ascii"))),
@@ -127,7 +127,7 @@ dict$`Ownership Payment Data` |>
 
 ```{r}
 #| label: open_dictionary_research
-#| include: false
+#| echo: false
 dict$`Research Payment Data` |>
   roworder(field) |>
   mtt(description = gsub("\n", " ", gsub("[\"|']", "", stringi::stri_trans_general(description, "latin-ascii"))),
@@ -312,6 +312,7 @@ grp_pmts <- providertwo:::open_temp_group("grouped_payments") |>
 #### Covered + Nature
 
 ```{r}
+#| echo: false
 grp_pmts$`Payments Grouped by Covered Recipient and Nature of Payments` |> 
   slt(-teaching_hospital_name) |> 
   fuimus::describe2() |> 
@@ -322,6 +323,7 @@ grp_pmts$`Payments Grouped by Covered Recipient and Nature of Payments` |>
 #### Covered + Reporting
 
 ```{r}
+#| echo: false
 grp_pmts$`Payments Grouped by Covered Recipient and Reporting Entities` |>
   slt(-teaching_hospital_name) |> 
   fuimus::describe2() |> 
@@ -332,6 +334,7 @@ grp_pmts$`Payments Grouped by Covered Recipient and Reporting Entities` |>
 #### Reporting + Nature
 
 ```{r}
+#| echo: false
 grp_pmts$`Payments Grouped by Reporting Entities and Nature of Payments` |> 
   fuimus::describe2() |> 
   slt(column, n, uniq, top, distribution, min, mean, med, max) |> 
@@ -341,6 +344,7 @@ grp_pmts$`Payments Grouped by Reporting Entities and Nature of Payments` |>
 #### Reporting + Covered + Nature
 
 ```{r}
+#| echo: false
 grp_pmts$`Payments Grouped by Reporting Entities, Covered Recipient, and Nature of Payments` |> 
   fuimus::describe2() |> 
   slt(column, n, uniq, top, distribution, min, mean, med, max) |> 
@@ -361,6 +365,7 @@ grp_pmts$`Payments Grouped by Reporting Entities, Covered Recipient, and Nature 
 • __Years__ `[2017 - 2023]`
 
 ```{r}
+#| echo: false
 open_quick("general") |> 
   slt(-recipient_province, 
       -recipient_postal_code, 
@@ -412,6 +417,7 @@ open_quick("general") |>
 • __Years__ `[2017 - 2023]`
 
 ```{r}
+#| echo: false
 open_quick("ownership")
 ```
 
@@ -423,6 +429,7 @@ open_quick("ownership")
 • __Years__ `[2017 - 2023]`
 
 ```{r}
+#| echo: false
 open_quick("research")
 ```
 
