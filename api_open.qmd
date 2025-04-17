@@ -9,7 +9,7 @@ source("includes/_common.R")
 quick_open      <- providertwo:::quick_open
 quick_open_temp <- providertwo:::quick_open_temp
 
-gt_tab <- \(x, size = 14) {
+gt_tab <- \(x, size = 12) {
   x |>
     gt::gt() |>
     gtUtils::gt_theme_athletic() |>
@@ -20,7 +20,6 @@ gt_tab <- \(x, size = 14) {
       column_labels.background.color = "black",
       column_labels.border.bottom.color = "white",
       table.font.size = size,
-      # row_group.font.size = (size + 2),
       table.width = gt::pct(100)) |> 
     gt::cols_align(align = "left", columns = gt::everything()) |> 
     gt::sub_missing(columns = gt::everything(), missing_text = "-")
@@ -38,73 +37,107 @@ gt_tab <- \(x, size = 14) {
 -   [University of Illinois-Chicago: Sunshine Act](https://research.uic.edu/compliance/coi/organizational-coi/faqs-sunshine)
 
 
-::: {#nte-open-json .callout-note collapse="true"}
-
-## __JSON__ Catalog
+## Dictionaries
 
 ```{r}
-#| label: open_json
-#| echo: false
-#| message: false
-open_JSON <- "https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids" |> 
-  request() |>
-  req_perform() |>
-  resp_body_json(check_type = FALSE, simplifyVector = FALSE)
-
-c(open_JSON[[1]], open_JSON[[2]], open_JSON[[3]]) |> 
-  lobstr::tree(max_length = 1000L, max_depth = 10L)
-```
-
-
-:::
-
-
-## Data Dictionary
-
-```{r}
+#| label: open_dictionary
+#| include: false
 dict <- open_dictionary()
 ```
 
 ::: panel-tabset
 
-### Covered Recipient Profile Supplement
+### Covered
 
 ```{r}
-dict$`Covered Recipient Profile Supplement` |> 
-  slt(field, description) |> 
-  gt_tab()
+dict$`Covered Recipient Profile Supplement` |>
+  slt(field, description) |>
+  gt::gt() |>
+  gt::cols_merge(columns = c(field, description), pattern = "<b>{1}</b>:<br><br>{2}") |>
+  gt::cols_label(field = "Covered Recipient Profile Supplement") |>
+  gtUtils::gt_theme_athletic() |>
+  gt::tab_options(
+    quarto.disable_processing = TRUE,
+    column_labels.font.weight = "bolder",
+    column_labels.background.color = "black",
+    column_labels.border.bottom.color = "white",
+    table.font.size = 12,
+    table.width = gt::pct(100)
+  ) |>
+  gt::cols_align(align = "left", columns = gt::everything()) |>
+  gt::sub_missing(columns = gt::everything(), missing_text = "-")
 ```
 
-### General Payment Data
+### General
 
 ```{r}
-dict$`General Payment Data` |> 
-  slt(field, description) |> 
-  gt_tab()
+dict$`General Payment Data` |>
+  slt(field, description) |>
+  gt::gt() |>
+  gt::cols_merge(columns = c(field, description), pattern = "<b>{1}</b>:<br><br>{2}") |>
+  gt::cols_label(field = "General Payment Data") |>
+  gtUtils::gt_theme_athletic() |>
+  gt::tab_options(
+    quarto.disable_processing = TRUE,
+    column_labels.font.weight = "bolder",
+    column_labels.background.color = "black",
+    column_labels.border.bottom.color = "white",
+    table.font.size = 12,
+    table.width = gt::pct(100)
+  ) |>
+  gt::cols_align(align = "left", columns = gt::everything()) |>
+  gt::sub_missing(columns = gt::everything(), missing_text = "-")
 ```
 
-### Ownership Payment Data
+### Ownership
 
 ```{r}
-dict$`Ownership Payment Data` |> 
-  slt(field, description) |> 
-  gt_tab()
+dict$`Ownership Payment Data` |>
+  slt(field, description) |>
+  gt::gt() |>
+  gt::cols_merge(columns = c(field, description), pattern = "<b>{1}</b>:<br><br>{2}") |>
+  gt::cols_label(field = "Ownership Payment Data") |>
+  gtUtils::gt_theme_athletic() |>
+  gt::tab_options(
+    quarto.disable_processing = TRUE,
+    column_labels.font.weight = "bolder",
+    column_labels.background.color = "black",
+    column_labels.border.bottom.color = "white",
+    table.font.size = 12,
+    table.width = gt::pct(100)
+  ) |>
+  gt::cols_align(align = "left", columns = gt::everything()) |>
+  gt::sub_missing(columns = gt::everything(), missing_text = "-")
 ```
 
-### Research Payment Data
+### Research
 
 ```{r}
-dict$`Research Payment Data` |> 
-  slt(field, description) |> 
-  gt_tab()
+dict$`Research Payment Data` |>
+  slt(field, description) |>
+  gt::gt() |>
+  gt::cols_merge(columns = c(field, description), pattern = "<b>{1}</b>:<br><br>{2}") |>
+  gt::cols_label(field = "Research Payment Data") |>
+  gtUtils::gt_theme_athletic() |>
+  gt::tab_options(
+    quarto.disable_processing = TRUE,
+    column_labels.font.weight = "bolder",
+    column_labels.background.color = "black",
+    column_labels.border.bottom.color = "white",
+    table.font.size = 12,
+    table.width = gt::pct(100)
+  ) |>
+  gt::cols_align(align = "left", columns = gt::everything()) |>
+  gt::sub_missing(columns = gt::everything(), missing_text = "-")
 ```
 
 :::
 
-## Open Profiles
+## Profiles
 
 ```{r}
 #| label: endpoint_examples
+#| include: false
 open_quick <- \(alias) {
   stopifnot(length(alias) == 1L)
   
@@ -117,7 +150,7 @@ open_quick <- \(alias) {
 
 ::: panel-tabset
 
-### Covered Recipient
+### Covered
 
 • __Rows__ `[1.5M]`
 • __Pages__ `[3.1k]`
@@ -127,7 +160,7 @@ open_quick <- \(alias) {
 open_quick("profile_covered")
 ```
 
-### Physician (Distinct)
+### Physician
 
 • __Rows__ `[1.5M]`
 • __Pages__ `[3.1k]`
@@ -147,7 +180,7 @@ open_quick("profile_physician")
 open_quick("profile_information")
 ```
 
-### Provider ID Map
+### Mapping
 
 • __Rows__ `[2.4k]`
 • __Pages__ `[5]`
@@ -157,7 +190,7 @@ open_quick("profile_information")
 open_quick("profile_mapping")
 ```
 
-### Reporting Entity
+### Reporting
 
 • __Rows__ `[2.8k]`
 • __Pages__ `[6]`
@@ -167,7 +200,7 @@ open_quick("profile_mapping")
 open_quick("profile_entity")
 ```
 
-### Teaching Hospital
+### Teaching
 
 • __Rows__ `[1.4k]`
 • __Pages__ `[3]`
@@ -180,11 +213,11 @@ open_quick("profile_teaching")
 ::: 
 
 
-## Open Summaries
+## Summaries
 
 ::: panel-tabset
 
-### Summary Dashboard
+### Dashboard
 
 ```{r}
 open_quick("dashboard")
@@ -192,7 +225,7 @@ open_quick("dashboard")
 open_dashboard()
 ```
 
-### National by Year
+### National
 
 • __Rows__ `[24]`
 • __Pages__ `[1]`
@@ -207,8 +240,6 @@ open_national() |>
   gt_tab()
 ```
 
-### National by Year & Specialty
-
 • __Rows__ `[4.2k]`
 • __Pages__ `[9]`
 • __Fields__ `[21]`
@@ -220,7 +251,7 @@ open_quick("national_group") |>
   gt_tab()
 ```
 
-### State by Year
+### State
 
 • __Rows__ `[2.8k]`
 • __Pages__ `[6]`
@@ -232,8 +263,6 @@ open_quick("state_total") |>
   slt(column, n, uniq, top, distribution) |> 
   gt_tab()
 ```
-
-### State by Year & Nature of Payment
 
 • __Rows__ `[16.8k]`
 • __Pages__ `[34]`
@@ -248,9 +277,11 @@ open_quick("state_group") |>
 
 ::: 
 
-## Payment Group Summaries
+## Group Summaries
 
 ```{r}
+#| label: open_group
+#| include: false
 grp_pmts <- providertwo:::open_temp_group("grouped_payments") |> 
   filter(year == fmax(year), .by = title) |> 
   slt(title, identifier) |> 
@@ -261,7 +292,7 @@ grp_pmts <- providertwo:::open_temp_group("grouped_payments") |>
 
 ::: panel-tabset
 
-#### Covered Recipient + Nature of Payments
+#### Covered + Nature
 
 ```{r}
 grp_pmts$`Payments Grouped by Covered Recipient and Nature of Payments` |> 
@@ -271,7 +302,7 @@ grp_pmts$`Payments Grouped by Covered Recipient and Nature of Payments` |>
   gt_tab()
 ```
 
-#### Covered Recipient + Reporting Entities
+#### Covered + Reporting
 
 ```{r}
 grp_pmts$`Payments Grouped by Covered Recipient and Reporting Entities` |>
@@ -281,7 +312,7 @@ grp_pmts$`Payments Grouped by Covered Recipient and Reporting Entities` |>
   gt_tab()
 ```
 
-#### Reporting Entities + Nature of Payments
+#### Reporting + Nature
 
 ```{r}
 grp_pmts$`Payments Grouped by Reporting Entities and Nature of Payments` |> 
@@ -290,7 +321,7 @@ grp_pmts$`Payments Grouped by Reporting Entities and Nature of Payments` |>
   gt_tab()
 ```
 
-#### Reporting Entities + Covered Recipient + Nature of Payments
+#### Reporting + Covered + Nature
 
 ```{r}
 grp_pmts$`Payments Grouped by Reporting Entities, Covered Recipient, and Nature of Payments` |> 
@@ -305,7 +336,7 @@ grp_pmts$`Payments Grouped by Reporting Entities, Covered Recipient, and Nature 
 
 ::: panel-tabset
 
-### General Payment Data
+### General
 
 • __Rows__ `[14.6M]`
 • __Pages__ `[29k]`
@@ -356,7 +387,7 @@ open_quick("general") |>
   gt_tab()
 ```
 
-### Ownership Payment Data
+### Ownership
 
 • __Rows__ `[4k]`
 • __Pages__ `[9]`
@@ -367,7 +398,7 @@ open_quick("general") |>
 open_quick("ownership")
 ```
 
-### Research Payment Data
+### Research
 
 • __Rows__ `[1M]`
 • __Pages__ `[9]`
@@ -455,6 +486,8 @@ format_query_open(
 
 ### Query Format
 
+> SQL Format
+
 ```{r}
 #| eval: false
 tictoc::tic()
@@ -473,6 +506,8 @@ request("https://openpaymentsdata.cms.gov/api/1/datastore/sql") |>
   handle_na()
 tictoc::toc()
 ```
+
+> JSON:API Format
 
 ```{r}
 #| eval: false
@@ -564,3 +599,25 @@ url_parse(
   perform_simple()
 tictoc::toc()
 ```
+
+
+
+::: {#nte-open-json .callout-note collapse="true"}
+
+## __JSON__ Catalog
+
+```{r}
+#| label: open_json
+#| echo: false
+#| message: false
+open_JSON <- "https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids" |> 
+  request() |>
+  req_perform() |>
+  resp_body_json(check_type = FALSE, simplifyVector = FALSE)
+
+c(open_JSON[[1]], open_JSON[[2]], open_JSON[[3]]) |> 
+  lobstr::tree(max_length = 1000L, max_depth = 10L)
+```
+
+
+:::
