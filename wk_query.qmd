@@ -632,3 +632,53 @@ is_in(c("GA", "NY"))
 is_in(c("GA", "NY"), negate = TRUE)
 ```
 
+
+```{r}
+x <- list(npi = ~ providertwo:::starts_with("gdklfgj"))
+x
+
+x$npi[1]
+
+rlang::is_formula(x$npi, lhs = TRUE)
+
+
+foo <- function(npi            = NULL,
+                entity         = NULL,
+                first          = NULL,
+                last           = NULL,
+                organization   = NULL,
+                name_type      = NULL,
+                taxonomy_desc  = NULL,
+                city           = NULL,
+                state          = NULL,
+                zip            = NULL,
+                country        = NULL) {
+  rlang::list2(
+    number               = npi,
+    enumeration_type     = entity,
+    first_name           = first,
+    last_name            = last,
+    name_purpose         = name_type,
+    organization_name    = organization,
+    taxonomy_description = taxonomy_desc,
+    city                 = city,
+    state                = state,
+    postal_code          = zip,
+    country_code         = country,
+    skip                 = 0L
+  )
+}
+
+x <- foo(npi = ~ providertwo:::starts_with(1234567890))
+
+
+rlang::f_lhs(x$number) <- rlang::expr(NPI)
+
+x$number
+
+rlang::f_lhs(x$number)
+
+rlang::f_rhs(x$number) |> 
+  rlang::eval_tidy()
+```
+
