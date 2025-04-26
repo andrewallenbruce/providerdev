@@ -309,5 +309,117 @@ exnpi <- map(random_npi_gen(100000), \(x) x[luhn_check(x)]) |> unlist(use.names 
 tictoc::toc()
 ```
 
+## Integer Distribution in NPIs
+
+```{r}
+#| eval: false
+providertwo:::luhn_check(providertwo:::npi_ex$k[1])
+
+luhn <- function(x) {
+  
+  x <- rev(
+    as.integer(
+      strsplit(
+        unlist(
+          as.character(x)
+          ), 
+        "")[[1]][1:9]
+      )
+    )
+  
+  idx_odd  <- seq_along(x) %% 2 == 1
+  idx_even <- seq_along(x) %% 2 == 0
+  
+  x[idx_even] <- x[idx_even] * 2
+  x[idx_even] <- ifelse(x[idx_even] > 9, x[idx_even] - 9, x[idx_even])
+  
+  sum_odd  <- sum(x[idx_odd])
+  sum_even <- sum(x[idx_even])
+  
+  sum_x <- sum_odd + sum_even + 24
+  
+  sum_x %% 10 == 0
+}
+
+x <- providertwo:::npi_ex$k[1]
+
+purrr::map_lgl(as.character(providertwo:::npi_ex$k), luhn)
+```
+
+
+```{r}
+#| eval: false
+test1 <- 1000000000:1000100000 |>
+  as.character() |>
+  strsplit(split = "") |>
+  purrr::map(as.integer) |>
+  unlist() |>
+  matrix(ncol = 10, byrow = TRUE) |>
+  as.data.frame()
+
+npi_k <- providertwo:::npi_ex$k |>
+  as.character() |>
+  strsplit(split = "") |>
+  purrr::map(as.integer) |>
+  unlist() |>
+  matrix(ncol = 10, byrow = TRUE) |>
+  as.data.frame()
+
+step2 <- \(x) cheapr::cheapr_if_else(x > 9L, x - 9L, x) |> as.integer()
+
+npi_k |>
+  rnm(V10 = ORIG) |>
+  mtt(
+    rowid = as.integer(collapse::groupid(ORIG)),
+    V2 = V2 * 2,
+    V4 = V4 * 2,
+    V6 = V6 * 2,
+    V8 = V8 * 2,
+    V2 = step2(V2),
+    V4 = step2(V4),
+    V6 = step2(V6),
+    V8 = step2(V8),
+    RSUM = V1 + V2 + V3 + V4 + V5 + V6 + V7 + V8 + V9 + 24L,
+    CHK = as.integer((ceiling(RSUM / 10L) * 10L) - RSUM),
+    VALID = ORIG == CHK
+  ) |>
+  sbt(VALID == TRUE) |> 
+  slt(rowid, V1:V9, V10 = CHK, checksum = RSUM) |> 
+  fastplyr::as_tbl()
+```
+
+
+```{r}
+#| eval: false
+test9 <- 100000000:100010000 |>
+  as.character() |>
+  strsplit(split = "") |>
+  purrr::map(as.integer) |>
+  unlist() |>
+  matrix(ncol = 9, byrow = TRUE) |>
+  as.data.frame()
+
+test9
+
+step <- \(x) cheapr::cheapr_if_else(x > 9L, x - 9L, x)
+
+test9 |>
+  collapse::fmutate(across(c(V2, V4, V6, V8), function(x) step(x * 2), .apply = TRUE)) |>
+  collapse::fmutate(
+    RSUM = V1 + V2 + V3 + V4 + V5 + V6 + V7 + V8 + V9 + 24,
+    CHK = (ceiling(RSUM / 10) * 10) - RSUM) |>
+  # sbt(VALID == TRUE) |> tail()
+  fcount(VALID)
+```
+
+
+```{r}
+#| eval: false
+library(insitu)
+library(oomph)
+
+br_seq(x = alloc_n(100000000), from = 100000000)
+```
+
 
 
