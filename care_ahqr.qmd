@@ -1,0 +1,65 @@
+---
+editor_options: 
+   chunk_output_type: console
+---
+
+```{r}
+#| label: setup-common-01
+#| include: false
+#| warning: false
+source("includes/_common.R")
+```
+
+# AHRQ PSI-11 Measure Rates {#care-ahqr_psi11}
+
+## Metadata
+
+```{r}
+#| label: s7_object
+#| message: true
+x <- care_endpoint("ahqr_psi11")
+xdims <- x@dimensions |> props()
+
+type_of(x@metadata$modified) |> 
+  purse()
+
+
+cheapr::list_combine(
+  map(x@metadata, as.character),
+  collapse::get_elem(xdims, "fields", invert = TRUE),
+  fields = xdims$fields |> 
+    names()
+  ) |> 
+  yaml::as.yaml(
+    precision = 1, 
+    indent = 3,
+    indent.mapping.sequence = TRUE, 
+    handlers = list(
+      POSIXct = function(x) format(x, "%Y-%m-%d")
+      )) |> 
+  cat(sep = "\n")
+```
+
+## Response
+
+```{r}
+#| label: http_request
+#| message: true
+resp <- quick("ahqr_psi11", limit = 5000) |> 
+  mtt(START_DATE = clock::date_parse(START_DATE, format = "%m/%d/%Y"),
+      END_DATE = clock::date_parse(END_DATE, format = "%m/%d/%Y"),
+      ADM_DISC = as.double(ADM_DISC),
+      RATE = as.double(RATE),
+      INTERVAL_LOWER_LIMIT= as.double(INTERVAL_LOWER_LIMIT),
+      INTERVAL_HIGHER_LIMIT= as.double(INTERVAL_HIGHER_LIMIT))
+
+resp
+```
+
+```{r}
+resp |> datawizard::data_codebook()
+```
+
+```{r}
+resp |> datawizard::describe_distribution()
+```

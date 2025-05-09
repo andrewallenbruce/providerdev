@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.7.14">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="description" content="This is a personal, informal guide to rewriting an R package. It is a work in progress and will be updated as I learn more about the process.">
-<title>17&nbsp; enrollees – Refactoring &lt;b&gt;provider&lt;/b&gt;&lt;sup&gt;&lt;i&gt;2&lt;/i&gt;&lt;/sup&gt;
+<title>8&nbsp; AHRQ PSI-11 Measure Rates – Refactoring &lt;b&gt;provider&lt;/b&gt;&lt;sup&gt;&lt;i&gt;2&lt;/i&gt;&lt;/sup&gt;
 </title>
 <style>
 code{white-space: pre-wrap;}
@@ -61,8 +61,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./end_rhc.html" rel="next">
-<link href="./end_affiliations.html" rel="prev">
+<link href="./wk_backend.html" rel="next">
+<link href="./api_care.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -107,7 +107,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./end_affiliations.html">Endpoints</a></li><li class="breadcrumb-item"><a href="./end_enrollees.html"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title"><code>enrollees</code></span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./api_care.html">Medicare</a></li><li class="breadcrumb-item"><a href="./care_ahqr.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">AHRQ PSI-11 Measure Rates</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -212,7 +212,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./care_ahqr.html" class="sidebar-item-text sidebar-link">
+  <a href="./care_ahqr.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">AHRQ PSI-11 Measure Rates</span></span></a>
   </div>
 </li>
@@ -288,7 +288,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./end_enrollees.html" class="sidebar-item-text sidebar-link active">
+  <a href="./end_enrollees.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title"><code>enrollees</code></span></span></a>
   </div>
 </li>
@@ -348,13 +348,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-<li><a href="#inspect" id="toc-inspect" class="nav-link active" data-scroll-target="#inspect">Inspect</a></li>
-  <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
+<li><a href="#metadata" id="toc-metadata" class="nav-link active" data-scroll-target="#metadata">Metadata</a></li>
+  <li><a href="#response" id="toc-response" class="nav-link" data-scroll-target="#response">Response</a></li>
   </ul><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li><li><a href="https://github.com/andrewallenbruce/providertwo"><i class="bi bi-file-code"></i>providertwo</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./end_affiliations.html">Endpoints</a></li><li class="breadcrumb-item"><a href="./end_enrollees.html"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title"><code>enrollees</code></span></a></li></ol></nav><div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title"><span id="sec-enrollees" class="quarto-section-identifier"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title"><code>enrollees</code></span></span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i></button></div></div>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./api_care.html">Medicare</a></li><li class="breadcrumb-item"><a href="./care_ahqr.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">AHRQ PSI-11 Measure Rates</span></a></li></ol></nav><div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title"><span id="care-ahqr_psi11" class="quarto-section-identifier"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">AHRQ PSI-11 Measure Rates</span></span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i></button></div></div>
 </div>
 
 
@@ -368,137 +368,142 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
 
 
-</header><section id="inspect" class="level2"><h2 class="anchored" data-anchor-id="inspect">Inspect</h2>
+</header><section id="metadata" class="level2"><h2 class="anchored" data-anchor-id="metadata">Metadata</h2>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">public_Dataset</span><span class="op">(</span><span class="st">"enrollees"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>══ Medicare Fee-For-Service  Public Provider Enrollment ════</code></pre>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">care_endpoint</span><span class="op">(</span><span class="st">"ahqr_psi11"</span><span class="op">)</span></span>
+<span><span class="va">xdims</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">@</span><span class="va">dimensions</span> <span class="op">|&gt;</span> <span class="fu">props</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">type_of</span><span class="op">(</span><span class="va">x</span><span class="op">@</span><span class="va">metadata</span><span class="op">$</span><span class="va">modified</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">purse</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="r-output"><code>-  c1  double
+</code></pre>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">cheapr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cheapr/man/lists.html">list_combine</a></span><span class="op">(</span></span>
+<span>  <span class="fu">map</span><span class="op">(</span><span class="va">x</span><span class="op">@</span><span class="va">metadata</span>, <span class="va">as.character</span><span class="op">)</span>,</span>
+<span>  <span class="fu">collapse</span><span class="fu">::</span><span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/extract_list.html">get_elem</a></span><span class="op">(</span><span class="va">xdims</span>, <span class="st">"fields"</span>, invert <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>  fields <span class="op">=</span> <span class="va">xdims</span><span class="op">$</span><span class="va">fields</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">yaml</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/yaml/man/as.yaml.html">as.yaml</a></span><span class="op">(</span></span>
+<span>    precision <span class="op">=</span> <span class="fl">1</span>, </span>
+<span>    indent <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>    indent.mapping.sequence <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>    handlers <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>      POSIXct <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/format.html">format</a></span><span class="op">(</span><span class="va">x</span>, <span class="st">"%Y-%m-%d"</span><span class="op">)</span></span>
+<span>      <span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span>sep <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="r-output"><code>title: Agency for Healthcare Research and Quality (AHRQ) Patient Safety Indicator
+   11 (PSI-11) Measure Rates
+description: The Agency for Healthcare Research and Quality (AHRQ) Patient Safety
+   Indicator 11 (PSI-11) Measure Rates dataset provides information on provider-level
+   measure rates regarding one preventable complication (postoperative respiratory
+   failure) for Medicare fee-for-service discharges. The PSI-11 measure data is solely
+   reported for providers information and quality improvement purposes and are not
+   a part of the Deficit Reduction Act (DRA) Hospital-Acquired Condition (HAC) Payment
+   Provision or HAC Reduction Program.
+modified: '2020-12-08'
+temporal: 2015-01-01 • 2016-12-31
+periodicity: Annually [R/P1Y]
+download: https://data.cms.gov/sites/default/files/2020-09/Provider-Level_Measure_Rates_for_AHRQ_Patient_Safety_Indicator_11__PSI-11___-_2016.csv
+resources: https://data.cms.gov/data-api/v1/dataset-resources/7cf9662e-7c5c-4fe0-a8c6-828edf81a23c
+dictionary: https://data.cms.gov/resources/agency-for-healthcare-research-and-quality-ahrq-patient-safety-indicator-11-psi-11-measure-rates-data-dictionary
+site: https://data.cms.gov/quality-of-care/agency-for-healthcare-research-and-quality-ahrq-patient-safety-indicator-11-psi-11-measure-rates
+references: https://data.cms.gov/sites/default/files/2020-09/Agency%20for%20Healthcare%20Research%20and%20Quality%20%28AHRQ%29%20Patient%20Safety%20Indicator%2011%20%28PSI-11%29%20Measure%20Rates%20Methodology_0.pdf
+limit: 5000
+rows: 3319
+pages: 1
+fields:
+   - HOSP_ID
+   - ADM_DISC
+   - RATE
+   - INTERVAL_LOWER_LIMIT
+   - INTERVAL_HIGHER_LIMIT
+   - START_QUARTER
+   - START_DATE
+   - END_QUARTER
+   - END_DATE
+</code></pre>
 </div>
-<div class="cell-output cell-output-stderr">
-<pre><code>☰ Rows 2,945,846 ☰ Fields 11 ☰ Pages 590 ☰ Resources 7 ☰</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-  The Medicare Fee-For-Service Public Provider Enrollment
-  dataset includes information on providers who are
-  actively approved to bill Medicare or have completed the
-  855O at the time the data was pulled from the Provider
-  Enrollment, Chain, and Ownership System (PECOS). The
-  release of this provider enrollment data is not related
-  to other provider information releases such as Physician
-  Compare or Data Transparency.&nbsp;Note: This full dataset
-  contains more records than most spreadsheet programs can
-  handle, which will result in an incomplete load of data.
-  Use of a database or statistical software is required.</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>• Timespan ❯ 2023-01-01 - 2024-12-31</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>• Released ❯ Quarterly [R/P3M]</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>• Modified ❯ 2025-01-15</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code></code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>ℹ Data Dictionary | Landing Page | References</code></pre>
-</div>
-</div>
-</section><section id="examples" class="level2"><h2 class="anchored" data-anchor-id="examples">Examples</h2>
+</section><section id="response" class="level2"><h2 class="anchored" data-anchor-id="response">Response</h2>
 <div class="cell">
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">enrollees</span><span class="op">(</span>enid <span class="op">=</span> <span class="st">"I20040309000221"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>  
-ℹ 1 Result ☰ 1 Request
-  </code></pre>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu">quick</span><span class="op">(</span><span class="st">"ahqr_psi11"</span>, limit <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">mtt</span><span class="op">(</span>START_DATE <span class="op">=</span> <span class="fu">clock</span><span class="fu">::</span><span class="fu"><a href="https://clock.r-lib.org/reference/date_parse.html">date_parse</a></span><span class="op">(</span><span class="va">START_DATE</span>, format <span class="op">=</span> <span class="st">"%m/%d/%Y"</span><span class="op">)</span>,</span>
+<span>      END_DATE <span class="op">=</span> <span class="fu">clock</span><span class="fu">::</span><span class="fu"><a href="https://clock.r-lib.org/reference/date_parse.html">date_parse</a></span><span class="op">(</span><span class="va">END_DATE</span>, format <span class="op">=</span> <span class="st">"%m/%d/%Y"</span><span class="op">)</span>,</span>
+<span>      ADM_DISC <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html">as.double</a></span><span class="op">(</span><span class="va">ADM_DISC</span><span class="op">)</span>,</span>
+<span>      RATE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html">as.double</a></span><span class="op">(</span><span class="va">RATE</span><span class="op">)</span>,</span>
+<span>      INTERVAL_LOWER_LIMIT<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html">as.double</a></span><span class="op">(</span><span class="va">INTERVAL_LOWER_LIMIT</span><span class="op">)</span>,</span>
+<span>      INTERVAL_HIGHER_LIMIT<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html">as.double</a></span><span class="op">(</span><span class="va">INTERVAL_HIGHER_LIMIT</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">resp</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="r-output"><code><span style="color: #555555;"># A tibble: 3,319 × 9</span>
+   HOSP_ID ADM_DISC  RATE INTERVAL_LOWER_LIMIT INTERVAL_HIGHER_LIMIT
+   <span style="color: #555555; font-style: italic;"><chr></chr></span>      <span style="color: #555555; font-style: italic;"><dbl></dbl></span> <span style="color: #555555; font-style: italic;"><dbl></dbl></span>                <span style="color: #555555; font-style: italic;"><dbl></dbl></span>                 <span style="color: #555555; font-style: italic;"><dbl></dbl></span>
+<span style="color: #555555;"> 1</span> 010001      <span style="text-decoration: underline;">1</span>763  9.86                 5.23                  14.5
+<span style="color: #555555;"> 2</span> 010005       218 17.6                  8                     27.2
+<span style="color: #555555;"> 3</span> 010006        <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>                   <span style="color: #BB0000;">NA</span>                     <span style="color: #BB0000;">NA</span>  
+<span style="color: #555555;"> 4</span> 010007        57 11.4                  0                     23.4
+<span style="color: #555555;"> 5</span> 010008         2 <span style="color: #BB0000;">NA</span>                   <span style="color: #BB0000;">NA</span>                     <span style="color: #BB0000;">NA</span>  
+<span style="color: #555555;"> 6</span> 010011       791 15.4                  7.98                  22.9
+<span style="color: #555555;"> 7</span> 010012       127  9.61                 0                     19.6
+<span style="color: #555555;"> 8</span> 010016       629 11.7                  5.32                  18.1
+<span style="color: #555555;"> 9</span> 010018        30  9.22                 0                     20.1
+<span style="color: #555555;">10</span> 010019         5 13.6                  0.42                  26.8
+<span style="color: #555555;"># ℹ 3,309 more rows</span>
+<span style="color: #555555;"># ℹ 4 more variables: START_QUARTER <chr>, START_DATE <date>,</date></chr></span>
+<span style="color: #555555;">#   END_QUARTER <chr>, END_DATE <date></date></chr></span>
+</code></pre>
 </div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 11
-  NPI        PECOS_ASCT_CNTL_ID ENRLMT_ID    PROVIDER_TYPE_CD PROVIDER_TYPE_DESC
-  &lt;chr&gt;      &lt;chr&gt;              &lt;chr&gt;        &lt;chr&gt;            &lt;chr&gt;             
-1 1417918293 3870481252         I2004030900… 14-41            PRACTITIONER - OP…
-# ℹ 6 more variables: STATE_CD &lt;chr&gt;, FIRST_NAME &lt;chr&gt;, MDL_NAME &lt;chr&gt;,
-#   LAST_NAME &lt;chr&gt;, ORG_NAME &lt;chr&gt;, GNDR_SW &lt;chr&gt;</code></pre>
+<div class="cell">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu">datawizard</span><span class="fu">::</span><span class="fu"><a href="https://easystats.github.io/datawizard/reference/data_codebook.html">data_codebook</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="r-output"><code><span style="color: #0000BB;">resp (3319 rows and 9 variables, 9 shown)</span>
+
+ID | Name                  | Type      |   Missings |        Values |             N
+---+-----------------------+-----------+------------+---------------+--------------
+1  | HOSP_ID               | character |   0 (0.0%) |        010001 |    1 (  0.0%)
+   |                       |           |            |        010005 |    1 (  0.0%)
+   |                       |           |            |        010006 |    1 (  0.0%)
+   |                       |           |            |        010007 |    1 (  0.0%)
+   |                       |           |            |        010008 |    1 (  0.0%)
+   |                       |           |            |        010011 |    1 (  0.0%)
+   |                       |           |            |        010012 |    1 (  0.0%)
+   |                       |           |            |        010016 |    1 (  0.0%)
+   |                       |           |            |        010018 |    1 (  0.0%)
+   |                       |           |            |        010019 |    1 (  0.0%)
+   |                       |           |            |         (...) |              
+---+-----------------------+-----------+------------+---------------+--------------
+2  | ADM_DISC              | numeric   | 237 (7.1%) |    [1, 11795] |          3082
+---+-----------------------+-----------+------------+---------------+--------------
+3  | RATE                  | numeric   | 301 (9.1%) | [2.13, 39.08] |          3018
+---+-----------------------+-----------+------------+---------------+--------------
+4  | INTERVAL_LOWER_LIMIT  | numeric   | 301 (9.1%) |    [0, 35.29] |          3018
+---+-----------------------+-----------+------------+---------------+--------------
+5  | INTERVAL_HIGHER_LIMIT | numeric   | 301 (9.1%) | [6.43, 45.37] |          3018
+---+-----------------------+-----------+------------+---------------+--------------
+6  | START_QUARTER         | character |   0 (0.0%) |        3Q2013 | 3319 (100.0%)
+---+-----------------------+-----------+------------+---------------+--------------
+7  | START_DATE            | date      |   0 (0.0%) |    2013-07-01 | 3319 (100.0%)
+---+-----------------------+-----------+------------+---------------+--------------
+8  | END_QUARTER           | character |   0 (0.0%) |        2Q2015 | 3319 (100.0%)
+---+-----------------------+-----------+------------+---------------+--------------
+9  | END_DATE              | date      |   0 (0.0%) |    2015-06-30 | 3319 (100.0%)
+-----------------------------------------------------------------------------------
+</code></pre>
 </div>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">enrollees</span><span class="op">(</span>npi <span class="op">=</span> <span class="st">"1417918293"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>  
-ℹ 1 Result ☰ 1 Request
-  </code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 11
-  NPI        PECOS_ASCT_CNTL_ID ENRLMT_ID    PROVIDER_TYPE_CD PROVIDER_TYPE_DESC
-  &lt;chr&gt;      &lt;chr&gt;              &lt;chr&gt;        &lt;chr&gt;            &lt;chr&gt;             
-1 1417918293 3870481252         I2004030900… 14-41            PRACTITIONER - OP…
-# ℹ 6 more variables: STATE_CD &lt;chr&gt;, FIRST_NAME &lt;chr&gt;, MDL_NAME &lt;chr&gt;,
-#   LAST_NAME &lt;chr&gt;, ORG_NAME &lt;chr&gt;, GNDR_SW &lt;chr&gt;</code></pre>
-</div>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">enrollees</span><span class="op">(</span>pac <span class="op">=</span> <span class="st">"2860305554"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>  
-ℹ 1 Result ☰ 1 Request
-  </code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 11
-  NPI        PECOS_ASCT_CNTL_ID ENRLMT_ID    PROVIDER_TYPE_CD PROVIDER_TYPE_DESC
-  &lt;chr&gt;      &lt;chr&gt;              &lt;chr&gt;        &lt;chr&gt;            &lt;chr&gt;             
-1 1134122260 2860305554         I2003111000… 14-41            PRACTITIONER - OP…
-# ℹ 6 more variables: STATE_CD &lt;chr&gt;, FIRST_NAME &lt;chr&gt;, MDL_NAME &lt;chr&gt;,
-#   LAST_NAME &lt;chr&gt;, ORG_NAME &lt;chr&gt;, GNDR_SW &lt;chr&gt;</code></pre>
-</div>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">enrollees</span><span class="op">(</span>state <span class="op">=</span> <span class="st">"GA"</span>, gender <span class="op">=</span> <span class="st">"9"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>  
-ℹ 121 Results ☰ 1 Request
-  </code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 121 × 11
-   NPI        PECOS_ASCT_CNTL_ID ENRLMT_ID   PROVIDER_TYPE_CD PROVIDER_TYPE_DESC
-   &lt;chr&gt;      &lt;chr&gt;              &lt;chr&gt;       &lt;chr&gt;            &lt;chr&gt;             
- 1 1508822776 3476457953         I200311250… 14-77            PRACTITIONER - VA…
- 2 1619914975 1557264553         I200401280… 14-11            PRACTITIONER - IN…
- 3 1285670901 7012807977         I200403160… 14-11            PRACTITIONER - IN…
- 4 1841207917 1456343961         I200404020… 14-02            PRACTITIONER - GE…
- 5 1942275425 1658364039         I200404050… 14-93            PRACTITIONER - EM…
- 6 1275645459 4789677840         I200404050… 14-38            PRACTITIONER - GE…
- 7 1073608899 9638164619         I200404190… 14-66            PRACTITIONER - RH…
- 8 1124147343 1850388026         I200404290… 14-65            PRACTITIONER - PH…
- 9 1336246149 7911996392         I200405110… 14-16            PRACTITIONER - OB…
-10 1891773792 7113917816         I200405140… 14-50            PRACTITIONER - NU…
-# ℹ 111 more rows
-# ℹ 6 more variables: STATE_CD &lt;chr&gt;, FIRST_NAME &lt;chr&gt;, MDL_NAME &lt;chr&gt;,
-#   LAST_NAME &lt;chr&gt;, ORG_NAME &lt;chr&gt;, GNDR_SW &lt;chr&gt;</code></pre>
-</div>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">enrollees</span><span class="op">(</span>state <span class="op">=</span> <span class="st">"VT"</span>, gender <span class="op">=</span> <span class="st">"F"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>  
-ℹ 3,521 Results ☰ 1 Request
-  </code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 3,521 × 11
-   NPI        PECOS_ASCT_CNTL_ID ENRLMT_ID   PROVIDER_TYPE_CD PROVIDER_TYPE_DESC
-   &lt;chr&gt;      &lt;chr&gt;              &lt;chr&gt;       &lt;chr&gt;            &lt;chr&gt;             
- 1 1063585701 6709799083         I200311120… 14-80            PRACTITIONER - CL…
- 2 1497787824 8527972181         I200311180… 14-68            PRACTITIONER - CL…
- 3 1700832086 4587578158         I200311180… 14-16            PRACTITIONER - OB…
- 4 1295846590 8628972163         I200311250… 14-64            PRACTITIONER - QU…
- 5 1568522506 7012811458         I200311260… 14-65            PRACTITIONER - PH…
- 6 1457454894 1951206820         I200312040… 14-46            PRACTITIONER - EN…
- 7 1174631915 0042116378         I200312090… 14-08            PRACTITIONER - FA…
- 8 1841302593 7214834480         I200312160… 14-90            PRACTITIONER - ME…
- 9 1215984018 5193625325         I200401130… 14-80            PRACTITIONER - CL…
-10 1902877954 9133021538         I200401260… 14-50            PRACTITIONER - NU…
-# ℹ 3,511 more rows
-# ℹ 6 more variables: STATE_CD &lt;chr&gt;, FIRST_NAME &lt;chr&gt;, MDL_NAME &lt;chr&gt;,
-#   LAST_NAME &lt;chr&gt;, ORG_NAME &lt;chr&gt;, GNDR_SW &lt;chr&gt;</code></pre>
-</div>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu">datawizard</span><span class="fu">::</span><span class="fu"><a href="https://easystats.github.io/datawizard/reference/describe_distribution.html">describe_distribution</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="r-output"><code>Variable              |   Mean |     SD |    IQR |            Range | Skewness
+------------------------------------------------------------------------------
+ADM_DISC              | 696.44 | 890.57 | 819.00 | [1.00, 11795.00] |     2.93
+RATE                  |  13.56 |   4.44 |   5.22 |    [2.13, 39.08] |     1.11
+INTERVAL_LOWER_LIMIT  |   4.93 |   5.12 |   7.46 |    [0.00, 35.29] |     1.30
+INTERVAL_HIGHER_LIMIT |  22.41 |   5.01 |   6.75 |    [6.43, 45.37] |     0.20
+
+Variable              | Kurtosis |    n | n_Missing
+---------------------------------------------------
+ADM_DISC              |    15.22 | 3082 |       237
+RATE                  |     2.31 | 3018 |       301
+INTERVAL_LOWER_LIMIT  |     1.92 | 3018 |       301
+INTERVAL_HIGHER_LIMIT |     0.46 | 3018 |       301
+</code></pre>
 </div>
 
 
@@ -972,41 +977,81 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-      <a href="./end_affiliations.html" class="pagination-link" aria-label="`affiliations`">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title"><code>affiliations</code></span></span>
+      <a href="./api_care.html" class="pagination-link" aria-label="Medicare">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Medicare</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./end_rhc.html" class="pagination-link" aria-label="`rural_health`">
-        <span class="nav-page-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title"><code>rural_health</code></span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./wk_backend.html" class="pagination-link" aria-label="Backend">
+        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Backend</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb25" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># `enrollees` {#sec-enrollees}</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup-common-01</span></span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
-<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"includes/_common.R"</span>)</span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a><span class="fu">## Inspect</span></span>
-<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: true</span></span>
-<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a><span class="fu">public_Dataset</span>(<span class="st">"enrollees"</span>)</span>
-<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a><span class="fu">## Examples</span></span>
-<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: true</span></span>
-<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a><span class="fu">enrollees</span>(<span class="at">enid =</span> <span class="st">"I20040309000221"</span>)</span>
-<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a><span class="fu">enrollees</span>(<span class="at">npi =</span> <span class="st">"1417918293"</span>)</span>
-<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a><span class="fu">enrollees</span>(<span class="at">pac =</span> <span class="st">"2860305554"</span>)</span>
-<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a><span class="fu">enrollees</span>(<span class="at">state =</span> <span class="st">"GA"</span>, <span class="at">gender =</span> <span class="st">"9"</span>)</span>
-<span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a><span class="fu">enrollees</span>(<span class="at">state =</span> <span class="st">"VT"</span>, <span class="at">gender =</span> <span class="st">"F"</span>)</span>
-<span id="cb25-31"><a href="#cb25-31" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<div class="sourceCode" id="cb6" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">   chunk_output_type: console</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup-common-01</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"includes/_common.R"</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="fu"># AHRQ PSI-11 Measure Rates {#care-ahqr_psi11}</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="fu">## Metadata</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: s7_object</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: true</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">care_endpoint</span>(<span class="st">"ahqr_psi11"</span>)</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>xdims <span class="ot">&lt;-</span> x<span class="sc">@</span>dimensions <span class="sc">|&gt;</span> <span class="fu">props</span>()</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="fu">type_of</span>(x<span class="sc">@</span>metadata<span class="sc">$</span>modified) <span class="sc">|&gt;</span> </span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>cheapr<span class="sc">::</span><span class="fu">list_combine</span>(</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(x<span class="sc">@</span>metadata, as.character),</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>  collapse<span class="sc">::</span><span class="fu">get_elem</span>(xdims, <span class="st">"fields"</span>, <span class="at">invert =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">fields =</span> xdims<span class="sc">$</span>fields <span class="sc">|&gt;</span> </span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>()</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>  yaml<span class="sc">::</span><span class="fu">as.yaml</span>(</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">precision =</span> <span class="dv">1</span>, </span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">indent =</span> <span class="dv">3</span>,</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">indent.mapping.sequence =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">handlers =</span> <span class="fu">list</span>(</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>      <span class="at">POSIXct =</span> <span class="cf">function</span>(x) <span class="fu">format</span>(x, <span class="st">"%Y-%m-%d"</span>)</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>      )) <span class="sc">|&gt;</span> </span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="at">sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a><span class="fu">## Response</span></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: http_request</span></span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: true</span></span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>resp <span class="ot">&lt;-</span> <span class="fu">quick</span>(<span class="st">"ahqr_psi11"</span>, <span class="at">limit =</span> <span class="dv">5000</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(<span class="at">START_DATE =</span> clock<span class="sc">::</span><span class="fu">date_parse</span>(START_DATE, <span class="at">format =</span> <span class="st">"%m/%d/%Y"</span>),</span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>      <span class="at">END_DATE =</span> clock<span class="sc">::</span><span class="fu">date_parse</span>(END_DATE, <span class="at">format =</span> <span class="st">"%m/%d/%Y"</span>),</span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>      <span class="at">ADM_DISC =</span> <span class="fu">as.double</span>(ADM_DISC),</span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>      <span class="at">RATE =</span> <span class="fu">as.double</span>(RATE),</span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>      <span class="at">INTERVAL_LOWER_LIMIT=</span> <span class="fu">as.double</span>(INTERVAL_LOWER_LIMIT),</span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>      <span class="at">INTERVAL_HIGHER_LIMIT=</span> <span class="fu">as.double</span>(INTERVAL_HIGHER_LIMIT))</span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>resp</span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>resp <span class="sc">|&gt;</span> datawizard<span class="sc">::</span><span class="fu">data_codebook</span>()</span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>resp <span class="sc">|&gt;</span> datawizard<span class="sc">::</span><span class="fu">describe_distribution</span>()</span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
