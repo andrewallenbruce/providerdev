@@ -19,16 +19,9 @@ The __Comprehensive Primary Care (CPC) Initiative - Participating Primary Care P
 ```{r}
 #| label: s7_object
 #| echo: false
-time <- c("modified", "periodicity", "temporal")
-link <- c("dictionary", "site", "references", "resources", "download")
+end <- care_endpoint("cpc_primary")
 
-end  <- care_endpoint("cpc_primary")
-
-end@metadata[names(end@metadata) %in% time] |> 
-  print_ls()
-
-end@metadata[names(end@metadata) %in% link] |> 
-  print_ls()
+end@metadata[c(time, link)] |> print_ls()
 ```
 
 ### Resources
@@ -56,16 +49,14 @@ new_tbl(
     "Zip Code"
   ),
   description = c(
-    "Unencrypted ACO Identifier. This identifier can be linked to the encrypted ACO identifier used for prior performance years (PY) using the ACO ID Crosswalk available at https://www.cms.gov/Medicare/Medicare-Fee-for-ServicePayment/sharedsavingsprogram/program-data.", 
-    "ACO Doing Business As (DBA) or Legal Business Name (LBN). Listed name is DBA unless DBA is not available, in which case LBN is used.", 
-    "Indicates ACO description of use of advance investment payments.", 
-    "Indicates which one of the three required categories the payment use falls under: increased staffing, health care infrastructure, or the provision of accountable care for underserved beneficiaries.", 
-    "Indicates a selected general spend subcategory under a general spend category that a payment use falls under.", 
-    "The dollar amount of AIP funding the ACO has received from CMS through December 2024.", 
-    "The dollar amount the ACO estimates will be spent on the payment use during the 2024 performance year.", 
-    "The dollar amount the ACO actually spent on the payment use during the 2024 performance year.", 
-    "The dollar amount the ACO estimates will be spent on the payment use during the 2025 performance year.",
-    "The dollar amount the ACO actually spent on the payment use during the 2025 performance year."
+    "Plain text field containing the name of the initiative. Populates the initiative name onto the Where Innovation is Happening maps.", 
+    "Plain text field containing the names of medical practices which participated in the CPC initiative.", 
+    "Location field containing the street number, name, and the longitude and latitude coordinates of the participating practice.", 
+    "Plain text field containing the two-letter state abbreviation for the state where the participating practice is located.", 
+    "Plain text field containing the name of the city where the participating practice is located.", 
+    "Plain text field intended to contain information about the geographic reach of the participating practice. This field is not currently in use.", 
+    "Plain text field containing the street number and name of the street where the participating practice is located.",
+    "Number field intended to contain the zip code for the location of the participating practice. This field is not currently in use."
   )
 )
 ```
@@ -77,7 +68,7 @@ new_tbl(
 #| message: true
 resp <- quick("cpc_primary", limit = 5000)
 
-resp |> dplyr::glimpse()
+resp
 ```
 
 ## Overview
@@ -85,5 +76,5 @@ resp |> dplyr::glimpse()
 ```{r}
 #| label: codebook
 #| echo: false
-resp |> datawizard::data_codebook()
+resp |> collapse::descr()
 ```

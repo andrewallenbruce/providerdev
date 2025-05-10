@@ -23,11 +23,7 @@ The PSI-11 measure data are solely reported for providers' information and quali
 #| echo: false
 end  <- care_endpoint("ahqr_psi11")
 
-end@metadata[names(end@metadata) %in% time] |> 
-  print_ls()
-
-end@metadata[names(end@metadata) %in% link] |> 
-  print_ls()
+end@metadata[c(time, link)] |> print_ls()
 ```
 
 ### Resources
@@ -85,7 +81,7 @@ resp <- resp|>
       INTERVAL_LOWER_LIMIT = as.double(INTERVAL_LOWER_LIMIT),
       INTERVAL_HIGHER_LIMIT= as.double(INTERVAL_HIGHER_LIMIT))
 
-resp |> dplyr::glimpse()
+resp
 ```
 
 ## Overview
@@ -93,13 +89,15 @@ resp |> dplyr::glimpse()
 ```{r}
 #| label: codebook
 #| echo: false
-resp |> datawizard::data_codebook()
+resp |> collapse::descr()
 ```
 
 ### Distribution
 
 ```{r}
 #| label: distribution
+#| message: false
+#| warning: false
 #| echo: false
-resp |> datawizard::describe_distribution()
+resp |> datawizard::describe_distribution() |> plot()
 ```

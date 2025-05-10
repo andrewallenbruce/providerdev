@@ -10,7 +10,7 @@ editor_options:
 source("includes/_common.R")
 ```
 
-# AIP Plan {#care-aip}
+# ACO AIP Plan {#care-aip}
 
 The __Advance Investment Payment Spend Plan__ data provides payment use, spending category, projected and actual spending of advanced investments payments by __Accountable Care Organizations (ACOs)__.
 
@@ -19,16 +19,9 @@ The __Advance Investment Payment Spend Plan__ data provides payment use, spendin
 ```{r}
 #| label: s7_object
 #| echo: false
-time <- c("modified", "periodicity", "temporal")
-link <- c("dictionary", "site", "references", "resources", "download")
-
 end  <- care_endpoint("aip_plan")
 
-end@metadata[names(end@metadata) %in% time] |> 
-  print_ls()
-
-end@metadata[names(end@metadata) %in% link] |> 
-  print_ls()
+end@metadata[c(time, link)] |> print_ls()
 ```
 
 ### Resources
@@ -72,7 +65,6 @@ new_tbl(
 )
 ```
 
-
 ## Data
 
 ```{r}
@@ -92,7 +84,7 @@ resp <- resp |>
     Projected_Spending_2025             = as.double(Projected_Spending_2025),
     Actual_Spending_2025                = as.double(Actual_Spending_2025))
 
-resp |> dplyr::glimpse()
+resp
 ```
 
 ## Overview
@@ -100,7 +92,7 @@ resp |> dplyr::glimpse()
 ```{r}
 #| label: codebook
 #| echo: false
-resp |> datawizard::data_codebook()
+resp |> collapse::descr()
 ```
 
 ### Distribution
@@ -108,5 +100,7 @@ resp |> datawizard::data_codebook()
 ```{r}
 #| label: distribution
 #| echo: false
-resp |> datawizard::describe_distribution()
+#| message: false
+#| warning: false
+resp |> datawizard::describe_distribution() |> plot()
 ```

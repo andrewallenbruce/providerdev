@@ -39,11 +39,18 @@ library(providertwo)
 library(arrow)
 library(RcppSimdJson)
 
+library(datawizard)
+library(see)
+library(ggplot2)
+theme_set(theme_modern())
+
 # library(curl)
 # library(weburl)
 # library(urlparse)
 
 # yank  <- \(x) x[[1]]
+
+browse_dictionary <- \(x) browseURL(x@metadata$dictionary)
 
 purse <- \(
   x,
@@ -64,7 +71,7 @@ purse <- \(
 time <- c("modified", "periodicity", "temporal")
 link <- c("dictionary", "site", "references", "resources", "download")
 
-print_ls <- function(ls, prefix = "", postfix = " | ") {
+print_ls <- function(ls, prefix = "", postfix = "") {
 
   if (length(ls) == 0) cat("<empty>\n")
   if (length(names(ls)) != length(ls)) stop("all elements must be named")
@@ -72,9 +79,9 @@ print_ls <- function(ls, prefix = "", postfix = " | ") {
   ls <- lapply(ls, as.character)
   cat(
     sprintf(
-      "%s%s%s< %s >",
+      "%s%s%s %s ",
       prefix,
-      format(names(ls), justify = "right"),
+      format(paste0("[", toupper(names(ls)), "]"), justify = "right"),
       postfix,
       ls),
     sep = "\n")
