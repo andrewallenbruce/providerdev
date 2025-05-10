@@ -10,6 +10,70 @@ source("includes/_common.R")
 # test_url <- test_url + greater_or_equal("overall_rating", 3)
 ```
 
+### Params with length > 1
+
+```{r}
+#| label: params
+foo <- function(x) {
+  
+  x_name <- deparse(substitute(x))
+  
+  glue::glue("{x_name}[{seq_along(x)}]={x}") |> 
+    glue::glue_collapse(sep = "&")
+}
+
+ID <- 5:7
+
+foo(ID)
+```
+
+
+```{r}
+multi_value <- function(x) {
+  glue::glue("[{seq_along(x)}]={x}") |> 
+    glue::glue_collapse(sep = "&")
+}
+
+multi_value(state.abb)
+
+new_query <- function(
+    args = list(state = c("GA", "MD"), 
+                last_name = "AMITH", 
+                npi = 1234567890), 
+    operator = c("IN", "STARTS_WITH", "=")) {
+  
+  len    <- cheapr::lengths_(args, names = TRUE)
+  single <- args[cheapr::which_(len == 1)]
+  multi  <- args[cheapr::which_(len > 1)]
+  
+  x <- list(s = if (vctrs::vec_is_empty(single)) NULL else single, 
+            m = if (vctrs::vec_is_empty(multi)) NULL else multi)
+  
+  idx <- rlang::set_names(seq_along(args), names(args))
+  opr <- rlang::set_names(operator, names(args))
+
+  g_single <- glue::glue(
+    "filter[{idx[names(x$s)]}][condition][path]={names(x$s)}\n",
+    "filter[{idx[names(x$s)]}][condition][operator]={opr[names(x$s)]}\n",
+    "filter[{idx[names(x$s)]}][condition][value]={providertwo:::delist(x$s)}")
+  
+  g_mult <- glue::as_glue(
+    c(
+      glue::glue(
+        "filter[{idx[names(x$m)]}][condition][path]={names(x$m)}\n",
+        "filter[{idx[names(x$m)]}][condition][operator]={opr[names(x$m)]}"), 
+      glue::glue(
+        "filter[{idx[names(x$m)]}][condition][value]",
+        "[{seq_along(providertwo:::delist(x$m))}]={providertwo:::delist(x$m)}"))
+    )
+  
+  glue::glue_collapse(c(g_single, g_mult), sep = "\n")
+}
+
+new_query()
+```
+
+
 ## Query Generation
 
    1. Select Dataset/Method
