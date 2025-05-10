@@ -59,19 +59,23 @@ resp
 
 ## Overview
 
-### Data Dictionary
-
 ```{r}
+#| label: datawizard_codebook
+#| echo: false
 resp |> datawizard::data_codebook()
 ```
 
 ```{r}
+#| label: datawizard_distribution
+#| echo: false
 resp |> datawizard::describe_distribution()
 ```
 
-### Point Blank
+### Data Dictionary
 
 ```{r}
+#| label: data_dict
+#| echo: false
 ahqr_psi11_info <- fastplyr::new_tbl(
   column = c(
     "HOSP_ID", 
@@ -102,6 +106,7 @@ ahqr_psi11_info
 
 ```{r}
 #| label: point_blank_informant
+#| echo: false
 informant <- create_informant(
   tbl = ~ resp, 
   label = "API: Medicare",
@@ -123,11 +128,15 @@ informant <- informant |>
 
 get_informant_report(
   informant,
-  title = "**AHRQ PSI-11 Measure Rates**"
+  title = "**AHRQ PSI-11 Measure Rates**",
+  size = "small"
 )
 ```
 
 ```{r}
 #| label: point_blank_scan
-# pointblank::scan_data(resp, navbar = FALSE)
+#| eval: false
+#| echo: false
+ahqr_psi_scan <- pointblank::scan_data(resp, navbar = FALSE)
+pointblank::export_report(ahqr_psi_scan, filename = "ahqr_psi_scan.html")
 ```
