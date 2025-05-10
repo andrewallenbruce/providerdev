@@ -12,18 +12,23 @@ source("includes/_common.R")
 
 # AIP Plan {#care-aip}
 
-Advance Investment Payment Spend Plan
-
-## Description 
-
-The Advance Investment Payment Spend Plan data provides payment use, spending category, projected and actual spending of advanced investments payments by Accountable Care Organizations (ACOs).
+The __Advance Investment Payment Spend Plan__ data provides payment use, spending category, projected and actual spending of advanced investments payments by __Accountable Care Organizations (ACOs)__.
 
 ### Metadata
 
 ```{r}
 #| label: s7_object
 #| echo: false
-care_endpoint("aip_plan")
+time <- c("modified", "periodicity", "temporal")
+link <- c("dictionary", "site", "references", "resources", "download")
+
+end  <- care_endpoint("aip_plan")
+
+end@metadata[names(end@metadata) %in% time] |> 
+  print_ls()
+
+end@metadata[names(end@metadata) %in% link] |> 
+  print_ls()
 ```
 
 ### Resources
@@ -31,7 +36,7 @@ care_endpoint("aip_plan")
 ```{r}
 #| label: resources
 #| echo: false
-care_endpoint("aip_plan") |> list_resources()
+end |> list_resources()
 ```
 
 ### Dictionary
@@ -39,8 +44,8 @@ care_endpoint("aip_plan") |> list_resources()
 ```{r}
 #| label: data_dict
 #| echo: false
-aip_plan_dict <- new_tbl(
-  FIELD = c(
+new_tbl(
+  field = c(
     "ACO_ID", 
     "ACO_Name", 
     "Payment_Use", 
@@ -52,7 +57,7 @@ aip_plan_dict <- new_tbl(
     "Projected_Spending_2025",
     "Actual_Spending_2025"
   ),
-  DESCRIPTION = c(
+  description = c(
     "Unencrypted ACO Identifier. This identifier can be linked to the encrypted ACO identifier used for prior performance years (PY) using the ACO ID Crosswalk available at https://www.cms.gov/Medicare/Medicare-Fee-for-ServicePayment/sharedsavingsprogram/program-data.", 
     "ACO Doing Business As (DBA) or Legal Business Name (LBN). Listed name is DBA unless DBA is not available, in which case LBN is used.", 
     "Indicates ACO description of use of advance investment payments.", 
@@ -65,91 +70,43 @@ aip_plan_dict <- new_tbl(
     "The dollar amount the ACO actually spent on the payment use during the 2025 performance year."
   )
 )
-
-aip_plan_dict |> 
-  gt::gt_preview(20, 10) |>
-  gtUtils::gt_theme_athletic() |> 
-  gt::cols_align(align = "left", columns = gt::everything()) |> 
-  gt::tab_options(
-    quarto.disable_processing = TRUE,
-    column_labels.font.weight = "bolder",
-    column_labels.font.size = 14,
-    table.font.size = 14,
-    table.width = gt::pct(100)
-  ) |> 
-  gt::cols_align(align = "left", columns = gt::everything())
 ```
 
 
-## Response
+## Data
 
 ```{r}
 #| label: http_request
 #| message: true
-resp <- quick("aip_plan", limit = 5000) |> 
+#| echo: false
+resp <- quick("aip_plan", limit = 5000)
+
+resp <- resp |> 
   purrr::modify_if(is.character, function(x) providertwo:::na_if(x, y = "")) |>
   purrr::modify_if(is.character, function(x) providertwo:::na_if(x, y = " ")) |>
   purrr::modify_if(is.character, function(x) providertwo:::na_if(x, y = "N/A")) |>
   mtt(
-    Total_AIP_Funding_Received_through_December_2024 = as.double(Total_AIP_Funding_Received_through_December_2024),
-    Projected_Spending_2024 = as.double(Projected_Spending_2024),
-    Actual_Spending_2024 = as.double(Actual_Spending_2024),
-    Projected_Spending_2025 = as.double(Projected_Spending_2025),
-    Actual_Spending_2025= as.double(Actual_Spending_2025))
+    Total_Funding_through_December_2024 = as.double(Total_AIP_Funding_Received_through_December_2024),
+    Projected_Spending_2024             = as.double(Projected_Spending_2024),
+    Actual_Spending_2024                = as.double(Actual_Spending_2024),
+    Projected_Spending_2025             = as.double(Projected_Spending_2025),
+    Actual_Spending_2025                = as.double(Actual_Spending_2025))
 
-resp |> 
-  gt::gt_preview(20, 20) |>
-  gtUtils::gt_theme_athletic() |>
-  gt::tab_options(
-    quarto.disable_processing = TRUE,
-    column_labels.font.weight = "bolder",
-    column_labels.font.size = 14,
-    table.font.size = 14,
-    table.width = gt::pct(100)
-  ) |> 
-  gt::cols_align(align = "left", columns = gt::everything())
+resp |> dplyr::glimpse()
 ```
 
 ## Overview
 
 ```{r}
-#| label: datawizard_codebook
+#| label: codebook
 #| echo: false
-resp |> 
-  datawizard::data_codebook() |> 
-  slt(-.row_id) |>
-  gt::gt() |>
-  gtUtils::gt_theme_athletic() |>
-  gt::tab_options(
-    quarto.disable_processing = TRUE,
-    column_labels.font.weight = "bolder",
-    column_labels.font.size = 16,
-    column_labels.background.color = "black",
-    column_labels.border.bottom.color = "white",
-    table.font.size = 12,
-    table.width = gt::pct(100)
-  ) |>
-  gt::cols_align(align = "left", columns = gt::everything()) |>
-  gt::sub_missing(columns = gt::everything(), missing_text = "-")
+resp |> datawizard::data_codebook()
 ```
 
+### Distribution
+
 ```{r}
-#| label: datawizard_distribution
+#| label: distribution
 #| echo: false
-resp |> 
-  datawizard::describe_distribution() |> 
-  gt::gt() |>
-  gtUtils::gt_theme_athletic() |>
-  gt::tab_options(
-    quarto.disable_processing = TRUE,
-    column_labels.font.weight = "bolder",
-    column_labels.font.size = 16,
-    column_labels.background.color = "black",
-    column_labels.border.bottom.color = "white",
-    table.font.size = 12,
-    table.width = gt::pct(100)
-  ) |>
-  gt::fmt_number(drop_trailing_zeros = TRUE) |>
-  gt::cols_align(align = "left", columns = gt::everything()) |>
-  gt::sub_missing(columns = gt::everything(), missing_text = "-")
+resp |> datawizard::describe_distribution()
 ```

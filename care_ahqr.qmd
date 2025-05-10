@@ -12,20 +12,22 @@ source("includes/_common.R")
 
 # AHRQ PSI-11 Rates {#care-ahqr}
 
-Agency for Healthcare Research and Quality (AHRQ) Patient Safety Indicator 11 (PSI-11) Measure Rates
+The __Agency for Healthcare Research and Quality (AHRQ) Patient Safety Indicator 11 (PSI-11) Measure Rates__ dataset provides information on provider-level measure rates regarding one preventable complication (_Postoperative Respiratory Failure_) for Medicare Fee-For-Service discharges. 
 
-## Description
-
-The Agency for Healthcare Research and Quality (AHRQ) Patient Safety Indicator 11 (PSI-11) Measure Rates dataset provides information on provider-level measure rates regarding one preventable complication (postoperative respiratory failure) for Medicare fee-for-service discharges. 
-
-The PSI-11 measure data is solely reported for providers information and quality improvement purposes and are not a part of the Deficit Reduction Act (DRA) Hospital-Acquired Condition (HAC) Payment Provision or HAC Reduction Program.
+The PSI-11 measure data are solely reported for providers' information and quality improvement purposes and are not a part of the __Deficit Reduction Act (DRA)__, __Hospital-Acquired Condition (HAC) Payment Provision__ or __HAC Reduction Program__.
 
 ### Metadata
 
 ```{r}
 #| label: s7_object
 #| echo: false
-care_endpoint("ahqr_psi11")
+end  <- care_endpoint("ahqr_psi11")
+
+end@metadata[names(end@metadata) %in% time] |> 
+  print_ls()
+
+end@metadata[names(end@metadata) %in% link] |> 
+  print_ls()
 ```
 
 ### Resources
@@ -33,7 +35,7 @@ care_endpoint("ahqr_psi11")
 ```{r}
 #| label: resources
 #| echo: false
-care_endpoint("ahqr_psi11") |> list_resources()
+end |> list_resources()
 ```
 
 ### Dictionary
@@ -41,7 +43,7 @@ care_endpoint("ahqr_psi11") |> list_resources()
 ```{r}
 #| label: data_dict
 #| echo: false
-ahqr_psi11_dict <- new_tbl(
+new_tbl(
   field = c(
     "HOSP_ID", 
     "ADM_DISC", 
@@ -54,27 +56,28 @@ ahqr_psi11_dict <- new_tbl(
     "END_DATE"
   ),
   description = c(
-    "The provider's CCN ID (6-digit format).", 
-    "The provider's number of eligible discharges used for PSI-11 measure calculations.", 
-    "The provider's PSI-11 measure smoothed rate result. The rate is reported as per 1,000 discharges.", 
-    "The lower limit of the 95% confidence interval surrounding the provider's PSI-11 measure smoothed rate result.", 
-    "The upper limit of the 95% confidence interval surrounding the provider's PSI-11 measure smoothed rate result.", 
-    "The first quarter of the PSI-11 measure's performance period.", 
-    "The first date of the PSI-11 measure's performance period.", 
-    "The last quarter of the PSI-11 measure's performance period.", 
-    "The last date of the PSI-11 measure's performance period."
+    "Provider's CCN (6-digit format).", 
+    "Provider's number of eligible discharges used for PSI-11 measure calculations.", 
+    "Provider's PSI-11 smoothed measure rate (per 1k discharges).", 
+    "95% confidence interval lower limit surrounding provider's smoothed measure rate.", 
+    "95% confidence interval upper limit surrounding provider's smoothed measure rate.", 
+    "First quarter of PSI-11 measure's performance period.", 
+    "First date of PSI-11 measure's performance period.", 
+    "Last quarter of PSI-11 measure's performance period.", 
+    "Last date of PSI-11 measure's performance period."
   )
 )
-ahqr_psi11_dict
 ```
 
-
-## Response
+## Data
 
 ```{r}
 #| label: http_request
 #| message: true
-resp <- quick("ahqr_psi11", limit = 5000) |> 
+#| echo: false
+resp <- quick("ahqr_psi11", limit = 5000)
+
+resp <- resp|> 
   mtt(START_DATE           = clock::date_parse(START_DATE, format = "%m/%d/%Y"),
       END_DATE             = clock::date_parse(END_DATE, format = "%m/%d/%Y"),
       ADM_DISC             = as.double(ADM_DISC),
@@ -88,46 +91,15 @@ resp |> dplyr::glimpse()
 ## Overview
 
 ```{r}
-#| label: datawizard_codebook
+#| label: codebook
 #| echo: false
 resp |> datawizard::data_codebook()
 ```
 
+### Distribution
+
 ```{r}
-#| label: datawizard_distribution
+#| label: distribution
 #| echo: false
 resp |> datawizard::describe_distribution()
-```
-
-```{r}
-#| label: point_blank_informant
-#| echo: false
-#| eval: false
-informant <- create_informant(
-  tbl = ~ resp, 
-  label = "API: Medicare",
-  tbl_name = "ahqr_psi11") |> 
-  info_tabular(
-    Description = "The **Agency for Healthcare Research and Quality (AHRQ) Patient Safety Indicator 11 (PSI-11) Measure Rates** dataset provides information on provider-level measure rates regarding one preventable complication (postoperative respiratory failure) for Medicare fee-for-service discharges. The PSI-11 measure data is solely reported for providers information and quality improvement purposes and are not a part of the Deficit Reduction Act (DRA) Hospital-Acquired Condition (HAC) Payment Provision or HAC Reduction Program.",
-    site = "- [data.cms.gov](https://data.cms.gov/quality-of-care/agency-for-healthcare-research-and-quality-ahrq-patient-safety-indicator-11-psi-11-measure-rates)",
-    references = "- [AHRQ PSI-11 Measure Rate Methodology](https://data.cms.gov/sites/default/files/2020-09/Agency%20for%20Healthcare%20Research%20and%20Quality%20%28AHRQ%29%20Patient%20Safety%20Indicator%2011%20%28PSI-11%29%20Measure%20Rates%20Methodology_0.pdf)",
-    ) |> 
-  info_columns_from_tbl(tbl = ahqr_psi11_info)
-
-
-informant <- informant |> 
-  info_snippet(snippet_name = "stats_RATE", fn = snip_stats(column = "RATE")) |> 
-  info_columns(columns = RATE, `Stats` = "{stats_RATE}.") |> 
-  info_snippet(snippet_name = "stats_ADM_DISC", fn = snip_stats(column = "ADM_DISC", type = "bowley")) |> 
-  info_columns(columns = ADM_DISC, `Stats` = "{stats_ADM_DISC}.") |> 
-  incorporate()
-
-get_informant_report(
-  informant,
-  title = "**AHRQ PSI-11 Measure Rates**",
-  size = "small"
-)
-
-ahqr_psi_scan <- pointblank::scan_data(resp, navbar = FALSE)
-pointblank::export_report(ahqr_psi_scan, filename = "ahqr_psi_scan.html")
 ```

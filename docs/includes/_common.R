@@ -60,3 +60,24 @@ purse <- \(
     config = list(gsep = sep, colour_nth = "lightblue", nth = 3)
   )
 }
+
+time <- c("modified", "periodicity", "temporal")
+link <- c("dictionary", "site", "references", "resources", "download")
+
+print_ls <- function(ls, prefix = "", postfix = " | ") {
+
+  if (length(ls) == 0) cat("<empty>\n")
+  if (length(names(ls)) != length(ls)) stop("all elements must be named")
+
+  ls <- lapply(ls, as.character)
+  cat(
+    sprintf(
+      "%s%s%s< %s >",
+      prefix,
+      format(names(ls), justify = "right"),
+      postfix,
+      ls),
+    sep = "\n")
+
+  invisible(ls)
+}
