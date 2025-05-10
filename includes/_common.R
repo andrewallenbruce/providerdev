@@ -22,6 +22,7 @@ options(scipen = 999, digits = 3)
 library(collapse)
 library(fastplyr)
 library(cheapr)
+library(clock)
 library(stringi)
 library(tidyverse)
 library(httr2)
@@ -30,6 +31,7 @@ library(here)
 library(S7)
 library(rlang)
 library(gt)
+library(pointblank)
 
 library(provider)
 library(providertwo)
@@ -41,11 +43,11 @@ library(RcppSimdJson)
 # library(weburl)
 # library(urlparse)
 
-yank  <- \(x) x[[1]]
+# yank  <- \(x) x[[1]]
 
 purse <- \(
   x,
-  pre = "- ",
+  pre = paste0(cli::symbol$bullet, " "),
   wid = 0,
   max = 20,
   sep = " "
@@ -55,6 +57,6 @@ purse <- \(
     prefix = pre,
     width = wid,
     max_vec_len = max,
-    config = list(gsep = sep, ansi = FALSE)
+    config = list(gsep = sep, colour_nth = "lightblue", nth = 3)
   )
 }

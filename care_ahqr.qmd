@@ -8,12 +8,13 @@ editor_options:
 #| include: false
 #| warning: false
 source("includes/_common.R")
-library(pointblank)
 ```
 
-# AHRQ PSI-11 Measure Rates {#care-ahqr_psi11}
+# AHRQ PSI-11 Rates {#care-ahqr_psi11}
 
-The Agency for Healthcare Research and Quality (AHRQ) Patient Safety Indicator 11 (PSI-11) Measure Rates dataset provides information on provider-level measure rates regarding one preventable complication (postoperative respiratory failure) for Medicare fee-for-service discharges. 
+Title: Agency for Healthcare Research and Quality (AHRQ) Patient Safety Indicator 11 (PSI-11) Measure Rates
+
+Description: The Agency for Healthcare Research and Quality (AHRQ) Patient Safety Indicator 11 (PSI-11) Measure Rates dataset provides information on provider-level measure rates regarding one preventable complication (postoperative respiratory failure) for Medicare fee-for-service discharges. 
 
 The PSI-11 measure data is solely reported for providers information and quality improvement purposes and are not a part of the Deficit Reduction Act (DRA) Hospital-Acquired Condition (HAC) Payment Provision or HAC Reduction Program.
 
@@ -21,62 +22,16 @@ The PSI-11 measure data is solely reported for providers information and quality
 
 ```{r}
 #| label: s7_object
-#| message: true
-x <- care_endpoint("ahqr_psi11")
-xdims <- x@dimensions |> props()
-
-cheapr::list_combine(
-  map(x@metadata, as.character),
-  collapse::get_elem(xdims, "fields", invert = TRUE),
-  fields = xdims$fields |> 
-    names()
-  ) |> 
-  yaml::as.yaml(
-    precision = 1, 
-    indent = 3,
-    indent.mapping.sequence = TRUE, 
-    handlers = list(
-      POSIXct = function(x) format(x, "%Y-%m-%d")
-      )) |> 
-  cat(sep = "\n")
-```
-
-## Response
-
-```{r}
-#| label: http_request
-#| message: true
-resp <- quick("ahqr_psi11", limit = 5000) |> 
-  mtt(START_DATE = clock::date_parse(START_DATE, format = "%m/%d/%Y"),
-      END_DATE = clock::date_parse(END_DATE, format = "%m/%d/%Y"),
-      ADM_DISC = as.double(ADM_DISC),
-      RATE = as.double(RATE),
-      INTERVAL_LOWER_LIMIT= as.double(INTERVAL_LOWER_LIMIT),
-      INTERVAL_HIGHER_LIMIT= as.double(INTERVAL_HIGHER_LIMIT))
-
-resp
-```
-
-## Overview
-
-```{r}
-#| label: datawizard_codebook
 #| echo: false
-resp |> datawizard::data_codebook()
+care_endpoint("ahqr_psi11")
 ```
 
-```{r}
-#| label: datawizard_distribution
-#| echo: false
-resp |> datawizard::describe_distribution()
-```
-
-### Data Dictionary
+## Dictionary
 
 ```{r}
 #| label: data_dict
 #| echo: false
-ahqr_psi11_info <- fastplyr::new_tbl(
+ahqr_psi11_info <- new_tbl(
   column = c(
     "HOSP_ID", 
     "ADM_DISC", 
@@ -104,9 +59,40 @@ ahqr_psi11_info
 ```
 
 
+## Response
+
+```{r}
+#| label: http_request
+#| message: true
+resp <- quick("ahqr_psi11", limit = 5000) |> 
+  mtt(START_DATE           = clock::date_parse(START_DATE, format = "%m/%d/%Y"),
+      END_DATE             = clock::date_parse(END_DATE, format = "%m/%d/%Y"),
+      ADM_DISC             = as.double(ADM_DISC),
+      RATE                 = as.double(RATE),
+      INTERVAL_LOWER_LIMIT = as.double(INTERVAL_LOWER_LIMIT),
+      INTERVAL_HIGHER_LIMIT= as.double(INTERVAL_HIGHER_LIMIT))
+
+resp |> purse()
+```
+
+## Overview
+
+```{r}
+#| label: datawizard_codebook
+#| echo: false
+resp |> datawizard::data_codebook()
+```
+
+```{r}
+#| label: datawizard_distribution
+#| echo: false
+resp |> datawizard::describe_distribution()
+```
+
 ```{r}
 #| label: point_blank_informant
 #| echo: false
+#| eval: false
 informant <- create_informant(
   tbl = ~ resp, 
   label = "API: Medicare",
@@ -131,12 +117,7 @@ get_informant_report(
   title = "**AHRQ PSI-11 Measure Rates**",
   size = "small"
 )
-```
 
-```{r}
-#| label: point_blank_scan
-#| eval: false
-#| echo: false
 ahqr_psi_scan <- pointblank::scan_data(resp, navbar = FALSE)
 pointblank::export_report(ahqr_psi_scan, filename = "ahqr_psi_scan.html")
 ```
