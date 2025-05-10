@@ -40,7 +40,7 @@ care_endpoint("aip_plan") |> list_resources()
 #| label: data_dict
 #| echo: false
 aip_plan_dict <- new_tbl(
-  field = c(
+  FIELD = c(
     "ACO_ID", 
     "ACO_Name", 
     "Payment_Use", 
@@ -52,7 +52,7 @@ aip_plan_dict <- new_tbl(
     "Projected_Spending_2025",
     "Actual_Spending_2025"
   ),
-  description = c(
+  DESCRIPTION = c(
     "Unencrypted ACO Identifier. This identifier can be linked to the encrypted ACO identifier used for prior performance years (PY) using the ACO ID Crosswalk available at https://www.cms.gov/Medicare/Medicare-Fee-for-ServicePayment/sharedsavingsprogram/program-data.", 
     "ACO Doing Business As (DBA) or Legal Business Name (LBN). Listed name is DBA unless DBA is not available, in which case LBN is used.", 
     "Indicates ACO description of use of advance investment payments.", 
@@ -65,7 +65,26 @@ aip_plan_dict <- new_tbl(
     "The dollar amount the ACO actually spent on the payment use during the 2025 performance year."
   )
 )
-aip_plan_dict
+
+aip_plan_dict |> 
+  reactable::reactable(
+  showSortable = TRUE,
+  columns = list(
+    FIELD = reactable::colDef(
+      defaultSortOrder = "asc",
+      # minWidth = 200,
+      headerStyle = list(fontWeight = 700)
+    )
+  ),
+  theme = reactable::reactableTheme(
+    style = list(fontFamily = "monospace", fontSize = 18),
+    headerStyle = list(
+      "&:hover[aria-sort]" = list(background = "hsl(0, 0%, 96%)"),
+      "&[aria-sort='ascending'], &[aria-sort='descending']" = list(background = "hsl(0, 0%, 96%)"),
+      borderColor = "#555"
+    )
+  )
+)
 ```
 
 
@@ -86,7 +105,8 @@ resp <- quick("aip_plan", limit = 5000) |>
     Actual_Spending_2025= as.double(Actual_Spending_2025))
 
 resp |> 
-  dplyr::glimpse()
+  gt::gt_preview(10, 10) |>
+  gtUtils::gt_theme_athletic()
 ```
 
 ## Overview
@@ -94,11 +114,41 @@ resp |>
 ```{r}
 #| label: datawizard_codebook
 #| echo: false
-resp |> datawizard::data_codebook()
+resp |> 
+  datawizard::data_codebook() |> 
+  slt(-.row_id) |>
+  gt::gt() |>
+  gtUtils::gt_theme_athletic() |>
+  gt::tab_options(
+    quarto.disable_processing = TRUE,
+    column_labels.font.weight = "bolder",
+    column_labels.font.size = 16,
+    column_labels.background.color = "black",
+    column_labels.border.bottom.color = "white",
+    table.font.size = 12,
+    table.width = gt::pct(100)
+  ) |>
+  gt::cols_align(align = "left", columns = gt::everything()) |>
+  gt::sub_missing(columns = gt::everything(), missing_text = "-")
 ```
 
 ```{r}
 #| label: datawizard_distribution
 #| echo: false
-resp |> datawizard::describe_distribution()
+resp |> 
+  datawizard::describe_distribution() |> 
+  gt::gt() |>
+  gtUtils::gt_theme_athletic() |>
+  gt::tab_options(
+    quarto.disable_processing = TRUE,
+    column_labels.font.weight = "bolder",
+    column_labels.font.size = 16,
+    column_labels.background.color = "black",
+    column_labels.border.bottom.color = "white",
+    table.font.size = 12,
+    table.width = gt::pct(100)
+  ) |>
+  gt::fmt_number(drop_trailing_zeros = TRUE) |>
+  gt::cols_align(align = "left", columns = gt::everything()) |>
+  gt::sub_missing(columns = gt::everything(), missing_text = "-")
 ```
