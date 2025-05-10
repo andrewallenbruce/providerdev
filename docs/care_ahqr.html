@@ -350,6 +350,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
 <li><a href="#metadata" id="toc-metadata" class="nav-link active" data-scroll-target="#metadata">Metadata</a></li>
   <li><a href="#response" id="toc-response" class="nav-link" data-scroll-target="#response">Response</a></li>
+  <li>
+<a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview">Overview</a>
+  <ul class="collapse">
+<li><a href="#data-dictionary" id="toc-data-dictionary" class="nav-link" data-scroll-target="#data-dictionary">Data Dictionary</a></li>
+  <li><a href="#point-blank" id="toc-point-blank" class="nav-link" data-scroll-target="#point-blank">Point Blank</a></li>
+  </ul>
+</li>
   </ul><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li><li><a href="https://github.com/andrewallenbruce/providertwo"><i class="bi bi-file-code"></i>providertwo</a></li></ul></div></nav>
     </div>
 <!-- main -->
@@ -368,16 +375,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
 
 
-</header><section id="metadata" class="level2"><h2 class="anchored" data-anchor-id="metadata">Metadata</h2>
+</header><p>The Agency for Healthcare Research and Quality (AHRQ) Patient Safety Indicator 11 (PSI-11) Measure Rates dataset provides information on provider-level measure rates regarding one preventable complication (postoperative respiratory failure) for Medicare fee-for-service discharges.</p>
+<p>The PSI-11 measure data is solely reported for providers information and quality improvement purposes and are not a part of the Deficit Reduction Act (DRA) Hospital-Acquired Condition (HAC) Payment Provision or HAC Reduction Program.</p>
+<section id="metadata" class="level2"><h2 class="anchored" data-anchor-id="metadata">Metadata</h2>
 <div class="cell">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">care_endpoint</span><span class="op">(</span><span class="st">"ahqr_psi11"</span><span class="op">)</span></span>
 <span><span class="va">xdims</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">@</span><span class="va">dimensions</span> <span class="op">|&gt;</span> <span class="fu">props</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">type_of</span><span class="op">(</span><span class="va">x</span><span class="op">@</span><span class="va">metadata</span><span class="op">$</span><span class="va">modified</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">purse</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<pre class="r-output"><code>-  c1  double
-</code></pre>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">cheapr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cheapr/man/lists.html">list_combine</a></span><span class="op">(</span></span>
+<span><span class="fu">cheapr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cheapr/man/lists.html">list_combine</a></span><span class="op">(</span></span>
 <span>  <span class="fu">map</span><span class="op">(</span><span class="va">x</span><span class="op">@</span><span class="va">metadata</span>, <span class="va">as.character</span><span class="op">)</span>,</span>
 <span>  <span class="fu">collapse</span><span class="fu">::</span><span class="fu"><a href="https://sebkrantz.github.io/collapse/reference/extract_list.html">get_elem</a></span><span class="op">(</span><span class="va">xdims</span>, <span class="st">"fields"</span>, invert <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>  fields <span class="op">=</span> <span class="va">xdims</span><span class="op">$</span><span class="va">fields</span> <span class="op">|&gt;</span> </span>
@@ -425,7 +430,7 @@ fields:
 </div>
 </section><section id="response" class="level2"><h2 class="anchored" data-anchor-id="response">Response</h2>
 <div class="cell">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu">quick</span><span class="op">(</span><span class="st">"ahqr_psi11"</span>, limit <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu">quick</span><span class="op">(</span><span class="st">"ahqr_psi11"</span>, limit <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">mtt</span><span class="op">(</span>START_DATE <span class="op">=</span> <span class="fu">clock</span><span class="fu">::</span><span class="fu"><a href="https://clock.r-lib.org/reference/date_parse.html">date_parse</a></span><span class="op">(</span><span class="va">START_DATE</span>, format <span class="op">=</span> <span class="st">"%m/%d/%Y"</span><span class="op">)</span>,</span>
 <span>      END_DATE <span class="op">=</span> <span class="fu">clock</span><span class="fu">::</span><span class="fu"><a href="https://clock.r-lib.org/reference/date_parse.html">date_parse</a></span><span class="op">(</span><span class="va">END_DATE</span>, format <span class="op">=</span> <span class="st">"%m/%d/%Y"</span><span class="op">)</span>,</span>
 <span>      ADM_DISC <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html">as.double</a></span><span class="op">(</span><span class="va">ADM_DISC</span><span class="op">)</span>,</span>
@@ -452,8 +457,10 @@ fields:
 <span style="color: #555555;">#   END_QUARTER <chr>, END_DATE <date></date></chr></span>
 </code></pre>
 </div>
+</section><section id="overview" class="level2"><h2 class="anchored" data-anchor-id="overview">Overview</h2>
+<section id="data-dictionary" class="level3"><h3 class="anchored" data-anchor-id="data-dictionary">Data Dictionary</h3>
 <div class="cell">
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu">datawizard</span><span class="fu">::</span><span class="fu"><a href="https://easystats.github.io/datawizard/reference/data_codebook.html">data_codebook</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu">datawizard</span><span class="fu">::</span><span class="fu"><a href="https://easystats.github.io/datawizard/reference/data_codebook.html">data_codebook</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <pre class="r-output"><code><span style="color: #0000BB;">resp (3319 rows and 9 variables, 9 shown)</span>
 
 ID | Name                  | Type      |   Missings |        Values |             N
@@ -489,7 +496,7 @@ ID | Name                  | Type      |   Missings |        Values |           
 </code></pre>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu">datawizard</span><span class="fu">::</span><span class="fu"><a href="https://easystats.github.io/datawizard/reference/describe_distribution.html">describe_distribution</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu">datawizard</span><span class="fu">::</span><span class="fu"><a href="https://easystats.github.io/datawizard/reference/describe_distribution.html">describe_distribution</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <pre class="r-output"><code>Variable              |   Mean |     SD |    IQR |            Range | Skewness
 ------------------------------------------------------------------------------
 ADM_DISC              | 696.44 | 890.57 | 819.00 | [1.00, 11795.00] |     2.93
@@ -505,11 +512,708 @@ INTERVAL_LOWER_LIMIT  |     1.92 | 3018 |       301
 INTERVAL_HIGHER_LIMIT |     0.46 | 3018 |       301
 </code></pre>
 </div>
+</section><section id="point-blank" class="level3"><h3 class="anchored" data-anchor-id="point-blank">Point Blank</h3>
+<div class="cell">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ahqr_psi11_info</span> <span class="op">&lt;-</span> <span class="fu">fastplyr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fastplyr/man/new_tbl.html">new_tbl</a></span><span class="op">(</span></span>
+<span>  column <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"HOSP_ID"</span>, </span>
+<span>    <span class="st">"ADM_DISC"</span>, </span>
+<span>    <span class="st">"RATE"</span>, </span>
+<span>    <span class="st">"INTERVAL_LOWER_LIMIT"</span>, </span>
+<span>    <span class="st">"INTERVAL_HIGHER_LIMIT"</span>, </span>
+<span>    <span class="st">"START_QUARTER"</span>, </span>
+<span>    <span class="st">"START_DATE"</span>, </span>
+<span>    <span class="st">"END_QUARTER"</span>, </span>
+<span>    <span class="st">"END_DATE"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  info <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"The provider's CCN ID (6-digit format)."</span>, </span>
+<span>    <span class="st">"The provider's number of eligible discharges used for PSI-11 measure calculations."</span>, </span>
+<span>    <span class="st">"The provider's PSI-11 measure smoothed rate result. The rate is reported as per 1,000 discharges."</span>, </span>
+<span>    <span class="st">"The lower limit of the 95% confidence interval surrounding the provider's PSI-11 measure smoothed rate result."</span>, </span>
+<span>    <span class="st">"The upper limit of the 95% confidence interval surrounding the provider's PSI-11 measure smoothed rate result."</span>, </span>
+<span>    <span class="st">"The first quarter of the PSI-11 measure's performance period."</span>, </span>
+<span>    <span class="st">"The first date of the PSI-11 measure's performance period."</span>, </span>
+<span>    <span class="st">"The last quarter of the PSI-11 measure's performance period."</span>, </span>
+<span>    <span class="st">"The last date of the PSI-11 measure's performance period."</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">ahqr_psi11_info</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="r-output"><code><span style="color: #555555;"># A tibble: 9 × 2</span>
+  column                info                                                    
+  <span style="color: #555555; font-style: italic;"><chr></chr></span>                 <span style="color: #555555; font-style: italic;"><chr></chr></span>                                                   
+<span style="color: #555555;">1</span> HOSP_ID               The provider's CCN ID (6-digit format).                 
+<span style="color: #555555;">2</span> ADM_DISC              The provider's number of eligible discharges used for P…
+<span style="color: #555555;">3</span> RATE                  The provider's PSI-11 measure smoothed rate result. The…
+<span style="color: #555555;">4</span> INTERVAL_LOWER_LIMIT  The lower limit of the 95% confidence interval surround…
+<span style="color: #555555;">5</span> INTERVAL_HIGHER_LIMIT The upper limit of the 95% confidence interval surround…
+<span style="color: #555555;">6</span> START_QUARTER         The first quarter of the PSI-11 measure's performance p…
+<span style="color: #555555;">7</span> START_DATE            The first date of the PSI-11 measure's performance peri…
+<span style="color: #555555;">8</span> END_QUARTER           The last quarter of the PSI-11 measure's performance pe…
+<span style="color: #555555;">9</span> END_DATE              The last date of the PSI-11 measure's performance perio…
+</code></pre>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">informant</span> <span class="op">&lt;-</span> <span class="fu">create_informant</span><span class="op">(</span></span>
+<span>  tbl <span class="op">=</span> <span class="op">~</span> <span class="va">resp</span>, </span>
+<span>  label <span class="op">=</span> <span class="st">"API: Medicare"</span>,</span>
+<span>  tbl_name <span class="op">=</span> <span class="st">"ahqr_psi11"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">info_tabular</span><span class="op">(</span></span>
+<span>    Description <span class="op">=</span> <span class="st">"The **Agency for Healthcare Research and Quality (AHRQ) Patient Safety Indicator 11 (PSI-11) Measure Rates** dataset provides information on provider-level measure rates regarding one preventable complication (postoperative respiratory failure) for Medicare fee-for-service discharges. The PSI-11 measure data is solely reported for providers information and quality improvement purposes and are not a part of the Deficit Reduction Act (DRA) Hospital-Acquired Condition (HAC) Payment Provision or HAC Reduction Program."</span>,</span>
+<span>    site <span class="op">=</span> <span class="st">"- [data.cms.gov](https://data.cms.gov/quality-of-care/agency-for-healthcare-research-and-quality-ahrq-patient-safety-indicator-11-psi-11-measure-rates)"</span>,</span>
+<span>    references <span class="op">=</span> <span class="st">"- [AHRQ PSI-11 Measure Rate Methodology](https://data.cms.gov/sites/default/files/2020-09/Agency%20for%20Healthcare%20Research%20and%20Quality%20%28AHRQ%29%20Patient%20Safety%20Indicator%2011%20%28PSI-11%29%20Measure%20Rates%20Methodology_0.pdf)"</span>,</span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">info_columns_from_tbl</span><span class="op">(</span>tbl <span class="op">=</span> <span class="va">ahqr_psi11_info</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="va">informant</span> <span class="op">&lt;-</span> <span class="va">informant</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">info_snippet</span><span class="op">(</span>snippet_name <span class="op">=</span> <span class="st">"stats_RATE"</span>, fn <span class="op">=</span> <span class="fu">snip_stats</span><span class="op">(</span>column <span class="op">=</span> <span class="st">"RATE"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">info_columns</span><span class="op">(</span>columns <span class="op">=</span> <span class="va">RATE</span>, `Stats` <span class="op">=</span> <span class="st">"{stats_RATE}."</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">info_snippet</span><span class="op">(</span>snippet_name <span class="op">=</span> <span class="st">"stats_ADM_DISC"</span>, fn <span class="op">=</span> <span class="fu">snip_stats</span><span class="op">(</span>column <span class="op">=</span> <span class="st">"ADM_DISC"</span>, type <span class="op">=</span> <span class="st">"bowley"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">info_columns</span><span class="op">(</span>columns <span class="op">=</span> <span class="va">ADM_DISC</span>, `Stats` <span class="op">=</span> <span class="st">"{stats_ADM_DISC}."</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">incorporate</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">get_informant_report</span><span class="op">(</span></span>
+<span>  <span class="va">informant</span>,</span>
+<span>  title <span class="op">=</span> <span class="st">"**AHRQ PSI-11 Measure Rates**"</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<pre class="r-output"><code>
+```{=html}
+<div id="pb_information" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+#pb_information table {
+  font-family: 'IBM Plex Sans', system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#pb_information thead, #pb_information tbody, #pb_information tfoot, #pb_information tr, #pb_information td, #pb_information th {
+  border-style: none;
+}
+
+#pb_information p {
+  margin: 0;
+  padding: 0;
+}
+
+#pb_information .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 130%;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: 650px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#pb_information .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#pb_information .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#pb_information .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#pb_information .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#pb_information .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#pb_information .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#pb_information .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#pb_information .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#pb_information .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#pb_information .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#pb_information .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#pb_information .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#pb_information .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#pb_information .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#pb_information .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#pb_information .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#pb_information .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#pb_information .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#pb_information .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#pb_information .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#pb_information .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#pb_information .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#pb_information .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#pb_information .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#pb_information .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#pb_information .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#pb_information .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#pb_information .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#pb_information .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#pb_information .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#pb_information .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#pb_information .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#pb_information .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#pb_information .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#pb_information .gt_left {
+  text-align: left;
+}
+
+#pb_information .gt_center {
+  text-align: center;
+}
+
+#pb_information .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#pb_information .gt_font_normal {
+  font-weight: normal;
+}
+
+#pb_information .gt_font_bold {
+  font-weight: bold;
+}
+
+#pb_information .gt_font_italic {
+  font-style: italic;
+}
+
+#pb_information .gt_super {
+  font-size: 65%;
+}
+
+#pb_information .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#pb_information .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#pb_information .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#pb_information .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#pb_information .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#pb_information .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#pb_information .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#pb_information .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#pb_information div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+
+#pb_information {
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: .15px;
+}
+
+#pb_information a {
+  color: #375F84;
+  text-decoration: none;
+}
+
+#pb_information a:hover {
+  color: #375F84;
+  text-decoration: underline;
+}
+
+#pb_information p {
+  overflow: visible;
+  margin-top: 2px;
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: 5px;
+}
+
+#pb_information ul {
+  list-style-type: square;
+  padding-left: 25px;
+  margin-top: -4px;
+  margin-bottom: 6px;
+}
+
+#pb_information li {
+  text-indent: -1px;
+}
+
+#pb_information h4 {
+  font-weight: 500;
+  color: #444444;
+}
+
+#pb_information code {
+  font-family: 'IBM Plex Mono', monospace, courier;
+  font-size: 90%;
+  font-weight: 500;
+  color: #666666;
+  background-color: transparent;
+  padding: 0;
+}
+
+#pb_information .pb_date {
+  text-decoration-style: solid;
+  text-decoration-color: #9933CC;
+  text-decoration-line: underline;
+  text-underline-position: under;
+  font-variant-numeric: tabular-nums;
+  margin-right: 4px;
+}
+
+#pb_information .pb_label {
+  border: solid 1px;
+  border-color: inherit;
+  padding: 0px 3px 0px 3px;
+}
+
+#pb_information .pb_label_rounded {
+  border: solid 1px;
+  border-color: inherit;
+  border-radius: 8px;
+  padding: 0px 8px 0px 8px;
+}
+
+#pb_information .pb_sub_label {
+  font-size: smaller;
+  color: #777777;
+}
+
+#pb_information .pb_col_type {
+  font-size: 75%;
+}
+
+#pb_information .gt_sourcenote {
+  height: 35px;
+  font-size: 60%;
+  padding: 0;
+}
+
+#pb_information .gt_group_heading {
+  text-indent: -3px;
+}
+</style>
+<table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+<colgroup><col style="width: 100%"></colgroup>
+<thead>
+<tr class="gt_heading header">
+<th class="gt_heading gt_title gt_font_normal" style="text-align: left; color: #444444; font-size: 28px; font-weight: 500;"><strong>AHRQ PSI-11 Measure Rates</strong></th>
+</tr>
+<tr class="gt_heading even">
+<th class="gt_heading gt_subtitle gt_font_normal gt_bottom_border" style="text-align: left; font-size: 12px;"><span data-qmd-base64="PHNwYW4gc3R5bGU9InRleHQtZGVjb3JhdGlvbi1zdHlsZTpzb2xpZDt0ZXh0LWRlY29yYXRpb24tY29sb3I6I0FERDhFNjt0ZXh0LWRlY29yYXRpb24tbGluZTp1bmRlcmxpbmU7dGV4dC11bmRlcmxpbmUtcG9zaXRpb246dW5kZXI7Y29sb3I6IzMzMzMzMztmb250LXZhcmlhbnQtbnVtZXJpYzp0YWJ1bGFyLW51bXM7cGFkZGluZy1sZWZ0OjRweDttYXJnaW4tcmlnaHQ6NXB4O3BhZGRpbmctcmlnaHQ6MnB4OyI+QVBJOiBNZWRpY2FyZTwvc3Bhbj4KPGRpdiBzdHlsZT0iaGVpZ2h0OjI1cHg7bWFyZ2luLXRvcDoxMHB4OyI+PHNwYW4gc3R5bGU9ImJhY2tncm91bmQtY29sb3I6I0YxRDM1QTtjb2xvcjojMjIyMjIyO3BhZGRpbmc6MC41ZW0gMC41ZW07cG9zaXRpb246aW5oZXJpdDt0ZXh0LXRyYW5zZm9ybTp1cHBlcmNhc2U7bWFyZ2luOjVweCAwcHggNXB4IDVweDtmb250LXdlaWdodDpib2xkO2JvcmRlcjpzb2xpZCAxcHggI0YxRDM1QTtwYWRkaW5nOjJweCAxNXB4IDJweCAxNXB4O2ZvbnQtc2l6ZTpzbWFsbGVyOyI+dGliYmxlPC9zcGFuPgo8c3BhbiBzdHlsZT0iYmFja2dyb3VuZC1jb2xvcjpub25lO2NvbG9yOiMyMjIyMjI7cGFkZGluZzowLjVlbSAwLjVlbTtwb3NpdGlvbjppbmhlcml0O21hcmdpbjo1cHggMTBweCA1cHggLTRweDtmb250LXdlaWdodDpib2xkO2JvcmRlcjpzb2xpZCAxcHggI0YxRDM1QTtwYWRkaW5nOjJweCAxNXB4IDJweCAxNXB4O2ZvbnQtc2l6ZTpzbWFsbGVyOyI+YWhxcl9wc2kxMTwvc3Bhbj48c3BhbiBzdHlsZT0iYmFja2dyb3VuZC1jb2xvcjojZWVjYmZmO2NvbG9yOiMzMzMzMzM7cGFkZGluZzowLjVlbSAwLjVlbTtwb3NpdGlvbjppbmhlcml0O3RleHQtdHJhbnNmb3JtOnVwcGVyY2FzZTttYXJnaW46NXB4IDBweCA1cHggNXB4O2ZvbnQtd2VpZ2h0OmJvbGQ7Ym9yZGVyOnNvbGlkIDFweCAjZWVjYmZmO3BhZGRpbmc6MnB4IDE1cHggMnB4IDE1cHg7Zm9udC1zaXplOnNtYWxsZXI7Ij5Sb3dzPC9zcGFuPgo8c3BhbiBzdHlsZT0iYmFja2dyb3VuZC1jb2xvcjpub25lO2NvbG9yOiMzMzMzMzM7cGFkZGluZzowLjVlbSAwLjVlbTtwb3NpdGlvbjppbmhlcml0O21hcmdpbjo1cHggMHB4IDVweCAtNHB4O2ZvbnQtd2VpZ2h0OmJvbGQ7Ym9yZGVyOnNvbGlkIDFweCAjZWVjYmZmO3BhZGRpbmc6MnB4IDE1cHggMnB4IDE1cHg7Zm9udC1zaXplOnNtYWxsZXI7Ij4zLDMxOTwvc3Bhbj4KPHNwYW4gc3R5bGU9ImJhY2tncm91bmQtY29sb3I6I0JERTdCNDtjb2xvcjojMzMzMzMzO3BhZGRpbmc6MC41ZW0gMC41ZW07cG9zaXRpb246aW5oZXJpdDt0ZXh0LXRyYW5zZm9ybTp1cHBlcmNhc2U7bWFyZ2luOjVweCAwcHggNXB4IDFweDtmb250LXdlaWdodDpib2xkO2JvcmRlcjpzb2xpZCAxcHggI0JERTdCNDtwYWRkaW5nOjJweCAxNXB4IDJweCAxNXB4O2ZvbnQtc2l6ZTpzbWFsbGVyOyI+Q29sdW1uczwvc3Bhbj4KPHNwYW4gc3R5bGU9ImJhY2tncm91bmQtY29sb3I6bm9uZTtjb2xvcjojMzMzMzMzO3BhZGRpbmc6MC41ZW0gMC41ZW07cG9zaXRpb246aW5oZXJpdDttYXJnaW46NXB4IDBweCA1cHggLTRweDtmb250LXdlaWdodDpib2xkO2JvcmRlcjpzb2xpZCAxcHggI0JERTdCNDtwYWRkaW5nOjJweCAxNXB4IDJweCAxNXB4O2ZvbnQtc2l6ZTpzbWFsbGVyOyI+OTwvc3Bhbj48L2Rpdj4=">
+<span class="gt_from_md">
+<span style="text-decoration-style:solid;text-decoration-color:#ADD8E6;text-decoration-line:underline;text-underline-position:under;color:#333333;font-variant-numeric:tabular-nums;padding-left:4px;margin-right:5px;padding-right:2px;">API: Medicare</span>
+
+<div style="height:25px;margin-top:10px;">
+<span style="background-color:#F1D35A;color:#222222;padding:0.5em 0.5em;position:inherit;text-transform:uppercase;margin:5px 0px 5px 5px;font-weight:bold;border:solid 1px #F1D35A;padding:2px 15px 2px 15px;font-size:smaller;">tibble</span> <span style="background-color:none;color:#222222;padding:0.5em 0.5em;position:inherit;margin:5px 10px 5px -4px;font-weight:bold;border:solid 1px #F1D35A;padding:2px 15px 2px 15px;font-size:smaller;">ahqr_psi11</span><span style="background-color:#eecbff;color:#333333;padding:0.5em 0.5em;position:inherit;text-transform:uppercase;margin:5px 0px 5px 5px;font-weight:bold;border:solid 1px #eecbff;padding:2px 15px 2px 15px;font-size:smaller;">Rows</span> <span style="background-color:none;color:#333333;padding:0.5em 0.5em;position:inherit;margin:5px 0px 5px -4px;font-weight:bold;border:solid 1px #eecbff;padding:2px 15px 2px 15px;font-size:smaller;">3,319</span> <span style="background-color:#BDE7B4;color:#333333;padding:0.5em 0.5em;position:inherit;text-transform:uppercase;margin:5px 0px 5px 1px;font-weight:bold;border:solid 1px #BDE7B4;padding:2px 15px 2px 15px;font-size:smaller;">Columns</span> <span style="background-color:none;color:#333333;padding:0.5em 0.5em;position:inherit;margin:5px 0px 5px -4px;font-weight:bold;border:solid 1px #BDE7B4;padding:2px 15px 2px 15px;font-size:smaller;">9</span>
+</div>
+</span></span></th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="gt_group_heading_row odd">
+<td id="Table" class="gt_group_heading" data-quarto-table-cell-role="th" style="color: #444444; font-weight: 500; text-transform: uppercase; background-color: #FCFCFC; border-bottom-width: 1; border-bottom-style: solid; border-bottom-color: #EFEFEF" scope="col">Table</td>
+</tr>
+<tr class="gt_row_group_first even">
+<td class="gt_row gt_left" headers="Table  item" style="color: #666666; font-size: smaller; border-top-width: 1; border-top-style: solid; border-top-color: #EFEFEF">
+<h4 id="description" style="margin-bottom:5px;" class="anchored">DESCRIPTION</h4>
+The **Agency for Healthcare Research and Quality (AHRQ) Patient Safety Indicator 11 (PSI-11) Measure Rates** dataset provides information on provider-level measure rates regarding one preventable complication (postoperative respiratory failure) for Medicare fee-for-service discharges. The PSI-11 measure data is solely reported for providers information and quality improvement purposes and are not a part of the Deficit Reduction Act (DRA) Hospital-Acquired Condition (HAC) Payment Provision or HAC Reduction Program.</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Table  item" style="color: #666666; font-size: smaller; border-top-width: 1; border-top-style: solid; border-top-color: #EFEFEF">
+<h4 id="site" style="margin-bottom:5px;" class="anchored">SITE</h4>
+- [data.cms.gov](https://data.cms.gov/quality-of-care/agency-for-healthcare-research-and-quality-ahrq-patient-safety-indicator-11-psi-11-measure-rates)</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Table  item" style="color: #666666; font-size: smaller; border-top-width: 1; border-top-style: solid; border-top-color: #EFEFEF">
+<h4 id="references" style="margin-bottom:5px;" class="anchored">REFERENCES</h4>
+- [AHRQ PSI-11 Measure Rate Methodology](https://data.cms.gov/sites/default/files/2020-09/Agency%20for%20Healthcare%20Research%20and%20Quality%20%28AHRQ%29%20Patient%20Safety%20Indicator%2011%20%28PSI-11%29%20Measure%20Rates%20Methodology_0.pdf)</td>
+</tr>
+<tr class="gt_group_heading_row odd">
+<td id="Columns" class="gt_group_heading" data-quarto-table-cell-role="th" style="color: #444444; font-weight: 500; text-transform: uppercase; background-color: #FCFCFC; border-bottom-width: 1; border-bottom-style: solid; border-bottom-color: #EFEFEF" scope="col">Columns</td>
+</tr>
+<tr class="gt_row_group_first even">
+<td class="gt_row gt_left" headers="Columns  item" style="color: #666666; font-size: smaller; border-top-width: 1; border-top-style: solid; border-top-color: #EFEFEF">
+<code style="margin-bottom:5px;color:#555555;font-weight:500;line-height:2em;border:solid 1px #499FFE;padding:2px 8px 3px 8px;background-color:#FAFAFA;">HOSP_ID</code>&nbsp;&nbsp;<code class="pb_col_type">character</code> <strong>INFO</strong> The provider's CCN ID (6-digit format).</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Columns  item" style="color: #666666; font-size: smaller; border-top-width: 1; border-top-style: solid; border-top-color: #EFEFEF">
+<code style="margin-bottom:5px;color:#555555;font-weight:500;line-height:2em;border:solid 1px #499FFE;padding:2px 8px 3px 8px;background-color:#FAFAFA;">ADM_DISC</code>&nbsp;&nbsp;<code class="pb_col_type">numeric</code> <strong>INFO</strong> The provider's number of eligible discharges used for PSI-11 measure calculations. <strong>STATS</strong> <span class="pb_label" style="padding:0 5px 0 5px;font-size:smaller;border-color:lightgray;"><span style="color: orangered; cursor: default;" title="Minimum">➊</span> 1 <span style="color: orangered; cursor: default;" title="P10">➋</span> 33 <span style="color: orangered; cursor: default;" title="Q1">➌</span> 121.25 <span style="color: orangered; cursor: default;" title="Median">➍</span> 378.5 <span style="color: orangered; cursor: default;" title="Q3">➎</span> 939.25 <span style="color: orangered; cursor: default;" title="P90">➏</span> 1734.9 <span style="color: orangered; cursor: default;" title="Maximum">➐</span> 11795</span>.</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Columns  item" style="color: #666666; font-size: smaller; border-top-width: 1; border-top-style: solid; border-top-color: #EFEFEF">
+<code style="margin-bottom:5px;color:#555555;font-weight:500;line-height:2em;border:solid 1px #499FFE;padding:2px 8px 3px 8px;background-color:#FAFAFA;">RATE</code>&nbsp;&nbsp;<code class="pb_col_type">numeric</code> <strong>INFO</strong> The provider's PSI-11 measure smoothed rate result. The rate is reported as per 1,000 discharges. <strong>STATS</strong> <span class="pb_label" style="padding:0 5px 0 5px;font-size:smaller;border-color:lightgray;"><span style="color: dodgerblue; cursor: default;" title="Minimum">➊</span> 2.13 <span style="color: dodgerblue; cursor: default;" title="Q1">➋</span> 10.57 <span style="color: dodgerblue; cursor: default;" title="Median">➌</span> 12.92 <span style="color: dodgerblue; cursor: default;" title="Q3">➍</span> 15.79 <span style="color: dodgerblue; cursor: default;" title="Maximum">➎</span> 39.08</span>.</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Columns  item" style="color: #666666; font-size: smaller; border-top-width: 1; border-top-style: solid; border-top-color: #EFEFEF">
+<code style="margin-bottom:5px;color:#555555;font-weight:500;line-height:2em;border:solid 1px #499FFE;padding:2px 8px 3px 8px;background-color:#FAFAFA;">INTERVAL_LOWER_LIMIT</code>&nbsp;&nbsp;<code class="pb_col_type">numeric</code> <strong>INFO</strong> The lower limit of the 95% confidence interval surrounding the provider's PSI-11 measure smoothed rate result.</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Columns  item" style="color: #666666; font-size: smaller; border-top-width: 1; border-top-style: solid; border-top-color: #EFEFEF">
+<code style="margin-bottom:5px;color:#555555;font-weight:500;line-height:2em;border:solid 1px #499FFE;padding:2px 8px 3px 8px;background-color:#FAFAFA;">INTERVAL_HIGHER_LIMIT</code>&nbsp;&nbsp;<code class="pb_col_type">numeric</code> <strong>INFO</strong> The upper limit of the 95% confidence interval surrounding the provider's PSI-11 measure smoothed rate result.</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Columns  item" style="color: #666666; font-size: smaller; border-top-width: 1; border-top-style: solid; border-top-color: #EFEFEF">
+<code style="margin-bottom:5px;color:#555555;font-weight:500;line-height:2em;border:solid 1px #499FFE;padding:2px 8px 3px 8px;background-color:#FAFAFA;">START_QUARTER</code>&nbsp;&nbsp;<code class="pb_col_type">character</code> <strong>INFO</strong> The first quarter of the PSI-11 measure's performance period.</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Columns  item" style="color: #666666; font-size: smaller; border-top-width: 1; border-top-style: solid; border-top-color: #EFEFEF">
+<code style="margin-bottom:5px;color:#555555;font-weight:500;line-height:2em;border:solid 1px #499FFE;padding:2px 8px 3px 8px;background-color:#FAFAFA;">START_DATE</code>&nbsp;&nbsp;<code class="pb_col_type">Date</code> <strong>INFO</strong> The first date of the PSI-11 measure's performance period.</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="Columns  item" style="color: #666666; font-size: smaller; border-top-width: 1; border-top-style: solid; border-top-color: #EFEFEF">
+<code style="margin-bottom:5px;color:#555555;font-weight:500;line-height:2em;border:solid 1px #499FFE;padding:2px 8px 3px 8px;background-color:#FAFAFA;">END_QUARTER</code>&nbsp;&nbsp;<code class="pb_col_type">character</code> <strong>INFO</strong> The last quarter of the PSI-11 measure's performance period.</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="Columns  item" style="color: #666666; font-size: smaller; border-top-width: 1; border-top-style: solid; border-top-color: #EFEFEF">
+<code style="margin-bottom:5px;color:#555555;font-weight:500;line-height:2em;border:solid 1px #499FFE;padding:2px 8px 3px 8px;background-color:#FAFAFA;">END_DATE</code>&nbsp;&nbsp;<code class="pb_col_type">Date</code> <strong>INFO</strong> The last date of the PSI-11 measure's performance period.</td>
+</tr>
+</tbody>
+<tfoot class="gt_sourcenotes"><tr class="odd">
+<td class="gt_sourcenote">
+<span style="background-color:#FFF;color:#444;padding:0.5em 0.5em;position:inherit;text-transform:uppercase;margin-left:10px;border:solid 1px #999999;font-variant-numeric:tabular-nums;border-radius:0;padding:2px 10px 2px 10px;padding:2px 10px 2px 10px;">2025-05-09 20:04:20 EDT</span> <span style="background-color:#FFF;color:#444;padding:0.5em 0.5em;position:inherit;margin:5px 1px 5px 0;border:solid 1px #999999;font-variant-numeric:tabular-nums;border-radius:0;padding:2px 10px 2px 10px;">&lt; 1 s</span> <span style="background-color:#FFF;color:#444;padding:0.5em 0.5em;position:inherit;text-transform:uppercase;margin:5px 1px 5px -1px;border:solid 1px #999999;font-variant-numeric:tabular-nums;border-radius:0;padding:2px 10px 2px 10px;">2025-05-09 20:04:20 EDT</span>
+</td>
+</tr></tfoot>
+</table>
+</div>
+```
+</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># pointblank::scan_data(resp, navbar = FALSE)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 
 
 <!-- -->
 
-</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -987,71 +1691,139 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb6" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">   chunk_output_type: console</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup-common-01</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"includes/_common.R"</span>)</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="fu"># AHRQ PSI-11 Measure Rates {#care-ahqr_psi11}</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="fu">## Metadata</span></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: s7_object</span></span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: true</span></span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">care_endpoint</span>(<span class="st">"ahqr_psi11"</span>)</span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>xdims <span class="ot">&lt;-</span> x<span class="sc">@</span>dimensions <span class="sc">|&gt;</span> <span class="fu">props</span>()</span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="fu">type_of</span>(x<span class="sc">@</span>metadata<span class="sc">$</span>modified) <span class="sc">|&gt;</span> </span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>cheapr<span class="sc">::</span><span class="fu">list_combine</span>(</span>
-<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(x<span class="sc">@</span>metadata, as.character),</span>
-<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>  collapse<span class="sc">::</span><span class="fu">get_elem</span>(xdims, <span class="st">"fields"</span>, <span class="at">invert =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">fields =</span> xdims<span class="sc">$</span>fields <span class="sc">|&gt;</span> </span>
-<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>()</span>
-<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>  yaml<span class="sc">::</span><span class="fu">as.yaml</span>(</span>
-<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">precision =</span> <span class="dv">1</span>, </span>
-<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">indent =</span> <span class="dv">3</span>,</span>
-<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">indent.mapping.sequence =</span> <span class="cn">TRUE</span>, </span>
-<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">handlers =</span> <span class="fu">list</span>(</span>
-<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>      <span class="at">POSIXct =</span> <span class="cf">function</span>(x) <span class="fu">format</span>(x, <span class="st">"%Y-%m-%d"</span>)</span>
-<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>      )) <span class="sc">|&gt;</span> </span>
-<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="at">sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a><span class="fu">## Response</span></span>
-<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: http_request</span></span>
-<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: true</span></span>
-<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>resp <span class="ot">&lt;-</span> <span class="fu">quick</span>(<span class="st">"ahqr_psi11"</span>, <span class="at">limit =</span> <span class="dv">5000</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(<span class="at">START_DATE =</span> clock<span class="sc">::</span><span class="fu">date_parse</span>(START_DATE, <span class="at">format =</span> <span class="st">"%m/%d/%Y"</span>),</span>
-<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>      <span class="at">END_DATE =</span> clock<span class="sc">::</span><span class="fu">date_parse</span>(END_DATE, <span class="at">format =</span> <span class="st">"%m/%d/%Y"</span>),</span>
-<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>      <span class="at">ADM_DISC =</span> <span class="fu">as.double</span>(ADM_DISC),</span>
-<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>      <span class="at">RATE =</span> <span class="fu">as.double</span>(RATE),</span>
-<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>      <span class="at">INTERVAL_LOWER_LIMIT=</span> <span class="fu">as.double</span>(INTERVAL_LOWER_LIMIT),</span>
-<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>      <span class="at">INTERVAL_HIGHER_LIMIT=</span> <span class="fu">as.double</span>(INTERVAL_HIGHER_LIMIT))</span>
-<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>resp</span>
-<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>resp <span class="sc">|&gt;</span> datawizard<span class="sc">::</span><span class="fu">data_codebook</span>()</span>
-<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>resp <span class="sc">|&gt;</span> datawizard<span class="sc">::</span><span class="fu">describe_distribution</span>()</span>
-<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<div class="sourceCode" id="cb8" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">   chunk_output_type: console</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup-common-01</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"includes/_common.R"</span>)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pointblank)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="fu"># AHRQ PSI-11 Measure Rates {#care-ahqr_psi11}</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>The Agency for Healthcare Research and Quality (AHRQ) Patient Safety Indicator 11 (PSI-11) Measure Rates dataset provides information on provider-level measure rates regarding one preventable complication (postoperative respiratory failure) for Medicare fee-for-service discharges. </span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>The PSI-11 measure data is solely reported for providers information and quality improvement purposes and are not a part of the Deficit Reduction Act (DRA) Hospital-Acquired Condition (HAC) Payment Provision or HAC Reduction Program.</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a><span class="fu">## Metadata</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: s7_object</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: true</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">care_endpoint</span>(<span class="st">"ahqr_psi11"</span>)</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>xdims <span class="ot">&lt;-</span> x<span class="sc">@</span>dimensions <span class="sc">|&gt;</span> <span class="fu">props</span>()</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>cheapr<span class="sc">::</span><span class="fu">list_combine</span>(</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(x<span class="sc">@</span>metadata, as.character),</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>  collapse<span class="sc">::</span><span class="fu">get_elem</span>(xdims, <span class="st">"fields"</span>, <span class="at">invert =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">fields =</span> xdims<span class="sc">$</span>fields <span class="sc">|&gt;</span> </span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">names</span>()</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>  yaml<span class="sc">::</span><span class="fu">as.yaml</span>(</span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">precision =</span> <span class="dv">1</span>, </span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">indent =</span> <span class="dv">3</span>,</span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">indent.mapping.sequence =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">handlers =</span> <span class="fu">list</span>(</span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>      <span class="at">POSIXct =</span> <span class="cf">function</span>(x) <span class="fu">format</span>(x, <span class="st">"%Y-%m-%d"</span>)</span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>      )) <span class="sc">|&gt;</span> </span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="at">sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a><span class="fu">## Response</span></span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-53"><a href="#cb8-53" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: http_request</span></span>
+<span id="cb8-54"><a href="#cb8-54" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: true</span></span>
+<span id="cb8-55"><a href="#cb8-55" aria-hidden="true" tabindex="-1"></a>resp <span class="ot">&lt;-</span> <span class="fu">quick</span>(<span class="st">"ahqr_psi11"</span>, <span class="at">limit =</span> <span class="dv">5000</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb8-56"><a href="#cb8-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(<span class="at">START_DATE =</span> clock<span class="sc">::</span><span class="fu">date_parse</span>(START_DATE, <span class="at">format =</span> <span class="st">"%m/%d/%Y"</span>),</span>
+<span id="cb8-57"><a href="#cb8-57" aria-hidden="true" tabindex="-1"></a>      <span class="at">END_DATE =</span> clock<span class="sc">::</span><span class="fu">date_parse</span>(END_DATE, <span class="at">format =</span> <span class="st">"%m/%d/%Y"</span>),</span>
+<span id="cb8-58"><a href="#cb8-58" aria-hidden="true" tabindex="-1"></a>      <span class="at">ADM_DISC =</span> <span class="fu">as.double</span>(ADM_DISC),</span>
+<span id="cb8-59"><a href="#cb8-59" aria-hidden="true" tabindex="-1"></a>      <span class="at">RATE =</span> <span class="fu">as.double</span>(RATE),</span>
+<span id="cb8-60"><a href="#cb8-60" aria-hidden="true" tabindex="-1"></a>      <span class="at">INTERVAL_LOWER_LIMIT=</span> <span class="fu">as.double</span>(INTERVAL_LOWER_LIMIT),</span>
+<span id="cb8-61"><a href="#cb8-61" aria-hidden="true" tabindex="-1"></a>      <span class="at">INTERVAL_HIGHER_LIMIT=</span> <span class="fu">as.double</span>(INTERVAL_HIGHER_LIMIT))</span>
+<span id="cb8-62"><a href="#cb8-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-63"><a href="#cb8-63" aria-hidden="true" tabindex="-1"></a>resp</span>
+<span id="cb8-64"><a href="#cb8-64" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-65"><a href="#cb8-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-66"><a href="#cb8-66" aria-hidden="true" tabindex="-1"></a><span class="fu">## Overview</span></span>
+<span id="cb8-67"><a href="#cb8-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-68"><a href="#cb8-68" aria-hidden="true" tabindex="-1"></a><span class="fu">### Data Dictionary</span></span>
+<span id="cb8-69"><a href="#cb8-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-72"><a href="#cb8-72" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-73"><a href="#cb8-73" aria-hidden="true" tabindex="-1"></a>resp <span class="sc">|&gt;</span> datawizard<span class="sc">::</span><span class="fu">data_codebook</span>()</span>
+<span id="cb8-74"><a href="#cb8-74" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-75"><a href="#cb8-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-78"><a href="#cb8-78" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-79"><a href="#cb8-79" aria-hidden="true" tabindex="-1"></a>resp <span class="sc">|&gt;</span> datawizard<span class="sc">::</span><span class="fu">describe_distribution</span>()</span>
+<span id="cb8-80"><a href="#cb8-80" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-81"><a href="#cb8-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-82"><a href="#cb8-82" aria-hidden="true" tabindex="-1"></a><span class="fu">### Point Blank</span></span>
+<span id="cb8-83"><a href="#cb8-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-86"><a href="#cb8-86" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-87"><a href="#cb8-87" aria-hidden="true" tabindex="-1"></a>ahqr_psi11_info <span class="ot">&lt;-</span> fastplyr<span class="sc">::</span><span class="fu">new_tbl</span>(</span>
+<span id="cb8-88"><a href="#cb8-88" aria-hidden="true" tabindex="-1"></a>  <span class="at">column =</span> <span class="fu">c</span>(</span>
+<span id="cb8-89"><a href="#cb8-89" aria-hidden="true" tabindex="-1"></a>    <span class="st">"HOSP_ID"</span>, </span>
+<span id="cb8-90"><a href="#cb8-90" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ADM_DISC"</span>, </span>
+<span id="cb8-91"><a href="#cb8-91" aria-hidden="true" tabindex="-1"></a>    <span class="st">"RATE"</span>, </span>
+<span id="cb8-92"><a href="#cb8-92" aria-hidden="true" tabindex="-1"></a>    <span class="st">"INTERVAL_LOWER_LIMIT"</span>, </span>
+<span id="cb8-93"><a href="#cb8-93" aria-hidden="true" tabindex="-1"></a>    <span class="st">"INTERVAL_HIGHER_LIMIT"</span>, </span>
+<span id="cb8-94"><a href="#cb8-94" aria-hidden="true" tabindex="-1"></a>    <span class="st">"START_QUARTER"</span>, </span>
+<span id="cb8-95"><a href="#cb8-95" aria-hidden="true" tabindex="-1"></a>    <span class="st">"START_DATE"</span>, </span>
+<span id="cb8-96"><a href="#cb8-96" aria-hidden="true" tabindex="-1"></a>    <span class="st">"END_QUARTER"</span>, </span>
+<span id="cb8-97"><a href="#cb8-97" aria-hidden="true" tabindex="-1"></a>    <span class="st">"END_DATE"</span></span>
+<span id="cb8-98"><a href="#cb8-98" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb8-99"><a href="#cb8-99" aria-hidden="true" tabindex="-1"></a>  <span class="at">info =</span> <span class="fu">c</span>(</span>
+<span id="cb8-100"><a href="#cb8-100" aria-hidden="true" tabindex="-1"></a>    <span class="st">"The provider's CCN ID (6-digit format)."</span>, </span>
+<span id="cb8-101"><a href="#cb8-101" aria-hidden="true" tabindex="-1"></a>    <span class="st">"The provider's number of eligible discharges used for PSI-11 measure calculations."</span>, </span>
+<span id="cb8-102"><a href="#cb8-102" aria-hidden="true" tabindex="-1"></a>    <span class="st">"The provider's PSI-11 measure smoothed rate result. The rate is reported as per 1,000 discharges."</span>, </span>
+<span id="cb8-103"><a href="#cb8-103" aria-hidden="true" tabindex="-1"></a>    <span class="st">"The lower limit of the 95% confidence interval surrounding the provider's PSI-11 measure smoothed rate result."</span>, </span>
+<span id="cb8-104"><a href="#cb8-104" aria-hidden="true" tabindex="-1"></a>    <span class="st">"The upper limit of the 95% confidence interval surrounding the provider's PSI-11 measure smoothed rate result."</span>, </span>
+<span id="cb8-105"><a href="#cb8-105" aria-hidden="true" tabindex="-1"></a>    <span class="st">"The first quarter of the PSI-11 measure's performance period."</span>, </span>
+<span id="cb8-106"><a href="#cb8-106" aria-hidden="true" tabindex="-1"></a>    <span class="st">"The first date of the PSI-11 measure's performance period."</span>, </span>
+<span id="cb8-107"><a href="#cb8-107" aria-hidden="true" tabindex="-1"></a>    <span class="st">"The last quarter of the PSI-11 measure's performance period."</span>, </span>
+<span id="cb8-108"><a href="#cb8-108" aria-hidden="true" tabindex="-1"></a>    <span class="st">"The last date of the PSI-11 measure's performance period."</span></span>
+<span id="cb8-109"><a href="#cb8-109" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-110"><a href="#cb8-110" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-111"><a href="#cb8-111" aria-hidden="true" tabindex="-1"></a>ahqr_psi11_info</span>
+<span id="cb8-112"><a href="#cb8-112" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-113"><a href="#cb8-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-114"><a href="#cb8-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-117"><a href="#cb8-117" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-118"><a href="#cb8-118" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: point_blank_informant</span></span>
+<span id="cb8-119"><a href="#cb8-119" aria-hidden="true" tabindex="-1"></a>informant <span class="ot">&lt;-</span> <span class="fu">create_informant</span>(</span>
+<span id="cb8-120"><a href="#cb8-120" aria-hidden="true" tabindex="-1"></a>  <span class="at">tbl =</span> <span class="sc">~</span> resp, </span>
+<span id="cb8-121"><a href="#cb8-121" aria-hidden="true" tabindex="-1"></a>  <span class="at">label =</span> <span class="st">"API: Medicare"</span>,</span>
+<span id="cb8-122"><a href="#cb8-122" aria-hidden="true" tabindex="-1"></a>  <span class="at">tbl_name =</span> <span class="st">"ahqr_psi11"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb8-123"><a href="#cb8-123" aria-hidden="true" tabindex="-1"></a>  <span class="fu">info_tabular</span>(</span>
+<span id="cb8-124"><a href="#cb8-124" aria-hidden="true" tabindex="-1"></a>    <span class="at">Description =</span> <span class="st">"The **Agency for Healthcare Research and Quality (AHRQ) Patient Safety Indicator 11 (PSI-11) Measure Rates** dataset provides information on provider-level measure rates regarding one preventable complication (postoperative respiratory failure) for Medicare fee-for-service discharges. The PSI-11 measure data is solely reported for providers information and quality improvement purposes and are not a part of the Deficit Reduction Act (DRA) Hospital-Acquired Condition (HAC) Payment Provision or HAC Reduction Program."</span>,</span>
+<span id="cb8-125"><a href="#cb8-125" aria-hidden="true" tabindex="-1"></a>    <span class="at">site =</span> <span class="st">"- [data.cms.gov](https://data.cms.gov/quality-of-care/agency-for-healthcare-research-and-quality-ahrq-patient-safety-indicator-11-psi-11-measure-rates)"</span>,</span>
+<span id="cb8-126"><a href="#cb8-126" aria-hidden="true" tabindex="-1"></a>    <span class="at">references =</span> <span class="st">"- [AHRQ PSI-11 Measure Rate Methodology](https://data.cms.gov/sites/default/files/2020-09/Agency%20for%20Healthcare%20Research%20and%20Quality%20%28AHRQ%29%20Patient%20Safety%20Indicator%2011%20%28PSI-11%29%20Measure%20Rates%20Methodology_0.pdf)"</span>,</span>
+<span id="cb8-127"><a href="#cb8-127" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb8-128"><a href="#cb8-128" aria-hidden="true" tabindex="-1"></a>  <span class="fu">info_columns_from_tbl</span>(<span class="at">tbl =</span> ahqr_psi11_info)</span>
+<span id="cb8-129"><a href="#cb8-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-130"><a href="#cb8-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-131"><a href="#cb8-131" aria-hidden="true" tabindex="-1"></a>informant <span class="ot">&lt;-</span> informant <span class="sc">|&gt;</span> </span>
+<span id="cb8-132"><a href="#cb8-132" aria-hidden="true" tabindex="-1"></a>  <span class="fu">info_snippet</span>(<span class="at">snippet_name =</span> <span class="st">"stats_RATE"</span>, <span class="at">fn =</span> <span class="fu">snip_stats</span>(<span class="at">column =</span> <span class="st">"RATE"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb8-133"><a href="#cb8-133" aria-hidden="true" tabindex="-1"></a>  <span class="fu">info_columns</span>(<span class="at">columns =</span> RATE, <span class="st">`</span><span class="at">Stats</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"{stats_RATE}."</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb8-134"><a href="#cb8-134" aria-hidden="true" tabindex="-1"></a>  <span class="fu">info_snippet</span>(<span class="at">snippet_name =</span> <span class="st">"stats_ADM_DISC"</span>, <span class="at">fn =</span> <span class="fu">snip_stats</span>(<span class="at">column =</span> <span class="st">"ADM_DISC"</span>, <span class="at">type =</span> <span class="st">"bowley"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb8-135"><a href="#cb8-135" aria-hidden="true" tabindex="-1"></a>  <span class="fu">info_columns</span>(<span class="at">columns =</span> ADM_DISC, <span class="st">`</span><span class="at">Stats</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"{stats_ADM_DISC}."</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb8-136"><a href="#cb8-136" aria-hidden="true" tabindex="-1"></a>  <span class="fu">incorporate</span>()</span>
+<span id="cb8-137"><a href="#cb8-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-138"><a href="#cb8-138" aria-hidden="true" tabindex="-1"></a><span class="fu">get_informant_report</span>(</span>
+<span id="cb8-139"><a href="#cb8-139" aria-hidden="true" tabindex="-1"></a>  informant,</span>
+<span id="cb8-140"><a href="#cb8-140" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"**AHRQ PSI-11 Measure Rates**"</span></span>
+<span id="cb8-141"><a href="#cb8-141" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-142"><a href="#cb8-142" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb8-143"><a href="#cb8-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-146"><a href="#cb8-146" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb8-147"><a href="#cb8-147" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: point_blank_scan</span></span>
+<span id="cb8-148"><a href="#cb8-148" aria-hidden="true" tabindex="-1"></a><span class="co"># pointblank::scan_data(resp, navbar = FALSE)</span></span>
+<span id="cb8-149"><a href="#cb8-149" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
