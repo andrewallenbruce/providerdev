@@ -10,15 +10,17 @@ editor_options:
 source("includes/_common.R")
 ```
 
-# AHRQ PSI-11 Rates {#care-ahqr_psi11}
+# AHRQ PSI-11 Rates {#care-ahqr}
 
-Title: Agency for Healthcare Research and Quality (AHRQ) Patient Safety Indicator 11 (PSI-11) Measure Rates
+Agency for Healthcare Research and Quality (AHRQ) Patient Safety Indicator 11 (PSI-11) Measure Rates
 
-Description: The Agency for Healthcare Research and Quality (AHRQ) Patient Safety Indicator 11 (PSI-11) Measure Rates dataset provides information on provider-level measure rates regarding one preventable complication (postoperative respiratory failure) for Medicare fee-for-service discharges. 
+## Description
+
+The Agency for Healthcare Research and Quality (AHRQ) Patient Safety Indicator 11 (PSI-11) Measure Rates dataset provides information on provider-level measure rates regarding one preventable complication (postoperative respiratory failure) for Medicare fee-for-service discharges. 
 
 The PSI-11 measure data is solely reported for providers information and quality improvement purposes and are not a part of the Deficit Reduction Act (DRA) Hospital-Acquired Condition (HAC) Payment Provision or HAC Reduction Program.
 
-## Metadata
+### Metadata
 
 ```{r}
 #| label: s7_object
@@ -26,13 +28,21 @@ The PSI-11 measure data is solely reported for providers information and quality
 care_endpoint("ahqr_psi11")
 ```
 
-## Dictionary
+### Resources
+
+```{r}
+#| label: resources
+#| echo: false
+care_endpoint("ahqr_psi11") |> list_resources()
+```
+
+### Dictionary
 
 ```{r}
 #| label: data_dict
 #| echo: false
-ahqr_psi11_info <- new_tbl(
-  column = c(
+ahqr_psi11_dict <- new_tbl(
+  field = c(
     "HOSP_ID", 
     "ADM_DISC", 
     "RATE", 
@@ -43,7 +53,7 @@ ahqr_psi11_info <- new_tbl(
     "END_QUARTER", 
     "END_DATE"
   ),
-  info = c(
+  description = c(
     "The provider's CCN ID (6-digit format).", 
     "The provider's number of eligible discharges used for PSI-11 measure calculations.", 
     "The provider's PSI-11 measure smoothed rate result. The rate is reported as per 1,000 discharges.", 
@@ -55,7 +65,7 @@ ahqr_psi11_info <- new_tbl(
     "The last date of the PSI-11 measure's performance period."
   )
 )
-ahqr_psi11_info
+ahqr_psi11_dict
 ```
 
 
@@ -72,7 +82,7 @@ resp <- quick("ahqr_psi11", limit = 5000) |>
       INTERVAL_LOWER_LIMIT = as.double(INTERVAL_LOWER_LIMIT),
       INTERVAL_HIGHER_LIMIT= as.double(INTERVAL_HIGHER_LIMIT))
 
-resp |> purse()
+resp |> dplyr::glimpse()
 ```
 
 ## Overview

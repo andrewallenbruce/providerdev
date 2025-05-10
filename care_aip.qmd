@@ -1,0 +1,104 @@
+---
+editor_options: 
+   chunk_output_type: console
+---
+
+```{r}
+#| label: setup-common-01
+#| include: false
+#| warning: false
+source("includes/_common.R")
+```
+
+# AIP Plan {#care-aip}
+
+Advance Investment Payment Spend Plan
+
+## Description 
+
+The Advance Investment Payment Spend Plan data provides payment use, spending category, projected and actual spending of advanced investments payments by Accountable Care Organizations (ACOs).
+
+### Metadata
+
+```{r}
+#| label: s7_object
+#| echo: false
+care_endpoint("aip_plan")@metadata$description
+```
+
+### Resources
+
+```{r}
+#| label: resources
+#| echo: false
+care_endpoint("aip_plan") |> list_resources()
+```
+
+### Dictionary
+
+```{r}
+#| label: data_dict
+#| echo: false
+aip_plan_dict <- new_tbl(
+  field = c(
+    "ACO_ID", 
+    "ACO_Name", 
+    "Payment_Use", 
+    "General_Spend_Category", 
+    "General_Spend_Subcategory", 
+    "Total_AIP_Funding_Received_through_December_2024", 
+    "Projected_Spending_2024", 
+    "Actual_Spending_2024", 
+    "Projected_Spending_2025",
+    "Actual_Spending_2025"
+  ),
+  description = c(
+    "Unencrypted ACO Identifier. This identifier can be linked to the encrypted ACO identifier used for prior performance years (PY) using the ACO ID Crosswalk available at https://www.cms.gov/Medicare/Medicare-Fee-for-ServicePayment/sharedsavingsprogram/program-data.", 
+    "ACO Doing Business As (DBA) or Legal Business Name (LBN). Listed name is DBA unless DBA is not available, in which case LBN is used.", 
+    "Indicates ACO description of use of advance investment payments.", 
+    "Indicates which one of the three required categories the payment use falls under: increased staffing, health care infrastructure, or the provision of accountable care for underserved beneficiaries.", 
+    "Indicates a selected general spend subcategory under a general spend category that a payment use falls under.", 
+    "The dollar amount of AIP funding the ACO has received from CMS through December 2024.", 
+    "The dollar amount the ACO estimates will be spent on the payment use during the 2024 performance year.", 
+    "The dollar amount the ACO actually spent on the payment use during the 2024 performance year.", 
+    "The dollar amount the ACO estimates will be spent on the payment use during the 2025 performance year.",
+    "The dollar amount the ACO actually spent on the payment use during the 2025 performance year."
+  )
+)
+aip_plan_dict
+```
+
+
+## Response
+
+```{r}
+#| label: http_request
+#| message: true
+resp <- quick("aip_plan", limit = 5000) |> 
+  purrr::modify_if(is.character, function(x) providertwo:::na_if(x, y = "")) |>
+  purrr::modify_if(is.character, function(x) providertwo:::na_if(x, y = " ")) |>
+  purrr::modify_if(is.character, function(x) providertwo:::na_if(x, y = "N/A")) |>
+  mtt(
+    Total_AIP_Funding_Received_through_December_2024 = as.double(Total_AIP_Funding_Received_through_December_2024),
+    Projected_Spending_2024 = as.double(Projected_Spending_2024),
+    Actual_Spending_2024 = as.double(Actual_Spending_2024),
+    Projected_Spending_2025 = as.double(Projected_Spending_2025),
+    Actual_Spending_2025= as.double(Actual_Spending_2025))
+
+resp |> 
+  dplyr::glimpse()
+```
+
+## Overview
+
+```{r}
+#| label: datawizard_codebook
+#| echo: false
+resp |> datawizard::data_codebook()
+```
+
+```{r}
+#| label: datawizard_distribution
+#| echo: false
+resp |> datawizard::describe_distribution()
+```
