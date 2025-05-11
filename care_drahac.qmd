@@ -1,0 +1,109 @@
+---
+editor_options: 
+   chunk_output_type: console
+---
+
+```{r}
+#| label: setup-common-01
+#| include: false
+#| warning: false
+source("includes/_common.R")
+```
+
+# DRA HAC Measures {#care-drahac}
+
+The __Publicly Reported Deficit Reduction Act (DRA) Hospital-Acquired Condition (HAC) Measures__ data provides information on hospital-level measures rates for four of the HACs included in the DRA HAC payment provision: 
+
+   * foreign object retained after surgery, 
+   * blood incompatibility, 
+   * air embolism, 
+   * and falls and trauma 
+
+- for Medicare fee-for-service discharges. The Publicly Reported DRA HAC Measures are reported only for informational and quality improvement purposes; the results of the measure calculations do not affect payment and are not a part of the HAC Reduction Program.
+
+## Metadata
+
+```{r}
+#| label: s7_object
+#| echo: false
+end <- care_endpoint("hac_measures")
+
+# end@metadata$description
+
+props(end@dimensions)[c("rows", "limit", "pages")] |> print_ls()
+
+end@metadata[c(time, link)] |> print_ls()
+```
+
+### Resources
+
+```{r}
+#| label: resources
+#| echo: false
+end |> list_resources()
+```
+
+### Dictionary
+
+```{r}
+#| label: data_dict
+#| echo: false
+# browse_link(end, link = "dictionary")
+
+new_tbl(
+  field = c(
+    "Provider_ID", 
+    "Measure", 
+    "Rate", 
+    "Footnote", 
+    "Start_Quarter", 
+    "End_Quarter"
+    ),
+  description = c(
+    "Provider's CCN ID (6-digit format).",
+    "DRA HAC measure name. One of: Foreign Object Retained After Surgery, Air Embolism, Blood Incompatibility, or Falls and Trauma (includes fractures, dislocations, intracranial injuries, crushing injuries, burns, other injuries).",
+    "Provider's DRA HAC measure rate result, for all four DRA HAC measures. All four DRA HAC measures' rates are reported as observed rates per 1,000 discharges.",
+    "Provider's DRA HAC measure rate result's footnote. One of: 23 (Data based on claims submitted to CMS by facility, which has since reported discrepancies in their claims data.)",
+    "First quarter of the DRA HAC measure's discharge period, for all four DRA HAC measures.",
+    "Last quarter of the DRA HAC measure's discharge period, for all four DRA HAC measures."
+  )
+)
+```
+
+## Data
+
+```{r}
+#| label: http_request
+#| message: false
+#| warning: false
+#| echo: false
+resp <- quick("hac_measures", limit = 5000) |> mtt(Rate = as.numeric(Rate))
+
+resp
+```
+
+## Overview
+
+```{r}
+#| label: codebook
+#| echo: false
+resp |> collapse::descr()
+```
+
+### Distribution
+
+```{r}
+#| label: distribution
+#| message: false
+#| warning: false
+#| echo: false
+resp |> describe_distribution()
+```
+
+```{r}
+#| label: distribution_plot
+#| message: false
+#| warning: false
+#| echo: false
+resp |> describe_distribution() |> plot()
+```
