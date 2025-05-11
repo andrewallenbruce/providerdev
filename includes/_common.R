@@ -10,35 +10,33 @@ ansi_aware_handler <- function(x, options) {
 }
 
 knitr::knit_hooks$set(
-  output = ansi_aware_handler,
+  output  = ansi_aware_handler,
   message = ansi_aware_handler,
   warning = ansi_aware_handler,
-  error = ansi_aware_handler
+  error   = ansi_aware_handler
 )
 
-options(crayon.enabled = TRUE)
-options(scipen = 999, digits = 3)
+options(crayon.enabled = TRUE, scipen = 999, digits = 3)
 
+library(here)
+library(tidyverse)
+library(RcppSimdJson)
 library(collapse)
 library(fastplyr)
 library(cheapr)
 library(clock)
 library(stringi)
-library(tidyverse)
 library(httr2)
 library(glue)
-library(here)
 library(S7)
 library(rlang)
-library(gt)
-library(pointblank)
+library(arrow)
 
 library(provider)
 library(providertwo)
 
-library(arrow)
-library(RcppSimdJson)
-
+library(gt)
+library(pointblank)
 library(datawizard)
 library(see)
 library(ggplot2)
@@ -48,9 +46,17 @@ theme_set(theme_modern())
 # library(weburl)
 # library(urlparse)
 
-# yank  <- \(x) x[[1]]
+browse_link <- function(x, link) {
+  link <- match.arg(link, c("dictionary", "site", "references"))
 
-browse_dictionary <- \(x) browseURL(x@metadata$dictionary)
+  switch(
+    link,
+    dictionary = browseURL(x@metadata$dictionary),
+    site       = browseURL(x@metadata$site),
+    references = browseURL(x@metadata$references),
+    cli::cli_abort(c("x" = "Invalid argument: {x}"))
+  )
+}
 
 purse <- \(
   x,

@@ -1,0 +1,161 @@
+---
+editor_options: 
+   chunk_output_type: console
+---
+
+```{r}
+#| label: setup-common-01
+#| include: false
+#| warning: false
+source("includes/_common.R")
+```
+
+# County Risk Score {#care-countyrisk}
+
+The __Shared Savings Program County-level Aggregate Expenditure and Risk Score Data on Assignable Beneficiaries Public Use File (PUF)__ for the __Medicare Shared Savings Program_ (Shared Savings Program)__ provides aggregate data consisting of per capita Parts A and B FFS expenditures, average CMS-HCC prospective risk scores and total person-years for Shared Savings Program assignable beneficiaries by Medicare enrollment type (End Stage Renal Disease (ESRD), disabled, aged/dual eligible, aged/non-dual eligible). 
+
+> __DISCLAIMER:__ This information is current as of the last update. Changes to Shared Savings Program Accountable Care Organization (ACO) information occur periodically. Each Shared Savings Program ACO has the most up-to-date information about their organization. Consider contacting the Shared Savings Program ACO for the latest information. Contact information is available in the ACO PUF and the ACO Participants PUF.
+
+## Metadata
+
+```{r}
+#| label: s7_object
+#| echo: false
+end <- care_endpoint("county_risk_spend")
+
+# end@metadata$description
+
+props(end@dimensions)[c("rows", "limit", "pages")] |> print_ls()
+
+end@metadata[c(time, link)] |> print_ls()
+```
+
+### Resources
+
+```{r}
+#| label: resources
+#| echo: false
+end |> list_resources()
+```
+
+### Dictionary
+
+```{r}
+#| label: data_dict
+#| echo: false
+
+# browse_link(end, link = "dictionary")
+
+ftnote <- list(
+  "." = "Missing (county has no assigned beneficiaries with this enrollment type)",
+  "*" = "Suppressed (county has between 1 and 10 assigned beneficiaries with this enrollment type"
+)
+
+new_tbl(
+  field = c(
+    "YEAR", 
+    "STATE_NAME", 
+    "COUNTY_NAME", 
+    "STATE_ID", 
+    "COUNTY_ID", 
+    "PER_CAPITA_EXP_ESRD", 
+    "AVG_RISK_SCORE_ESRD", 
+    "AVG_DEMOG_SCORE_ESRD", 
+    "PERSON_YEARS_ESRD", 
+    "PER_CAPITA_EXP_DIS", 
+    "AVG_RISK_SCORE_DIS", 
+    "AVG_DEMOG_SCORE_DIS", 
+    "PERSON_YEARS_DIS", 
+    "PER_CAPITA_EXP_AGDU", 
+    "AVG_RISK_SCORE_AGDU",
+    "AVG_DEMOG_SCORE_AGDU", 
+    "PERSON_YEARS_AGDU",
+    "PER_CAPITA_EXP_AGND",
+    "AVG_RISK_SCORE_AGND",
+    "AVG_DEMOG_SCORE_AGND",
+    "PERSON_YEARS_AGND"),
+  description = c(
+    "Calendar year (CY) for which assignable beneficiaries are determined and per capita expenditures, average risk scores, and person years are calculated.",
+    "State name",
+    "County name",
+    "Social Security Administration (SSA) state code. Should always be two numeric characters.",
+    "SSA county code. Note that this code should always include three numeric characters.",
+    "Annualized, truncated, weighted mean total expenditures per ESRD assignable beneficiary person year in the county.",
+    "Final mean prospective CMS-HCC risk score for assignable beneficiaries in ESRD enrollment type in the county, based on the year's applicable risk adjustment model, renormalized so that the mean national FFS risk score equals 1.0.",
+    "Final mean demographic risk score for assignable beneficiaries in ESRD enrollment type in the county, based on the year's applicable risk adjustment model, renormalized so that the mean national FFS risk score equals 1.0.",
+    "Number of assignable beneficiaries with ESRD enrollment type in the county, adjusted for the total number of months that each beneficiary was classified as ESRD and was enrolled in Part A and Part B and was not enrolled in a Medicare Group Health Plan.",
+    "Annualized, truncated, weighted mean total expenditures per DISABLED assignable beneficiary person year in the county.",
+    "Final mean prospective CMS HCC risk score for assignable beneficiaries in DISABLED enrollment type in the county, based on the applicable risk adjustment model for that year, renormalized so that the mean national FFS risk score for the assignable DISABLED population equals 1.0.",
+    "Final, mean demographic risk score for assignable beneficiaries in DISABLED enrollment type in the county, based on the applicable risk adjustment model for that year, renormalized so that the mean national FFS risk score for the assignable DISABLED population equals 1.0.",
+    "Number of assignable beneficiaries with DISABLED enrollment type in the county, adjusted for the total number of months that each beneficiary was classified as DISABLED and was enrolled in Part A and Part B and was not enrolled in a Medicare Group Health Plan.", 
+    "Annualized, truncated, weighted mean total expenditures per AGED/DUAL assignable beneficiary person year in the county.",
+    "Final mean prospective CMS - HCC risk score for assignable beneficiaries in AGED/DUAL enrollment type in the county, based on the applicable risk adjustment model for that year, renormalized so that the mean national FFS risk score for the assignable AGED / DUAL population equals 1.0.",
+    "Final, mean demographic risk score for assignable beneficiaries in AGED/DUAL enrollment type in the county, based on the applicable risk adjustment model for that year, renormalized so that the mean national FFS risk score for the assignable AGED/DUAL population equals 1.0.",
+    "Number of assignable beneficiaries with AGED/DUAL enrollment type in the county, adjusted for the total number of months that each beneficiary was classified as AGED/DUAL and was enrolled in Part A and Part B and was not enrolled in a Medicare Group Health Plan.",
+    "Annualized, truncated, weighted mean total expenditures per AGED/NON-DUAL assignable beneficiary person year in the county.",
+    "Final mean prospective CMS-HCC risk score for assignable beneficiaries in AGED/NON-DUAL enrollment type in the county, based on the applicable risk adjustment model for that year, renormalized so that the mean national FFS risk score for the assignable AGED/NON-DUAL population equals 1.0.", 
+    "Final, mean demographic risk score for assignable beneficiaries in AGED/NON-DUAL enrollment type in the county, based on the applicable risk adjustment model for that year, renormalized so that the mean national FFS risk score for the assignable AGED/NON-DUAL population equals 1.0.",
+    "Number of assignable beneficiaries with AGED/NON-DUAL enrollment type in the county, adjusted for the total number of months that each beneficiary was classified as AGED/DUAL and was enrolled in Part A and Part B and was not enrolled in a Medicare Group Health Plan."
+  )
+)
+```
+
+## Data
+
+```{r}
+#| label: http_request
+#| message: false
+#| warning: false
+#| echo: false
+resp <- quick("county_risk_spend", limit = 5000)
+
+# names(resp)[6:21] |> cat(sep= " = as.numeric(),\n")
+
+resp <- resp |>
+  mtt(
+    YEAR                 = as.integer(YEAR),
+    PER_CAPITA_EXP_ESRD  = as.numeric(PER_CAPITA_EXP_ESRD),
+    AVG_RISK_SCORE_ESRD  = as.numeric(AVG_RISK_SCORE_ESRD),
+    AVG_DEMOG_SCORE_ESRD = as.numeric(AVG_DEMOG_SCORE_ESRD),
+    PERSON_YEARS_ESRD    = as.numeric(PERSON_YEARS_ESRD),
+    PER_CAPITA_EXP_DIS   = as.numeric(PER_CAPITA_EXP_DIS),
+    AVG_RISK_SCORE_DIS   = as.numeric(AVG_RISK_SCORE_DIS),
+    AVG_DEMOG_SCORE_DIS  = as.numeric(AVG_DEMOG_SCORE_DIS),
+    PERSON_YEARS_DIS     = as.numeric(PERSON_YEARS_DIS),
+    PER_CAPITA_EXP_AGDU  = as.numeric(PER_CAPITA_EXP_AGDU),
+    AVG_RISK_SCORE_AGDU  = as.numeric(AVG_RISK_SCORE_AGDU),
+    AVG_DEMOG_SCORE_AGDU = as.numeric(AVG_DEMOG_SCORE_AGDU),
+    PERSON_YEARS_AGDU    = as.numeric(PERSON_YEARS_AGDU),
+    PER_CAPITA_EXP_AGND  = as.numeric(PER_CAPITA_EXP_AGND),
+    AVG_RISK_SCORE_AGND  = as.numeric(AVG_RISK_SCORE_AGND),
+    AVG_DEMOG_SCORE_AGND = as.numeric(AVG_DEMOG_SCORE_AGND),
+    PERSON_YEARS_AGND    = as.numeric(PERSON_YEARS_AGND))
+
+resp
+```
+
+## Overview
+
+```{r}
+#| label: codebook
+#| echo: false
+resp |> collapse::descr()
+```
+
+### Distribution
+
+```{r}
+#| label: distribution
+#| message: false
+#| warning: false
+#| echo: false
+resp |> describe_distribution()
+```
+
+```{r}
+#| label: distribution_plot
+#| message: false
+#| warning: false
+#| echo: false
+resp |> describe_distribution() |> plot()
+```
