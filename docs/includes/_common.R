@@ -77,6 +77,8 @@ purse <- \(
 time <- c("modified", "periodicity", "temporal")
 link <- c("dictionary", "site", "references", "resources", "download")
 
+list_metadim <- function(e1, e2) list2(!!!e1, !!!e2)
+
 print_ls <- function(ls, prefix = "", postfix = "") {
 
   if (length(ls) == 0) cat("<empty>\n")

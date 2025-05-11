@@ -78,11 +78,15 @@ resp <- resp |>
   purrr::modify_if(is.character, function(x) providertwo:::na_if(x, y = " ")) |>
   purrr::modify_if(is.character, function(x) providertwo:::na_if(x, y = "N/A")) |>
   mtt(
-    Total_Funding_through_December_2024 = as.double(Total_AIP_Funding_Received_through_December_2024),
-    Projected_Spending_2024             = as.double(Projected_Spending_2024),
-    Actual_Spending_2024                = as.double(Actual_Spending_2024),
-    Projected_Spending_2025             = as.double(Projected_Spending_2025),
-    Actual_Spending_2025                = as.double(Actual_Spending_2025))
+    Payment_Use = factor_(Payment_Use),
+    General_Spend_Category = factor_(General_Spend_Category),
+    General_Spend_Subcategory = factor_(General_Spend_Subcategory),
+    Total_Funding_2024 = as.double(Total_AIP_Funding_Received_through_December_2024),
+    Projected_Spending_2024 = as.double(Projected_Spending_2024),
+    Actual_Spending_2024 = as.double(Actual_Spending_2024),
+    Projected_Spending_2025 = as.double(Projected_Spending_2025),
+    Actual_Spending_2025 = as.double(Actual_Spending_2025),
+    Total_AIP_Funding_Received_through_December_2024 = NULL)
 
 resp
 ```
@@ -102,7 +106,8 @@ resp |> collapse::descr()
 #| message: false
 #| warning: false
 #| echo: false
-resp |> describe_distribution()
+res <- describe_distribution(resp)
+res
 ```
 
 ```{r}
@@ -110,5 +115,5 @@ resp |> describe_distribution()
 #| message: false
 #| warning: false
 #| echo: false
-resp |> describe_distribution() |> plot()
+plot(res, dispersion = TRUE)
 ```

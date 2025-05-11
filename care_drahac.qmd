@@ -12,14 +12,14 @@ source("includes/_common.R")
 
 # DRA HAC Measures {#care-drahac}
 
-The __Publicly Reported Deficit Reduction Act (DRA) Hospital-Acquired Condition (HAC) Measures__ data provides information on hospital-level measures rates for four of the HACs included in the DRA HAC payment provision: 
+The __Publicly Reported Deficit Reduction Act (DRA) Hospital-Acquired Condition (HAC) Measures__ data provides information on hospital-level measures rates for four of the HACs included in the DRA HAC payment provision 
 
-   * foreign object retained after surgery, 
-   * blood incompatibility, 
-   * air embolism, 
-   * and falls and trauma 
+   1. foreign object retained after surgery
+   1. blood incompatibility
+   1. air embolism
+   1. and falls and trauma
 
-- for Medicare fee-for-service discharges. The Publicly Reported DRA HAC Measures are reported only for informational and quality improvement purposes; the results of the measure calculations do not affect payment and are not a part of the HAC Reduction Program.
+for Medicare fee-for-service discharges. The Publicly Reported DRA HAC Measures are reported only for informational and quality improvement purposes; the results of the measure calculations do not affect payment and are not a part of the HAC Reduction Program.
 
 ## Metadata
 
@@ -27,12 +27,11 @@ The __Publicly Reported Deficit Reduction Act (DRA) Hospital-Acquired Condition 
 #| label: s7_object
 #| echo: false
 end <- care_endpoint("hac_measures")
-
 # end@metadata$description
-
-props(end@dimensions)[c("rows", "limit", "pages")] |> print_ls()
-
-end@metadata[c(time, link)] |> print_ls()
+print_ls(list_metadim(
+  props(end@dimensions)[c("rows", "limit", "pages")], 
+  end@metadata[c(time, link)])
+  )
 ```
 
 ### Resources
@@ -40,7 +39,7 @@ end@metadata[c(time, link)] |> print_ls()
 ```{r}
 #| label: resources
 #| echo: false
-end |> list_resources()
+list_resources(end) |> glue::glue_data("[FILE] {year} {file}.{ext} ({size})")
 ```
 
 ### Dictionary
@@ -49,7 +48,6 @@ end |> list_resources()
 #| label: data_dict
 #| echo: false
 # browse_link(end, link = "dictionary")
-
 new_tbl(
   field = c(
     "Provider_ID", 
@@ -77,7 +75,12 @@ new_tbl(
 #| message: false
 #| warning: false
 #| echo: false
-resp <- quick("hac_measures", limit = 5000) |> mtt(Rate = as.numeric(Rate))
+resp <- list(
+  quick("hac_measures", offset = 0, limit = 5000),
+  quick("hac_measures", offset = 5000, limit = 5000),
+  quick("hac_measures", offset = 10000, limit = 5000)) |> 
+  purrr::list_rbind() |> 
+  mtt(Rate = as.numeric(Rate))
 
 resp
 ```
@@ -97,7 +100,8 @@ resp |> collapse::descr()
 #| message: false
 #| warning: false
 #| echo: false
-resp |> describe_distribution()
+res <- describe_distribution(resp)
+res
 ```
 
 ```{r}
@@ -105,5 +109,5 @@ resp |> describe_distribution()
 #| message: false
 #| warning: false
 #| echo: false
-resp |> describe_distribution() |> plot()
+plot(res, dispersion = TRUE)
 ```
