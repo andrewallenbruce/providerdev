@@ -8,15 +8,9 @@ editor_options:
 #| include: false
 source("includes/_common.R")
 
-underscore <- \(x) gsub("___owner$", "", x, perl = TRUE)
-char_binary <- \(x) val_match(x, "N" ~ 0L, "Y" ~ 1L)
-pct_prop <- \(x) {
-  cheapr::case(
-    x == "0" ~ 0,
-    cheapr::is_na(x) ~ NA_real_,
-    .default = as.double(x) / 100
-  )
-}
+unscore <- \(x) gsub("___owner$", "", x, perl = TRUE)
+charbin <- \(x) val_match(x, "N" ~ 0L, "Y" ~ 1L)
+as_prop <- \(x) case(x == "0" ~ 0, is_na(x) ~ NA_real_, .default = as.double(x) / 100)
 
 rhc_names <- c(
     "ENROLLMENT ID"                = "enid",
@@ -40,6 +34,43 @@ rhc_names <- c(
     "STATE"                        = "state",
     "ZIP CODE"                     = "zip"
   )
+
+rhc_owner_names <- c(
+  "ENROLLMENT ID"                       = "enid",
+  "ASSOCIATE ID"                        = "pac",
+  "ORGANIZATION NAME"                   = "org_name",
+  "ASSOCIATE ID - OWNER"                = "own_pac",
+  "TYPE - OWNER"                        = "own_type",
+  "ROLE CODE - OWNER"                   = "own_role_cd",
+  "ROLE TEXT - OWNER"                   = "own_role_desc",
+  "ASSOCIATION DATE - OWNER"            = "own_asoc_date",
+  "FIRST NAME - OWNER"                  = "own_first_name",
+  "MIDDLE NAME - OWNER"                 = "own_middle_name",
+  "LAST NAME - OWNER"                   = "own_last_name",
+  "TITLE - OWNER"                       = "own_title",
+  "ORGANIZATION NAME - OWNER"           = "own_org_name",
+  "DOING BUSINESS AS NAME - OWNER"      = "own_dba_name",
+  "ADDRESS LINE 1 - OWNER"              = "own_address_line_1",
+  "ADDRESS LINE 2 - OWNER"              = "own_address_line_2",
+  "CITY - OWNER"                        = "own_city",
+  "STATE - OWNER"                       = "own_state",
+  "ZIP CODE - OWNER"                    = "own_zip",
+  "PERCENTAGE OWNERSHIP"                = "own_pct_owned",
+  "CREATED FOR ACQUISITION - OWNER"     = "own_is_acquis",
+  "CORPORATION - OWNER"                 = "own_is_corp",
+  "LLC - OWNER"                         = "own_is_llc",
+  "MEDICAL PROVIDER SUPPLIER - OWNER"   = "own_is_medsupp",
+  "MANAGEMENT SERVICES COMPANY - OWNER" = "own_is_mgmtco",
+  "MEDICAL STAFFING COMPANY - OWNER"    = "own_is_staffco",
+  "HOLDING COMPANY - OWNER"             = "own_is_holdco",
+  "INVESTMENT FIRM - OWNER"             = "own_is_invfirm",
+  "FINANCIAL INSTITUTION - OWNER"       = "own_is_fininst",
+  "CONSULTING FIRM - OWNER"             = "own_is_consult",
+  "FOR PROFIT - OWNER"                  = "own_is_forprofit",
+  "NON PROFIT - OWNER"                  = "own_is_nonprofit",
+  "OTHER TYPE - OWNER"                  = "own_other_type",
+  "OTHER TYPE TEXT - OWNER"             = "own_other_text"
+)
 ```
 
 # Rural Health Clinics {#care-rhc}
@@ -75,10 +106,9 @@ resp <- list(
   purrr::list_rbind() |>
   rnm(rhc_names) |>
   mtt(inc_date = providertwo:::as_date(inc_date),
-      multi_npi = char_binary(multi_npi),
-      address = ifelse(is.na(address_line_2), address_line_1, glue("{address_line_1} {address_line_2}")),
-      org_type = ifelse(org_type == "OTHER", org_other, org_type)
-      ) |>
+      multi_npi = charbin(multi_npi),
+      address = providertwo:::make_address(address_line_1, address_line_2),
+      org_type = ifelse(org_type == "OTHER", org_other, org_type)) |>
   slt(-address_line_1, -address_line_2, -org_other)
 resp
 ```
@@ -90,8 +120,8 @@ resp
 ```{r}
 #| label: s7_object2
 #| echo: false
-end  <- care_endpoint("rhc_owners")
-print_meta(end, "care")
+owners  <- care_endpoint("rhc_owners")
+print_meta(owners, "care")
 ```
 
 ### Resources
@@ -99,7 +129,7 @@ print_meta(end, "care")
 ```{r}
 #| label: resources2
 #| echo: false
-print_resources(end)
+print_resources(owners)
 ```
 
 ### Data
@@ -108,19 +138,27 @@ print_resources(end)
 #| label: http_request2
 #| message: true
 #| echo: false
-resp <- list(
+owners_resp <- list(
   quick("rhc_owners", offset = 0, limit = 5000),
   quick("rhc_owners", offset = 5000, limit = 5000)) |> 
-  purrr::list_rbind() |>
-  rnm(providertwo:::clean_names)
+  purrr::list_rbind()
 
-resp |>
-  mtt(inc_date = providertwo:::as_date(inc_date),
-      multi_npi = char_binary(multi_npi),
-      address = ifelse(is.na(address_line_2), address_line_1, glue("{address_line_1} {address_line_2}")),
-      org_type = ifelse(org_type == "OTHER", org_other, org_type)
+owners_resp |>
+  rnm(rhc_owner_names) |> 
+  mtt(own_asoc_date = providertwo:::as_date(own_asoc_date),
+      own_pct_owned = as_prop(own_pct_owned),
+      own_is_acquis = charbin(own_is_acquis),
+      own_other_type = charbin(own_other_type),
+      own_address = providertwo:::make_address(
+        own_address_line_1, 
+        own_address_line_2),
+      own_role = glue("[{own_role_cd}] {own_role_desc}")
       ) |>
-  slt(-address_line_1, -address_line_2, -org_other)
-resp
+  slt(-own_address_line_1, 
+      -own_address_line_2,
+      -own_role_cd,
+      -own_role_desc
+      )
+  # dplyr::glimpse()
 ```
 
