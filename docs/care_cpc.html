@@ -415,9 +415,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <section id="resources" class="level3"><h3 class="anchored" data-anchor-id="resources">Resources</h3>
 <div class="cell">
-<pre class="r-output"><code><span style="background-color: #BBBB00;">NA</span>
-<span style="background-color: #BBBB00;">NA</span>
-<span style="background-color: #BBBB00;">NA</span>
+<pre class="r-output"><code>[CSV] … CPC Initiative - Participating Primary Care Practices (98.8K)
+[PDF] … CPC Initiative - Participating Primary Care Practices Methodology (72.3K)
+[PDF] … CPC Initiative - Participating Primary Care Practices Data Dictionary (46.6K)
 </code></pre>
 </div>
 </section><section id="dictionary" class="level3"><h3 class="anchored" data-anchor-id="dictionary">Dictionary</h3>
@@ -425,44 +425,48 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre class="r-output"><code><span style="color: #555555;"># A tibble: 8 × 2</span>
   field                           description                                   
   <span style="color: #555555; font-style: italic;"><chr></chr></span>                           <span style="color: #555555; font-style: italic;"><chr></chr></span>                                         
-<span style="color: #555555;">1</span> Name of Initiative              Plain text field containing the name of the i…
-<span style="color: #555555;">2</span> Participating Practice          Plain text field containing the names of medi…
-<span style="color: #555555;">3</span> Participating Practice Location Location field containing the street number, …
-<span style="color: #555555;">4</span> State                           Plain text field containing the two-letter st…
-<span style="color: #555555;">5</span> City                            Plain text field containing the name of the c…
-<span style="color: #555555;">6</span> Geographic Reach                Plain text field intended to contain informat…
-<span style="color: #555555;">7</span> Street Address                  Plain text field containing the street number…
-<span style="color: #555555;">8</span> Zip Code                        Number field intended to contain the zip code…
+<span style="color: #555555;">1</span> Name of Initiative              Name of the initiative.                       
+<span style="color: #555555;">2</span> Participating Practice          Participating practice's name.                
+<span style="color: #555555;">3</span> Participating Practice Location Participating practice's location, including …
+<span style="color: #555555;">4</span> State                           State where the participating practice is loc…
+<span style="color: #555555;">5</span> City                            City where the participating practice is loca…
+<span style="color: #555555;">6</span> Geographic Reach                Geographic reach of the participating practic…
+<span style="color: #555555;">7</span> Street Address                  Street where the participating practice is lo…
+<span style="color: #555555;">8</span> Zip Code                        Zip code of the participating practice. This …
 </code></pre>
 </div>
 </section></section><section id="data" class="level2"><h2 class="anchored" data-anchor-id="data">Data</h2>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu">quick</span><span class="op">(</span><span class="st">"cpc_primary"</span>, limit <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span></span>
-<span></span>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu">quick</span><span class="op">(</span><span class="st">"cpc_primary"</span>, limit <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">slt</span><span class="op">(</span><span class="op">-</span><span class="va">`Geographic Reach`</span>, <span class="op">-</span><span class="va">`Zip Code`</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">mtt</span><span class="op">(</span></span>
+<span>    `Participating Practice Location` <span class="op">=</span> <span class="fu">stri_extract_all_regex</span><span class="op">(</span></span>
+<span>      <span class="va">`Participating Practice Location`</span>, </span>
+<span>      <span class="st">"(?&lt;=\\().*(?=\\))"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span>use.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">resp</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<pre class="r-output"><code><span style="color: #555555;"># A tibble: 497 × 8</span>
+<pre class="r-output"><code><span style="color: #555555;"># A tibble: 497 × 6</span>
    `Name of Initiative`      Participating Practi…¹ Participating Practi…² State
    <span style="color: #555555; font-style: italic;"><chr></chr></span>                     <span style="color: #555555; font-style: italic;"><chr></chr></span>                  <span style="color: #555555; font-style: italic;"><chr></chr></span>                  <span style="color: #555555; font-style: italic;"><chr></chr></span>
-<span style="color: #555555;"> 1</span> Comprehensive Primary Ca… Ouachita Valley Famil… 353 Cash Road Camden,… AR   
-<span style="color: #555555;"> 2</span> Comprehensive Primary Ca… Community Care Physic… 2 Clara Barton Drive,… NY   
-<span style="color: #555555;"> 3</span> Comprehensive Primary Ca… Heritage Medical Group 362 North Broadway Sl… NY   
-<span style="color: #555555;"> 4</span> Comprehensive Primary Ca… OMNI South Harvard     4720 S. Harvard Tulsa… OK   
-<span style="color: #555555;"> 5</span> Comprehensive Primary Ca… Warren Clinic Tower 9… 6600 South Yale, Suit… OK   
-<span style="color: #555555;"> 6</span> Comprehensive Primary Ca… Ocean County Internal… 1352 River Ave. Lakew… NJ   
-<span style="color: #555555;"> 7</span> Comprehensive Primary Ca… Princeton Health Affi… 5 Plainsboro Road Pri… NJ   
-<span style="color: #555555;"> 8</span> Comprehensive Primary Ca… Colorado Springs Heal… 6025 Delmonico Drive … CO   
-<span style="color: #555555;"> 9</span> Comprehensive Primary Ca… St Charles Family Car… 615 Arrowleaf Trail S… OR   
-<span style="color: #555555;">10</span> Comprehensive Primary Ca… UAMS AHEC Southwest    300 East 6th Street T… AR   
+<span style="color: #555555;"> 1</span> Comprehensive Primary Ca… Ouachita Valley Famil… 33.58972137416254, -9… AR   
+<span style="color: #555555;"> 2</span> Comprehensive Primary Ca… Community Care Physic… 42.64725610281107, -7… NY   
+<span style="color: #555555;"> 3</span> Comprehensive Primary Ca… Heritage Medical Group 41.08758151717742, -7… NY   
+<span style="color: #555555;"> 4</span> Comprehensive Primary Ca… OMNI South Harvard     36.09479436024251, -9… OK   
+<span style="color: #555555;"> 5</span> Comprehensive Primary Ca… Warren Clinic Tower 9… 36.068183437837725, -… OK   
+<span style="color: #555555;"> 6</span> Comprehensive Primary Ca… Ocean County Internal… 40.049807642936976, -… NJ   
+<span style="color: #555555;"> 7</span> Comprehensive Primary Ca… Princeton Health Affi… 40.34996999991574, -7… NJ   
+<span style="color: #555555;"> 8</span> Comprehensive Primary Ca… Colorado Springs Heal… 38.919303507526166, -… CO   
+<span style="color: #555555;"> 9</span> Comprehensive Primary Ca… St Charles Family Car… 44.2913300000796, -12… OR   
+<span style="color: #555555;">10</span> Comprehensive Primary Ca… UAMS AHEC Southwest    33.42698815683374, -9… AR   
 <span style="color: #555555;"># ℹ 487 more rows</span>
 <span style="color: #555555;"># ℹ abbreviated names: ¹​`Participating Practice`,</span>
 <span style="color: #555555;">#   ²​`Participating Practice Location`</span>
-<span style="color: #555555;"># ℹ 4 more variables: City <chr>, `Geographic Reach` <chr>,</chr></chr></span>
-<span style="color: #555555;">#   `Street Address` <chr>, `Zip Code` <chr></chr></chr></span>
+<span style="color: #555555;"># ℹ 2 more variables: City <chr>, `Street Address` <chr></chr></chr></span>
 </code></pre>
 </div>
 </section><section id="overview" class="level2"><h2 class="anchored" data-anchor-id="overview">Overview</h2>
 <div class="cell">
-<pre class="r-output"><code><span style="color: #0000BB;">resp (497 rows and 8 variables, 7 shown)</span>
+<pre class="r-output"><code><span style="color: #0000BB;">resp (497 rows and 6 variables, 6 shown)</span>
 
 ID | Name                            | Type      | Missings
 ---+---------------------------------+-----------+---------
@@ -513,9 +517,7 @@ ID | Name                            | Type      | Missings
    |                                 |           |         
    |                                 |           |         
 ---+---------------------------------+-----------+---------
-6  | Geographic Reach                | character | 0 (0.0%)
----+---------------------------------+-----------+---------
-7  | Street Address                  | character | 0 (0.0%)
+6  | Street Address                  | character | 0 (0.0%)
    |                                 |           |         
    |                                 |           |         
    |                                 |           |         
@@ -528,197 +530,67 @@ ID | Name                            | Type      | Missings
    |                                 |           |         
 -----------------------------------------------------------
 
-ID
---
-1 
---
-2 
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
---
-3 
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
---
-4 
-  
-  
-  
-  
-  
-  
-  
---
-5 
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
---
-6 
---
-7 
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
---
-
-                                                                                      Values
---------------------------------------------------------------------------------------------
-                                                       Comprehensive Primary Care Initiative
---------------------------------------------------------------------------------------------
-                                                               Albany Med Faculty Physicians
-                                               Albany Medical College Faculty Group Practice
-                                                                     Alexander Biener, MD PA
-                                                         Altitude Family &amp; Internal Medicine
-                                                              Annandale Family Practice, LLC
-                                                                 Arapahoe Peak Medical Group
-                                                         Aspen Internal Medicine Consultants
-                                                                        Aspen Medical Center
-                                                               Associates in Family Medicine
-                                                    Associates in Family Medicine Timberline
-                                                                                       (...)
---------------------------------------------------------------------------------------------
-     1 Cedar Crest Village Drive Pompton Plains, NJ (40.984081567115126, -74.32412077140735)
-                   1 East National Road Vandalia, OH (39.89090061806904, -84.19864704852242)
-               1 Mercado St., Suite 160 Durango, CO (37.23719557793078, -107.82390640239413)
-                        1 Pine Street Poughkeepsie, NY (41.69707741275414, -73.938153809553)
-                         1 Pinnacle Place Albany, NY (42.67740686535705, -73.83584469375104)
-                1 South Greeley Avenue Chappaqua, NY (41.15883317821812, -73.77258862395888)
-               1 St. Vincent Circle Little Rock, AR (34.751976705133636, -92.33751260520596)
-100 Arrow Springs Boulevard, Suite 2700 Lebanon, OH (39.394731215304716, -84.20945514095091)
-100 Arrow Springs Boulevard, Suite 2800 Lebanon, OH (39.394731215304716, -84.20945514095091)
-                 100 S Cherry Ave., Ste 1 Eaton, CO (40.52419061536136, -104.72942923177578)
-                                                                                       (...)
---------------------------------------------------------------------------------------------
-                                                                                          AR
-                                                                                          CO
-                                                                                          KY
-                                                                                          NJ
-                                                                                          NY
-                                                                                          OH
-                                                                                          OK
-                                                                                          OR
---------------------------------------------------------------------------------------------
-                                                                                     Alamosa
-                                                                                      Albany
-                                                                                 Arkadelphia
-                                                                                      Armonk
-                                                                                    ash flat
-                                                                                     Ashdown
-                                                                                       Aspen
-                                                                                   Aumsville
-                                                                                Averill Park
-                                                                               Ballston Lake
-                                                                                       (...)
---------------------------------------------------------------------------------------------
-                                                                              Not Applicable
---------------------------------------------------------------------------------------------
-                                                                 1 Cedar Crest Village Drive
-                                                                        1 East National Road
-                                                                    1 Mercado St., Suite 160
-                                                                               1 Pine Street
-                                                                            1 Pinnacle Place
-                                                                      1 South Greeley Avenue
-                                                                        1 St. Vincent Circle
-                                                     100 Arrow Springs Boulevard, Suite 2700
-                                                     100 Arrow Springs Boulevard, Suite 2800
-                                                                    100 S Cherry Ave., Ste 1
-                                                                                       (...)
---------------------------------------------------------------------------------------------
-
-           N
-------------
-497 (100.0%)
-------------
-  1 (  0.2%)
-  1 (  0.2%)
-  1 (  0.2%)
-  1 (  0.2%)
-  1 (  0.2%)
-  1 (  0.2%)
-  1 (  0.2%)
-  1 (  0.2%)
-  1 (  0.2%)
-  1 (  0.2%)
-            
-------------
-  1 (  0.2%)
-  1 (  0.2%)
-  1 (  0.2%)
-  1 (  0.2%)
-  1 (  0.2%)
-  1 (  0.2%)
-  1 (  0.2%)
-  1 (  0.2%)
-  1 (  0.2%)
-  1 (  0.2%)
-            
-------------
- 69 ( 13.9%)
- 74 ( 14.9%)
- 14 (  2.8%)
- 70 ( 14.1%)
- 74 ( 14.9%)
- 61 ( 12.3%)
- 68 ( 13.7%)
- 67 ( 13.5%)
-------------
-  1 (  0.2%)
- 10 (  2.0%)
-  1 (  0.2%)
-  1 (  0.2%)
-  1 (  0.2%)
-  1 (  0.2%)
-  1 (  0.2%)
-  1 (  0.2%)
-  1 (  0.2%)
-  1 (  0.2%)
-            
-------------
-497 (100.0%)
-------------
-  1 (  0.2%)
-  1 (  0.2%)
-  1 (  0.2%)
-  1 (  0.2%)
-  1 (  0.2%)
-  1 (  0.2%)
-  1 (  0.2%)
-  1 (  0.2%)
-  1 (  0.2%)
-  1 (  0.2%)
-            
-------------
+ID |                                        Values |            N
+---+-----------------------------------------------+-------------
+1  |         Comprehensive Primary Care Initiative | 497 (100.0%)
+---+-----------------------------------------------+-------------
+2  |                 Albany Med Faculty Physicians |   1 (  0.2%)
+   | Albany Medical College Faculty Group Practice |   1 (  0.2%)
+   |                       Alexander Biener, MD PA |   1 (  0.2%)
+   |           Altitude Family &amp; Internal Medicine |   1 (  0.2%)
+   |                Annandale Family Practice, LLC |   1 (  0.2%)
+   |                   Arapahoe Peak Medical Group |   1 (  0.2%)
+   |           Aspen Internal Medicine Consultants |   1 (  0.2%)
+   |                          Aspen Medical Center |   1 (  0.2%)
+   |                 Associates in Family Medicine |   1 (  0.2%)
+   |      Associates in Family Medicine Timberline |   1 (  0.2%)
+   |                                         (...) |             
+---+-----------------------------------------------+-------------
+3  |        33.132473998918556, -91.96081009367293 |   1 (  0.2%)
+   |         33.13817193797228, -91.94114625435108 |   1 (  0.2%)
+   |        33.205851910906475, -92.68722959176749 |   1 (  0.2%)
+   |           33.275151438867, -93.23978991086221 |   1 (  0.2%)
+   |         33.42698815683374, -94.04093061102955 |   1 (  0.2%)
+   |         33.58972137416254, -92.85099065486422 |   1 (  0.2%)
+   |         33.60973414500249, -92.06247741650591 |   1 (  0.2%)
+   |         33.61385454528601, -92.06444994333924 |   1 (  0.2%)
+   |         33.66074475214964, -94.11493816401463 |   1 (  0.2%)
+   |         34.03772981481575, -94.33913291859174 |   1 (  0.2%)
+   |                                         (...) |             
+---+-----------------------------------------------+-------------
+4  |                                            AR |  69 ( 13.9%)
+   |                                            CO |  74 ( 14.9%)
+   |                                            KY |  14 (  2.8%)
+   |                                            NJ |  70 ( 14.1%)
+   |                                            NY |  74 ( 14.9%)
+   |                                            OH |  61 ( 12.3%)
+   |                                            OK |  68 ( 13.7%)
+   |                                            OR |  67 ( 13.5%)
+---+-----------------------------------------------+-------------
+5  |                                       Alamosa |   1 (  0.2%)
+   |                                        Albany |  10 (  2.0%)
+   |                                   Arkadelphia |   1 (  0.2%)
+   |                                        Armonk |   1 (  0.2%)
+   |                                      ash flat |   1 (  0.2%)
+   |                                       Ashdown |   1 (  0.2%)
+   |                                         Aspen |   1 (  0.2%)
+   |                                     Aumsville |   1 (  0.2%)
+   |                                  Averill Park |   1 (  0.2%)
+   |                                 Ballston Lake |   1 (  0.2%)
+   |                                         (...) |             
+---+-----------------------------------------------+-------------
+6  |                   1 Cedar Crest Village Drive |   1 (  0.2%)
+   |                          1 East National Road |   1 (  0.2%)
+   |                      1 Mercado St., Suite 160 |   1 (  0.2%)
+   |                                 1 Pine Street |   1 (  0.2%)
+   |                              1 Pinnacle Place |   1 (  0.2%)
+   |                        1 South Greeley Avenue |   1 (  0.2%)
+   |                          1 St. Vincent Circle |   1 (  0.2%)
+   |       100 Arrow Springs Boulevard, Suite 2700 |   1 (  0.2%)
+   |       100 Arrow Springs Boulevard, Suite 2800 |   1 (  0.2%)
+   |                      100 S Cherry Ave., Ste 1 |   1 (  0.2%)
+   |                                         (...) |             
+-----------------------------------------------------------------
 </code></pre>
 </div>
 
@@ -1253,14 +1125,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Zip Code"</span></span>
 <span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>  ),</span>
 <span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>  <span class="at">description =</span> <span class="fu">c</span>(</span>
-<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Plain text field containing the name of the initiative. Populates the initiative name onto the Where Innovation is Happening maps."</span>, </span>
-<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Plain text field containing the names of medical practices which participated in the CPC initiative."</span>, </span>
-<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Location field containing the street number, name, and the longitude and latitude coordinates of the participating practice."</span>, </span>
-<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Plain text field containing the two-letter state abbreviation for the state where the participating practice is located."</span>, </span>
-<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Plain text field containing the name of the city where the participating practice is located."</span>, </span>
-<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Plain text field intended to contain information about the geographic reach of the participating practice. This field is not currently in use."</span>, </span>
-<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Plain text field containing the street number and name of the street where the participating practice is located."</span>,</span>
-<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Number field intended to contain the zip code for the location of the participating practice. This field is not currently in use."</span></span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Name of the initiative."</span>, </span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Participating practice's name."</span>, </span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Participating practice's location, including longitude and latitude."</span>, </span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>    <span class="st">"State where the participating practice is located."</span>, </span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>    <span class="st">"City where the participating practice is located."</span>, </span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Geographic reach of the participating practice. This field is not currently in use."</span>, </span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Street where the participating practice is located."</span>,</span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Zip code of the participating practice. This field is not currently in use."</span></span>
 <span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
@@ -1270,18 +1142,23 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: http_request</span></span>
 <span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: true</span></span>
-<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a>resp <span class="ot">&lt;-</span> <span class="fu">quick</span>(<span class="st">"cpc_primary"</span>, <span class="at">limit =</span> <span class="dv">5000</span>)</span>
-<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a>resp</span>
-<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a><span class="fu">## Overview</span></span>
-<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: codebook</span></span>
-<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a>resp <span class="sc">|&gt;</span> <span class="fu">data_codebook</span>()</span>
-<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a>resp <span class="ot">&lt;-</span> <span class="fu">quick</span>(<span class="st">"cpc_primary"</span>, <span class="at">limit =</span> <span class="dv">5000</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(<span class="sc">-</span><span class="st">`</span><span class="at">Geographic Reach</span><span class="st">`</span>, <span class="sc">-</span><span class="st">`</span><span class="at">Zip Code</span><span class="st">`</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(</span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Participating Practice Location</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">stri_extract_all_regex</span>(</span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a>      <span class="st">`</span><span class="at">Participating Practice Location</span><span class="st">`</span>, </span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a>      <span class="st">"(?&lt;=</span><span class="sc">\\</span><span class="st">().*(?=</span><span class="sc">\\</span><span class="st">))"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a>      <span class="fu">unlist</span>(<span class="at">use.names =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a>resp</span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a><span class="fu">## Overview</span></span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: codebook</span></span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a>resp <span class="sc">|&gt;</span> <span class="fu">data_codebook</span>()</span>
+<span id="cb2-96"><a href="#cb2-96" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

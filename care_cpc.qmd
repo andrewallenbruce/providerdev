@@ -48,14 +48,14 @@ new_tbl(
     "Zip Code"
   ),
   description = c(
-    "Plain text field containing the name of the initiative. Populates the initiative name onto the Where Innovation is Happening maps.", 
-    "Plain text field containing the names of medical practices which participated in the CPC initiative.", 
-    "Location field containing the street number, name, and the longitude and latitude coordinates of the participating practice.", 
-    "Plain text field containing the two-letter state abbreviation for the state where the participating practice is located.", 
-    "Plain text field containing the name of the city where the participating practice is located.", 
-    "Plain text field intended to contain information about the geographic reach of the participating practice. This field is not currently in use.", 
-    "Plain text field containing the street number and name of the street where the participating practice is located.",
-    "Number field intended to contain the zip code for the location of the participating practice. This field is not currently in use."
+    "Name of the initiative.", 
+    "Participating practice's name.", 
+    "Participating practice's location, including longitude and latitude.", 
+    "State where the participating practice is located.", 
+    "City where the participating practice is located.", 
+    "Geographic reach of the participating practice. This field is not currently in use.", 
+    "Street where the participating practice is located.",
+    "Zip code of the participating practice. This field is not currently in use."
   )
 )
 ```
@@ -65,8 +65,13 @@ new_tbl(
 ```{r}
 #| label: http_request
 #| message: true
-resp <- quick("cpc_primary", limit = 5000)
-
+resp <- quick("cpc_primary", limit = 5000) |> 
+  slt(-`Geographic Reach`, -`Zip Code`) |> 
+  mtt(
+    `Participating Practice Location` = stri_extract_all_regex(
+      `Participating Practice Location`, 
+      "(?<=\\().*(?=\\))") |> 
+      unlist(use.names = FALSE))
 resp
 ```
 
