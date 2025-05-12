@@ -41,10 +41,20 @@ list_resources(end) |> glue_data("[FILE] {year} {file}.{ext} ({size})")
 
 ### Dictionary
 
-```r
-#| label: data_dict
+```{r}
+#| label: data_dict_rvest
 #| echo: false
-# browse_link(end, link = "dictionary")
+#| eval: false
+browse_link(end, link = "dictionary")
+
+html <- rvest::read_html_live(end@metadata$dictionary)
+
+html$print(n = Inf)
+
+dict_txt <- html$html_elements(".ArticleDictionary .ArticleDictionary__inner .ArticleDictionary__definition") |> 
+  rvest::html_element("p") |> 
+  rvest::html_text2()
+
 new_tbl(
   field = c(
     "AGG_ID",
@@ -80,9 +90,15 @@ new_tbl(
     "MY"
   ),
   description = c(
-    "Provider's CCN ID (6-digit format)."
-    )
-)
+    dict_txt
+    )) |> 
+  write_csv(here::here("data", "esrd_group_perf.csv"))
+```
+
+```{r}
+#| label: data_dict
+#| echo: false
+readr::read_csv(here::here("data", "esrd_group_perf.csv"))
 ```
 
 ## Data
@@ -92,11 +108,40 @@ new_tbl(
 #| message: false
 #| warning: false
 #| echo: false
-resp <- quick("esrd_group_perf", limit = 5000)
-
 # glue('"{names(resp)}",\n')
-
-resp |> str()
+resp <- quick("esrd_group_perf", limit = 5000) |> 
+  mtt(
+    HRR_NUM_MY = factor_(HRR_NUM_MY),
+    HDR_MY = as.numeric(HDR_MY),
+    HDR_DNM_MY = as.numeric(HDR_DNM_MY),
+    HDR_NUM_MY = as.numeric(HDR_NUM_MY),
+    HD_NUM_MY = as.numeric(HD_NUM_MY),
+    SD_NUM_MY = as.numeric(SD_NUM_MY),
+    NOCD_NUM_MY = as.numeric(NOCD_NUM_MY),
+    TR_MY_ACHSCR = as.numeric(TR_MY_ACHSCR),
+    TR_MY_IMPSCR = as.numeric(TR_MY_IMPSCR),
+    TWR_DNM_MY = as.numeric(TWR_DNM_MY),
+    TWR_NUM_MY = as.numeric(TWR_NUM_MY),
+    LDT_DNM_MY = as.numeric(LDT_DNM_MY),
+    LDT_NUM_MY = as.numeric(LDT_NUM_MY),
+    BENECNT_LDT_MY = as.numeric(BENECNT_LDT_MY),
+    HEI_HDR = as.numeric(HEI_HDR),
+    HDR_DELIS_DIFF = as.numeric(HDR_DELIS_DIFF),
+    HDR_DELIS_MY = as.numeric(HDR_DELIS_MY),
+    HDR_DNM_DELIS_MY = as.numeric(HDR_DNM_DELIS_MY),
+    HDR_NUM_DELIS_MY = as.numeric(HDR_NUM_DELIS_MY),
+    HEI_TR = as.numeric(HEI_TR),
+    TR_DELIS_DIFF = as.numeric(TR_DELIS_DIFF),
+    TR_DELIS_MY = as.numeric(TR_DELIS_MY),
+    TWR_DNM_DELIS_MY = as.numeric(TWR_DNM_DELIS_MY),
+    TWR_NUM_DELIS_MY = as.numeric(TWR_NUM_DELIS_MY),
+    LDT_DNM_DELIS_MY = as.numeric(LDT_DNM_DELIS_MY),
+    LDT_NUM_DELIS_MY = as.numeric(LDT_NUM_DELIS_MY),
+    MPS = as.numeric(MPS),
+    PPA = as.numeric(PPA),
+    PPA_PERIOD = factor_(PPA_PERIOD),
+    MY = factor_(MY))
+resp
 ```
 
 ## Overview
@@ -104,7 +149,8 @@ resp |> str()
 ```{r}
 #| label: codebook
 #| echo: false
-resp |> descr() |> print(perc = FALSE, compact = TRUE)
+# resp |> descr() |> print(perc = FALSE, compact = TRUE)
+resp |> data_codebook()
 ```
 
 ### Distribution
@@ -120,7 +166,7 @@ res
 
 ```{r}
 #| label: distribution_plot
-#| layout-ncol: 2
+#| layout-ncol: 3
 #| message: false
 #| warning: false
 #| echo: false
