@@ -109,5 +109,5 @@ print_resources <- function(x) {
     glue_data("[{format(toupper(ext), justify = 'right')}] ",
               "{year} {file} ",
               "({format(size, justify = 'left')})",
-              .na = NULL)
+              .na = "")
 }

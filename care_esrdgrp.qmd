@@ -42,9 +42,9 @@ print_resources(end)
 #| label: data_dict_rvest
 #| echo: false
 #| eval: false
-browse_link(end, link = "dictionary")
+# browse_link(end, link = "dictionary")
 
-html <- rvest::read_html_live(end@metadata$dictionary)
+# html <- rvest::read_html_live(end@metadata$dictionary)
 
 html$print(n = Inf)
 
@@ -95,6 +95,9 @@ new_tbl(
 ```{r}
 #| label: data_dict
 #| echo: false
+#| results: "asis"
+#| classes: plain
+#| html-table-processing: none
 dict <- readr::read_csv(here::here("data", "esrd_group_perf.csv"), show_col_types = FALSE)
 
 dict |> 
@@ -105,8 +108,8 @@ dict |>
   gt::tab_options(
     quarto.disable_processing = TRUE,
     column_labels.hidden = TRUE,
-    table.font.size = 14,
-    table.width = gt::pct(100)
+    table.font.size = 12,
+    table.width = gt::pct(50)
   ) |>
   gt::cols_align(align = "left", columns = field) |>
   gt::sub_missing(columns = gt::everything(), missing_text = "-")

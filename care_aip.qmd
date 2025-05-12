@@ -70,24 +70,26 @@ new_tbl(
 #| label: http_request
 #| message: true
 #| echo: false
-resp <- quick("aip_plan", limit = 5000)
-
-resp <- resp |> 
+resp <- quick("aip_plan", limit = 5000) |> 
   purrr::modify_if(is.character, function(x) providertwo:::na_if(x, y = "")) |>
   purrr::modify_if(is.character, function(x) providertwo:::na_if(x, y = " ")) |>
   purrr::modify_if(is.character, function(x) providertwo:::na_if(x, y = "N/A")) |>
   mtt(
-    Payment_Use = factor_(Payment_Use),
-    General_Spend_Category = factor_(General_Spend_Category),
+    Payment_Use               = factor_(Payment_Use),
+    General_Spend_Category    = factor_(General_Spend_Category),
     General_Spend_Subcategory = factor_(General_Spend_Subcategory),
-    Total_Funding_2024 = as.double(Total_AIP_Funding_Received_through_December_2024),
-    Projected_Spending_2024 = as.double(Projected_Spending_2024),
-    Actual_Spending_2024 = as.double(Actual_Spending_2024),
-    Projected_Spending_2025 = as.double(Projected_Spending_2025),
-    Actual_Spending_2025 = as.double(Actual_Spending_2025),
+    Total_Funding_2024        = as.double(Total_AIP_Funding_Received_through_December_2024),
+    Projected_Spending_2024   = as.double(Projected_Spending_2024),
+    Actual_Spending_2024      = as.double(Actual_Spending_2024),
+    Projected_Spending_2025   = as.double(Projected_Spending_2025),
+    Actual_Spending_2025      = NULL,
     Total_AIP_Funding_Received_through_December_2024 = NULL)
 
-resp
+res <- list(
+  funding_2024 = sbt(resp, !is.na(Total_Funding_2024)) |> remove_empty(),
+  aip = sbt(resp, is.na(Total_Funding_2024)) |> remove_empty())
+
+res
 ```
 
 ## Overview
@@ -95,7 +97,8 @@ resp
 ```{r}
 #| label: codebook
 #| echo: false
-resp |> data_codebook()
+#| results: "asis"
+res$aip |> data_codebook() |> print_md()
 ```
 
 ### Distribution
