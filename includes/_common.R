@@ -74,11 +74,6 @@ purse <- \(
   )
 }
 
-time <- c("modified", "periodicity", "temporal")
-link <- c("dictionary", "site", "references", "resources", "download")
-
-list_metadim <- function(e1, e2) list2(!!!e1, !!!e2)
-
 print_ls <- function(ls, prefix = "", postfix = "") {
 
   if (length(ls) == 0) cat("<empty>\n")
@@ -95,4 +90,24 @@ print_ls <- function(ls, prefix = "", postfix = "") {
     sep = "\n")
 
   invisible(ls)
+}
+
+meta   <- c("modified", "periodicity", "temporal",
+            "dictionary", "site", "references", "resources", "download")
+dims   <- function(x) if (x@dimensions@pages == 1) "rows" else c("rows", "pages")
+inj_ls <- function(e1, e2) list2(!!!e1, !!!e2)
+
+print_meta <- function(x, ...) {
+  inj_ls(
+    props(x@dimensions)[dims(x)],
+    x@metadata[meta]) |>
+    print_ls(...)
+}
+
+print_resources <- function(x) {
+  list_resources(x) |>
+    glue_data("[{format(toupper(ext), justify = 'right')}] ",
+              "{year} {file} ",
+              "({format(size, justify = 'left')})",
+              .na = NULL)
 }

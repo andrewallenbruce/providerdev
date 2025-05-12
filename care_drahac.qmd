@@ -28,12 +28,7 @@ The __Publicly Reported Deficit Reduction Act (DRA) Hospital-Acquired Condition 
 #| echo: false
 end <- care_endpoint("hac_measures")
 # end@metadata$description
-print_ls(
-  list_metadim(
-    props(end@dimensions)[c("rows", "limit", "pages")], 
-    end@metadata[c(time, link)]
-    )
-  )
+print_meta(end)
 ```
 
 ### Resources
@@ -41,7 +36,7 @@ print_ls(
 ```{r}
 #| label: resources
 #| echo: false
-list_resources(end) |> glue_data("[FILE] {year} {file}.{ext} ({size})")
+print_resources(end)
 ```
 
 ### Dictionary
@@ -92,7 +87,7 @@ resp
 ```{r}
 #| label: codebook
 #| echo: false
-resp |> descr() |> print(perc = FALSE, compact = TRUE)
+resp |> data_codebook()
 ```
 
 ### Distribution
@@ -112,5 +107,6 @@ res
 #| message: false
 #| warning: false
 #| echo: false
-plot(res, dispersion = TRUE)
+plots <- plot(res, dispersion = TRUE)
+walk(plots, print)
 ```
