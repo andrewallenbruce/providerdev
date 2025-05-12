@@ -20,7 +20,7 @@ The __Comprehensive Primary Care (CPC) Initiative - Participating Primary Care P
 #| label: s7_object
 #| echo: false
 end <- care_endpoint("cpc_primary")
-print_meta(end)
+print_meta(end, "care")
 ```
 
 ### Resources
@@ -57,7 +57,9 @@ new_tbl(
     "Street where the participating practice is located.",
     "Zip code of the participating practice. This field is not currently in use."
   )
-)
+) |> 
+  emphatic::as_emphatic() |> 
+  emphatic::hl_adjust(text_contrast = 0.5)
 ```
 
 ## Data
@@ -65,7 +67,7 @@ new_tbl(
 ```{r}
 #| label: http_request
 #| message: true
-quick("cpc_primary", limit = 5000) |>
+res <- quick("cpc_primary", limit = 5000) |>
   slt(
     practice = "Participating Practice",
     location = "Participating Practice Location",
@@ -81,5 +83,11 @@ quick("cpc_primary", limit = 5000) |>
     lat = stri_extract(location, regex = ".*(?=\\,)") |> as.double(),
     lon = stri_extract(location, regex = "(?<=\\,\\s).*") |> as.double(),
     location = NULL
-  )
+  ) |> 
+  sf::st_as_sf(
+      coords = c("lon", "lat"),
+      crs = sf::st_crs(4326),
+      na.fail = FALSE)
+
+mapview::mapview(res)
 ```

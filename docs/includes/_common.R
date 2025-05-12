@@ -92,15 +92,21 @@ print_ls <- function(ls, prefix = "", postfix = "") {
   invisible(ls)
 }
 
-meta   <- c("modified", "periodicity", "temporal",
-            "dictionary", "site", "references", "resources", "download")
 dims   <- function(x) if (x@dimensions@pages == 1) "rows" else c("rows", "pages")
 inj_ls <- function(e1, e2) list2(!!!e1, !!!e2)
 
-print_meta <- function(x, ...) {
+print_meta <- function(x, api, ...) {
+
+  meta <- switch(
+    match.arg(api, c("care", "caid", "open", "pro", "hgov")),
+    care = c("modified", "periodicity", "temporal", "dictionary", "site", "references", "resources", "download"),
+    open = c("modified", "download"),
+    pro = c("issued", "modified", "released", "dictionary", "site", "download")
+  )
+
   inj_ls(
     props(x@dimensions)[dims(x)],
-    x@metadata[meta]) |>
+    end@metadata[meta]) |>
     print_ls(...)
 }
 

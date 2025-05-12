@@ -1,0 +1,126 @@
+---
+editor_options: 
+   chunk_output_type: console
+---
+
+```{r}
+#| label: setup-common-01
+#| include: false
+source("includes/_common.R")
+
+underscore <- \(x) gsub("___owner$", "", x, perl = TRUE)
+char_binary <- \(x) val_match(x, "N" ~ 0L, "Y" ~ 1L)
+pct_prop <- \(x) {
+  cheapr::case(
+    x == "0" ~ 0,
+    cheapr::is_na(x) ~ NA_real_,
+    .default = as.double(x) / 100
+  )
+}
+
+rhc_names <- c(
+    "ENROLLMENT ID"                = "enid",
+    "ENROLLMENT STATE"             = "enid_state",
+    "PROVIDER TYPE CODE"           = "prov_code",
+    "PROVIDER TYPE TEXT"           = "prov_desc",
+    "NPI"                          = "npi",
+    "MULTIPLE NPI FLAG"            = "multi_npi",
+    "CCN"                          = "ccn",
+    "ASSOCIATE ID"                 = "pac",
+    "ORGANIZATION NAME"            = "org_name",
+    "DOING BUSINESS AS NAME"       = "dba_name",
+    "INCORPORATION DATE"           = "inc_date",
+    "INCORPORATION STATE"          = "inc_state",
+    "ORGANIZATION TYPE STRUCTURE"  = "org_type",
+    "ORGANIZATION OTHER TYPE TEXT" = "org_other",
+    "PROPRIETARY_NONPROFIT"        = "prop_non",
+    "ADDRESS LINE 1"               = "address_line_1",
+    "ADDRESS LINE 2"               = "address_line_2",
+    "CITY"                         = "city",
+    "STATE"                        = "state",
+    "ZIP CODE"                     = "zip"
+  )
+```
+
+# Rural Health Clinics {#care-rhc}
+
+## RHC Enrollments
+
+### Metadata
+
+```{r}
+#| label: s7_object
+#| echo: false
+end  <- care_endpoint("rhc_enrollments")
+print_meta(end, "care")
+```
+
+### Resources
+
+```{r}
+#| label: resources
+#| echo: false
+print_resources(end)
+```
+
+### Data
+
+```{r}
+#| label: http_request
+#| message: true
+#| echo: false
+resp <- list(
+  quick("rhc_enrollments", offset = 0, limit = 5000),
+  quick("rhc_enrollments", offset = 5000, limit = 5000)) |> 
+  purrr::list_rbind() |>
+  rnm(rhc_names) |>
+  mtt(inc_date = providertwo:::as_date(inc_date),
+      multi_npi = char_binary(multi_npi),
+      address = ifelse(is.na(address_line_2), address_line_1, glue("{address_line_1} {address_line_2}")),
+      org_type = ifelse(org_type == "OTHER", org_other, org_type)
+      ) |>
+  slt(-address_line_1, -address_line_2, -org_other)
+resp
+```
+
+## RHC Owners
+
+### Metadata
+
+```{r}
+#| label: s7_object2
+#| echo: false
+end  <- care_endpoint("rhc_owners")
+print_meta(end, "care")
+```
+
+### Resources
+
+```{r}
+#| label: resources2
+#| echo: false
+print_resources(end)
+```
+
+### Data
+
+```{r}
+#| label: http_request2
+#| message: true
+#| echo: false
+resp <- list(
+  quick("rhc_owners", offset = 0, limit = 5000),
+  quick("rhc_owners", offset = 5000, limit = 5000)) |> 
+  purrr::list_rbind() |>
+  rnm(providertwo:::clean_names)
+
+resp |>
+  mtt(inc_date = providertwo:::as_date(inc_date),
+      multi_npi = char_binary(multi_npi),
+      address = ifelse(is.na(address_line_2), address_line_1, glue("{address_line_1} {address_line_2}")),
+      org_type = ifelse(org_type == "OTHER", org_other, org_type)
+      ) |>
+  slt(-address_line_1, -address_line_2, -org_other)
+resp
+```
+

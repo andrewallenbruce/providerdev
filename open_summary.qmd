@@ -1,0 +1,72 @@
+---
+editor_options: 
+   chunk_output_type: console
+---
+
+```{r}
+#| label: setup-common-01
+#| include: false
+#| warning: false
+source("includes/_common.R")
+```
+
+# Summary {#open-summary}
+
+### Metadata
+
+```{r}
+#| label: s7_object
+#| echo: false
+end  <- open_endpoint("summary_dashboard")
+print_meta(end, "open")
+```
+
+## Data
+
+```{r}
+#| label: http_request
+#| message: true
+#| echo: false
+resp <- quick("summary_dashboard", limit = 500) |>
+    mtt(
+      metric = data_metrics,
+      type   = case(
+        grepl("^Total Number of", metric, perl = TRUE)              ~ "count",
+        grepl("^Total Dollar Amount of", metric, perl = TRUE)       ~ "dollar",
+        grepl("^Total Dollar Amount Invested", metric, perl = TRUE) ~ "invest",
+        grepl("^Total value of interest", metric, perl = TRUE)      ~ "value"
+      ),
+      data_metrics         = NULL,
+      dashboard_row_number = NULL,
+      py_2017 = as.numeric(py_2017),
+      py_2018 = as.numeric(py_2018),
+      py_2019 = as.numeric(py_2019),
+      py_2020 = as.numeric(py_2020),
+      py_2021 = as.numeric(py_2021),
+      py_2022 = as.numeric(py_2022),
+      py_2023 = as.numeric(py_2023),
+      total = as.numeric(total),
+      type = factor_(type))
+resp
+```
+
+### Distribution
+
+```{r}
+#| label: distribution
+#| message: false
+#| warning: false
+#| echo: false
+res <- describe_distribution(resp)
+res
+```
+
+```{r}
+#| label: distribution_plot
+#| layout-ncol: 2
+#| message: false
+#| warning: false
+#| echo: false
+plots <- plot(res, dispersion = TRUE)
+walk(plots, print)
+```
