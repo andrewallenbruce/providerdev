@@ -28,9 +28,11 @@ The __Publicly Reported Deficit Reduction Act (DRA) Hospital-Acquired Condition 
 #| echo: false
 end <- care_endpoint("hac_measures")
 # end@metadata$description
-print_ls(list_metadim(
-  props(end@dimensions)[c("rows", "limit", "pages")], 
-  end@metadata[c(time, link)])
+print_ls(
+  list_metadim(
+    props(end@dimensions)[c("rows", "limit", "pages")], 
+    end@metadata[c(time, link)]
+    )
   )
 ```
 
@@ -39,7 +41,7 @@ print_ls(list_metadim(
 ```{r}
 #| label: resources
 #| echo: false
-list_resources(end) |> glue::glue_data("[FILE] {year} {file}.{ext} ({size})")
+list_resources(end) |> glue_data("[FILE] {year} {file}.{ext} ({size})")
 ```
 
 ### Dictionary
@@ -80,8 +82,8 @@ resp <- list(
   quick("hac_measures", offset = 5000, limit = 5000),
   quick("hac_measures", offset = 10000, limit = 5000)) |> 
   purrr::list_rbind() |> 
-  mtt(Rate = as.numeric(Rate))
-
+  mtt(Measure = factor_(Measure),
+      Rate = as.numeric(Rate))
 resp
 ```
 
@@ -90,7 +92,7 @@ resp
 ```{r}
 #| label: codebook
 #| echo: false
-resp |> collapse::descr()
+resp |> descr() |> print(perc = FALSE, compact = TRUE)
 ```
 
 ### Distribution

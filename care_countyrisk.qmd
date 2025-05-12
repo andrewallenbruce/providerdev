@@ -20,12 +20,13 @@ The __Shared Savings Program County-level Aggregate Expenditure and Risk Score D
 #| label: s7_object
 #| echo: false
 end <- care_endpoint("county_risk_spend")
-
 # end@metadata$description
-
-props(end@dimensions)[c("rows", "limit", "pages")] |> print_ls()
-
-end@metadata[c(time, link)] |> print_ls()
+print_ls(
+  list_metadim(
+    props(end@dimensions)[c("rows", "limit", "pages")], 
+    end@metadata[c(time, link)]
+    )
+  )
 ```
 
 ### Resources
@@ -33,7 +34,7 @@ end@metadata[c(time, link)] |> print_ls()
 ```{r}
 #| label: resources
 #| echo: false
-end |> list_resources()
+list_resources(end) |> glue_data("[FILE] {year} {file}.{ext} ({size})")
 ```
 
 ### Dictionary
@@ -137,7 +138,7 @@ resp
 ```{r}
 #| label: codebook
 #| echo: false
-resp |> collapse::descr()
+resp |> descr() |> print(perc = FALSE, compact = TRUE)
 ```
 
 ### Distribution

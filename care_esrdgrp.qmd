@@ -1,0 +1,128 @@
+---
+editor_options: 
+   chunk_output_type: console
+---
+
+```{r}
+#| label: setup-common-01
+#| include: false
+#| warning: false
+source("includes/_common.R")
+```
+
+# ESRD Group Performance {#care-esrdgrp}
+
+The __End-Stage Renal Disease (ESRD) Facility Aggregation Group Performance__ dataset provides performance information in the __ESRD Treatment Choices (ETC) Model__. 
+
+The dataset includes information on Performance Payment Adjustment (PPA), Modality Performance Score (MPS), home dialysis rate, and transplant rate, as well as the individual components of each rate for each model participant ESRD facility aggregation group. 
+
+[All ESRD facilities within the same aggregation group share the same performance information. The supplementary aggregation group crosswalk file may be used to map aggregation groups to individual ETC Participant ESRD facilities.]{.aside}
+
+## Metadata
+
+```{r}
+#| label: s7_object
+#| echo: false
+end <- care_endpoint("esrd_group_perf")
+# end@metadata$description
+print_ls(list_metadim(
+  props(end@dimensions)[c("rows", "limit", "pages")], 
+  end@metadata[c(time, link)])
+  )
+```
+
+### Resources
+
+```{r}
+#| label: resources
+#| echo: false
+list_resources(end) |> glue_data("[FILE] {year} {file}.{ext} ({size})")
+```
+
+### Dictionary
+
+```r
+#| label: data_dict
+#| echo: false
+# browse_link(end, link = "dictionary")
+new_tbl(
+  field = c(
+    "AGG_ID",
+    "HRR_NUM_MY",
+    "HDR_MY",
+    "HDR_DNM_MY",
+    "HDR_NUM_MY",
+    "HD_NUM_MY",
+    "SD_NUM_MY",
+    "NOCD_NUM_MY",
+    "TR_MY_ACHSCR",
+    "TR_MY_IMPSCR",
+    "TWR_DNM_MY",
+    "TWR_NUM_MY",
+    "LDT_DNM_MY",
+    "LDT_NUM_MY",
+    "BENECNT_LDT_MY",
+    "HEI_HDR",
+    "HDR_DELIS_DIFF",
+    "HDR_DELIS_MY",
+    "HDR_DNM_DELIS_MY",
+    "HDR_NUM_DELIS_MY",
+    "HEI_TR",
+    "TR_DELIS_DIFF",
+    "TR_DELIS_MY",
+    "TWR_DNM_DELIS_MY",
+    "TWR_NUM_DELIS_MY",
+    "LDT_DNM_DELIS_MY",
+    "LDT_NUM_DELIS_MY",
+    "MPS",
+    "PPA",
+    "PPA_PERIOD",
+    "MY"
+  ),
+  description = c(
+    "Provider's CCN ID (6-digit format)."
+    )
+)
+```
+
+## Data
+
+```{r}
+#| label: http_request
+#| message: false
+#| warning: false
+#| echo: false
+resp <- quick("esrd_group_perf", limit = 5000)
+
+# glue('"{names(resp)}",\n')
+
+resp |> str()
+```
+
+## Overview
+
+```{r}
+#| label: codebook
+#| echo: false
+resp |> descr() |> print(perc = FALSE, compact = TRUE)
+```
+
+### Distribution
+
+```{r}
+#| label: distribution
+#| message: false
+#| warning: false
+#| echo: false
+res <- describe_distribution(resp)
+res
+```
+
+```{r}
+#| label: distribution_plot
+#| layout-ncol: 2
+#| message: false
+#| warning: false
+#| echo: false
+plot(res, dispersion = TRUE)
+```

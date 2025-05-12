@@ -14,7 +14,7 @@ source("includes/_common.R")
 
 The __Agency for Healthcare Research and Quality (AHRQ) Patient Safety Indicator 11 (PSI-11) Measure Rates__ dataset provides information on provider-level measure rates regarding one preventable complication (_Postoperative Respiratory Failure_) for Medicare Fee-For-Service discharges. 
 
-The PSI-11 measure data are solely reported for providers' information and quality improvement purposes and are not a part of the __Deficit Reduction Act (DRA)__, __Hospital-Acquired Condition (HAC) Payment Provision__ or __HAC Reduction Program__.
+[The PSI-11 measure data are solely reported for providers' information and quality improvement purposes and are not a part of the __Deficit Reduction Act (DRA)__, __Hospital-Acquired Condition (HAC) Payment Provision__ or __HAC Reduction Program__.]{.aside}
 
 ### Metadata
 
@@ -23,7 +23,12 @@ The PSI-11 measure data are solely reported for providers' information and quali
 #| echo: false
 end  <- care_endpoint("ahqr_psi11")
 
-end@metadata[c(time, link)] |> print_ls()
+print_ls(
+  list_metadim(
+    props(end@dimensions)[c("rows", "limit", "pages")], 
+    end@metadata[c(time, link)]
+    )
+  )
 ```
 
 ### Resources
@@ -31,7 +36,7 @@ end@metadata[c(time, link)] |> print_ls()
 ```{r}
 #| label: resources
 #| echo: false
-end |> list_resources()
+list_resources(end) |> glue_data("[FILE] {year} {file}.{ext} ({size})")
 ```
 
 ### Dictionary
@@ -88,7 +93,7 @@ resp
 ```{r}
 #| label: codebook
 #| echo: false
-resp |> collapse::descr()
+resp |> descr() |> print(perc = FALSE, compact = TRUE)
 ```
 
 ### Distribution
@@ -104,6 +109,7 @@ res
 
 ```{r}
 #| label: distribution_plot
+#| layout-ncol: 2
 #| message: false
 #| warning: false
 #| echo: false

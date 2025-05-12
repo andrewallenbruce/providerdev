@@ -21,7 +21,12 @@ The __Advance Investment Payment Spend Plan__ data provides payment use, spendin
 #| echo: false
 end  <- care_endpoint("aip_plan")
 
-end@metadata[c(time, link)] |> print_ls()
+print_ls(
+  list_metadim(
+    props(end@dimensions)[c("rows", "limit", "pages")], 
+    end@metadata[c(time, link)]
+    )
+  )
 ```
 
 ### Resources
@@ -29,7 +34,7 @@ end@metadata[c(time, link)] |> print_ls()
 ```{r}
 #| label: resources
 #| echo: false
-end |> list_resources()
+list_resources(end) |> glue_data("[FILE] {year} {file}.{ext} ({size})")
 ```
 
 ### Dictionary
@@ -96,7 +101,7 @@ resp
 ```{r}
 #| label: codebook
 #| echo: false
-resp |> collapse::descr()
+resp |> descr() |> print(perc = FALSE, compact = TRUE)
 ```
 
 ### Distribution
@@ -115,5 +120,6 @@ res
 #| message: false
 #| warning: false
 #| echo: false
+#| layout-ncol: 2
 plot(res, dispersion = TRUE)
 ```

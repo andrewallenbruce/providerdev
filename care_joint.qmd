@@ -12,7 +12,9 @@ source("includes/_common.R")
 
 # Joint Model MSAs {#care-joint}
 
-The __Comprehensive Care for Joint Replacement Model: Metropolitan Statistical Areas (MSAs)__ dataset presents MSAs that are participating in the __CMS Innovation Center Comprehensive Care for Joint Replacement Model__, a model to support better and more efficient care for beneficiaries undergoing the most common inpatient surgery for Medicare beneficiaries: hip and knee replacements. Participation in this model is designated by geographic area, specifically MSAs. The information contained in the dataset can include MSA identification number, MSA geographic name and associated county or counties.
+The __Comprehensive Care for Joint Replacement Model: Metropolitan Statistical Areas (MSAs)__ dataset presents MSAs that are participating in the __CMS Innovation Center Comprehensive Care for Joint Replacement Model__, a model to support better and more efficient care for beneficiaries undergoing the most common inpatient surgery for Medicare beneficiaries: hip and knee replacements. 
+
+Participation in this model is designated by geographic area, specifically MSAs. The information contained in the dataset can include MSA identification number, MSA geographic name and associated county or counties.
 
 ## Metadata
 
@@ -21,7 +23,12 @@ The __Comprehensive Care for Joint Replacement Model: Metropolitan Statistical A
 #| echo: false
 end <- care_endpoint("cpc_joint")
 
-end@metadata[c(time, link)] |> print_ls()
+print_ls(
+  list_metadim(
+    props(end@dimensions)[c("rows", "limit", "pages")], 
+    end@metadata[c(time, link)]
+    )
+  )
 ```
 
 ### Resources
@@ -29,7 +36,7 @@ end@metadata[c(time, link)] |> print_ls()
 ```{r}
 #| label: resources
 #| echo: false
-end |> list_resources()
+list_resources(end) |> glue_data("[FILE] {year} {file}.{ext} ({size})")
 ```
 
 ### Dictionary
@@ -63,5 +70,5 @@ resp
 ```{r}
 #| label: codebook
 #| echo: false
-resp |> collapse::descr()
+resp |> descr() |> print(perc = FALSE, compact = TRUE)
 ```

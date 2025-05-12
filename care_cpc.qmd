@@ -21,7 +21,12 @@ The __Comprehensive Primary Care (CPC) Initiative - Participating Primary Care P
 #| echo: false
 end <- care_endpoint("cpc_primary")
 
-end@metadata[c(time, link)] |> print_ls()
+print_ls(
+  list_metadim(
+    props(end@dimensions)[c("rows", "limit", "pages")], 
+    end@metadata[c(time, link)]
+    )
+  )
 ```
 
 ### Resources
@@ -29,7 +34,7 @@ end@metadata[c(time, link)] |> print_ls()
 ```{r}
 #| label: resources
 #| echo: false
-end |> list_resources()
+list_resources(end) |> glue_data("[FILE] {year} {file}.{ext} ({size})")
 ```
 
 ### Dictionary
@@ -76,5 +81,5 @@ resp
 ```{r}
 #| label: codebook
 #| echo: false
-resp |> collapse::descr()
+resp |> descr() |> print(perc = FALSE, compact = TRUE)
 ```
