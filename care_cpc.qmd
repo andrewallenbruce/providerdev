@@ -65,20 +65,21 @@ new_tbl(
 ```{r}
 #| label: http_request
 #| message: true
-resp <- quick("cpc_primary", limit = 5000) |> 
-  slt(-`Geographic Reach`, -`Zip Code`) |> 
+quick("cpc_primary", limit = 5000) |>
+  slt(
+    practice = "Participating Practice",
+    location = "Participating Practice Location",
+    state    = "State",
+    city     = "City",
+    address  = "Street Address"
+  ) |>
   mtt(
-    `Participating Practice Location` = stri_extract_all_regex(
-      `Participating Practice Location`, 
-      "(?<=\\().*(?=\\))") |> 
-      unlist(use.names = FALSE))
-resp
-```
-
-## Overview
-
-```{r}
-#| label: codebook
-#| echo: false
-resp |> data_codebook()
+    location = unlist(
+      stri_extract_all_regex(location, "(?<=\\().*(?=\\))"),
+      use.names = FALSE
+    ),
+    lat = stri_extract(location, regex = ".*(?=\\,)") |> as.double(),
+    lon = stri_extract(location, regex = "(?<=\\,\\s).*") |> as.double(),
+    location = NULL
+  )
 ```

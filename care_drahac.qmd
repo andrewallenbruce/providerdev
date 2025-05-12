@@ -77,36 +77,32 @@ resp <- list(
   quick("hac_measures", offset = 5000, limit = 5000),
   quick("hac_measures", offset = 10000, limit = 5000)) |> 
   purrr::list_rbind() |> 
-  mtt(Measure = factor_(Measure),
-      Rate = as.numeric(Rate))
+  mtt(Measure = cheapr_if_else(
+    Measure == "Falls and Trauma (Includes fractures, dislocations, intracranial injuries, crushing injuries, burns, other injuries)",
+    "Falls and Trauma",
+    Measure) |> factor_(),
+      Rate = as.numeric(Rate)) |> 
+  sbt(Rate > 0)
 resp
 ```
 
-## Overview
-
-```{r}
-#| label: codebook
-#| echo: false
-resp |> data_codebook()
-```
-
-### Distribution
+## Distribution
 
 ```{r}
 #| label: distribution
 #| message: false
 #| warning: false
 #| echo: false
-res <- describe_distribution(resp)
+res <- describe_distribution(resp, by = "Measure")
 res
 ```
 
 ```{r}
 #| label: distribution_plot
-#| layout-ncol: 2
 #| message: false
 #| warning: false
 #| echo: false
-plots <- plot(res, dispersion = TRUE)
+plots <- describe_distribution(resp) |> 
+  plot(dispersion = TRUE)
 walk(plots, print)
 ```
