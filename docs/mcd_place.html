@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.7.14">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
 <meta name="description" content="This is a personal, informal guide to rewriting an R package. It is a work in progress and will be updated as I learn more about the process.">
-
-<title>22&nbsp; mcd_place – Refactoring &lt;b&gt;provider&lt;/b&gt;&lt;sup&gt;&lt;i&gt;2&lt;/i&gt;&lt;/sup&gt;</title>
+<title>22&nbsp; ACA Federal Upper Limits – Refactoring &lt;b&gt;provider&lt;/b&gt;&lt;sup&gt;&lt;i&gt;2&lt;/i&gt;&lt;/sup&gt;
+</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -57,7 +55,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
-
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -72,10 +69,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-9a2ea0c07389832c9747c76a8332e5b0.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-2a62bf9ed72bfdd82367fd4c8c0458ee.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
-<script id="quarto-search-options" type="application/json">{
+<link href="site_libs/bootstrap/bootstrap-9e7dc2287a5b12cc20001aab827e3992.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
@@ -101,35 +98,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script>
-<style>html{ scroll-behavior: smooth; }</style>
-
-
+}</script><style>html{ scroll-behavior: smooth; }</style>
 </head>
-
 <body class="nav-sidebar docked">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav">
-    <div class="container-fluid d-flex">
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./api_mcd.html">Medicaid</a></li><li class="breadcrumb-item"><a href="./mcd_place.html"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">mcd_place</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./api_mcd.html">Medicaid</a></li><li class="breadcrumb-item"><a href="./mcd_place.html"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">ACA Federal Upper Limits</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
-  </nav>
-</header>
-<!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Refactoring <b>provider</b><sup><i>2</i></sup></a> 
         <div class="sidebar-tools-main">
@@ -149,7 +136,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
-        <li class="sidebar-item">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Installation</span></a>
@@ -163,8 +150,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./wk_backend.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Backend</span></span></a>
@@ -207,7 +194,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
@@ -216,8 +203,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./api_nppes.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">NPI Registry</span></span></a>
@@ -236,7 +223,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a href="./api_care.html" class="sidebar-item-text sidebar-link">
@@ -245,8 +232,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./care_ahqr.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">AHRQ PSI-11 Rates</span></span></a>
@@ -301,7 +288,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a href="./api_prov.html" class="sidebar-item-text sidebar-link">
@@ -310,15 +297,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./pro_affiliations.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Facility Affiliations</span></span></a>
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a href="./api_open.html" class="sidebar-item-text sidebar-link">
@@ -327,15 +314,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./open_summary.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a href="./api_mcd.html" class="sidebar-item-text sidebar-link">
@@ -344,15 +331,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./mcd_place.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">mcd_place</span></span></a>
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">ACA Federal Upper Limits</span></span></a>
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a href="./api_hc.html" class="sidebar-item-text sidebar-link">
@@ -361,15 +348,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./hc_place.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">AB Registration</span></span></a>
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
@@ -378,15 +365,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./demo_geo.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Geospatial</span></span></a>
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
@@ -395,8 +382,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./faq_syntax.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">JSON:API Syntax</span></span></a>
@@ -409,27 +396,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
 </li>
       </ul>
-  </li>
+</li>
     </ul>
-    </div>
-</nav>
-<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#medicaid-dataset" id="toc-medicaid-dataset" class="nav-link active" data-scroll-target="#medicaid-dataset"><span class="header-section-number">23</span> Medicaid Dataset</a></li>
+<li>
+<a href="#metadata" id="toc-metadata" class="nav-link active" data-scroll-target="#metadata">Metadata</a>
+  <ul class="collapse">
+<li><a href="#dictionary" id="toc-dictionary" class="nav-link" data-scroll-target="#dictionary">Dictionary</a></li>
   </ul>
-<div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li><li><a href="https://github.com/andrewallenbruce/providertwo"><i class="bi bi-file-code"></i>providertwo</a></li></ul></div></nav>
+</li>
+  <li>
+<a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a>
+  <ul class="collapse">
+<li><a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview">Overview</a></li>
+  </ul>
+</li>
+  </ul><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li><li><a href="https://github.com/andrewallenbruce/providertwo"><i class="bi bi-file-code"></i>providertwo</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./api_mcd.html">Medicaid</a></li><li class="breadcrumb-item"><a href="./mcd_place.html"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">mcd_place</span></a></li></ol></nav>
-<div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">mcd_place</span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i></button></div></div>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./api_mcd.html">Medicaid</a></li><li class="breadcrumb-item"><a href="./mcd_place.html"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">ACA Federal Upper Limits</span></a></li></ol></nav><div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title"><span id="sec-acaful" class="quarto-section-identifier"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">ACA Federal Upper Limits</span></span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i></button></div></div>
 </div>
 
 
@@ -443,19 +435,274 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
 
 
-</header>
+</header><p><strong>Affordable Care Act Federal Upper Limits (FUL)</strong> based on the weighted average of the most recently reported monthly average manufacturer price (AMP) for pharmaceutically and therapeutically equivalent multiple source drug products that are available for purchase by retail community pharmacies on a nationwide basis.</p>
+<section id="metadata" class="level2"><h2 class="anchored" data-anchor-id="metadata">Metadata</h2>
+<div class="cell">
+<pre class="r-output"><code>  [ROWS] 1945283 
+ [PAGES] 244 
+[FIELDS] 14 
+</code></pre>
+</div>
+<section id="dictionary" class="level3"><h3 class="anchored" data-anchor-id="dictionary">Dictionary</h3>
+<div class="cell">
+<pre class="r-output"><code><span style="color: #BB0000; font-weight: bold; text-decoration: underline;">state</span>
+<span style="color: #555555;">State.</span>
 
+<span style="color: #BB0000; font-weight: bold; text-decoration: underline;">year</span>
+<span style="color: #555555;">Year of TAF data.</span>
 
-<section id="medicaid-dataset" class="level1" data-number="23">
-<h1 data-number="23"><span class="header-section-number">23</span> Medicaid Dataset</h1>
+<span style="color: #BB0000; font-weight: bold; text-decoration: underline;">benefit_package</span>
+<span style="color: #555555;">Type of Medicaid and CHIP benefit package
+(full-scope, comprehensive, limited, or unknown).</span>
+
+<span style="color: #BB0000; font-weight: bold; text-decoration: underline;">count_ever_enrolled</span>
+<span style="color: #555555;">Number of Medicaid and CHIP beneficiaries ever
+enrolled in each benefit package over the year
+(duplicated count).</span>
+
+<span style="color: #BB0000; font-weight: bold; text-decoration: underline;">count_last_month_enrollment</span>
+<span style="color: #555555;">Number of Medicaid and CHIP beneficiaries enrolled
+in each benefit package as of an individual's last
+month of enrollment (unduplicated count).</span>
+
+<span style="color: #BB0000; font-weight: bold; text-decoration: underline;">average_enrollment_per_month</span>
+<span style="color: #555555;">Average monthly enrollment in each benefit package
+over the year.</span>
+
+<span style="color: #BB0000; font-weight: bold; text-decoration: underline;">dq_unusable</span>
+<span style="color: #555555;">Flag for states with unusable TAF data quality or
+high concern data quality on one or more adapted
+measures based on DQ Atlas thresholds.</span>
+</code></pre>
+</div>
+</section></section><section id="data" class="level2"><h2 class="anchored" data-anchor-id="data">Data</h2>
+<div class="cell">
+<pre class="r-output"><code>tibble [8,000 × 14] (S3: tbl_df/tbl/data.frame)
+ $ product_group      : chr [1:8000] "1165" "4486" "2662" "1912" ...
+ $ ingredient         : chr [1:8000] "NYSTATIN" "OLMESARTAN MEDOXOMIL" "RIVASTIGMINE TARTRATE" "QUINAPRIL HYDROCHLORIDE" ...
+ $ strength           : chr [1:8000] "500000U" "20MG" "3MG" "5MG" ...
+ $ dosage             : chr [1:8000] "TABLET" "TABLET" "CAPSULE" "TABLET" ...
+ $ route              : chr [1:8000] "ORAL" "ORAL" "ORAL" "ORAL" ...
+ $ mdr_unit_type      : Factor w/ 6 levels "CAP","GM","ML",..: 5 5 1 5 5 5 1 1 1 5 ...
+ $ aca_ful            : num [1:8000] 0.4416 0.6728 0.3296 0.1307 0.0935 ...
+ $ package_size       : int [1:8000] 100 30 500 90 90 100 90 90 100 100 ...
+ $ ndc                : chr [1:8000] "23155-0051-01" "68462-0437-30" "33342-0090-15" "68180-0556-09" ...
+ $ arated             : chr [1:8000] "Yes" "Yes" "Yes" "Yes" ...
+ $ year               : int [1:8000] 2019 2019 2019 2019 2019 2019 2019 2019 2019 2019 ...
+ $ month              : int [1:8000] 2 2 2 2 2 2 2 2 2 2 ...
+ $ amp_wt_avg         : num [1:8000] 0.159 0.3845 0.0385 0.047 0.0535 ...
+ $ gt_175pc_amp_wt_avg: int [1:8000] 1 0 1 1 0 0 0 0 1 1 ...
+</code></pre>
+</div>
+<section id="overview" class="level3"><h3 class="anchored" data-anchor-id="overview">Overview</h3>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">resp</span> <span class="op">|&gt;</span> <span class="fu">data_codebook</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="r-output"><code><span style="color: #0000BB;">resp (8000 rows and 14 variables, 14 shown)</span>
+
+ID | Name                | Type        | Missings
+---+---------------------+-------------+---------
+1  | product_group       | character   | 0 (0.0%)
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+---+---------------------+-------------+---------
+2  | ingredient          | character   | 0 (0.0%)
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+---+---------------------+-------------+---------
+3  | strength            | character   | 0 (0.0%)
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+---+---------------------+-------------+---------
+4  | dosage              | character   | 0 (0.0%)
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+---+---------------------+-------------+---------
+5  | route               | character   | 0 (0.0%)
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+---+---------------------+-------------+---------
+6  | mdr_unit_type       | categorical | 0 (0.0%)
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+---+---------------------+-------------+---------
+7  | aca_ful             | numeric     | 0 (0.0%)
+---+---------------------+-------------+---------
+8  | package_size        | integer     | 0 (0.0%)
+---+---------------------+-------------+---------
+9  | ndc                 | character   | 0 (0.0%)
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+   |                     |             |         
+---+---------------------+-------------+---------
+10 | arated              | character   | 0 (0.0%)
+   |                     |             |         
+---+---------------------+-------------+---------
+11 | year                | integer     | 0 (0.0%)
+---+---------------------+-------------+---------
+12 | month               | integer     | 0 (0.0%)
+   |                     |             |         
+---+---------------------+-------------+---------
+13 | amp_wt_avg          | numeric     | 0 (0.0%)
+---+---------------------+-------------+---------
+14 | gt_175pc_amp_wt_avg | integer     | 0 (0.0%)
+   |                     |             |         
+-------------------------------------------------
+
+ID |                                 Values |             N
+---+----------------------------------------+--------------
+1  |                                  10036 |    2 (  0.0%)
+   |                                  10126 |    4 (  0.0%)
+   |                                   1019 |    4 (  0.0%)
+   |                                    102 |    5 (  0.1%)
+   |                                   1022 |    7 (  0.1%)
+   |                                   1026 |    3 (  0.0%)
+   |                                   1028 |   10 (  0.1%)
+   |                                   1029 |   11 (  0.1%)
+   |                                   1032 |    6 (  0.1%)
+   |                                   1042 |    4 (  0.0%)
+   |                                  (...) |              
+---+----------------------------------------+--------------
+2  |                       ABACAVIR SULFATE |    9 (  0.1%)
+   |            ABACAVIR SULFATE/LAMIVUDINE |    3 (  0.0%)
+   |                    ACAMPROSATE CALCIUM |    3 (  0.0%)
+   |                               ACARBOSE |   15 (  0.2%)
+   |              ACETAMINOPHEN; BUTALBITAL |    2 (  0.0%)
+   |       ACETAMINOPHEN; CODEINE PHOSPHATE |   15 (  0.2%)
+   | ACETAMINOPHEN; OXYCODONE HYDROCHLORIDE |   27 (  0.3%)
+   |  ACETAMINOPHEN; TRAMADOL HYDROCHLORIDE |   11 (  0.1%)
+   |                          ACETAZOLAMIDE |   10 (  0.1%)
+   |                              ACITRETIN |    7 (  0.1%)
+   |                                  (...) |              
+---+----------------------------------------+--------------
+3  |                             .025MG/24H |    5 (  0.1%)
+   |                             .0375MG/24 |    3 (  0.0%)
+   |                             .075MG/24H |    1 (  0.0%)
+   |                                 0.005% |    3 (  0.0%)
+   |                                0.005MG |    3 (  0.0%)
+   |                                 0.01 % |    6 (  0.1%)
+   |                                  0.01% |    1 (  0.0%)
+   |                             0.02-3(24) |   11 (  0.1%)
+   |                                0.025MG |    3 (  0.0%)
+   |                          0.025MG;2.5MG |    7 (  0.1%)
+   |                                  (...) |              
+---+----------------------------------------+--------------
+4  |                             ADH. PATCH |    2 (  0.0%)
+   |                             CAP ER 24H |   55 (  0.7%)
+   |                             CAP SA 24H |    8 (  0.1%)
+   |                             CAP SPR 24 |   15 (  0.2%)
+   |                                CAPSULE |  892 ( 11.2%)
+   |                             CAPSULE DR |   67 (  0.8%)
+   |                             CAPSULE ER |   24 (  0.3%)
+   |           CAPSULE, DELAYED REL PELLETS |   76 (  0.9%)
+   |              CAPSULE, EXTENDED RELEASE |  119 (  1.5%)
+   |                            CONCENTRATE |    9 (  0.1%)
+   |                                  (...) |              
+---+----------------------------------------+--------------
+5  |                                 DENTAL |    1 (  0.0%)
+   |                                  NASAL |    5 (  0.1%)
+   |                             OPHTHALMIC |   38 (  0.5%)
+   |                                   ORAL | 7728 ( 96.6%)
+   |                                ORAL-28 |   41 (  0.5%)
+   |                           ORAL, RECTAL |    4 (  0.0%)
+   |                                   OTIC |    3 (  0.0%)
+   |                                 RECTAL |    7 (  0.1%)
+   |                                  SUB-Q |    4 (  0.0%)
+   |                             SUBLINGUAL |   19 (  0.2%)
+   |                                  (...) |              
+---+----------------------------------------+--------------
+6  |                                    CAP | 1300 ( 16.2%)
+   |                                     GM |   84 (  1.0%)
+   |                                     ML |  174 (  2.2%)
+   |                                    SUP |    5 (  0.1%)
+   |                                    TAB | 6374 ( 79.7%)
+   |                                    TDP |   63 (  0.8%)
+---+----------------------------------------+--------------
+7  |                            [0, 127.26] |          8000
+---+----------------------------------------+--------------
+8  |                             [1, 28000] |          8000
+---+----------------------------------------+--------------
+9  |                          00002-3231-30 |    1 (  0.0%)
+   |                          00002-3232-30 |    1 (  0.0%)
+   |                          00002-3234-30 |    1 (  0.0%)
+   |                          00002-3251-30 |    1 (  0.0%)
+   |                          00002-3270-04 |    1 (  0.0%)
+   |                          00002-4184-02 |    1 (  0.0%)
+   |                          00002-4184-07 |    1 (  0.0%)
+   |                          00002-4184-30 |    1 (  0.0%)
+   |                          00002-4456-01 |    1 (  0.0%)
+   |                          00002-4456-85 |    1 (  0.0%)
+   |                                  (...) |              
+---+----------------------------------------+--------------
+10 |                                     No |   71 (  0.9%)
+   |                                    Yes | 7929 ( 99.1%)
+---+----------------------------------------+--------------
+11 |                                   2019 | 8000 (100.0%)
+---+----------------------------------------+--------------
+12 |                                      2 | 7997 (100.0%)
+   |                                     11 |    3 (  0.0%)
+---+----------------------------------------+--------------
+13 |                             [0, 72.72] |          8000
+---+----------------------------------------+--------------
+14 |                                      0 | 4983 ( 62.3%)
+   |                                      1 | 3017 ( 37.7%)
+-----------------------------------------------------------
+</code></pre>
+</div>
 
 
 <!-- -->
 
-</section>
-
-</main> <!-- /main -->
-<script id="quarto-html-after-body" type="application/javascript">
+</section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -922,9 +1169,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>
-<nav class="page-navigation">
-  <div class="nav-page nav-page-previous">
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
       <a href="./api_mcd.html" class="pagination-link" aria-label="Medicaid">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Medicaid</span>
       </a>          
@@ -935,15 +1180,81 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "mcd_place"</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span><span class="co"> html</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu"># Medicaid Dataset</span></span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">   chunk_output_type: console</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup-common-01</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"includes/_common.R"</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="fu"># ACA Federal Upper Limits {#sec-acaful}</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>__Affordable Care Act Federal Upper Limits (FUL)__ based on the weighted average of the most recently reported monthly average manufacturer price (AMP) for pharmaceutically and therapeutically equivalent multiple source drug products that are available for purchase by retail community pharmacies on a nationwide basis.</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="fu">## Metadata</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: s7_object</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>end <span class="ot">&lt;-</span> <span class="fu">caid_endpoint</span>(<span class="st">"aca_ful"</span>)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="fu">print_meta</span>(end)</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="fu">### Dictionary</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: dict</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: true</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>dict <span class="ot">&lt;-</span> end<span class="sc">@</span>metadata<span class="sc">$</span>dictionary <span class="sc">|&gt;</span> </span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">request</span>() <span class="sc">|&gt;</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>  providertwo<span class="sc">:::</span><span class="fu">perform_simple</span>() <span class="sc">|&gt;</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    _[[<span class="st">"data"</span>]] <span class="sc">|&gt;</span> </span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"fields"</span>]]</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>dict <span class="ot">&lt;-</span> <span class="fu">new_tbl</span>(</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>  <span class="at">field =</span> dict<span class="sc">$</span>name, </span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>  <span class="at">description =</span> dict<span class="sc">$</span>description)</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a><span class="fu">print_dict_tbl</span>(dict)</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data</span></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: http_request</span></span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>resp <span class="ot">&lt;-</span> <span class="fu">quick</span>(<span class="st">"aca_ful"</span>, <span class="at">offset =</span> <span class="dv">0</span>, <span class="at">limit =</span> <span class="dv">8000</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(</span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">mdr_unit_type =</span> <span class="fu">factor_</span>(mdr_unit_type),</span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>  <span class="at">amp_wt_avg =</span> <span class="fu">as.double</span>(weighted_average_of_amps),</span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>  <span class="at">aca_ful =</span> <span class="fu">as.double</span>(aca_ful),</span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>  <span class="at">package_size =</span> <span class="fu">as.integer</span>(package_size),</span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>  <span class="at">year =</span> <span class="fu">as.integer</span>(year),</span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a>  <span class="at">month =</span> <span class="fu">as.integer</span>(month),</span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>  <span class="at">gt_175pc_amp_wt_avg =</span> <span class="fu">charbin</span>(multiplier_greater_than_175_percent_of_weighted_avg_of_amps),</span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>  <span class="at">multiplier_greater_than_175_percent_of_weighted_avg_of_amps =</span> <span class="cn">NULL</span>,</span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a>  <span class="at">weighted_average_of_amps =</span> <span class="cn">NULL</span>)</span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a>resp <span class="sc">|&gt;</span> <span class="fu">str</span>()</span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a><span class="fu">### Overview</span></span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: overview</span></span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a>resp <span class="sc">|&gt;</span> <span class="fu">data_codebook</span>()</span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
-
 
 
 
