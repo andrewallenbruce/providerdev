@@ -56,25 +56,23 @@ rhc_owner_names <- c(
   "STATE - OWNER"                       = "own_state",
   "ZIP CODE - OWNER"                    = "own_zip",
   "PERCENTAGE OWNERSHIP"                = "own_pct_owned",
-  "CREATED FOR ACQUISITION - OWNER"     = "own_is_acquis",
-  "CORPORATION - OWNER"                 = "own_is_corp",
-  "LLC - OWNER"                         = "own_is_llc",
-  "MEDICAL PROVIDER SUPPLIER - OWNER"   = "own_is_medsupp",
-  "MANAGEMENT SERVICES COMPANY - OWNER" = "own_is_mgmtco",
-  "MEDICAL STAFFING COMPANY - OWNER"    = "own_is_staffco",
-  "HOLDING COMPANY - OWNER"             = "own_is_holdco",
-  "INVESTMENT FIRM - OWNER"             = "own_is_invfirm",
-  "FINANCIAL INSTITUTION - OWNER"       = "own_is_fininst",
-  "CONSULTING FIRM - OWNER"             = "own_is_consult",
-  "FOR PROFIT - OWNER"                  = "own_is_forprofit",
-  "NON PROFIT - OWNER"                  = "own_is_nonprofit",
+  "CREATED FOR ACQUISITION - OWNER"     = "is_acq",
+  "CORPORATION - OWNER"                 = "is_corp",
+  "LLC - OWNER"                         = "is_llc",
+  "MEDICAL PROVIDER SUPPLIER - OWNER"   = "is_supp",
+  "MANAGEMENT SERVICES COMPANY - OWNER" = "is_mgmt",
+  "MEDICAL STAFFING COMPANY - OWNER"    = "is_staff",
+  "HOLDING COMPANY - OWNER"             = "is_hold",
+  "INVESTMENT FIRM - OWNER"             = "is_firm",
+  "FINANCIAL INSTITUTION - OWNER"       = "is_bank",
+  "CONSULTING FIRM - OWNER"             = "is_consult",
+  "FOR PROFIT - OWNER"                  = "is_forprof",
+  "NON PROFIT - OWNER"                  = "is_nonprof",
   "OTHER TYPE - OWNER"                  = "own_other_type",
   "OTHER TYPE TEXT - OWNER"             = "own_other_text"
 )
 
-# Owner Role Code Reference Table
-
-oqner_role <- list(
+owner_role <- list(
   "01" = "5% OR MORE OWNERSHIP INTEREST",
   "03" = "PARTNER",
   "25" = "CONTRACTED MANAGING EMPLOYEE",
@@ -101,7 +99,7 @@ The __Rural Health Clinic (RHC) Enrollments__ dataset provides enrollment inform
 ### Metadata
 
 ```{r}
-#| label: s7_object
+#| label: s7_rhc_enroll
 #| echo: false
 end  <- care_endpoint("rhc_enrollments")
 print_meta(end, "care")
@@ -110,21 +108,52 @@ print_meta(end, "care")
 ### Resources
 
 ```{r}
-#| label: resources
+#| label: resources_rhc_enroll
 #| echo: false
 print_resources(end)
 ```
 
+### Dictionary
+
+```{r}
+#| label: dict_rhc_enroll
+#| echo: false
+list(
+  "ENROLLMENT ID"                = "RHC's enrollment ID.",
+  "ENROLLMENT STATE"             = "RHC's enrollment state.",
+  "PROVIDER TYPE CODE"           = "RHC's provider type code.",
+  "PROVIDER TYPE TEXT"           = "RHC's provider type description.",
+  "NPI"                          = "RHC's NPI.",
+  "MULTIPLE NPI FLAG"            = "Indicates if RHC has multiple NPIs.",
+  "CCN"                          = "RHC's CMS Certification Number (CCN), formerly called an OSCAR Number.",
+  "ASSOCIATE ID"                 = "RHC's PECOS Associate Control (PAC) ID.",
+  "ORGANIZATION NAME"            = "RHC's legal business name.",
+  "DOING BUSINESS AS NAME"       = "RHC's doing-business-as name.",
+  "INCORPORATION DATE"           = "Date RHC was incorporated.",
+  "INCORPORATION STATE"          = "State RHC was incorporated.",
+  "ORGANIZATION TYPE STRUCTURE"  = "RHC's organization type structure.",
+  "ORGANIZATION OTHER TYPE TEXT" = "Description of the organization structure if OTHER.",
+  "PROPRIETARY_NONPROFIT"        = "P if registered as proprietor with the IRS; N if registered as non-profit.",
+  "ADDRESS LINE 1"               = "Address line 1 of the RHC's practice location address.",
+  "ADDRESS LINE 2"               = "Address line 1 of the RHC's practice location address.",
+  "CITY"                         = "City of the RHC's practice location address.",
+  "STATE"                        = "State of the RHC's practice location address.",
+  "ZIP CODE"                     = "Zip code of the RHC's practice location address."
+) |> 
+  print_ls(postfix = " ==")
+```
+
+
 ### Data
 
 ```{r}
-#| label: http_request
+#| label: http_request_rhc_enroll
 #| message: true
 #| echo: false
 resp <- list(
   quick("rhc_enrollments", offset = 0, limit = 5000),
   quick("rhc_enrollments", offset = 5000, limit = 5000)) |> 
-  purrr::list_rbind() |>
+  list_rbind() |>
   rnm(rhc_names) |>
   mtt(inc_date = providertwo:::as_date(inc_date),
       multi_npi = charbin(multi_npi),
@@ -134,14 +163,14 @@ resp <- list(
 resp
 ```
 
-## RHC Owners
+## RHC All Owners
 
 The __Rural Health Clinic (RHC) All Owners__ dataset provides ownership information on all RHCs currently enrolled in Medicare. This data includes ownership information such as ownership name, ownership type, ownership address and ownership effective date.
 
 ### Metadata
 
 ```{r}
-#| label: s7_object2
+#| label: s7_rhc_owners
 #| echo: false
 owners  <- care_endpoint("rhc_owners")
 print_meta(owners, "care")
@@ -150,15 +179,59 @@ print_meta(owners, "care")
 ### Resources
 
 ```{r}
-#| label: resources2
+#| label: resources_rhc_owners
 #| echo: false
 print_resources(owners)
+```
+
+### Dictionary
+
+```{r}
+#| label: dict_rhc_owners
+#| echo: false
+list(
+  "ENROLLMENT ID"                       = "RHC's enrollment ID.",
+  "ASSOCIATE ID"                        = "RHC's PECOS Associate Control (PAC) ID.",
+  "ORGANIZATION NAME"                   = "RHC's legal business name.",
+  "ASSOCIATE ID - OWNER"                = "PAC ID of the Owner; an associate with ownership or managing control interest in the RHC enrollment.",
+  "TYPE - OWNER"                        = "Type of owner, I for individual and O for organization.",
+  "ROLE CODE - OWNER"                   = "Owner's role code.",
+  "ROLE TEXT - OWNER"                   = "Description for Owner Role Code.",
+  "ASSOCIATION DATE - OWNER"            = "Date owner became associated with the RHC.",
+  "FIRST NAME - OWNER"                  = "Individual owner's first name.",
+  "MIDDLE NAME - OWNER"                 = "Individual owner's middle name.",
+  "LAST NAME - OWNER"                   = "Individual owner's last name.",
+  "TITLE - OWNER"                       = "Individual owner's title.",
+  "ORGANIZATION NAME - OWNER"           = "Organization owner's legal business name.",
+  "DOING BUSINESS AS NAME - OWNER"      = "Organization owner's doing-business-as name.",
+  "ADDRESS LINE 1 - OWNER"              = "Address line 1 of organization owner's mailing address.",
+  "ADDRESS LINE 2 - OWNER"              = "Address line 2 of organization owner's mailing address.",
+  "CITY - OWNER"                        = "City of organization owner's mailing address.",
+  "STATE - OWNER"                       = "State of organization owner's mailing address.",
+  "ZIP CODE - OWNER"                    = "Zip code of organization owner's mailing address.",
+  "PERCENTAGE OWNERSHIP"                = "Owner's ownership percentage in the RHC enrollment.",
+  "CREATED FOR ACQUISITION - OWNER"     = "Organization owner was solely created to acquire the RHC and/or it's assets.",
+  "CORPORATION – OWNER"                 = "Owner's organization type is corporation.",
+  "LLC – OWNER"                         = "Owner's organization type is limited liability company.",
+  "MEDICAL PROVIDER SUPPLIER – OWNER"   = "Owner's organization type is medical provider/supplier.",
+  "MANAGEMENT SERVICES COMPANY – OWNER" = "Owner's organization type is management services company.",
+  "MEDICAL STAFFING COMPANY – OWNER"    = "Owner's organization type is medical staffing company.",
+  "HOLDING COMPANY – OWNER"             = "Owner's organization type is holding company.",
+  "INVESTMENT FIRM – OWNER"             = "Owner's organization type is investment firm.",
+  "FINANCIAL INSTITUTION – OWNER"       = "Owner's organization type is bank or other financial institution.",
+  "CONSULTING FIRM – OWNER"             = "Owner's organization type is consulting firm.",
+  "FOR PROFIT – OWNER"                  = "Owner's organization type is for profit.",
+  "NON PROFIT – OWNER"                  = "Owner's organization type is non-profit.",
+  "OTHER TYPE – OWNER"                  = "Owner's organization type is not listed on the CMS form.",
+  "OTHER TYPE TEXT – OWNER"             = "Other type of owner's organization that is not listed on the CMS form."
+) |> 
+  print_ls(postfix = " ==")
 ```
 
 ### Data
 
 ```{r}
-#| label: http_request2
+#| label: http_request_rhc_owners
 #| message: true
 #| echo: false
 owners_resp <- list(
@@ -168,7 +241,7 @@ owners_resp <- list(
   rnm(rhc_owner_names) |>
   mtt(own_asoc_date = providertwo:::as_date(own_asoc_date),
       own_pct_owned = as_prop(own_pct_owned),
-      own_is_acquis = charbin(own_is_acquis),
+      is_acq = charbin(is_acq),
       own_other_type = charbin(own_other_type),
       own_address = providertwo:::make_address(
         own_address_line_1, 

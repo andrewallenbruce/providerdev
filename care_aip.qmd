@@ -34,9 +34,9 @@ print_resources(end)
 ### Dictionary
 
 ```{r}
-#| label: data_dict
+#| label: dict
 #| echo: false
-new_tbl(
+dict <- new_tbl(
   field = c(
     "ACO_ID", 
     "ACO_Name", 
@@ -51,17 +51,20 @@ new_tbl(
   ),
   description = c(
     "Unencrypted ACO Identifier. This identifier can be linked to the encrypted ACO identifier used for prior performance years (PY) using the ACO ID Crosswalk available at https://www.cms.gov/Medicare/Medicare-Fee-for-ServicePayment/sharedsavingsprogram/program-data.", 
-    "ACO Doing Business As (DBA) or Legal Business Name (LBN). Listed name is DBA unless DBA is not available, in which case LBN is used.", 
-    "Indicates ACO description of use of advance investment payments.", 
-    "Indicates which one of the three required categories the payment use falls under: increased staffing, health care infrastructure, or the provision of accountable care for underserved beneficiaries.", 
-    "Indicates a selected general spend subcategory under a general spend category that a payment use falls under.", 
-    "The dollar amount of AIP funding the ACO has received from CMS through December 2024.", 
-    "The dollar amount the ACO estimates will be spent on the payment use during the 2024 performance year.", 
-    "The dollar amount the ACO actually spent on the payment use during the 2024 performance year.", 
-    "The dollar amount the ACO estimates will be spent on the payment use during the 2025 performance year.",
-    "The dollar amount the ACO actually spent on the payment use during the 2025 performance year."
+    "ACO Doing Business As (DBA) or Legal Business Name (LBN) if DBA is not available.", 
+    "ACO description of use of advance investment payments.", 
+    "Payment usage category: increased staffing, health care infrastructure, or the provision of accountable care for underserved beneficiaries.", 
+    "Selected general spend subcategory under a general spend category payment use falls under.", 
+    "AIP funding ACO received from CMS through December 2024.", 
+    "Amount ACO estimates will be spent on payment use during 2024 performance year.", 
+    "Amount ACO actually spent on payment use during 2024 performance year.", 
+    "Amount ACO estimates will be spent on payment use during 2025 performance year.",
+    "Amount ACO actually spent on payment use during 2025 performance year."
   )
 )
+
+dict <- set_names(str_wrap(dict$description, width = 60), dict$field)
+glue_col("{red {underline {names(dict)}}}\n{silver {unname(dict)}}\n\n")
 ```
 
 ## Data
@@ -71,9 +74,9 @@ new_tbl(
 #| message: true
 #| echo: false
 resp <- quick("aip_plan", limit = 5000) |> 
-  purrr::modify_if(is.character, function(x) providertwo:::na_if(x, y = "")) |>
-  purrr::modify_if(is.character, function(x) providertwo:::na_if(x, y = " ")) |>
-  purrr::modify_if(is.character, function(x) providertwo:::na_if(x, y = "N/A")) |>
+  modify_if(is.character, \(x) providertwo:::na_if(x, y = "")) |>
+  modify_if(is.character, \(x) providertwo:::na_if(x, y = " ")) |>
+  modify_if(is.character, \(x) providertwo:::na_if(x, y = "N/A")) |>
   mtt(
     Payment_Use               = factor_(Payment_Use),
     General_Spend_Category    = factor_(General_Spend_Category),
@@ -85,9 +88,27 @@ resp <- quick("aip_plan", limit = 5000) |>
     Actual_Spending_2025      = NULL,
     Total_AIP_Funding_Received_through_December_2024 = NULL)
 
-res <- list(
+res <- list_tidy(
   funding_2024 = sbt(resp, !is.na(Total_Funding_2024)) |> remove_empty(),
-  aip = sbt(resp, is.na(Total_Funding_2024)) |> remove_empty())
+  aip = sbt(resp, is.na(Total_Funding_2024)) |> remove_empty(),
+  aip_2024 = aip |> 
+    slt(ACO_ID, 
+        ACO_Name, 
+        Payment_Use, 
+        General_Spend_Category, 
+        General_Spend_Subcategory,
+        Projected_Spending_2024, 
+        Actual_Spending_2024) |> 
+    sbt(Actual_Spending_2024 > 0),
+  aip_2025 = aip |> 
+    slt(ACO_ID, 
+        ACO_Name, 
+        Payment_Use, 
+        General_Spend_Category, 
+        General_Spend_Subcategory,
+        Projected_Spending_2025) |> 
+    sbt(Projected_Spending_2025 > 0)
+  )
 
 res
 ```
@@ -98,9 +119,11 @@ res
 #| label: distribution
 #| message: false
 #| warning: false
-#| echo: false
-res <- describe_distribution(resp)
-res
+#| echo: true
+#| compact: false
+describe_distribution(res$aip_2024, by = "General_Spend_Category")
+describe_distribution(res$aip_2025, by = "General_Spend_Category")
+describe_distribution(res$funding_2024)
 ```
 
 ```{r}
@@ -109,6 +132,7 @@ res
 #| warning: false
 #| echo: false
 #| layout-ncol: 2
+res   <- describe_distribution(resp)
 plots <- plot(res, dispersion = TRUE)
 walk(plots, print)
 ```

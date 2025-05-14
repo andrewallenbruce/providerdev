@@ -20,7 +20,6 @@ The __Shared Savings Program County-level Aggregate Expenditure and Risk Score D
 #| label: s7_object
 #| echo: false
 end <- care_endpoint("county_risk_spend")
-# end@metadata$description
 print_meta(end, "care")
 ```
 
@@ -35,17 +34,14 @@ print_resources(end)
 ### Dictionary
 
 ```{r}
-#| label: data_dict
+#| label: dict
 #| echo: false
-
 # browse_link(end, link = "dictionary")
-
 ftnote <- list(
   "." = "Missing (county has no assigned beneficiaries with this enrollment type)",
-  "*" = "Suppressed (county has between 1 and 10 assigned beneficiaries with this enrollment type"
-)
+  "*" = "Suppressed (county has between 1 and 10 assigned beneficiaries with this enrollment type")
 
-new_tbl(
+dict <- new_tbl(
   field = c(
     "YEAR", 
     "STATE_NAME", 
@@ -72,8 +68,8 @@ new_tbl(
     "Calendar year (CY) for which assignable beneficiaries are determined and per capita expenditures, average risk scores, and person years are calculated.",
     "State name",
     "County name",
-    "Social Security Administration (SSA) state code. Should always be two numeric characters.",
-    "SSA county code. Note that this code should always include three numeric characters.",
+    "2-digit SSA state code",
+    "3-digit SSA county code.",
     "Annualized, truncated, weighted mean total expenditures per ESRD assignable beneficiary person year in the county.",
     "Final mean prospective CMS-HCC risk score for assignable beneficiaries in ESRD enrollment type in the county, based on the year's applicable risk adjustment model, renormalized so that the mean national FFS risk score equals 1.0.",
     "Final mean demographic risk score for assignable beneficiaries in ESRD enrollment type in the county, based on the year's applicable risk adjustment model, renormalized so that the mean national FFS risk score equals 1.0.",
@@ -92,6 +88,10 @@ new_tbl(
     "Number of assignable beneficiaries with AGED/NON-DUAL enrollment type in the county, adjusted for the total number of months that each beneficiary was classified as AGED/DUAL and was enrolled in Part A and Part B and was not enrolled in a Medicare Group Health Plan."
   )
 )
+
+dict <- set_names(str_wrap(dict$description, width = 60), dict$field)
+
+glue_col("{red {underline {names(dict)}}}\n{silver {unname(dict)}}\n\n")
 ```
 
 ## Data
@@ -102,8 +102,6 @@ new_tbl(
 #| warning: false
 #| echo: false
 resp <- quick("county_risk_spend", limit = 5000)
-
-# names(resp)[6:21] |> cat(sep= " = as.numeric(),\n")
 
 resp <- resp |>
   mtt(

@@ -78,7 +78,8 @@ resp <- resp|>
       ADM_DISC             = as.double(ADM_DISC),
       RATE                 = as.double(RATE),
       INTERVAL_LOWER_LIMIT = as.double(INTERVAL_LOWER_LIMIT),
-      INTERVAL_HIGHER_LIMIT= as.double(INTERVAL_HIGHER_LIMIT))
+      INTERVAL_HIGHER_LIMIT= as.double(INTERVAL_HIGHER_LIMIT)) |> 
+  sbt(!is.na(RATE))
 resp
 ```
 
@@ -89,7 +90,7 @@ resp
 #| message: false
 #| warning: false
 #| echo: false
-res <- describe_distribution(resp)
+res <- describe_distribution(resp, centrality = c("mean", "median"))
 res
 ```
 
