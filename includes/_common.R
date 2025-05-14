@@ -129,24 +129,27 @@ print_ls <- function(ls, prefix = "", postfix = "") {
   invisible(ls)
 }
 
-dims   <- function(x) if (x@dimensions@pages == 1) "rows" else c("rows", "pages")
-inj_ls <- function(e1, e2) list2(!!!e1, !!!e2)
 
-print_meta <- function(x, api, ...) {
+
+print_meta <- function(x, ...) {
+
+  dims   <- function(x) if (x@dimensions@pages == 1) "rows" else c("rows", "pages")
+  inj_list <- function(e1, e2) list2(!!!e1, !!!e2)
 
   meta <- switch(
-    match.arg(api, c("care", "caid", "open", "pro", "hgov")),
-    care = c("modified", "periodicity", "temporal", "dictionary", "site", "references", "resources", "download"),
-    open = c("modified", "download"),
-    pro  = c("issued", "modified", "released", "dictionary", "site", "download"),
-    hgov = c("issued", "modified", "periodicity", "download")
+    class(x)[1],
+    care_endpoint = c("modified", "periodicity", "temporal", "dictionary", "site", "references", "resources", "download"),
+    open_endpoint = c("modified", "download"),
+    pro_endpoint  = c("issued", "modified", "released", "dictionary", "site", "download"),
+    hgov_endpoint = c("issued", "modified", "periodicity", "download")
   )
 
-  inj_ls(
-    c(props(x@dimensions)[dims(x)],
-      fields = fnobs(
-        prop(x@dimensions, "fields") |>
-          unlist(use.names = FALSE))),
+  inj_list(
+    c(
+      props(x@dimensions)[dims(x)],
+      fields = fnobs(prop(x@dimensions, "fields") |>
+                       unlist(use.names = FALSE))
+      ),
     end@metadata[meta]
     ) |>
     print_ls(...)
@@ -154,18 +157,21 @@ print_meta <- function(x, api, ...) {
 
 print_resources <- function(x) {
   list_resources(x) |>
-    glue_data("[{format(toupper(ext), justify = 'right')}] ",
-              "{year} {file} ",
-              "({format(size, justify = 'left')})",
-              .na = cli::symbol$ellipsis)
+    glue_data_col(
+      "[{green {format(toupper(ext), justify = 'right')}}] ",
+      "{underline {red {format(str_squish(size), justify = 'left')}}} ",
+      "{year} {bold {blue {file}}}\n ",
+      "<{underline {silver {download}}}>",
+      .na = cli::symbol$menu
+    )
 }
 
 print_dict_tbl <- function(x) {
   dict <- set_names(wrap(dict$description, width = 50), dict$field)
-  glue_col("{red {underline {names(dict)}}}\n{silver {unname(dict)}}\n\n")
+  glue_col("{bold {red {underline {names(dict)}}}}\n{silver {unname(dict)}}\n\n")
 }
 
 print_dict_list <- function(x) {
   dict <- set_names(wrap(unname(x), width = 50), names(x))
-  glue_col("{red {underline {names(dict)}}}\n{silver {unname(dict)}}\n\n")
+  glue_col("{bold {red {underline {names(dict)}}}}\n{silver {unname(dict)}}\n\n")
 }

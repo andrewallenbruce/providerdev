@@ -8,6 +8,7 @@ editor_options:
 #| include: false
 #| warning: false
 source("includes/_common.R")
+library(usmap)
 ```
 
 # CPC Initiative {#sec-cpc}
@@ -20,7 +21,7 @@ The __Comprehensive Primary Care (CPC) Initiative - Participating Primary Care P
 #| label: s7_object
 #| echo: false
 end <- care_endpoint("cpc_primary")
-print_meta(end, "care")
+print_meta(end)
 ```
 
 ### Resources
@@ -75,10 +76,7 @@ res <- quick("cpc_primary", limit = 5000) |>
     address  = "Street Address"
   ) |>
   mtt(
-    location = unlist(
-      stri_extract_all_regex(location, "(?<=\\().*(?=\\))"),
-      use.names = FALSE
-    ),
+    location = stri_extract(location, regex = "(?<=\\().*(?=\\))"),
     lat = stri_extract(location, regex = ".*(?=\\,)") |> as.double(),
     lon = stri_extract(location, regex = "(?<=\\,\\s).*") |> as.double(),
     location = NULL
@@ -86,49 +84,136 @@ res <- quick("cpc_primary", limit = 5000) |>
   sf::st_as_sf(
       coords = c("lon", "lat"),
       crs = sf::st_crs(4326),
-      na.fail = FALSE)
+      na.fail = FALSE) |> 
+  usmap::usmap_transform() |> 
+  rsplit(~ state, keep.by = TRUE)
 
-res_ny <- res |> 
-  dplyr::filter(state == "NY")
+res
 ```
-
 
 ```{r}
 #| label: map
 #| message: false
 #| warning: false
-library(usmap)
-library(ggplot2)
-
-res_map <- usmap_transform(res_ny)
+plot_usmap(
+  "counties",
+  include   = c("NY"),
+  color     = "white",
+  fill      = "grey80",
+  linewidth = 0.25
+) +
+  geom_sf(
+    data  = res$NY,
+    fill  = "navy",
+    color = "white",
+    shape = 21,
+    size  = 3
+  ) +
+  theme(
+    panel.background = element_rect(
+      color = "white", 
+      fill = "lightyellow"
+      )
+    )
 
 plot_usmap(
   "counties",
-  include            = c("NY"),
-  color              = "white", 
-  fill               = "grey80", 
-  linewidth          = 0.25) +
-  geom_sf(data       = res_map, 
-          color      = "orange"
-          # shape      = 21,
-          # size       = 3
-          ) +
-  ggrepel::geom_label_repel(
-    data             = res_map,
-    aes(label        = practice, 
-        geometry     = geometry),
-    size             = 3, 
-    alpha            = 0.8,
-    label.size       = 0,
-    segment.color    = "red", 
-    segment.size     = 1,
-    point.padding    = 0.5,
-    stat             = "sf_coordinates", 
-    seed             = 1002,
-    force            = 5,
-    max.overlaps     = 20) +
+  include   = c("NJ"),
+  color     = "white",
+  fill      = "grey80",
+  linewidth = 0.25
+) +
+  geom_sf(
+    data  = res$NJ,
+    fill  = "navy",
+    color = "white",
+    shape = 21,
+    size  = 3
+  ) +
   theme(
     panel.background = element_rect(
-      color          = "white", 
-      fill           = "lightyellow"))
+      color = "white", 
+      fill = "lightyellow"
+      )
+    )
+plot_usmap(
+  "counties",
+  include   = c("AR"),
+  color     = "white",
+  fill      = "grey80",
+  linewidth = 0.25
+) +
+  geom_sf(
+    data  = res$AR,
+    fill  = "navy",
+    color = "white",
+    shape = 21,
+    size  = 3
+  ) +
+  theme(
+    panel.background = element_rect(
+      color = "white", 
+      fill = "lightyellow"
+      )
+    )
+plot_usmap(
+  "counties",
+  include   = c("CO"),
+  color     = "white",
+  fill      = "grey80",
+  linewidth = 0.25
+) +
+  geom_sf(
+    data  = res$CO,
+    fill  = "navy",
+    color = "white",
+    shape = 21,
+    size  = 3
+  ) +
+  theme(
+    panel.background = element_rect(
+      color = "white", 
+      fill = "lightyellow"
+      )
+    )
+plot_usmap(
+  "counties",
+  include   = c("KY"),
+  color     = "white",
+  fill      = "grey80",
+  linewidth = 0.25
+) +
+  geom_sf(
+    data  = res$KY,
+    fill  = "navy",
+    color = "white",
+    shape = 21,
+    size  = 3
+  ) +
+  theme(
+    panel.background = element_rect(
+      color = "white", 
+      fill = "lightyellow"
+      )
+    )
+plot_usmap(
+  "counties",
+  include   = c("OH"),
+  color     = "white",
+  fill      = "grey80",
+  linewidth = 0.25
+) +
+  geom_sf(
+    data  = res$OH,
+    fill  = "navy",
+    color = "white",
+    shape = 21,
+    size  = 3
+  ) +
+  theme(
+    panel.background = element_rect(
+      color = "white", 
+      fill = "lightyellow"
+      )
+    )
 ```
