@@ -27,7 +27,6 @@ The __Publicly Reported Deficit Reduction Act (DRA) Hospital-Acquired Condition 
 #| label: s7_object
 #| echo: false
 end <- care_endpoint("hac_measures")
-# end@metadata$description
 print_meta(end, "care")
 ```
 
@@ -42,10 +41,10 @@ print_resources(end)
 ### Dictionary
 
 ```{r}
-#| label: data_dict
+#| label: dict
 #| echo: false
 # browse_link(end, link = "dictionary")
-new_tbl(
+dict <- new_tbl(
   field = c(
     "Provider_ID", 
     "Measure", 
@@ -55,14 +54,15 @@ new_tbl(
     "End_Quarter"
     ),
   description = c(
-    "Provider's CCN ID (6-digit format).",
-    "DRA HAC measure name. One of: Foreign Object Retained After Surgery, Air Embolism, Blood Incompatibility, or Falls and Trauma (includes fractures, dislocations, intracranial injuries, crushing injuries, burns, other injuries).",
-    "Provider's DRA HAC measure rate result, for all four DRA HAC measures. All four DRA HAC measures' rates are reported as observed rates per 1,000 discharges.",
-    "Provider's DRA HAC measure rate result's footnote. One of: 23 (Data based on claims submitted to CMS by facility, which has since reported discrepancies in their claims data.)",
-    "First quarter of the DRA HAC measure's discharge period, for all four DRA HAC measures.",
-    "Last quarter of the DRA HAC measure's discharge period, for all four DRA HAC measures."
+    "Provider's CCN.",
+    "DRA HAC measure name: Foreign Object Retained After Surgery, Air Embolism, Blood Incompatibility, or Falls and Trauma (incl. fractures, dislocations, intracranial injuries, crushing injuries, burns, other injuries).",
+    "DRA HAC measure rate result, reported as observed rates per 1,000 discharges.",
+    "Rate footnote: Data based on facility claims submitted to CMS with reported discrepancies.",
+    "First Quarter of the DRA HAC measure's discharge period.",
+    "Last quarter of the DRA HAC measure's discharge period."
   )
 )
+print_dict_tbl(dict)
 ```
 
 ## Data

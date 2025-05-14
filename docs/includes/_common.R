@@ -74,6 +74,39 @@ purse <- \(
   )
 }
 
+wrap <- function(string,
+                 width = 80,
+                 indent = 0,
+                 exdent = 0,
+                 whitespace_only = TRUE) {
+
+  strc <- function(..., sep = "", collapse = NULL) {
+    # rlang::check_string(sep)
+    # rlang::check_string(collapse, allow_null = TRUE)
+    dots <- list(...)
+    dots <- dots[!purrr::map_lgl(dots, is.null)]
+    vctrs::vec_size_common(!!!dots)
+    rlang::inject(stringi::stri_c(!!!dots, sep = sep, collapse = collapse))
+  }
+
+  # rlang::check_number_decimal(width)
+  if (width <= 0)
+    width <- 1
+  # rlang::check_number_whole(indent)
+  # rlang::check_number_whole(exdent)
+  # rlang::check_bool(whitespace_only)
+  out <- stringi::stri_wrap(
+    string,
+    width = width,
+    indent = indent,
+    exdent = exdent,
+    whitespace_only = whitespace_only,
+    simplify = FALSE
+  )
+  vapply(out, strc, collapse = "\n", character(1))
+}
+
+
 print_ls <- function(ls, prefix = "", postfix = "") {
 
   if (length(ls) == 0) cat("<empty>\n")
@@ -116,4 +149,14 @@ print_resources <- function(x) {
               "{year} {file} ",
               "({format(size, justify = 'left')})",
               .na = cli::symbol$ellipsis)
+}
+
+print_dict_tbl <- function(x) {
+  dict <- set_names(wrap(dict$description, width = 50), dict$field)
+  glue_col("{red {underline {names(dict)}}}\n{silver {unname(dict)}}\n\n")
+}
+
+print_dict_list <- function(x) {
+  dict <- set_names(wrap(unname(dict_rhc_owners), width = 50), names(dict_rhc_owners))
+  glue_col("{red {underline {names(dict)}}}\n{silver {unname(dict)}}\n\n")
 }
