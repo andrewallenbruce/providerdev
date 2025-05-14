@@ -12,7 +12,7 @@ source("includes/_common.R")
 
 # Facility Affiliations {#sec-affiliations}
 
-[The PSI-11 measure data are solely reported for providers' information and quality improvement purposes and are not a part of the __Deficit Reduction Act (DRA)__, __Hospital-Acquired Condition (HAC) Payment Provision__ or __HAC Reduction Program__.]{.aside}
+This is the facility affiliations data publicly reported in the __Provider Data Catalog__.
 
 ### Metadata
 
@@ -23,6 +23,27 @@ end  <- pro_endpoint("pdc_affiliations")
 print_meta(end, "pro")
 ```
 
+### Dictionary
+
+```{r}
+#| label: s7_dictionary
+#| echo: false
+#| message: false
+dict <- list(
+  "npi"                                        = "Unique clinician ID assigned by NPPES",
+  "ind_pac_id"                                 = "Unique individual clinician ID assigned by PECOS",
+  "provider_last_name"                         = "Individual clinician last name",
+  "provider_first_name"                        = "Individual clinician first name",
+  "provider_middle_name"                       = "Individual clinician middle name",
+  "suff"                                       = "Individual clinician suffix",
+  "facility_type"                              = "Facilities can fall into the following type categories: Hospitals, Long-term Care Hospital, Nursing Home, Inpatient Rehabilitation Facility, Home Health Agency, Hospice, Dialysis Facility",
+  "facility_affiliations_certification_number" = "Medicare CCN of facility type or unit within hospital where an individual clinician provides service",
+  "facility_type_certification_number"         = "Medicare CCN of the primary hospital where individual clinician provides service, should the clinician provide services in a unit within the hospital"
+)
+print_dict_list(dict)
+```
+
+
 ## Data
 
 ```{r}
@@ -30,6 +51,6 @@ print_meta(end, "pro")
 #| message: true
 #| echo: false
 resp <- quick("pdc_affiliations", limit = 2000)
-resp
+resp |> descr()
 ```
 

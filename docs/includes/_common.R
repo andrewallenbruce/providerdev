@@ -157,6 +157,6 @@ print_dict_tbl <- function(x) {
 }
 
 print_dict_list <- function(x) {
-  dict <- set_names(wrap(unname(dict_rhc_owners), width = 50), names(dict_rhc_owners))
+  dict <- set_names(wrap(unname(x), width = 50), names(x))
   glue_col("{red {underline {names(dict)}}}\n{silver {unname(dict)}}\n\n")
 }

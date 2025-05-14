@@ -143,14 +143,13 @@ dict_rhc_enroll <- list(
 print_dict_list(dict_rhc_enroll)
 ```
 
-
 ### Data
 
 ```{r}
 #| label: http_request_rhc_enroll
 #| message: true
 #| echo: false
-resp <- list(
+enroll_resp <- list(
   quick("rhc_enrollments", offset = 0, limit = 5000),
   quick("rhc_enrollments", offset = 5000, limit = 5000)) |> 
   list_rbind() |>
@@ -160,7 +159,8 @@ resp <- list(
       address = providertwo:::make_address(address_line_1, address_line_2),
       org_type = ifelse(org_type == "OTHER", org_other, org_type)) |>
   slt(-address_line_1, -address_line_2, -org_other)
-resp
+
+enroll_resp |> data_codebook()
 ```
 
 ## RHC All Owners
@@ -237,21 +237,48 @@ print_dict_list(dict_rhc_owners)
 owners_resp <- list(
   quick("rhc_owners", offset = 0, limit = 5000),
   quick("rhc_owners", offset = 5000, limit = 5000)) |> 
-  purrr::list_rbind() |>
+  list_rbind() |>
   rnm(rhc_owner_names) |>
   mtt(own_asoc_date = providertwo:::as_date(own_asoc_date),
       own_pct_owned = as_prop(own_pct_owned),
-      is_acq = charbin(is_acq),
+      own_address = providertwo:::make_address(own_address_line_1, own_address_line_2),
+      own_role = glue("[{own_role_cd}] {own_role_desc}"),
+      own_type = factor_(own_type),
       own_other_type = charbin(own_other_type),
-      own_address = providertwo:::make_address(
-        own_address_line_1, 
-        own_address_line_2),
-      own_role = glue("[{own_role_cd}] {own_role_desc}")) |>
+      is_acq = charbin(is_acq),
+      is_corp = charbin(is_corp),
+      is_llc = charbin(is_llc),
+      is_supp = charbin(is_supp),
+      is_mgmt = charbin(is_mgmt),
+      is_staff = charbin(is_staff),
+      is_hold = charbin(is_hold),
+      is_firm = charbin(is_firm),
+      is_bank = charbin(is_bank),
+      is_consult = charbin(is_consult),
+      is_forprof = charbin(is_forprof),
+      is_nonprof = charbin(is_nonprof)
+      ) |>
   slt(-own_address_line_1, 
       -own_address_line_2,
       -own_role_cd,
       -own_role_desc)
 
-owners_resp
+owners_resp |> data_codebook()
+```
+
+
+## Join
+
+```{r}
+#| label: join_rhc
+#| message: false
+#| echo: false
+join(
+  owners_resp,
+  enroll_resp,
+  on = c("enid", "pac", "org_name"),
+  overid = 2
+) |> 
+  str()
 ```
 
