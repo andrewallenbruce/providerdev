@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Andrew Allen Bruce">
-<meta name="dcterms.date" content="2025-05-12">
+<meta name="dcterms.date" content="2025-05-13">
 <meta name="description" content="This is a personal, informal guide to rewriting an R package. It is a work in progress and will be updated as I learn more about the process.">
 
 <title>Refactoring provider2</title>
@@ -402,7 +402,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#installation" id="toc-installation" class="nav-link active" data-scroll-target="#installation">Installation</a>
   <ul class="collapse">
-  <li><a href="#sections" id="toc-sections" class="nav-link" data-scroll-target="#sections">Sections</a></li>
+  <li><a href="#endpoints" id="toc-endpoints" class="nav-link" data-scroll-target="#endpoints">Endpoints</a></li>
   </ul></li>
   </ul>
 <div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li><li><a href="https://github.com/andrewallenbruce/providertwo"><i class="bi bi-file-code"></i>providertwo</a></li></ul></div></nav>
@@ -435,7 +435,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">May 12, 2025</p>
+      <p class="date">May 13, 2025</p>
     </div>
   </div>
   
@@ -451,15 +451,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1 class="unnumbered">Installation</h1>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("pak")</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>pak<span class="sc">::</span><span class="fu">pak</span>(<span class="st">"andrewallenbruce/providertwo"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<section id="sections" class="level2">
-<h2 class="anchored" data-anchor-id="sections">Sections</h2>
+<section id="endpoints" class="level2">
+<h2 class="anchored" data-anchor-id="endpoints">Endpoints</h2>
 <ul>
-<li><a href="wk_query.html" class="quarto-xref"><span>5&nbsp; Query</span></a></li>
-<li><span class="citation" data-cites="care-ahqr">@care-ahqr</span></li>
-<li><span class="citation" data-cites="care-enrollees">@care-enrollees</span></li>
-<li><span class="citation" data-cites="care-rhc">@care-rhc</span></li>
-<li><span class="citation" data-cites="pro-affiliations">@pro-affiliations</span></li>
-<li><span class="citation" data-cites="open-summary">@open-summary</span></li>
+<li><a href="care_ahqr.html" class="quarto-xref"><span>13&nbsp; AHRQ PSI-11 Rates</span></a></li>
+<li><a href="care_aip.html" class="quarto-xref"><span>14&nbsp; ACO AIP Plan</span></a></li>
+<li><a href="care_countyrisk.html" class="quarto-xref"><span>17&nbsp; County Risk Score</span></a></li>
+<li><a href="care_cpc.html" class="quarto-xref"><span>15&nbsp; CPC Initiative</span></a></li>
+<li><a href="care_drahac.html" class="quarto-xref"><span>18&nbsp; DRA HAC Measures</span></a></li>
+<li><a href="care_esrdgrp.html" class="quarto-xref"><span>19&nbsp; ESRD Group Performance</span></a></li>
+<li><a href="care_joint.html" class="quarto-xref"><span>16&nbsp; Joint Model MSAs</span></a></li>
+<li><a href="care_enrollees.html" class="quarto-xref"><span>20&nbsp; Provider Enrollment</span></a></li>
+<li><a href="care_rhc.html" class="quarto-xref"><span>21&nbsp; Rural Health Clinics</span></a></li>
+<li><a href="pro_affiliations.html" class="quarto-xref"><span>22&nbsp; Facility Affiliations</span></a></li>
+<li><a href="open_summary.html" class="quarto-xref"><span>23&nbsp; Summary</span></a></li>
 </ul>
 
 
@@ -953,14 +958,19 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>pak<span class="sc">::</span><span class="fu">pak</span>(<span class="st">"andrewallenbruce/providertwo"</span>)</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">## Sections</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">## Endpoints</span></span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>@sec-querying</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>@care-ahqr</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>@care-enrollees</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>@care-rhc</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>@pro-affiliations</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>@open-summary</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>@sec-ahqr</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>@sec-aip</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>@sec-crisk</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>@sec-cpc</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>@sec-drahac</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>@sec-esrdgrp</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>@sec-joint</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>@sec-enrollees</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>@sec-rhc</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>@sec-affiliations</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="ss">-  </span>@sec-opensummary</span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 
