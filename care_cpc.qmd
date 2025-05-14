@@ -59,7 +59,8 @@ dict <- new_tbl(
   )
 )
 
-set_names(dict$description, dict$field) |> print_ls()
+set_names(dict$description, dict$field) |> 
+  print_ls(postfix = " ==")
 ```
 
 ## Data
@@ -89,5 +90,47 @@ res <- quick("cpc_primary", limit = 5000) |>
       crs = sf::st_crs(4326),
       na.fail = FALSE)
 
-mapview::mapview(res)
+res_ny <- res |> 
+  dplyr::filter(state == "NY")
+```
+
+
+```{r}
+#| label: map
+#| message: false
+#| warning: false
+library(usmap)
+library(ggplot2)
+
+res_map <- usmap_transform(res_ny)
+
+plot_usmap(
+  "counties",
+  include            = c("NY"),
+  color              = "white", 
+  fill               = "grey80", 
+  linewidth          = 0.25) +
+  geom_sf(data       = res_map, 
+          color      = "orange"
+          # shape      = 21,
+          # size       = 3
+          ) +
+  ggrepel::geom_label_repel(
+    data             = res_map,
+    aes(label        = practice, 
+        geometry     = geometry),
+    size             = 3, 
+    alpha            = 0.8,
+    label.size       = 0,
+    segment.color    = "red", 
+    segment.size     = 1,
+    point.padding    = 0.5,
+    stat             = "sf_coordinates", 
+    seed             = 1002,
+    force            = 5,
+    max.overlaps     = 20) +
+  theme(
+    panel.background = element_rect(
+      color          = "white", 
+      fill           = "lightyellow"))
 ```

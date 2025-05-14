@@ -71,11 +71,32 @@ rhc_owner_names <- c(
   "OTHER TYPE - OWNER"                  = "own_other_type",
   "OTHER TYPE TEXT - OWNER"             = "own_other_text"
 )
+
+# Owner Role Code Reference Table
+
+oqner_role <- list(
+  "01" = "5% OR MORE OWNERSHIP INTEREST",
+  "03" = "PARTNER",
+  "25" = "CONTRACTED MANAGING EMPLOYEE",
+  "34" = "5% OR GREATER DIRECT OWNERSHIP INTEREST",
+  "35" = "5% OR GREATER INDIRECT OWNERSHIP INTEREST",
+  "36" = "5% OR GREATER MORTGAGE INTEREST",
+  "37" = "5% OR GREATER SECURITY INTEREST",
+  "38" = "GENERAL PARTNERSHIP INTEREST",
+  "39" = "LIMITED PARTNERSHIP INTEREST",
+  "40" = "OFFICER",
+  "41" = "DIRECTOR",
+  "42" = "W-2 MANAGING EMPLOYEE",
+  "43" = "OPERATIONAL/MANAGERIAL CONTROL",
+  "44" = "OTHER"
+)
 ```
 
 # Rural Health Clinics {#sec-rhc}
 
 ## RHC Enrollments
+
+The __Rural Health Clinic (RHC) Enrollments__ dataset provides enrollment information on all RHCs currently enrolled in Medicare. This data includes information on the RHCs legal business name, doing business as name, organization type and address.
 
 ### Metadata
 
@@ -115,6 +136,8 @@ resp
 
 ## RHC Owners
 
+The __Rural Health Clinic (RHC) All Owners__ dataset provides ownership information on all RHCs currently enrolled in Medicare. This data includes ownership information such as ownership name, ownership type, ownership address and ownership effective date.
+
 ### Metadata
 
 ```{r}
@@ -141,10 +164,8 @@ print_resources(owners)
 owners_resp <- list(
   quick("rhc_owners", offset = 0, limit = 5000),
   quick("rhc_owners", offset = 5000, limit = 5000)) |> 
-  purrr::list_rbind()
-
-owners_resp |>
-  rnm(rhc_owner_names) |> 
+  purrr::list_rbind() |>
+  rnm(rhc_owner_names) |>
   mtt(own_asoc_date = providertwo:::as_date(own_asoc_date),
       own_pct_owned = as_prop(own_pct_owned),
       own_is_acquis = charbin(own_is_acquis),
@@ -152,13 +173,12 @@ owners_resp |>
       own_address = providertwo:::make_address(
         own_address_line_1, 
         own_address_line_2),
-      own_role = glue("[{own_role_cd}] {own_role_desc}")
-      ) |>
+      own_role = glue("[{own_role_cd}] {own_role_desc}")) |>
   slt(-own_address_line_1, 
       -own_address_line_2,
       -own_role_cd,
-      -own_role_desc
-      )
-  # dplyr::glimpse()
+      -own_role_desc)
+
+owners_resp
 ```
 
