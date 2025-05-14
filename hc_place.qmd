@@ -1,6 +1,56 @@
 ---
-title: "hc_place"
-format: html
+editor_options: 
+   chunk_output_type: console
 ---
 
-# Healthcare.gov Dataset
+```{r}
+#| label: setup-common-01
+#| include: false
+#| warning: false
+source("includes/_common.R")
+# AB Registration
+```
+
+# AB Registration Completion List {#sec-abreg}
+
+Data Dictionary: <https://www.cms.gov/CCIIO/Programs-and-Initiatives/Health-Insurance-Marketplaces/Downloads/62416-AB-Registration-Completion-List-Data-Dictionary-Web_v1.pdf>
+
+Data Dictionary Access Lines of Authority: __/AB-NIPR-Health-Line-Of-AuthorityNIPR Health Line of Authority__
+
+## Metadata
+
+```{r}
+#| label: s7_object
+#| echo: false
+end <- hgov_endpoint("ab_registration_completion")
+print_meta(end, "hgov")
+```
+
+### Dictionary
+
+```{r}
+#| label: dict
+#| echo: false
+#| eval: false
+# browse_link(end, link = "dictionary")
+```
+
+## Data
+
+```{r}
+#| label: http_request
+#| message: false
+#| warning: false
+#| echo: false
+resp <- quick("ab_registration_completion", offset = 10000, limit = 500) |>
+  fcompute(
+  NPN              = npn,
+  plan_year        = as.integer(applicable_plan_year),
+  ind_mkt_cmp_date = anytime::anydate(individual_registration_completion_date),
+  ind_mkt_end_date = anytime::anydate(individual_marketplace_end_date),
+  shop_cmp_date    = anytime::anydate(shop_registration_completion_date),
+  shop_end_date    = anytime::anydate(shop_end_date),
+  npn_valid        = npn_valid_current_plan_year_only)
+
+resp |> print(n = Inf)
+```

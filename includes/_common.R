@@ -58,6 +58,10 @@ browse_link <- function(x, link) {
   )
 }
 
+unscore <- \(x) gsub("___owner$", "", x, perl = TRUE)
+charbin <- \(x) val_match(x, "N" ~ 0L, "Y" ~ 1L)
+as_prop <- \(x) case(x == "0" ~ 0, is_na(x) ~ NA_real_, .default = as.double(x) / 100)
+
 purse <- \(
   x,
   pre = paste0(cli::symbol$bullet, " "),
@@ -134,12 +138,17 @@ print_meta <- function(x, api, ...) {
     match.arg(api, c("care", "caid", "open", "pro", "hgov")),
     care = c("modified", "periodicity", "temporal", "dictionary", "site", "references", "resources", "download"),
     open = c("modified", "download"),
-    pro = c("issued", "modified", "released", "dictionary", "site", "download")
+    pro  = c("issued", "modified", "released", "dictionary", "site", "download"),
+    hgov = c("issued", "modified", "periodicity", "download")
   )
 
   inj_ls(
-    props(x@dimensions)[dims(x)],
-    end@metadata[meta]) |>
+    c(props(x@dimensions)[dims(x)],
+      fields = fnobs(
+        prop(x@dimensions, "fields") |>
+          unlist(use.names = FALSE))),
+    end@metadata[meta]
+    ) |>
     print_ls(...)
 }
 

@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.7.14">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-
 <meta name="description" content="This is a personal, informal guide to rewriting an R package. It is a work in progress and will be updated as I learn more about the process.">
-
-<title>23&nbsp; hc_place – Refactoring &lt;b&gt;provider&lt;/b&gt;&lt;sup&gt;&lt;i&gt;2&lt;/i&gt;&lt;/sup&gt;</title>
+<title>23&nbsp; AB Registration Completion List – Refactoring &lt;b&gt;provider&lt;/b&gt;&lt;sup&gt;&lt;i&gt;2&lt;/i&gt;&lt;/sup&gt;
+</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -57,7 +55,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }
 </style>
 
-
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -75,8 +72,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-952858121209e54f7d524d1fc53d0509.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-80e37096c22c9db3ed12cca369486771.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
-<script id="quarto-search-options" type="application/json">{
+<link href="site_libs/bootstrap/bootstrap-80e37096c22c9db3ed12cca369486771.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
@@ -102,35 +98,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-submit-button-title": "Submit",
     "search-label": "Search"
   }
-}</script>
-<style>html{ scroll-behavior: smooth; }</style>
-
-
+}</script><style>html{ scroll-behavior: smooth; }</style>
 </head>
-
 <body class="nav-sidebar docked">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-  <nav class="quarto-secondary-nav">
-    <div class="container-fluid d-flex">
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./api_hc.html">HealthCare.Gov</a></li><li class="breadcrumb-item"><a href="./hc_place.html"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">hc_place</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./api_hc.html">HealthCare.Gov</a></li><li class="breadcrumb-item"><a href="./hc_place.html"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">AB Registration</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
-  </nav>
-</header>
-<!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Refactoring <b>provider</b><sup><i>2</i></sup></a> 
         <div class="sidebar-tools-main">
@@ -150,7 +136,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
-        <li class="sidebar-item">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Installation</span></a>
@@ -164,8 +150,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./wk_backend.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Backend</span></span></a>
@@ -208,7 +194,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
@@ -217,8 +203,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./api_nppes.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">NPI Registry</span></span></a>
@@ -237,7 +223,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a href="./api_care.html" class="sidebar-item-text sidebar-link">
@@ -246,8 +232,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./care_ahqr.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">AHRQ PSI-11 Rates</span></span></a>
@@ -302,7 +288,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a href="./api_prov.html" class="sidebar-item-text sidebar-link">
@@ -311,15 +297,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./pro_affiliations.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Facility Affiliations</span></span></a>
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a href="./api_open.html" class="sidebar-item-text sidebar-link">
@@ -328,15 +314,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./open_summary.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a href="./api_mcd.html" class="sidebar-item-text sidebar-link">
@@ -345,15 +331,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./mcd_place.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">mcd_place</span></span></a>
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a href="./api_hc.html" class="sidebar-item-text sidebar-link">
@@ -362,15 +348,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./hc_place.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">hc_place</span></span></a>
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">AB Registration</span></span></a>
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
@@ -379,15 +365,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./demo_geo.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">Geospatial</span></span></a>
   </div>
 </li>
       </ul>
-  </li>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
@@ -396,8 +382,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./faq_syntax.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">JSON:API Syntax</span></span></a>
@@ -410,27 +396,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </div>
 </li>
       </ul>
-  </li>
+</li>
     </ul>
-    </div>
-</nav>
-<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#healthcare.gov-dataset" id="toc-healthcare.gov-dataset" class="nav-link active" data-scroll-target="#healthcare.gov-dataset"><span class="header-section-number">24</span> Healthcare.gov Dataset</a></li>
+<li>
+<a href="#metadata" id="toc-metadata" class="nav-link active" data-scroll-target="#metadata">Metadata</a>
+  <ul class="collapse">
+<li><a href="#dictionary" id="toc-dictionary" class="nav-link" data-scroll-target="#dictionary">Dictionary</a></li>
   </ul>
-<div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li><li><a href="https://github.com/andrewallenbruce/providertwo"><i class="bi bi-file-code"></i>providertwo</a></li></ul></div></nav>
+</li>
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
+  </ul><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li><li><a href="https://github.com/andrewallenbruce/providertwo"><i class="bi bi-file-code"></i>providertwo</a></li></ul></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./api_hc.html">HealthCare.Gov</a></li><li class="breadcrumb-item"><a href="./hc_place.html"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">hc_place</span></a></li></ol></nav>
-<div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">hc_place</span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i></button></div></div>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./api_hc.html">HealthCare.Gov</a></li><li class="breadcrumb-item"><a href="./hc_place.html"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">AB Registration</span></a></li></ol></nav><div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title"><span id="sec-abreg" class="quarto-section-identifier"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">AB Registration Completion List</span></span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i></button></div></div>
 </div>
 
 
@@ -444,19 +430,533 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
 
 
-</header>
-
-
-<section id="healthcare.gov-dataset" class="level1" data-number="24">
-<h1 data-number="24"><span class="header-section-number">24</span> Healthcare.gov Dataset</h1>
+</header><p>Data Dictionary: <a href="https://www.cms.gov/CCIIO/Programs-and-Initiatives/Health-Insurance-Marketplaces/Downloads/62416-AB-Registration-Completion-List-Data-Dictionary-Web_v1.pdf" class="uri">https://www.cms.gov/CCIIO/Programs-and-Initiatives/Health-Insurance-Marketplaces/Downloads/62416-AB-Registration-Completion-List-Data-Dictionary-Web_v1.pdf</a></p>
+<p>Data Dictionary Access Lines of Authority: <strong>/AB-NIPR-Health-Line-Of-AuthorityNIPR Health Line of Authority</strong></p>
+<section id="metadata" class="level2"><h2 class="anchored" data-anchor-id="metadata">Metadata</h2>
+<div class="cell">
+<pre class="r-output"><code>       [ROWS] 1020945 
+      [PAGES] 2042 
+     [FIELDS] 7 
+     [ISSUED] 2016-03-30 
+   [MODIFIED] 2025-05-14 
+[PERIODICITY] Decennially [R/P10Y] 
+   [DOWNLOAD] https://data.healthcare.gov/sites/default/files/uploaded_resources/TBL_RCL_138.csv 
+</code></pre>
+</div>
+<section id="dictionary" class="level3"><h3 class="anchored" data-anchor-id="dictionary">Dictionary</h3>
+</section></section><section id="data" class="level2"><h2 class="anchored" data-anchor-id="data">Data</h2>
+<div class="cell">
+<pre class="r-output"><code><span style="color: #555555;"># A tibble: 500 × 7</span>
+    NPN       plan_year ind_mkt_cmp_date ind_mkt_end_date shop_cmp_date
+  <span style="color: #555555;">*</span> <span style="color: #555555; font-style: italic;"><chr></chr></span>         <span style="color: #555555; font-style: italic;"><int></int></span> <span style="color: #555555; font-style: italic;"><date></date></span>           <span style="color: #555555; font-style: italic;"><date></date></span>           <span style="color: #555555; font-style: italic;"><date></date></span>       
+<span style="color: #555555;">  1</span> 15729250       <span style="text-decoration: underline;">2</span>014 2013-10-23       2014-09-30       2013-10-20   
+<span style="color: #555555;">  2</span> 8518120        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-08-27   
+<span style="color: #555555;">  3</span> 9114333        <span style="text-decoration: underline;">2</span>014 2013-10-23       2014-09-30       2013-10-22   
+<span style="color: #555555;">  4</span> 7421601        <span style="text-decoration: underline;">2</span>014 2013-10-23       2014-09-30       2013-10-17   
+<span style="color: #555555;">  5</span> 1187850        <span style="text-decoration: underline;">2</span>014 2013-10-23       2014-09-30       2013-10-17   
+<span style="color: #555555;">  6</span> 6767295        <span style="text-decoration: underline;">2</span>014 2013-10-23       2014-09-30       2013-10-10   
+<span style="color: #555555;">  7</span> 17091985       <span style="text-decoration: underline;">2</span>014 2013-10-23       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">  8</span> 817939         <span style="text-decoration: underline;">2</span>014 2013-10-23       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">  9</span> 1861205        <span style="text-decoration: underline;">2</span>014 2013-10-23       2014-09-30       2013-10-16   
+<span style="color: #555555;"> 10</span> 9719230        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-09-05   
+<span style="color: #555555;"> 11</span> 5328407        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-10   
+<span style="color: #555555;"> 12</span> 510216         <span style="text-decoration: underline;">2</span>014 2014-07-16       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;"> 13</span> 1191884        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-08-25   
+<span style="color: #555555;"> 14</span> 6735411        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-08-28   
+<span style="color: #555555;"> 15</span> 231924         <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-08-28   
+<span style="color: #555555;"> 16</span> 3753913        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;"> 17</span> 2052702        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-08-28   
+<span style="color: #555555;"> 18</span> 16183596       <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-08-30   
+<span style="color: #555555;"> 19</span> 6618203        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-08-22   
+<span style="color: #555555;"> 20</span> 14206490       <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;"> 21</span> 6543092        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-08-12   
+<span style="color: #555555;"> 22</span> 7041042        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-12   
+<span style="color: #555555;"> 23</span> 7238757        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-08-13   
+<span style="color: #555555;"> 24</span> 16216965       <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-09-13   
+<span style="color: #555555;"> 25</span> 2430470        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-09-03   
+<span style="color: #555555;"> 26</span> 7070655        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;"> 27</span> 11512364       <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;"> 28</span> 7993397        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-09-16   
+<span style="color: #555555;"> 29</span> 8168277        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-09-06   
+<span style="color: #555555;"> 30</span> 1496236        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-09-12   
+<span style="color: #555555;"> 31</span> 16399483       <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-08-15   
+<span style="color: #555555;"> 32</span> 6429302        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-08-23   
+<span style="color: #555555;"> 33</span> 602591         <span style="text-decoration: underline;">2</span>014 2014-07-13       2014-09-30       2014-07-13   
+<span style="color: #555555;"> 34</span> 6558160        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;"> 35</span> 16693942       <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-09   
+<span style="color: #555555;"> 36</span> 875727         <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-09-01   
+<span style="color: #555555;"> 37</span> 725563         <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-09-04   
+<span style="color: #555555;"> 38</span> 2047985        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-09-12   
+<span style="color: #555555;"> 39</span> 8493851        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-12   
+<span style="color: #555555;"> 40</span> 15758436       <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-09-06   
+<span style="color: #555555;"> 41</span> 5690048        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-08-12   
+<span style="color: #555555;"> 42</span> 17058039       <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;"> 43</span> 729929         <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-09-12   
+<span style="color: #555555;"> 44</span> 6604310        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;"> 45</span> 1439618        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;"> 46</span> 16612123       <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-09-17   
+<span style="color: #555555;"> 47</span> 2029906        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-09-08   
+<span style="color: #555555;"> 48</span> 8798407        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-10   
+<span style="color: #555555;"> 49</span> 1115590        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-08-19   
+<span style="color: #555555;"> 50</span> 17057107       <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;"> 51</span> 6596553        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-08-09   
+<span style="color: #555555;"> 52</span> 8938199        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-08-28   
+<span style="color: #555555;"> 53</span> 10176643       <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;"> 54</span> 1170204        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;"> 55</span> 17057069       <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;"> 56</span> 12760250       <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;"> 57</span> 3663275        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;"> 58</span> 6903879        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-08-19   
+<span style="color: #555555;"> 59</span> 647536         <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-09-14   
+<span style="color: #555555;"> 60</span> 17012617       <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;"> 61</span> 8904551        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;"> 62</span> 16932349       <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;"> 63</span> 1718580        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-09-12   
+<span style="color: #555555;"> 64</span> 1476722        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-09-06   
+<span style="color: #555555;"> 65</span> 16325437       <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;"> 66</span> 9289402        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;"> 67</span> 15719825       <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-08-26   
+<span style="color: #555555;"> 68</span> 16940540       <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;"> 69</span> 7633684        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-09-16   
+<span style="color: #555555;"> 70</span> 592870         <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-10-04   
+<span style="color: #555555;"> 71</span> 2156455        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-09-12   
+<span style="color: #555555;"> 72</span> 16956066       <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-08-19   
+<span style="color: #555555;"> 73</span> 2125081        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-09-02   
+<span style="color: #555555;"> 74</span> 999387         <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-08-26   
+<span style="color: #555555;"> 75</span> 8754079        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;"> 76</span> 277192         <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-09-01   
+<span style="color: #555555;"> 77</span> 1127472        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-09-05   
+<span style="color: #555555;"> 78</span> 7279750        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-08-05   
+<span style="color: #555555;"> 79</span> 248318         <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-09-16   
+<span style="color: #555555;"> 80</span> 7666392        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-09-06   
+<span style="color: #555555;"> 81</span> 1254814        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-09-09   
+<span style="color: #555555;"> 82</span> 3312844        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-08-28   
+<span style="color: #555555;"> 83</span> 2179254        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-09-17   
+<span style="color: #555555;"> 84</span> 7474653        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-06   
+<span style="color: #555555;"> 85</span> 13269876       <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-08-21   
+<span style="color: #555555;"> 86</span> 17046895       <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;"> 87</span> 382000         <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-08-26   
+<span style="color: #555555;"> 88</span> 637018         <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-09-06   
+<span style="color: #555555;"> 89</span> 3223889        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;"> 90</span> 651366         <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;"> 91</span> 90597          <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-05   
+<span style="color: #555555;"> 92</span> 7133566        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-09-09   
+<span style="color: #555555;"> 93</span> 771651         <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;"> 94</span> 1359583        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;"> 95</span> 1232703        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-08-25   
+<span style="color: #555555;"> 96</span> 7862548        <span style="text-decoration: underline;">2</span>014 2013-09-19       2014-09-30       2013-09-13   
+<span style="color: #555555;"> 97</span> 8813497        <span style="text-decoration: underline;">2</span>014 2013-10-25       2014-09-30       2013-10-23   
+<span style="color: #555555;"> 98</span> 5738240        <span style="text-decoration: underline;">2</span>014 2013-10-16       2014-09-30       2013-10-04   
+<span style="color: #555555;"> 99</span> 2370034        <span style="text-decoration: underline;">2</span>014 2013-10-16       2014-09-30       2013-08-03   
+<span style="color: #555555;">100</span> 6601215        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">101</span> 2825707        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-25   
+<span style="color: #555555;">102</span> 12644870       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-15   
+<span style="color: #555555;">103</span> 15975375       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-15   
+<span style="color: #555555;">104</span> 6052544        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-20   
+<span style="color: #555555;">105</span> 8658142        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-08   
+<span style="color: #555555;">106</span> 7252216        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-16   
+<span style="color: #555555;">107</span> 6564425        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-12   
+<span style="color: #555555;">108</span> 8121798        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-14   
+<span style="color: #555555;">109</span> 15714460       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-29   
+<span style="color: #555555;">110</span> 3393859        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-05   
+<span style="color: #555555;">111</span> 1092029        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-09   
+<span style="color: #555555;">112</span> 16697479       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">113</span> 16145200       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-02   
+<span style="color: #555555;">114</span> 2399481        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-21   
+<span style="color: #555555;">115</span> 3081685        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">116</span> 2223659        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-09   
+<span style="color: #555555;">117</span> 16381777       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-07   
+<span style="color: #555555;">118</span> 8594366        <span style="text-decoration: underline;">2</span>014 2014-07-16       2014-09-30       2014-07-16   
+<span style="color: #555555;">119</span> 2891147        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">120</span> 7152612        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2014-09-03   
+<span style="color: #555555;">121</span> 8598737        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-20   
+<span style="color: #555555;">122</span> 9197553        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-10-09   
+<span style="color: #555555;">123</span> 1677482        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-13   
+<span style="color: #555555;">124</span> 12048523       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-13   
+<span style="color: #555555;">125</span> 6886407        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-17   
+<span style="color: #555555;">126</span> 15969321       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">127</span> 7014137        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">128</span> 4695225        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">129</span> 5800322        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">130</span> 1501065        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-23   
+<span style="color: #555555;">131</span> 8423053        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-11   
+<span style="color: #555555;">132</span> 1260941        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-16   
+<span style="color: #555555;">133</span> 8001659        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-08   
+<span style="color: #555555;">134</span> 2542713        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-02   
+<span style="color: #555555;">135</span> 13959325       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-16   
+<span style="color: #555555;">136</span> 14345981       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">137</span> 11510605       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">138</span> 837994         <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-14   
+<span style="color: #555555;">139</span> 2064992        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">140</span> 8400918        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-06   
+<span style="color: #555555;">141</span> 6445276        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-28   
+<span style="color: #555555;">142</span> 17041300       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">143</span> 8297861        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">144</span> 2030391        <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-09-29   
+<span style="color: #555555;">145</span> 8889995        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-21   
+<span style="color: #555555;">146</span> 8406130        <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-10-07   
+<span style="color: #555555;">147</span> 7328632        <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-09-22   
+<span style="color: #555555;">148</span> 7247280        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-17   
+<span style="color: #555555;">149</span> 7658266        <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-10-03   
+<span style="color: #555555;">150</span> 1105573        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-29   
+<span style="color: #555555;">151</span> 1217172        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-25   
+<span style="color: #555555;">152</span> 1917817        <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-10-04   
+<span style="color: #555555;">153</span> 8504763        <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">154</span> 7070659        <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-09-30   
+<span style="color: #555555;">155</span> 3524961        <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-08-23   
+<span style="color: #555555;">156</span> 16503779       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-23   
+<span style="color: #555555;">157</span> 3087252        <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-09-26   
+<span style="color: #555555;">158</span> 7016720        <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-09-26   
+<span style="color: #555555;">159</span> 5457582        <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">160</span> 8686275        <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-09-03   
+<span style="color: #555555;">161</span> 4883733        <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-09-18   
+<span style="color: #555555;">162</span> 3641229        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-13   
+<span style="color: #555555;">163</span> 16801654       <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-10-08   
+<span style="color: #555555;">164</span> 4951325        <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-10-08   
+<span style="color: #555555;">165</span> 2989393        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-15   
+<span style="color: #555555;">166</span> 16384930       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">167</span> 15082303       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">168</span> 1212609        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">169</span> 1094268        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-05   
+<span style="color: #555555;">170</span> 16004443       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">171</span> 247086         <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-27   
+<span style="color: #555555;">172</span> 5627067        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-15   
+<span style="color: #555555;">173</span> 3544570        <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-10-04   
+<span style="color: #555555;">174</span> 532754         <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-08   
+<span style="color: #555555;">175</span> 2855043        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-05   
+<span style="color: #555555;">176</span> 16190568       <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-09-30   
+<span style="color: #555555;">177</span> 7671314        <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">178</span> 16686245       <span style="text-decoration: underline;">2</span>014 2014-08-06       2014-09-30       2014-08-06   
+<span style="color: #555555;">179</span> 7925092        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-28   
+<span style="color: #555555;">180</span> 16303280       <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-08-12   
+<span style="color: #555555;">181</span> 10674789       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-27   
+<span style="color: #555555;">182</span> 15653097       <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">183</span> 13940137       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-22   
+<span style="color: #555555;">184</span> 7562988        <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-09-30   
+<span style="color: #555555;">185</span> 3135065        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-06   
+<span style="color: #555555;">186</span> 859508         <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-14   
+<span style="color: #555555;">187</span> 11818458       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-10   
+<span style="color: #555555;">188</span> 2838789        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">189</span> 543662         <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-15   
+<span style="color: #555555;">190</span> 9617068        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-13   
+<span style="color: #555555;">191</span> 7040173        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-05   
+<span style="color: #555555;">192</span> 8639720        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-11   
+<span style="color: #555555;">193</span> 11590642       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-13   
+<span style="color: #555555;">194</span> 541450         <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-06   
+<span style="color: #555555;">195</span> 9419639        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">196</span> 3191258        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">197</span> 524757         <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-06   
+<span style="color: #555555;">198</span> 16576955       <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-03   
+<span style="color: #555555;">199</span> 8478903        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-13   
+<span style="color: #555555;">200</span> 16107893       <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-11   
+<span style="color: #555555;">201</span> 8558916        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">202</span> 1922978        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-10   
+<span style="color: #555555;">203</span> 359749         <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-08-09   
+<span style="color: #555555;">204</span> 7402219        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-29   
+<span style="color: #555555;">205</span> 3188525        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-08-12   
+<span style="color: #555555;">206</span> 2505201        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-12   
+<span style="color: #555555;">207</span> 15621741       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">208</span> 10912147       <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">209</span> 16879305       <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-08-09   
+<span style="color: #555555;">210</span> 3941233        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">211</span> 1258752        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-14   
+<span style="color: #555555;">212</span> 6488035        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">213</span> 16185658       <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-05   
+<span style="color: #555555;">214</span> 1185235        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">215</span> 6271918        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-12   
+<span style="color: #555555;">216</span> 8119852        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-08-27   
+<span style="color: #555555;">217</span> 2365724        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-17   
+<span style="color: #555555;">218</span> 8289067        <span style="text-decoration: underline;">2</span>014 2014-09-29       2014-09-30       2014-09-29   
+<span style="color: #555555;">219</span> 17023918       <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-19   
+<span style="color: #555555;">220</span> 4889157        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-08-20   
+<span style="color: #555555;">221</span> 1501612        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-29   
+<span style="color: #555555;">222</span> 11730193       <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-08-26   
+<span style="color: #555555;">223</span> 4536284        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">224</span> 14305109       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-23   
+<span style="color: #555555;">225</span> 8625828        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-09   
+<span style="color: #555555;">226</span> 15969037       <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-08-23   
+<span style="color: #555555;">227</span> 15935803       <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-08-12   
+<span style="color: #555555;">228</span> 254623         <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-09   
+<span style="color: #555555;">229</span> 2827056        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-08-13   
+<span style="color: #555555;">230</span> 7023967        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-16   
+<span style="color: #555555;">231</span> 15856276       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-24   
+<span style="color: #555555;">232</span> 5633602        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">233</span> 1184527        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">234</span> 654422         <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-10   
+<span style="color: #555555;">235</span> 943995         <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-06   
+<span style="color: #555555;">236</span> 8592738        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-26   
+<span style="color: #555555;">237</span> 8185501        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-11   
+<span style="color: #555555;">238</span> 8341628        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-17   
+<span style="color: #555555;">239</span> 2459163        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">240</span> 986571         <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-08   
+<span style="color: #555555;">241</span> 6266582        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-09   
+<span style="color: #555555;">242</span> 1029423        <span style="text-decoration: underline;">2</span>014 2014-08-06       2014-09-30       2014-08-06   
+<span style="color: #555555;">243</span> 8986460        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-13   
+<span style="color: #555555;">244</span> 13062362       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">245</span> 15708941       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-18   
+<span style="color: #555555;">246</span> 5457492        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">247</span> 1036459        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-15   
+<span style="color: #555555;">248</span> 14811638       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-10   
+<span style="color: #555555;">249</span> 3732957        <span style="text-decoration: underline;">2</span>014 2014-09-04       2014-09-30       2014-09-04   
+<span style="color: #555555;">250</span> 7552297        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-08   
+<span style="color: #555555;">251</span> 6064254        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">252</span> 6734339        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-14   
+<span style="color: #555555;">253</span> 6467503        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-08-29   
+<span style="color: #555555;">254</span> 16517978       <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-08-08   
+<span style="color: #555555;">255</span> 550216         <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-08-28   
+<span style="color: #555555;">256</span> 2777746        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-08-14   
+<span style="color: #555555;">257</span> 364701         <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-08-28   
+<span style="color: #555555;">258</span> 3683430        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-06   
+<span style="color: #555555;">259</span> 13208374       <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">260</span> 7913226        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-08-08   
+<span style="color: #555555;">261</span> 13587515       <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">262</span> 16179690       <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">263</span> 1085314        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-25   
+<span style="color: #555555;">264</span> 7409544        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-21   
+<span style="color: #555555;">265</span> 9544807        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-13   
+<span style="color: #555555;">266</span> 296090         <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-08-08   
+<span style="color: #555555;">267</span> 3983706        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-13   
+<span style="color: #555555;">268</span> 8101433        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">269</span> 6848963        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-08-20   
+<span style="color: #555555;">270</span> 16715546       <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-10   
+<span style="color: #555555;">271</span> 7969642        <span style="text-decoration: underline;">2</span>014 2013-10-16       2014-09-30       2013-10-16   
+<span style="color: #555555;">272</span> 16256414       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">273</span> 16795108       <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-10-07   
+<span style="color: #555555;">274</span> 2369014        <span style="text-decoration: underline;">2</span>014 2013-10-13       2014-09-30       2013-10-05   
+<span style="color: #555555;">275</span> 13700573       <span style="text-decoration: underline;">2</span>014 2013-10-14       2014-09-30       2014-09-08   
+<span style="color: #555555;">276</span> 8986468        <span style="text-decoration: underline;">2</span>014 2013-10-14       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">277</span> 10976636       <span style="text-decoration: underline;">2</span>014 2013-10-14       2014-09-30       2013-10-05   
+<span style="color: #555555;">278</span> 1320189        <span style="text-decoration: underline;">2</span>014 2013-10-14       2014-09-30       2013-09-09   
+<span style="color: #555555;">279</span> 4719909        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-08-25   
+<span style="color: #555555;">280</span> 16340776       <span style="text-decoration: underline;">2</span>014 2013-10-14       2014-09-30       2013-09-24   
+<span style="color: #555555;">281</span> 10081035       <span style="text-decoration: underline;">2</span>014 2013-10-14       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">282</span> 1772907        <span style="text-decoration: underline;">2</span>014 2013-10-14       2014-09-30       2013-10-05   
+<span style="color: #555555;">283</span> 9000110        <span style="text-decoration: underline;">2</span>014 2013-10-14       2014-09-30       2013-10-03   
+<span style="color: #555555;">284</span> 7678127        <span style="text-decoration: underline;">2</span>014 2013-10-14       2014-09-30       2013-10-09   
+<span style="color: #555555;">285</span> 6896115        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-12   
+<span style="color: #555555;">286</span> 1048277        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">287</span> 979272         <span style="text-decoration: underline;">2</span>014 2013-10-14       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">288</span> 7463080        <span style="text-decoration: underline;">2</span>014 2013-10-14       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">289</span> 513335         <span style="text-decoration: underline;">2</span>014 2013-10-14       2014-09-30       2013-09-16   
+<span style="color: #555555;">290</span> 10595984       <span style="text-decoration: underline;">2</span>014 2013-10-14       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">291</span> 965048         <span style="text-decoration: underline;">2</span>014 2013-10-13       2014-09-30       2013-10-08   
+<span style="color: #555555;">292</span> 13734740       <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-17   
+<span style="color: #555555;">293</span> 8281842        <span style="text-decoration: underline;">2</span>014 2013-10-12       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">294</span> 16876857       <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">295</span> 5934433        <span style="text-decoration: underline;">2</span>014 2013-10-11       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">296</span> 2130339        <span style="text-decoration: underline;">2</span>014 2013-10-11       2014-09-30       2013-09-12   
+<span style="color: #555555;">297</span> 8868254        <span style="text-decoration: underline;">2</span>014 2013-10-11       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">298</span> 9796248        <span style="text-decoration: underline;">2</span>014 2013-10-11       2014-09-30       2013-09-30   
+<span style="color: #555555;">299</span> 9973381        <span style="text-decoration: underline;">2</span>014 2013-10-11       2014-09-30       2013-10-03   
+<span style="color: #555555;">300</span> 15942495       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-16   
+<span style="color: #555555;">301</span> 540270         <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-10-16   
+<span style="color: #555555;">302</span> 7259049        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">303</span> 2150496        <span style="text-decoration: underline;">2</span>014 2013-10-14       2014-09-30       2013-09-01   
+<span style="color: #555555;">304</span> 16143734       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-14   
+<span style="color: #555555;">305</span> 3540609        <span style="text-decoration: underline;">2</span>014 2013-10-11       2014-09-30       2013-09-20   
+<span style="color: #555555;">306</span> 8070493        <span style="text-decoration: underline;">2</span>014 2013-10-11       2014-09-30       2013-09-04   
+<span style="color: #555555;">307</span> 1780702        <span style="text-decoration: underline;">2</span>014 2013-10-11       2014-09-30       2013-09-29   
+<span style="color: #555555;">308</span> 2052620        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-23   
+<span style="color: #555555;">309</span> 17010487       <span style="text-decoration: underline;">2</span>014 2013-10-11       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">310</span> 16940455       <span style="text-decoration: underline;">2</span>014 2013-10-12       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">311</span> 6575640        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-07   
+<span style="color: #555555;">312</span> 1985322        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-08-23   
+<span style="color: #555555;">313</span> 2171015        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-17   
+<span style="color: #555555;">314</span> 5079224        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-25   
+<span style="color: #555555;">315</span> 1136899        <span style="text-decoration: underline;">2</span>014 2013-10-14       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">316</span> 1082320        <span style="text-decoration: underline;">2</span>014 2013-10-15       2014-09-30       2013-10-11   
+<span style="color: #555555;">317</span> 7883617        <span style="text-decoration: underline;">2</span>014 2013-10-15       2014-09-30       2013-10-13   
+<span style="color: #555555;">318</span> 449852         <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-08-13   
+<span style="color: #555555;">319</span> 16961293       <span style="text-decoration: underline;">2</span>014 2013-10-15       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">320</span> 16482146       <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-07   
+<span style="color: #555555;">321</span> 17041861       <span style="text-decoration: underline;">2</span>014 2013-10-15       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">322</span> 15538940       <span style="text-decoration: underline;">2</span>014 2013-10-15       2014-09-30       2013-10-07   
+<span style="color: #555555;">323</span> 6536274        <span style="text-decoration: underline;">2</span>014 2013-10-15       2014-09-30       2013-08-24   
+<span style="color: #555555;">324</span> 8308462        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-09   
+<span style="color: #555555;">325</span> 1926287        <span style="text-decoration: underline;">2</span>014 2013-10-15       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">326</span> 16595202       <span style="text-decoration: underline;">2</span>014 2013-10-15       2014-09-30       2013-10-12   
+<span style="color: #555555;">327</span> 16272181       <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-08-15   
+<span style="color: #555555;">328</span> 986490         <span style="text-decoration: underline;">2</span>014 2013-08-19       2014-09-30       2013-09-03   
+<span style="color: #555555;">329</span> 1262984        <span style="text-decoration: underline;">2</span>014 2013-10-16       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">330</span> 17081858       <span style="text-decoration: underline;">2</span>014 2013-10-16       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">331</span> 303801         <span style="text-decoration: underline;">2</span>014 2013-10-16       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">332</span> 125977         <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-14   
+<span style="color: #555555;">333</span> 1714602        <span style="text-decoration: underline;">2</span>014 2013-10-16       2014-09-30       2013-10-10   
+<span style="color: #555555;">334</span> 16695317       <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-11   
+<span style="color: #555555;">335</span> 5842211        <span style="text-decoration: underline;">2</span>014 2013-10-15       2014-09-30       2013-09-09   
+<span style="color: #555555;">336</span> 12484644       <span style="text-decoration: underline;">2</span>014 2013-10-11       2014-09-30       2013-10-09   
+<span style="color: #555555;">337</span> 12183469       <span style="text-decoration: underline;">2</span>014 2013-10-15       2014-09-30       2013-09-11   
+<span style="color: #555555;">338</span> 6633186        <span style="text-decoration: underline;">2</span>014 2013-10-15       2014-09-30       2013-09-19   
+<span style="color: #555555;">339</span> 17058378       <span style="text-decoration: underline;">2</span>014 2013-10-15       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">340</span> 2114593        <span style="text-decoration: underline;">2</span>014 2013-10-15       2014-09-30       2013-08-07   
+<span style="color: #555555;">341</span> 16598693       <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-10   
+<span style="color: #555555;">342</span> 5451369        <span style="text-decoration: underline;">2</span>014 2013-08-23       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">343</span> 2825090        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-12   
+<span style="color: #555555;">344</span> 3047900        <span style="text-decoration: underline;">2</span>014 2013-10-15       2014-09-30       2013-08-26   
+<span style="color: #555555;">345</span> 1944635        <span style="text-decoration: underline;">2</span>014 2013-10-15       2014-09-30       2013-10-02   
+<span style="color: #555555;">346</span> 5447390        <span style="text-decoration: underline;">2</span>014 2013-10-15       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">347</span> 7144868        <span style="text-decoration: underline;">2</span>014 2013-10-15       2014-09-30       2013-08-20   
+<span style="color: #555555;">348</span> 1442423        <span style="text-decoration: underline;">2</span>014 2013-10-15       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">349</span> 2369109        <span style="text-decoration: underline;">2</span>014 2013-10-15       2014-09-30       2013-10-07   
+<span style="color: #555555;">350</span> 5447586        <span style="text-decoration: underline;">2</span>014 2013-10-15       2014-09-30       2013-08-14   
+<span style="color: #555555;">351</span> 979395         <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-14   
+<span style="color: #555555;">352</span> 3142266        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">353</span> 1803555        <span style="text-decoration: underline;">2</span>014 2013-10-15       2014-09-30       2013-10-08   
+<span style="color: #555555;">354</span> 0085100        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-13   
+<span style="color: #555555;">355</span> 16381825       <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-09-12   
+<span style="color: #555555;">356</span> 611004         <span style="text-decoration: underline;">2</span>014 2013-10-15       2014-09-30       2013-10-08   
+<span style="color: #555555;">357</span> 17066373       <span style="text-decoration: underline;">2</span>014 2013-10-15       2014-09-30       2013-10-10   
+<span style="color: #555555;">358</span> 8382901        <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-09-12   
+<span style="color: #555555;">359</span> 16186783       <span style="text-decoration: underline;">2</span>014 2013-10-11       2014-09-30       2013-10-09   
+<span style="color: #555555;">360</span> 2009497        <span style="text-decoration: underline;">2</span>014 2013-10-11       2014-09-30       2013-08-13   
+<span style="color: #555555;">361</span> 4791352        <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       2013-09-11   
+<span style="color: #555555;">362</span> 12921046       <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">363</span> 1657214        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-02   
+<span style="color: #555555;">364</span> 2140326        <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       2013-09-28   
+<span style="color: #555555;">365</span> 7907549        <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">366</span> 6538391        <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">367</span> 12234254       <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       2013-09-08   
+<span style="color: #555555;">368</span> 12489239       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-05   
+<span style="color: #555555;">369</span> 8281539        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">370</span> 8714634        <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       2013-10-03   
+<span style="color: #555555;">371</span> 2078379        <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       2013-09-16   
+<span style="color: #555555;">372</span> 8878229        <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       2013-10-03   
+<span style="color: #555555;">373</span> 7922956        <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       2013-09-05   
+<span style="color: #555555;">374</span> 16958481       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">375</span> 5691144        <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       2013-08-29   
+<span style="color: #555555;">376</span> 55020          <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       2013-09-13   
+<span style="color: #555555;">377</span> 2883258        <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">378</span> 1905488        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-03   
+<span style="color: #555555;">379</span> 724772         <span style="text-decoration: underline;">2</span>014 2014-07-28       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">380</span> 0597833        <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-09-30   
+<span style="color: #555555;">381</span> 16889165       <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">382</span> 7111397        <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-08-22   
+<span style="color: #555555;">383</span> 1478050        <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-09-30   
+<span style="color: #555555;">384</span> 002152055      <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-09-20   
+<span style="color: #555555;">385</span> 6494655        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-30   
+<span style="color: #555555;">386</span> 16686139       <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-09-06   
+<span style="color: #555555;">387</span> 2165573        <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-09-30   
+<span style="color: #555555;">388</span> 17066319       <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">389</span> 8486341        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-13   
+<span style="color: #555555;">390</span> 16718240       <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">391</span> 9126722        <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-10-06   
+<span style="color: #555555;">392</span> 16305767       <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-10-01   
+<span style="color: #555555;">393</span> 2166062        <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-09-26   
+<span style="color: #555555;">394</span> 1034161        <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-10-08   
+<span style="color: #555555;">395</span> 11414942       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">396</span> 3056694        <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">397</span> 3189640        <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-09-23   
+<span style="color: #555555;">398</span> 17007954       <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-10-07   
+<span style="color: #555555;">399</span> 4749163        <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-09-27   
+<span style="color: #555555;">400</span> 16867632       <span style="text-decoration: underline;">2</span>014 2013-10-09       2014-09-30       2013-09-19   
+<span style="color: #555555;">401</span> 15877438       <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       2013-09-19   
+<span style="color: #555555;">402</span> 1211269        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-03   
+<span style="color: #555555;">403</span> 16800370       <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">404</span> 16931742       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-09   
+<span style="color: #555555;">405</span> 16148264       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-15   
+<span style="color: #555555;">406</span> 9458745        <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       2013-09-07   
+<span style="color: #555555;">407</span> 2031975        <span style="text-decoration: underline;">2</span>014 2013-10-11       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">408</span> 8869033        <span style="text-decoration: underline;">2</span>014 2013-10-11       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">409</span> 6419402        <span style="text-decoration: underline;">2</span>014 2013-10-11       2014-09-30       2013-10-10   
+<span style="color: #555555;">410</span> 1454795        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-16   
+<span style="color: #555555;">411</span> 6814812        <span style="text-decoration: underline;">2</span>014 2013-10-11       2014-09-30       2013-09-08   
+<span style="color: #555555;">412</span> 6399327        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">413</span> 3527695        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">414</span> 1030463        <span style="text-decoration: underline;">2</span>014 2013-10-11       2014-09-30       2013-09-22   
+<span style="color: #555555;">415</span> 1444493        <span style="text-decoration: underline;">2</span>014 2014-08-25       2014-09-30       2014-08-25   
+<span style="color: #555555;">416</span> 2056662        <span style="text-decoration: underline;">2</span>014 2013-10-11       2014-09-30       2013-10-08   
+<span style="color: #555555;">417</span> 13047377       <span style="text-decoration: underline;">2</span>014 2013-10-11       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">418</span> 15795269       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-15   
+<span style="color: #555555;">419</span> 10272916       <span style="text-decoration: underline;">2</span>014 2013-10-11       2014-09-30       2013-09-17   
+<span style="color: #555555;">420</span> 8089640        <span style="text-decoration: underline;">2</span>014 2013-10-11       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">421</span> 9118968        <span style="text-decoration: underline;">2</span>014 2013-10-11       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">422</span> 2144600        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-10   
+<span style="color: #555555;">423</span> 6565287        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-07   
+<span style="color: #555555;">424</span> 16886921       <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       2013-09-01   
+<span style="color: #555555;">425</span> 8013059        <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       2013-10-03   
+<span style="color: #555555;">426</span> 15950151       <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       2013-09-30   
+<span style="color: #555555;">427</span> 15838816       <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       2013-09-03   
+<span style="color: #555555;">428</span> 3064437        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-09-01   
+<span style="color: #555555;">429</span> 3226268        <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       2013-08-14   
+<span style="color: #555555;">430</span> 12737478       <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       2013-09-30   
+<span style="color: #555555;">431</span> 16307624       <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       2014-05-07   
+<span style="color: #555555;">432</span> 0227486        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       2013-10-01   
+<span style="color: #555555;">433</span> 6860912        <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       2013-09-12   
+<span style="color: #555555;">434</span> 8934197        <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       2013-09-27   
+<span style="color: #555555;">435</span> 1746531        <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-22   
+<span style="color: #555555;">436</span> 16390975       <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       2013-09-26   
+<span style="color: #555555;">437</span> 2479942        <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       2013-10-08   
+<span style="color: #555555;">438</span> 639797         <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       2013-09-26   
+<span style="color: #555555;">439</span> 16623825       <span style="text-decoration: underline;">2</span>014 2013-09-18       2014-09-30       2013-08-14   
+<span style="color: #555555;">440</span> 3081036        <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       2013-10-09   
+<span style="color: #555555;">441</span> 7088683        <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       2013-10-03   
+<span style="color: #555555;">442</span> 10978170       <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       2013-08-31   
+<span style="color: #555555;">443</span> 6378082        <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       2013-09-27   
+<span style="color: #555555;">444</span> 16414820       <span style="text-decoration: underline;">2</span>014 2013-10-10       2014-09-30       2013-08-14   
+<span style="color: #555555;">445</span> 6565050        <span style="text-decoration: underline;">2</span>014 2013-09-17       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">446</span> 11470344       <span style="text-decoration: underline;">2</span>014 2013-10-25       2014-09-30       2014-01-08   
+<span style="color: #555555;">447</span> 12863168       <span style="text-decoration: underline;">2</span>014 2013-10-25       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">448</span> 15745519       <span style="text-decoration: underline;">2</span>014 2013-09-16       2014-09-30       2013-09-11   
+<span style="color: #555555;">449</span> 17064621       <span style="text-decoration: underline;">2</span>014 2013-11-13       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">450</span> 17095989       <span style="text-decoration: underline;">2</span>014 2013-11-13       2014-09-30       2013-11-09   
+<span style="color: #555555;">451</span> 9576744        <span style="text-decoration: underline;">2</span>014 2013-11-13       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">452</span> 6857047        <span style="text-decoration: underline;">2</span>014 2013-11-13       2014-09-30       2013-11-12   
+<span style="color: #555555;">453</span> 326982         <span style="text-decoration: underline;">2</span>014 2013-11-14       2014-09-30       2013-11-04   
+<span style="color: #555555;">454</span> 6601542        <span style="text-decoration: underline;">2</span>014 2013-11-14       2014-09-30       2013-09-30   
+<span style="color: #555555;">455</span> 14282920       <span style="text-decoration: underline;">2</span>014 2013-09-16       2014-09-30       2013-08-13   
+<span style="color: #555555;">456</span> 8293663        <span style="text-decoration: underline;">2</span>014 2013-09-16       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">457</span> 5962474        <span style="text-decoration: underline;">2</span>014 2013-09-16       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">458</span> 353459         <span style="text-decoration: underline;">2</span>014 2013-09-16       2014-09-30       2013-08-19   
+<span style="color: #555555;">459</span> 7002185        <span style="text-decoration: underline;">2</span>014 2013-11-14       2014-09-30       2013-08-28   
+<span style="color: #555555;">460</span> 5929074        <span style="text-decoration: underline;">2</span>014 2013-11-14       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">461</span> 9673883        <span style="text-decoration: underline;">2</span>014 2013-11-14       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">462</span> 8943635        <span style="text-decoration: underline;">2</span>014 2013-11-14       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">463</span> 3750563        <span style="text-decoration: underline;">2</span>014 2013-11-14       2014-09-30       2013-11-13   
+<span style="color: #555555;">464</span> 10137607       <span style="text-decoration: underline;">2</span>014 2013-11-14       2014-09-30       2013-10-03   
+<span style="color: #555555;">465</span> 16929579       <span style="text-decoration: underline;">2</span>014 2013-11-13       2014-09-30       2013-10-20   
+<span style="color: #555555;">466</span> 6852122        <span style="text-decoration: underline;">2</span>014 2013-11-13       2014-09-30       2013-10-07   
+<span style="color: #555555;">467</span> 8794607        <span style="text-decoration: underline;">2</span>014 2013-09-16       2014-09-30       2013-08-20   
+<span style="color: #555555;">468</span> 16627743       <span style="text-decoration: underline;">2</span>014 2013-11-13       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">469</span> 13310568       <span style="text-decoration: underline;">2</span>014 2013-11-13       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">470</span> 3658084        <span style="text-decoration: underline;">2</span>014 2013-09-16       2014-09-30       2013-08-14   
+<span style="color: #555555;">471</span> 8012137        <span style="text-decoration: underline;">2</span>014 2013-11-13       2014-09-30       2013-08-08   
+<span style="color: #555555;">472</span> 16066424       <span style="text-decoration: underline;">2</span>014 2013-09-16       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">473</span> 16944212       <span style="text-decoration: underline;">2</span>014 2013-09-16       2014-09-30       2013-10-17   
+<span style="color: #555555;">474</span> 69704          <span style="text-decoration: underline;">2</span>014 2013-11-13       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">475</span> 4775603        <span style="text-decoration: underline;">2</span>014 2013-09-16       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">476</span> 14250629       <span style="text-decoration: underline;">2</span>014 2013-11-13       2014-09-30       2013-10-09   
+<span style="color: #555555;">477</span> 1465080        <span style="text-decoration: underline;">2</span>014 2013-09-16       2014-09-30       2013-08-13   
+<span style="color: #555555;">478</span> 6271743        <span style="text-decoration: underline;">2</span>014 2013-11-13       2014-09-30       2013-11-12   
+<span style="color: #555555;">479</span> 2131478        <span style="text-decoration: underline;">2</span>014 2013-11-13       2014-09-30       2013-11-04   
+<span style="color: #555555;">480</span> 8351702        <span style="text-decoration: underline;">2</span>014 2013-11-13       2014-09-30       2013-10-09   
+<span style="color: #555555;">481</span> 1310960        <span style="text-decoration: underline;">2</span>014 2013-09-16       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">482</span> 16140413       <span style="text-decoration: underline;">2</span>014 2013-11-13       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">483</span> 8775070        <span style="text-decoration: underline;">2</span>014 2013-11-13       2014-09-30       2013-10-09   
+<span style="color: #555555;">484</span> 12993969       <span style="text-decoration: underline;">2</span>014 2013-11-13       2014-09-30       2013-10-03   
+<span style="color: #555555;">485</span> 16414948       <span style="text-decoration: underline;">2</span>014 2013-11-13       2014-09-30       2013-09-19   
+<span style="color: #555555;">486</span> 9723992        <span style="text-decoration: underline;">2</span>014 2013-11-13       2014-09-30       2013-10-09   
+<span style="color: #555555;">487</span> 7036572        <span style="text-decoration: underline;">2</span>014 2013-11-13       2014-09-30       2013-11-09   
+<span style="color: #555555;">488</span> 15855731       <span style="text-decoration: underline;">2</span>014 2013-11-15       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">489</span> 1105771        <span style="text-decoration: underline;">2</span>014 2013-11-15       2014-09-30       2013-11-06   
+<span style="color: #555555;">490</span> 5112110        <span style="text-decoration: underline;">2</span>014 2013-11-15       2014-09-30       2013-09-01   
+<span style="color: #555555;">491</span> 9567327        <span style="text-decoration: underline;">2</span>014 2013-09-16       2014-09-30       2013-09-02   
+<span style="color: #555555;">492</span> 4631346        <span style="text-decoration: underline;">2</span>014 2013-11-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">493</span> 16791253       <span style="text-decoration: underline;">2</span>014 2013-11-18       2014-09-30       2013-08-19   
+<span style="color: #555555;">494</span> 17077195       <span style="text-decoration: underline;">2</span>014 2013-11-18       2014-09-30       <span style="color: #BB0000;">NA</span>           
+<span style="color: #555555;">495</span> 6415266        <span style="text-decoration: underline;">2</span>014 2013-09-16       2014-09-30       2013-09-05   
+<span style="color: #555555;">496</span> 945174         <span style="text-decoration: underline;">2</span>014 2013-11-18       2014-09-30       2013-11-15   
+<span style="color: #555555;">497</span> 17047424       <span style="text-decoration: underline;">2</span>014 2013-11-18       2014-09-30       2013-10-01   
+<span style="color: #555555;">498</span> 1288172        <span style="text-decoration: underline;">2</span>014 2013-11-18       2014-09-30       2013-09-19   
+<span style="color: #555555;">499</span> 16483573       <span style="text-decoration: underline;">2</span>014 2013-11-18       2014-09-30       2013-10-01   
+<span style="color: #555555;">500</span> 434736         <span style="text-decoration: underline;">2</span>014 2013-11-18       2014-09-30       2013-10-30   
+<span style="color: #555555;"># ℹ 2 more variables: shop_end_date <date>, npn_valid <chr></chr></date></span>
+</code></pre>
+</div>
 
 
 <!-- -->
 
-</section>
-
-</main> <!-- /main -->
-<script id="quarto-html-after-body" type="application/javascript">
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -923,9 +1423,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>
-<nav class="page-navigation">
-  <div class="nav-page nav-page-previous">
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
       <a href="./api_hc.html" class="pagination-link" aria-label="HealthCare.Gov">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">HealthCare.Gov</span>
       </a>          
@@ -937,14 +1435,64 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
 <div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "hc_place"</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span><span class="co"> html</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">   chunk_output_type: console</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu"># Healthcare.gov Dataset</span></span></code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup-common-01</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"includes/_common.R"</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># AB Registration</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu"># AB Registration Completion List {#sec-abreg}</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>Data Dictionary: <span class="ot">&lt;https://www.cms.gov/CCIIO/Programs-and-Initiatives/Health-Insurance-Marketplaces/Downloads/62416-AB-Registration-Completion-List-Data-Dictionary-Web_v1.pdf&gt;</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>Data Dictionary Access Lines of Authority: __/AB-NIPR-Health-Line-Of-AuthorityNIPR Health Line of Authority__</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="fu">## Metadata</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: s7_object</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>end <span class="ot">&lt;-</span> <span class="fu">hgov_endpoint</span>(<span class="st">"ab_registration_completion"</span>)</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="fu">print_meta</span>(end, <span class="st">"hgov"</span>)</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="fu">### Dictionary</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: dict</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="co"># browse_link(end, link = "dictionary")</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data</span></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: http_request</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>resp <span class="ot">&lt;-</span> <span class="fu">quick</span>(<span class="st">"ab_registration_completion"</span>, <span class="at">offset =</span> <span class="dv">10000</span>, <span class="at">limit =</span> <span class="dv">500</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fcompute</span>(</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>  <span class="at">NPN              =</span> npn,</span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>  <span class="at">plan_year        =</span> <span class="fu">as.integer</span>(applicable_plan_year),</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>  <span class="at">ind_mkt_cmp_date =</span> anytime<span class="sc">::</span><span class="fu">anydate</span>(individual_registration_completion_date),</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>  <span class="at">ind_mkt_end_date =</span> anytime<span class="sc">::</span><span class="fu">anydate</span>(individual_marketplace_end_date),</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>  <span class="at">shop_cmp_date    =</span> anytime<span class="sc">::</span><span class="fu">anydate</span>(shop_registration_completion_date),</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>  <span class="at">shop_end_date    =</span> anytime<span class="sc">::</span><span class="fu">anydate</span>(shop_end_date),</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>  <span class="at">npn_valid        =</span> npn_valid_current_plan_year_only)</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>resp <span class="sc">|&gt;</span> <span class="fu">print</span>(<span class="at">n =</span> <span class="cn">Inf</span>)</span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
-
 
 
 

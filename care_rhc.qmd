@@ -8,10 +8,6 @@ editor_options:
 #| include: false
 source("includes/_common.R")
 
-unscore <- \(x) gsub("___owner$", "", x, perl = TRUE)
-charbin <- \(x) val_match(x, "N" ~ 0L, "Y" ~ 1L)
-as_prop <- \(x) case(x == "0" ~ 0, is_na(x) ~ NA_real_, .default = as.double(x) / 100)
-
 rhc_names <- c(
     "ENROLLMENT ID"                = "enid",
     "ENROLLMENT STATE"             = "enid_state",
@@ -43,7 +39,7 @@ rhc_owner_names <- c(
   "TYPE - OWNER"                        = "own_type",
   "ROLE CODE - OWNER"                   = "own_role_cd",
   "ROLE TEXT - OWNER"                   = "own_role_desc",
-  "ASSOCIATION DATE - OWNER"            = "own_asoc_date",
+  "ASSOCIATION DATE - OWNER"            = "own_assoc_date",
   "FIRST NAME - OWNER"                  = "own_first_name",
   "MIDDLE NAME - OWNER"                 = "own_middle_name",
   "LAST NAME - OWNER"                   = "own_last_name",
@@ -87,6 +83,32 @@ owner_role <- list(
   "42" = "W-2 MANAGING EMPLOYEE",
   "43" = "OPERATIONAL/MANAGERIAL CONTROL",
   "44" = "OTHER"
+)
+
+rhc_chow_names <- c(
+  "ENROLLMENT ID - BUYER"           = "enid_buyer" ,
+  "ENROLLMENT STATE - BUYER"        = "enid_state_buyer" ,
+  "PROVIDER TYPE CODE - BUYER"      = "prov_code_buyer" ,
+  "PROVIDER TYPE TEXT - BUYER"      = "prov_text_buyer" ,
+  "NPI - BUYER"                     = "npi_buyer" ,
+  "MULTIPLE NPI FLAG - BUYER"       = "multi_npi_buyer" ,
+  "CCN - BUYER"                     = "ccn_buyer" ,
+  "ASSOCIATE ID - BUYER"            = "pac_buyer" ,
+  "ORGANIZATION NAME - BUYER"       = "org_name_buyer" ,
+  "DOING BUSINESS AS NAME - BUYER"  = "dba_buyer" ,
+  "CHOW TYPE CODE"                  = "chow_code" ,
+  "CHOW TYPE TEXT"                  = "chow_text" ,
+  "EFFECTIVE DATE"                  = "effective_date" ,
+  "ENROLLMENT ID - SELLER"          = "enid_seller" ,
+  "ENROLLMENT STATE - SELLER"       = "enid_state_seller" ,
+  "PROVIDER TYPE CODE - SELLER"     = "prov_code_seller" ,
+  "PROVIDER TYPE TEXT - SELLER"     = "prov_text_seller" ,
+  "NPI - SELLER"                    = "npi_seller" ,
+  "MULTIPLE NPI FLAG - SELLER"      = "multi_npi_seller" ,
+  "CCN - SELLER"                    = "ccn_seller" ,
+  "ASSOCIATE ID - SELLER"           = "pac_seller" ,
+  "ORGANIZATION NAME - SELLER"      = "org_name_seller" ,
+  "DOING BUSINESS AS NAME - SELLER" = "dba_seller"
 )
 ```
 
@@ -154,10 +176,10 @@ enroll_resp <- list(
   quick("rhc_enrollments", offset = 5000, limit = 5000)) |> 
   list_rbind() |>
   rnm(rhc_names) |>
-  mtt(inc_date = providertwo:::as_date(inc_date),
+  mtt(inc_date  = providertwo:::as_date(inc_date),
       multi_npi = charbin(multi_npi),
-      address = providertwo:::make_address(address_line_1, address_line_2),
-      org_type = ifelse(org_type == "OTHER", org_other, org_type)) |>
+      address   = providertwo:::make_address(address_line_1, address_line_2),
+      org_type  = ifelse(org_type == "OTHER", org_other, org_type)) |>
   slt(-address_line_1, -address_line_2, -org_other)
 
 enroll_resp |> data_codebook()
@@ -239,24 +261,24 @@ owners_resp <- list(
   quick("rhc_owners", offset = 5000, limit = 5000)) |> 
   list_rbind() |>
   rnm(rhc_owner_names) |>
-  mtt(own_asoc_date = providertwo:::as_date(own_asoc_date),
-      own_pct_owned = as_prop(own_pct_owned),
-      own_address = providertwo:::make_address(own_address_line_1, own_address_line_2),
-      own_role = glue("[{own_role_cd}] {own_role_desc}"),
-      own_type = factor_(own_type),
-      own_other_type = charbin(own_other_type),
-      is_acq = charbin(is_acq),
-      is_corp = charbin(is_corp),
-      is_llc = charbin(is_llc),
-      is_supp = charbin(is_supp),
-      is_mgmt = charbin(is_mgmt),
-      is_staff = charbin(is_staff),
-      is_hold = charbin(is_hold),
-      is_firm = charbin(is_firm),
-      is_bank = charbin(is_bank),
-      is_consult = charbin(is_consult),
-      is_forprof = charbin(is_forprof),
-      is_nonprof = charbin(is_nonprof)
+  mtt(own_assoc_date  = providertwo:::as_date(own_assoc_date),
+      own_pct_owned   = as_prop(own_pct_owned),
+      own_address     = providertwo:::make_address(own_address_line_1, own_address_line_2),
+      own_role        = factor_(glue("[{own_role_cd}] {own_role_desc}")),
+      own_type        = factor_(own_type),
+      own_other_type  = charbin(own_other_type),
+      is_acq          = charbin(is_acq),
+      is_corp         = charbin(is_corp),
+      is_llc          = charbin(is_llc),
+      is_supp         = charbin(is_supp),
+      is_mgmt         = charbin(is_mgmt),
+      is_staff        = charbin(is_staff),
+      is_hold         = charbin(is_hold),
+      is_firm         = charbin(is_firm),
+      is_bank         = charbin(is_bank),
+      is_consult      = charbin(is_consult),
+      is_forprof      = charbin(is_forprof),
+      is_nonprof      = charbin(is_nonprof)
       ) |>
   slt(-own_address_line_1, 
       -own_address_line_2,
@@ -266,8 +288,7 @@ owners_resp <- list(
 owners_resp |> data_codebook()
 ```
 
-
-## Join
+#### Join
 
 ```{r}
 #| label: join_rhc
@@ -276,9 +297,25 @@ owners_resp |> data_codebook()
 join(
   owners_resp,
   enroll_resp,
-  on = c("enid", "pac", "org_name"),
-  overid = 2
-) |> 
+  on     = c("enid", "pac", "org_name"),
+  overid = 2) |> 
   str()
+```
+
+## RHC Change of Ownership (CHOW)
+
+```{r}
+#| label: zip_rhc_chow
+#| message: false
+#| echo: false
+rhc_chow <- read_csv(
+  here("data", "RHC_CHOW_2025.01.02.csv"), 
+  col_types = strrep("c", 23)) |>
+  rnm(rhc_chow_names) |> 
+  mtt(effective_date = providertwo:::as_date(effective_date, fmt = "%m/%d/%Y"),
+      multi_npi_buyer = charbin(multi_npi_buyer),
+      multi_npi_seller = charbin(multi_npi_seller))
+
+rhc_chow
 ```
 
