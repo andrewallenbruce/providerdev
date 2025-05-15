@@ -80,140 +80,46 @@ res <- quick("cpc_primary", limit = 5000) |>
     lat = stri_extract(location, regex = ".*(?=\\,)") |> as.double(),
     lon = stri_extract(location, regex = "(?<=\\,\\s).*") |> as.double(),
     location = NULL
-  ) |> 
+  ) |>
   sf::st_as_sf(
-      coords = c("lon", "lat"),
-      crs = sf::st_crs(4326),
-      na.fail = FALSE) |> 
-  usmap::usmap_transform() |> 
-  rsplit(~ state, keep.by = TRUE)
+    coords = c("lon", "lat"),
+    crs = sf::st_crs(4326),
+    na.fail = FALSE
+  ) |>
+  usmap::usmap_transform() |>
+  rsplit( ~ state, keep.by = TRUE)
+
+plot_maps <- function(state) {
+  plot_usmap(
+    "counties",
+    include   = c(state),
+    color     = "white",
+    fill      = "grey80",
+    linewidth = 0.25
+  ) +
+    geom_sf(
+      data  = res[[state]],
+      fill  = "navy",
+      color = "white",
+      shape = 21,
+      size  = 3
+    ) +
+    theme(panel.background = element_rect(color = "white", fill = "lightyellow"))
+}
 ```
 
 ```{r}
 #| label: map
-#| layout-ncol: 2
+#| layout-ncol: 3
 #| message: false
 #| warning: false
 #| echo: false
-plot_usmap(
-  "counties",
-  include   = c("NY"),
-  color     = "white",
-  fill      = "grey80",
-  linewidth = 0.25
-) +
-  geom_sf(
-    data  = res$NY,
-    fill  = "navy",
-    color = "white",
-    shape = 21,
-    size  = 3
-  ) +
-  theme(
-    panel.background = element_rect(
-      color = "white", 
-      fill = "lightyellow"
-      )
-    )
-
-plot_usmap(
-  "counties",
-  include   = c("NJ"),
-  color     = "white",
-  fill      = "grey80",
-  linewidth = 0.25
-) +
-  geom_sf(
-    data  = res$NJ,
-    fill  = "navy",
-    color = "white",
-    shape = 21,
-    size  = 3
-  ) +
-  theme(
-    panel.background = element_rect(
-      color = "white", 
-      fill = "lightyellow"
-      )
-    )
-plot_usmap(
-  "counties",
-  include   = c("AR"),
-  color     = "white",
-  fill      = "grey80",
-  linewidth = 0.25
-) +
-  geom_sf(
-    data  = res$AR,
-    fill  = "navy",
-    color = "white",
-    shape = 21,
-    size  = 3
-  ) +
-  theme(
-    panel.background = element_rect(
-      color = "white", 
-      fill = "lightyellow"
-      )
-    )
-plot_usmap(
-  "counties",
-  include   = c("CO"),
-  color     = "white",
-  fill      = "grey80",
-  linewidth = 0.25
-) +
-  geom_sf(
-    data  = res$CO,
-    fill  = "navy",
-    color = "white",
-    shape = 21,
-    size  = 3
-  ) +
-  theme(
-    panel.background = element_rect(
-      color = "white", 
-      fill = "lightyellow"
-      )
-    )
-plot_usmap(
-  "counties",
-  include   = c("KY"),
-  color     = "white",
-  fill      = "grey80",
-  linewidth = 0.25
-) +
-  geom_sf(
-    data  = res$KY,
-    fill  = "navy",
-    color = "white",
-    shape = 21,
-    size  = 3
-  ) +
-  theme(
-    panel.background = element_rect(
-      color = "white", 
-      fill = "lightyellow"
-      )
-    )
-plot_usmap(
-  "counties",
-  include   = c("OH"),
-  color     = "white",
-  fill      = "grey80",
-  linewidth = 0.25
-) +
-  geom_sf(
-    data  = res$OH,
-    fill  = "navy",
-    color = "white",
-    shape = 21,
-    size  = 3
-  ) +
-  theme(
-    panel.background = element_rect(
-      color = "white", 
-      fill = "lightyellow"
-      )
-    )
+plot_maps("AR")
+plot_maps("CO")
+plot_maps("KY")
+plot_maps("NJ")
+plot_maps("NY")
+plot_maps("OH")
+plot_maps("OK")
+plot_maps("OR")
 ```

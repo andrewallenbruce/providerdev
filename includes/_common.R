@@ -139,6 +139,7 @@ print_meta <- function(x, ...) {
   meta <- switch(
     class(x)[1],
     care_endpoint = c("modified", "periodicity", "temporal", "dictionary", "site", "references", "resources", "download"),
+    caid_endpoint = c("modified", "download", "dictionary"),
     open_endpoint = c("modified", "download"),
     pro_endpoint  = c("issued", "modified", "released", "dictionary", "site", "download"),
     hgov_endpoint = c("issued", "modified", "periodicity", "download")

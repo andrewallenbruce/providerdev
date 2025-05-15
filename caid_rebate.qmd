@@ -1,0 +1,84 @@
+---
+editor_options: 
+   chunk_output_type: console
+---
+
+```{r}
+#| label: setup-common-01
+#| include: false
+#| warning: false
+source("includes/_common.R")
+```
+
+# ACA Federal Upper Limits {#sec-rebate}
+
+Product Data for Newly Reported Drugs in the Medicaid Drug Rebate Program
+
+The Table below, updated weekly, contains newly reported, active covered outpatient drugs which were reported by participating drug manufacturers since the last quarterly update of the Drug Products in the Medicaid Drug Rebate Program (MDRP) database. Each file on this table represents a snapshot of data in the system and is not updated by subsequent changes. Once the covered outpatient drugs in each of these files appear in the quarterly MDRP database, the file will be removed from this table. States can utilize these files to identify newly reported covered outpatient drugs.
+
+## Metadata
+
+```{r}
+#| label: s7_object
+#| echo: false
+end <- caid_endpoint("caid_drug_rebate")
+print_meta(end)
+```
+
+### Dictionary
+
+```{r}
+#| label: dict
+#| echo: false
+#| message: true
+dict <- end@metadata$dictionary |> 
+  request() |>
+  providertwo:::perform_simple() |>
+    _[["data"]] |> 
+  _[["fields"]]
+
+dict <- new_tbl(
+  field = dict$name, 
+  description = dict$description)
+
+print_dict_tbl(dict)
+```
+
+## Data
+
+```{r}
+#| label: http_request
+#| message: false
+#| warning: false
+#| echo: false
+quick("caid_drug_rebate", offset = 0, limit = 8000) |> 
+  str()
+```
+
+### Overview
+
+```{r}
+#| label: overview
+# resp |> data_codebook()
+```
+
+### Distribution
+
+```{r}
+#| label: distribution
+#| message: false
+#| warning: false
+#| echo: false
+# res <- describe_distribution(resp)
+# res
+```
+
+```{r}
+#| label: distribution_plot
+#| layout-ncol: 2
+#| message: false
+#| warning: false
+#| echo: false
+# plots <- plot(res, dispersion = TRUE)
+# walk(plots, print)
+```

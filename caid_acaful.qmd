@@ -51,15 +51,18 @@ print_dict_tbl(dict)
 #| echo: false
 resp <- quick("aca_ful", offset = 0, limit = 8000) |>
   mtt(
-    mdr_unit_type = factor_(mdr_unit_type),
-  amp_wt_avg = as.double(weighted_average_of_amps),
-  aca_ful = as.double(aca_ful),
-  package_size = as.integer(package_size),
-  year = as.integer(year),
-  month = as.integer(month),
-  gt_175pc_amp_wt_avg = charbin(multiplier_greater_than_175_percent_of_weighted_avg_of_amps),
-  multiplier_greater_than_175_percent_of_weighted_avg_of_amps = NULL,
-  weighted_average_of_amps = NULL)
+    mdr_unit_type       = factor_(mdr_unit_type),
+    amp_wt_avg          = as.double(weighted_average_of_amps),
+    aca_ful             = as.double(aca_ful),
+    package_size        = as.integer(package_size),
+    year                = as.integer(year),
+    month               = as.integer(month),
+    gt_175pc_amp_wt_avg = charbin(
+      multiplier_greater_than_175_percent_of_weighted_avg_of_amps
+    ),
+    multiplier_greater_than_175_percent_of_weighted_avg_of_amps = NULL,
+    weighted_average_of_amps = NULL
+  )
 
 resp |> str()
 ```
@@ -71,3 +74,23 @@ resp |> str()
 resp |> data_codebook()
 ```
 
+### Distribution
+
+```{r}
+#| label: distribution
+#| message: false
+#| warning: false
+#| echo: false
+res <- describe_distribution(resp)
+res
+```
+
+```{r}
+#| label: distribution_plot
+#| layout-ncol: 2
+#| message: false
+#| warning: false
+#| echo: false
+plots <- plot(res, dispersion = TRUE)
+walk(plots, print)
+```
