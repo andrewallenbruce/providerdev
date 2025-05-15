@@ -10,11 +10,11 @@ editor_options:
 source("includes/_common.R")
 ```
 
-# ACA Federal Upper Limits {#sec-rebate}
+# Drug Rebate Program {#sec-rebate}
 
-Product Data for Newly Reported Drugs in the Medicaid Drug Rebate Program
+> __Product Data for Newly Reported Drugs in the Medicaid Drug Rebate Program__
 
-The Table below, updated weekly, contains newly reported, active covered outpatient drugs which were reported by participating drug manufacturers since the last quarterly update of the Drug Products in the Medicaid Drug Rebate Program (MDRP) database. Each file on this table represents a snapshot of data in the system and is not updated by subsequent changes. Once the covered outpatient drugs in each of these files appear in the quarterly MDRP database, the file will be removed from this table. States can utilize these files to identify newly reported covered outpatient drugs.
+The Table below, updated weekly, contains newly reported, active covered outpatient drugs which were reported by participating drug manufacturers since the last quarterly update of the __Drug Products in the Medicaid Drug Rebate Program (MDRP)__ database. Each file on this table represents a snapshot of data in the system and is not updated by subsequent changes. Once the covered outpatient drugs in each of these files appear in the quarterly MDRP database, the file will be removed from this table. States can utilize these files to identify newly reported covered outpatient drugs.
 
 ## Metadata
 
@@ -31,16 +31,10 @@ print_meta(end)
 #| label: dict
 #| echo: false
 #| message: true
-dict <- end@metadata$dictionary |> 
-  request() |>
-  providertwo:::perform_simple() |>
-    _[["data"]] |> 
-  _[["fields"]]
-
-dict <- new_tbl(
-  field = dict$name, 
-  description = dict$description)
-
+dict <- read_csv(
+  here("data/caid_data_dictionary.csv"), 
+  show_col_types = FALSE) |> 
+  providertwo:::subset_detect(title, "Newly Reported Drugs Data Dictionary")
 print_dict_tbl(dict)
 ```
 
@@ -51,15 +45,32 @@ print_dict_tbl(dict)
 #| message: false
 #| warning: false
 #| echo: false
-quick("caid_drug_rebate", offset = 0, limit = 8000) |> 
-  str()
+resp <- quick("caid_drug_rebate", offset = 0, limit = 8000) |> 
+  mtt(
+    drug_category     = factor_(drug_category),
+    drug_type         = factor_(drug_type),
+    unit_type         = factor_(unit_type),
+    tec_code          = factor_(tec_code),
+    cod_status        = factor_(cod_status),
+    upps              = as.double(upps),
+    line_extension    = gsub("N/A", NA, line_extension),
+    fda_approval_date = anytime::anydate(fda_approval_date),
+    market_date       = anytime::anydate(fda_approval_date),
+    date_transferred  = anytime::anydate(date_transferred_from_ddr_to_mdr),
+    termination_date  = anytime::anydate(termination_date),
+    date_transferred_from_ddr_to_mdr = NULL)
+
+resp
 ```
 
 ### Overview
 
 ```{r}
 #| label: overview
-# resp |> data_codebook()
+#| message: false
+#| warning: false
+#| echo: false
+resp |> data_codebook()
 ```
 
 ### Distribution
@@ -69,8 +80,8 @@ quick("caid_drug_rebate", offset = 0, limit = 8000) |>
 #| message: false
 #| warning: false
 #| echo: false
-# res <- describe_distribution(resp)
-# res
+res <- describe_distribution(resp)
+res
 ```
 
 ```{r}
@@ -79,6 +90,6 @@ quick("caid_drug_rebate", offset = 0, limit = 8000) |>
 #| message: false
 #| warning: false
 #| echo: false
-# plots <- plot(res, dispersion = TRUE)
-# walk(plots, print)
+plots <- plot(res, dispersion = TRUE)
+walk(plots, print)
 ```

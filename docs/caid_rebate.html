@@ -1,0 +1,1594 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.31">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="description" content="This is a personal, informal guide to rewriting an R package. It is a work in progress and will be updated as I learn more about the process.">
+<title>23&nbsp; Drug Rebate Program – Refactoring &lt;b&gt;provider&lt;/b&gt;&lt;sup&gt;&lt;i&gt;2&lt;/i&gt;&lt;/sup&gt;
+</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./api_hc.html" rel="next">
+<link href="./caid_acaful.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-8f6726c79dff2af28c45c64c8336ec2b.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-fd876eeacd95ed52c316c5ff4f94a3a6.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script><style>html{ scroll-behavior: smooth; }</style>
+</head>
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav"><div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./api_mcd.html">Medicaid</a></li><li class="breadcrumb-item"><a href="./caid_rebate.html"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Drug Rebate Program</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Refactoring <b>provider</b><sup><i>2</i></sup></a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/andrewallenbruce/providerdev" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Installation</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wk_backend.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Backend</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wk_groups.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Groups</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wk_url.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">URL Object</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wk_args.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Params</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wk_query.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Query</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wk_download.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Downloads</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./wk_search.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Comprehensive Search</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">APIs</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./api_nppes.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">NPI Registry</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./api_qpp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">QPP Eligibility</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./api_ndc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">National Drug Codes</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./api_care.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Medicare</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./care_ahqr.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">AHRQ PSI-11 Rates</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./care_aip.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">ACO AIP Plan</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./care_cpc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">CPC Initiative</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./care_joint.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Joint Model MSAs</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./care_countyrisk.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">County Risk Score</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./care_drahac.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">DRA HAC Measures</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./care_esrdgrp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">17</span>&nbsp; <span class="chapter-title">ESRD Group</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./care_enrollees.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">18</span>&nbsp; <span class="chapter-title">Provider Enrollment</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./care_rhc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">19</span>&nbsp; <span class="chapter-title">Rural Health Clinics</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./api_prov.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Provider</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pro_affiliations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">20</span>&nbsp; <span class="chapter-title">Facility Affiliations</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./api_open.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Open Payments</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./open_summary.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">21</span>&nbsp; <span class="chapter-title">Summary</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./api_mcd.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Medicaid</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-6" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-6" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./caid_acaful.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">ACA FUL</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./caid_rebate.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Drug Rebate Program</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./api_hc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">HealthCare.Gov</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./hgov_abreg.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">24</span>&nbsp; <span class="chapter-title">AB Registration</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">Demos</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./demo_geo.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">25</span>&nbsp; <span class="chapter-title">Geospatial</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true">
+ <span class="menu-text">Appendices</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-9" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-9" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./faq_syntax.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">JSON:API Syntax</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./faq_schema.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">B</span>&nbsp; <span class="chapter-title">DCAT Metadata</span></span></a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+<li>
+<a href="#metadata" id="toc-metadata" class="nav-link active" data-scroll-target="#metadata">Metadata</a>
+  <ul class="collapse">
+<li><a href="#dictionary" id="toc-dictionary" class="nav-link" data-scroll-target="#dictionary">Dictionary</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a>
+  <ul class="collapse">
+<li><a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview">Overview</a></li>
+  <li><a href="#distribution" id="toc-distribution" class="nav-link" data-scroll-target="#distribution">Distribution</a></li>
+  </ul>
+</li>
+  </ul><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li><li><a href="https://github.com/andrewallenbruce/providertwo"><i class="bi bi-file-code"></i>providertwo</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./api_mcd.html">Medicaid</a></li><li class="breadcrumb-item"><a href="./caid_rebate.html"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Drug Rebate Program</span></a></li></ol></nav><div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title"><span id="sec-rebate" class="quarto-section-identifier"><span class="chapter-number">23</span>&nbsp; <span class="chapter-title">Drug Rebate Program</span></span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i></button></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header><blockquote class="blockquote">
+<p><strong>Product Data for Newly Reported Drugs in the Medicaid Drug Rebate Program</strong></p>
+</blockquote>
+<p>The Table below, updated weekly, contains newly reported, active covered outpatient drugs which were reported by participating drug manufacturers since the last quarterly update of the <strong>Drug Products in the Medicaid Drug Rebate Program (MDRP)</strong> database. Each file on this table represents a snapshot of data in the system and is not updated by subsequent changes. Once the covered outpatient drugs in each of these files appear in the quarterly MDRP database, the file will be removed from this table. States can utilize these files to identify newly reported covered outpatient drugs.</p>
+<section id="metadata" class="level2"><h2 class="anchored" data-anchor-id="metadata">Metadata</h2>
+<div class="cell">
+<pre class="r-output"><code>      [ROWS] 932 
+    [FIELDS] 17 
+  [MODIFIED] 2021-10-13 
+  [DOWNLOAD] https://data.medicaid.gov/sites/default/files/uploaded_resources/newly-reported-drugs-october-files.csv 
+[DICTIONARY] https://data.medicaid.gov/api/1/metastore/schemas/data-dictionary/items/66f843c8-1180-4244-8adc-554d02584fa4 
+</code></pre>
+</div>
+<section id="dictionary" class="level3"><h3 class="anchored" data-anchor-id="dictionary">Dictionary</h3>
+<div class="cell">
+<pre class="r-output"><code><span style="color: #BB0000; font-weight: bold; text-decoration: underline;">ndc1</span>
+<span style="color: #555555;">Labeler Code - First segment of National Drug Code
+(NDC1) that identifies the manufacturer, labeler,
+relabeler, packager, repackager or distributor of
+the drug.</span>
+
+<span style="color: #BB0000; font-weight: bold; text-decoration: underline;">ndc2</span>
+<span style="color: #555555;">Product Code - Second segment of National Drug
+Code (NDC2)</span>
+
+<span style="color: #BB0000; font-weight: bold; text-decoration: underline;">ndc3</span>
+<span style="color: #555555;">Package Size - Third segment of National Drug Code
+(NDC3)</span>
+
+<span style="color: #BB0000; font-weight: bold; text-decoration: underline;">labeler_name</span>
+<span style="color: #555555;">Labeler Name: Name of labeler as it appears on the
+signed rebate agreement.</span>
+
+<span style="color: #BB0000; font-weight: bold; text-decoration: underline;">labeler_status</span>
+<span style="color: #555555;">Labeler Status: Active or Terminated</span>
+
+<span style="color: #BB0000; font-weight: bold; text-decoration: underline;">fda_name</span>
+<span style="color: #555555;">The FDA Name should reflect the drug's name as
+reported to FDA; therefore, the FDA Name reported
+to CMS should correspond to the drug name on file
+with the FDA.</span>
+
+<span style="color: #BB0000; font-weight: bold; text-decoration: underline;">cod_status</span>
+<span style="color: #555555;">Covered Outpatient Drug (COD) Status: A category
+that identifies whether or not a product meets
+the statutory definition of a covered outpatient
+drug in accordance with sections 1927(k)(2) to
+1927(k)(4) of the Social Security Act. Numeric
+values; 8-digit field; format: MMDDYYYY. Valid
+Values: 01 = Abbreviated New Drug Application
+(ANDA) 02 = Biological License Application
+(BLA) 03 = New Drug Application (NDA) 04 = NDA
+Authorized Generic 05 = DESI 5* - LTE/IRS drug
+for all indications 06 = DESI 6* - LTE/IRS
+drug withdrawn from market 07 = Prescription
+Pre-Natal Vitamin or Fluoride 08 = Prescription
+Dietary Supplement/Vitamin/Mineral (Other than
+Prescription Pre-Natal Vitamin or Fluoride) 09
+= OTC Monograph Tentative 10 = OTC Monograph
+Final 11 = Unapproved Drug - Drug Shortage 12
+= Unapproved Drug - Per 1927(k)(2)(A)(ii) 13 =
+Unapproved Drug - Per 1927(k)(2)(A)(iii) Spaces
+= The Labeler has not reported this field to the
+Medicaid Drug Rebate Program. * NDCs with a COD
+Status of DESI 5/6 are not eligible for coverage
+or rebates under the Medicaid Drug Rebate Program.</span>
+
+<span style="color: #BB0000; font-weight: bold; text-decoration: underline;">fda_application_number</span>
+<span style="color: #555555;">FDA Application Number/OTC Monograph Number: For
+drugs with a COD status of ANDA, BLA, NDA, or
+NDA Authorized Generic, this is the application
+number (assigned by the FDA for approval to market
+a drug or biological in the United States) under
+which the NDC is currently marketed. Numeric
+values; 7-digit field; padded with leading zeros
+as needed. For drugs with a COD status of OTC
+Monograph Tentative or Final, this is the FDA's
+regulatory citation for the OTC. Alpha-numeric
+values; 7-digit field. For drugs with a COD
+Status of OTC Monograph Final, the first four
+characters are a constant of PART; the last
+three characters are the numeric values for the
+appropriate regulatory citation for the product
+(e.g., 225). For drugs with a COD Status of OTC
+Monograph Tentative, the first four characters
+are a constant of PART; the last three characters
+are the numeric values for the appropriate
+regulatory citation for the product, or three
+zeros if a Monograph Number is not available.
+For drugs with a COD Status other than ANDA, BLA,
+NDA, NDA Authorized Generic, OTC Monograph Final,
+or OTC Monograph Tentative, the FDA Application
+Number/OTC Monograph Number field should be
+zero-filled.</span>
+
+<span style="color: #BB0000; font-weight: bold; text-decoration: underline;">drug_category</span>
+<span style="color: #555555;">Drug Category: This field indicates whether the
+drug is single source (S), innovator multiple
+source (I), or non-innovator multiple source (N).
+1-character field. Valid Values: N = Non-innovator
+multiple source S = Single source I = Innovator
+multiple source</span>
+
+<span style="color: #BB0000; font-weight: bold; text-decoration: underline;">drug_type</span>
+<span style="color: #555555;">Drug Type: Identifies a drug as prescription (Rx)
+or Over-the-Counter (OTC). Numeric values; 1-digit
+field. Valid Values: 1 = Rx 2 = OTC</span>
+
+<span style="color: #BB0000; font-weight: bold; text-decoration: underline;">line_extension</span>
+<span style="color: #555555;">Line Extension Drug Indicator: Identifies whether
+a product is a line extension drug as defined
+in Section 1927(c)(2)(C) of the Social Security
+Act, including whether the drug is excluded from
+the statutory definition of a line extension on
+the basis of being an abuse-deterrent formulation
+(ADF). If a labeler is seeking an ADF exclusion,
+a value of R will appear in this field. Note:
+If a Line Extension Drug Indicator has not been
+reported for an NDC, this field will be blank.
+Valid Values: Y = Yes N = No (i.e., neither LE nor
+ADF) R = Request for ADF Exclusion E = Excluded
+(Due to ADF) Note: This value may only be assigned
+by CMS</span>
+
+<span style="color: #BB0000; font-weight: bold; text-decoration: underline;">fda_approval_date</span>
+<span style="color: #555555;">FDA Approval Date: NDA (including Authorized
+Generic), ANDA or BLA approval date. For covered
+outpatient drugs for which the FDA does not
+require approval, the FDA Approval Date will be
+09/30/1990, or, if the drug was first marketed
+after 09/30/1990, the actual date the drug was
+first marketed.</span>
+
+<span style="color: #BB0000; font-weight: bold; text-decoration: underline;">market_date</span>
+<span style="color: #555555;">Market Date: For S, I, and N drugs marketed under
+an FDA-approved application (e.g. BLA, NDA, ANDA),
+the earliest date the drug was first marketed
+under the application number by any labeler.
+For drugs marketed without an FDA-approved
+application (e.g. OTC monograph, unapproved drug),
+the earliest date the drug was first marketed by
+any labeler. For all drugs (i.e., those marketed
+with or without an FDA-approved application), if
+a drug was purchased or otherwise acquired from
+another labeler, the Market Date should be equal
+to the Market Date of the original product. If a
+Market Date falls on a date that is earlier than
+9/30/1990, CMS will change it to 9/30/1990 in the
+Medicaid Drug Programs (MDP) system since dates
+earlier than the start of the Drug Rebate Program
+have no bearing on the program.</span>
+
+<span style="color: #BB0000; font-weight: bold; text-decoration: underline;">unit_type</span>
+<span style="color: #555555;">Unit Type: One of the 10 unit types by which
+a drug may be dispensed. 3-character field;
+left-justified; blank-filled for Unit Type values
+with fewer than 3 characters. Valid Values: AHF =
+Injectable Anti-Hemophilic Factor CAP = Capsule EA
+= Each GM = Gram MCI = Millicurie ML = Milliliter
+UCI = Microcurie SUP = Suppository TAB = Tablet
+TDP = Transdermal patch</span>
+
+<span style="color: #BB0000; font-weight: bold; text-decoration: underline;">unit_per_package_size</span>
+<span style="color: #555555;">Units Per Package Size: The total number of
+units in the smallest dispensable amount for the
+11-digit NDC. Numeric values; 11-digit field:
+7 whole numbers, the decimal point (.') and 3
+decimal places; right-justified; zero-padded for
+UPPS values with fewer than 11 digits.</span>
+
+<span style="color: #BB0000; font-weight: bold; text-decoration: underline;">therapeutic_equivalent_code</span>
+<span style="color: #555555;">Therapeutic Equivalence Code (TEC): FDA-assigned
+Therapeutic Equivalence Codes as found in the
+FDA's Orange Book: Approved Drug Products with
+Therapeutic Equivalence Evaluations. Alpha-numeric
+values; 2-digit field. Valid Values: AA = Products
+in Conventional Dosage Forms Not Presenting
+Bioequivalence Problems AB = Products Meeting
+Necessary Bioequivalence Requirements assigned an
+FDA TEC of AB, or AB1 through AB9 AN = Solutions
+and Powders for Aerosolization AO = Injectable Oil
+Solutions AP = Injectable Aqueous Solutions and,
+in Certain Instances, Intravenous Non-Aqueous AT
+= Topical Products BC = Extended-Release Dosage
+Forms (Capsules, Injectables, and Tablets) BD =
+Active Ingredients and Dosage Form With Documented
+Bioequivalence Problems BE = Delayed-Release Oral
+Dosage Forms BN = Products in Aerosol-Nebulizer
+Drug Delivery Systems BP = Active Ingredients
+and Dosage Forms with Potential Bioequivalence
+Problems BR = Suppositories or Enemas That Deliver
+Drugs for Systemic Absorption BS = Products Having
+Drug Standard Deficiencies BT = Topical Products
+with Bioequivalence Issues BX = Drug Products
+for Which the Data Are Insufficient To Determine
+Therapeutic Equivalence NR = Not Rated</span>
+
+<span style="color: #BB0000; font-weight: bold; text-decoration: underline;">5i_indicator</span>
+<span style="color: #555555;">The 5i Drug Indicator specifies whether or not the
+product is a 5i drug (i.e., inhaled, instilled,
+implanted, injected, or infused). (Y or N)</span>
+
+<span style="color: #BB0000; font-weight: bold; text-decoration: underline;">purchased_product_date</span>
+<span style="color: #555555;">Purchased Product Date (PPD): The date the company
+currently holding legal title to the NDC first
+markets the drug under this NDC (this date can
+result, for example, from the purchase of an
+NDC from one company by another company, the
+re-designation of an NDC from one of a company's
+labeler codes to another of that same company's
+labeler codes, cross-licensing arrangements,
+etc.). Zero or blank-filled for drugs without
+Purchased Product Dates.</span>
+
+<span style="color: #BB0000; font-weight: bold; text-decoration: underline;">coverage_effective_date</span>
+<span style="color: #555555;">The Coverage Effective Date field reflects the
+date on which a product is first eligible for
+coverage under the MDRP.</span>
+
+<span style="color: #BB0000; font-weight: bold; text-decoration: underline;">drug_termination_date</span>
+<span style="color: #555555;">Termination Date: The date on which the drug
+was withdrawn from market or the drug's last lot
+expiration date.</span>
+
+<span style="color: #BB0000; font-weight: bold; text-decoration: underline;">drug_reactivation_date</span>
+<span style="color: #555555;">Reactivation Date: The date on which a terminated
+product is re-introduced to the market.</span>
+
+<span style="color: #BB0000; font-weight: bold; text-decoration: underline;">date_reported_to_cms</span>
+<span style="color: #555555;">Date Reported to CMS: The date on which the
+product was initially reported to CMS via MDP</span>
+</code></pre>
+</div>
+</section></section><section id="data" class="level2"><h2 class="anchored" data-anchor-id="data">Data</h2>
+<div class="cell">
+<pre class="r-output"><code><span style="color: #555555;"># A tibble: 932 × 17</span>
+   ndc1  ndc2  ndc3  ndc11       fda_nameproduct_name                 cod_status
+   <span style="color: #555555; font-style: italic;"><chr></chr></span> <span style="color: #555555; font-style: italic;"><chr></chr></span> <span style="color: #555555; font-style: italic;"><chr></chr></span> <span style="color: #555555; font-style: italic;"><chr></chr></span>       <span style="color: #555555; font-style: italic;"><chr></chr></span>                                <span style="color: #555555; font-style: italic;"><fct></fct></span>     
+<span style="color: #555555;"> 1</span> 00006 5331  01    00006533101 WELIREG 40MG TABLET                  03        
+<span style="color: #555555;"> 2</span> 00093 3420  01    00093342001 CYCLOBENZAPRINE HCL 5MG TABLETS 100  01        
+<span style="color: #555555;"> 3</span> 00093 3421  01    00093342101 CYCLOBENZAPRINE HCL 7.5MG TABLETS 1… 01        
+<span style="color: #555555;"> 4</span> 00093 3422  01    00093342201 CYCLOBENZAPRINE HCL 10MG TABLETS 100 01        
+<span style="color: #555555;"> 5</span> 00093 3422  05    00093342205 CYCLOBENZAPRINE HCL 10MG TABLETS 500 01        
+<span style="color: #555555;"> 6</span> 00113 7032  40    00113703240 MINOXIDIL 5% 180 DAY LIQ 12OZ        01        
+<span style="color: #555555;"> 7</span> 00115 1010  03    00115101003 Baclofen 10MG                        01        
+<span style="color: #555555;"> 8</span> 00143 9361  01    00143936101 MICAFUNGIN LYO for INJ 50mg x 1      01        
+<span style="color: #555555;"> 9</span> 00143 9362  01    00143936201 MICAFUNGIN LYO for INJ 100mg x 1     01        
+<span style="color: #555555;">10</span> 00378 0399  18    00378039918 Dimethyl Fumarate DR 240mg C  60s G… 01        
+<span style="color: #555555;"># ℹ 922 more rows</span>
+<span style="color: #555555;"># ℹ 11 more variables: fda_application_numberotc_monograph_number <chr>,</chr></span>
+<span style="color: #555555;">#   drug_category <fct>, drug_type <fct>, unit_type <fct>, upps <dbl>,</dbl></fct></fct></fct></span>
+<span style="color: #555555;">#   line_extension <chr>, tec_code <fct>, fda_approval_date <date>,</date></fct></chr></span>
+<span style="color: #555555;">#   market_date <date>, termination_date <date>, date_transferred <date></date></date></date></span>
+</code></pre>
+</div>
+<section id="overview" class="level3"><h3 class="anchored" data-anchor-id="overview">Overview</h3>
+<div class="cell">
+<pre class="r-output"><code><span style="color: #0000BB;">resp (932 rows and 17 variables, 16 shown)</span>
+
+ID | Name                                       | Type        |    Missings
+---+--------------------------------------------+-------------+------------
+1  | ndc1                                       | character   |    0 (0.0%)
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+---+--------------------------------------------+-------------+------------
+2  | ndc2                                       | character   |    0 (0.0%)
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+---+--------------------------------------------+-------------+------------
+3  | ndc3                                       | character   |    0 (0.0%)
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+---+--------------------------------------------+-------------+------------
+4  | ndc11                                      | character   |    0 (0.0%)
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+---+--------------------------------------------+-------------+------------
+5  | fda_nameproduct_name                       | character   |    0 (0.0%)
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+---+--------------------------------------------+-------------+------------
+6  | cod_status                                 | categorical |    0 (0.0%)
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+---+--------------------------------------------+-------------+------------
+7  | fda_application_numberotc_monograph_number | character   |    0 (0.0%)
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+---+--------------------------------------------+-------------+------------
+8  | drug_category                              | categorical |    0 (0.0%)
+   |                                            |             |            
+   |                                            |             |            
+---+--------------------------------------------+-------------+------------
+9  | drug_type                                  | categorical |    0 (0.0%)
+   |                                            |             |            
+---+--------------------------------------------+-------------+------------
+10 | unit_type                                  | categorical |    0 (0.0%)
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+---+--------------------------------------------+-------------+------------
+11 | upps                                       | numeric     |    0 (0.0%)
+---+--------------------------------------------+-------------+------------
+13 | tec_code                                   | categorical |    0 (0.0%)
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+---+--------------------------------------------+-------------+------------
+14 | fda_approval_date                          | date        |    0 (0.0%)
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+---+--------------------------------------------+-------------+------------
+15 | market_date                                | date        |    0 (0.0%)
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+---+--------------------------------------------+-------------+------------
+16 | termination_date                           | date        | 929 (99.7%)
+   |                                            |             |            
+   |                                            |             |            
+---+--------------------------------------------+-------------+------------
+17 | date_transferred                           | date        |    0 (0.0%)
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+   |                                            |             |            
+---------------------------------------------------------------------------
+
+ID |                                                Values |           N
+---+-------------------------------------------------------+------------
+1  |                                                 00006 |   1 ( 0.1%)
+   |                                                 00023 |   2 ( 0.2%)
+   |                                                 00024 |   8 ( 0.9%)
+   |                                                 00054 |   1 ( 0.1%)
+   |                                                 00074 |   1 ( 0.1%)
+   |                                                 00075 |   7 ( 0.8%)
+   |                                                 00088 |   1 ( 0.1%)
+   |                                                 00093 |  10 ( 1.1%)
+   |                                                 00113 |   6 ( 0.6%)
+   |                                                 00115 |   4 ( 0.4%)
+   |                                                 (...) |            
+---+-------------------------------------------------------+------------
+2  |                                                  0001 |   4 ( 0.4%)
+   |                                                  0002 |   1 ( 0.1%)
+   |                                                  0003 |   1 ( 0.1%)
+   |                                                  0005 |   1 ( 0.1%)
+   |                                                  0009 |   1 ( 0.1%)
+   |                                                  0010 |   1 ( 0.1%)
+   |                                                  0011 |   2 ( 0.2%)
+   |                                                  0012 |   2 ( 0.2%)
+   |                                                  0013 |   2 ( 0.2%)
+   |                                                  0014 |   5 ( 0.5%)
+   |                                                 (...) |            
+---+-------------------------------------------------------+------------
+3  |                                                    00 |  15 ( 1.6%)
+   |                                                    01 | 251 (26.9%)
+   |                                                    02 |  53 ( 5.7%)
+   |                                                    03 |  30 ( 3.2%)
+   |                                                    04 |  21 ( 2.3%)
+   |                                                    05 |  52 ( 5.6%)
+   |                                                    06 |  28 ( 3.0%)
+   |                                                    07 |  11 ( 1.2%)
+   |                                                    08 |   9 ( 1.0%)
+   |                                                    09 |  25 ( 2.7%)
+   |                                                 (...) |            
+---+-------------------------------------------------------+------------
+4  |                                           00006533101 |   1 ( 0.1%)
+   |                                           00023350731 |   1 ( 0.1%)
+   |                                           00023715160 |   1 ( 0.1%)
+   |                                           00024279201 |   1 ( 0.1%)
+   |                                           00024279401 |   1 ( 0.1%)
+   |                                           00024590800 |   1 ( 0.1%)
+   |                                           00024591000 |   1 ( 0.1%)
+   |                                           00024591900 |   1 ( 0.1%)
+   |                                           00024591902 |   1 ( 0.1%)
+   |                                           00024592000 |   1 ( 0.1%)
+   |                                                 (...) |            
+---+-------------------------------------------------------+------------
+5  | 2.5% Dextrose and 0.45% Sodium Chl Liquid 25 g 1000mL |   1 ( 0.1%)
+   |                                      Abiraterone Tabs |   1 ( 0.1%)
+   |                                Acetaminophen ER 650mg |   1 ( 0.1%)
+   |                          ACUVAIL 0.45% 30 x 0.4 mL FW |   1 ( 0.1%)
+   |                     Acyclovir 200mg/5ml, 473ml bottle |   1 ( 0.1%)
+   |                                               Aemcolo |   1 ( 0.1%)
+   |       AKOVAZ-EPHEDRINE SULFATE INJECTION 50MG/ML VIAL |   1 ( 0.1%)
+   |                                        AKOVAZ 50MG/ML |   1 ( 0.1%)
+   |      Alaway Preservative Free Antihistamine Eye Drops |   1 ( 0.1%)
+   |                            Albuterol Sulfate Inhalant |   1 ( 0.1%)
+   |                                                 (...) |            
+---+-------------------------------------------------------+------------
+6  |                                                    01 | 628 (67.4%)
+   |                                                    02 |  39 ( 4.2%)
+   |                                                    03 | 177 (19.0%)
+   |                                                    04 |  23 ( 2.5%)
+   |                                                    07 |   9 ( 1.0%)
+   |                                                    08 |   1 ( 0.1%)
+   |                                                    09 |  26 ( 2.8%)
+   |                                                    10 |  24 ( 2.6%)
+   |                                                    12 |   5 ( 0.5%)
+---+-------------------------------------------------------+------------
+7  |                                                       |  14 ( 1.5%)
+   |                                               0000000 |   1 ( 0.1%)
+   |                                               0014602 |   1 ( 0.1%)
+   |                                               0017422 |   1 ( 0.1%)
+   |                                               0017555 |   2 ( 0.2%)
+   |                                               0018074 |   1 ( 0.1%)
+   |                                               0018651 |   1 ( 0.1%)
+   |                                               0018741 |   2 ( 0.2%)
+   |                                               0018965 |   1 ( 0.1%)
+   |                                               0019018 |   1 ( 0.1%)
+   |                                                 (...) |            
+---+-------------------------------------------------------+------------
+8  |                                                     I | 105 (11.3%)
+   |                                                     N | 693 (74.4%)
+   |                                                     S | 134 (14.4%)
+---+-------------------------------------------------------+------------
+9  |                                                     1 | 856 (91.8%)
+   |                                                     2 |  76 ( 8.2%)
+---+-------------------------------------------------------+------------
+10 |                                                   AHF |   1 ( 0.1%)
+   |                                                   CAP | 149 (16.0%)
+   |                                                    EA |  74 ( 7.9%)
+   |                                                    GM |  55 ( 5.9%)
+   |                                                    ML | 209 (22.4%)
+   |                                                   SUP |   1 ( 0.1%)
+   |                                                   TAB | 439 (47.1%)
+   |                                                   TDP |   4 ( 0.4%)
+---+-------------------------------------------------------+------------
+11 |                                          [0.14, 1000] |         932
+---+-------------------------------------------------------+------------
+13 |                                                    A1 |   1 ( 0.1%)
+   |                                                    A3 |   4 ( 0.4%)
+   |                                                    AA |  31 ( 3.3%)
+   |                                                    AB | 539 (57.8%)
+   |                                                    AN |   8 ( 0.9%)
+   |                                                    AP | 103 (11.1%)
+   |                                                    AT |   5 ( 0.5%)
+   |                                                    BE |   1 ( 0.1%)
+   |                                                    BP |   1 ( 0.1%)
+   |                                                    NR | 239 (25.6%)
+---+-------------------------------------------------------+------------
+14 |                                            1990-09-30 |  57 ( 6.1%)
+   |                                            1991-10-31 |   3 ( 0.3%)
+   |                                            1991-12-23 |   5 ( 0.5%)
+   |                                            1992-02-10 |   1 ( 0.1%)
+   |                                            1992-06-19 |   2 ( 0.2%)
+   |                                            1992-07-31 |   2 ( 0.2%)
+   |                                            1992-10-29 |   2 ( 0.2%)
+   |                                            1993-03-29 |   2 ( 0.2%)
+   |                                            1993-10-01 |   1 ( 0.1%)
+   |                                            1993-12-16 |   1 ( 0.1%)
+   |                                                 (...) |            
+---+-------------------------------------------------------+------------
+15 |                                            1990-09-30 |  57 ( 6.1%)
+   |                                            1991-10-31 |   3 ( 0.3%)
+   |                                            1991-12-23 |   5 ( 0.5%)
+   |                                            1992-02-10 |   1 ( 0.1%)
+   |                                            1992-06-19 |   2 ( 0.2%)
+   |                                            1992-07-31 |   2 ( 0.2%)
+   |                                            1992-10-29 |   2 ( 0.2%)
+   |                                            1993-03-29 |   2 ( 0.2%)
+   |                                            1993-10-01 |   1 ( 0.1%)
+   |                                            1993-12-16 |   1 ( 0.1%)
+   |                                                 (...) |            
+---+-------------------------------------------------------+------------
+16 |                                            2018-02-10 |   1 (33.3%)
+   |                                            2018-06-06 |   1 (33.3%)
+   |                                            2022-03-31 |   1 (33.3%)
+---+-------------------------------------------------------+------------
+17 |                                            2021-07-26 |  19 ( 2.0%)
+   |                                            2021-07-27 |  24 ( 2.6%)
+   |                                            2021-07-28 |  36 ( 3.9%)
+   |                                            2021-07-29 |  70 ( 7.5%)
+   |                                            2021-07-30 |  29 ( 3.1%)
+   |                                            2021-07-31 |   1 ( 0.1%)
+   |                                            2021-08-02 |  22 ( 2.4%)
+   |                                            2021-08-03 |  13 ( 1.4%)
+   |                                            2021-08-04 |   2 ( 0.2%)
+   |                                            2021-08-11 |  42 ( 4.5%)
+   |                                                 (...) |            
+------------------------------------------------------------------------
+</code></pre>
+</div>
+</section><section id="distribution" class="level3"><h3 class="anchored" data-anchor-id="distribution">Distribution</h3>
+<div class="cell">
+<pre class="r-output"><code>Variable |  Mean |     SD | IQR |           Range | Skewness | Kurtosis |   n | n_Missing
+-----------------------------------------------------------------------------------------
+upps     | 86.62 | 185.27 |  99 | [0.14, 1000.00] |     3.60 |    13.55 | 932 |         0
+</code></pre>
+</div>
+<div class="cell quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="caid_rebate_files/figure-html/distribution_plot-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</div>
+
+
+<!-- -->
+
+</section></section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/andrewallenbruce\.github\.io\/providerdev\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="./caid_acaful.html" class="pagination-link" aria-label="ACA FUL">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">22</span>&nbsp; <span class="chapter-title">ACA FUL</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./api_hc.html" class="pagination-link" aria-label="HealthCare.Gov">
+        <span class="nav-page-text">HealthCare.Gov</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">   chunk_output_type: console</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup-common-01</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"includes/_common.R"</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu"># Drug Rebate Program {#sec-rebate}</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; __Product Data for Newly Reported Drugs in the Medicaid Drug Rebate Program__</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>The Table below, updated weekly, contains newly reported, active covered outpatient drugs which were reported by participating drug manufacturers since the last quarterly update of the __Drug Products in the Medicaid Drug Rebate Program (MDRP)__ database. Each file on this table represents a snapshot of data in the system and is not updated by subsequent changes. Once the covered outpatient drugs in each of these files appear in the quarterly MDRP database, the file will be removed from this table. States can utilize these files to identify newly reported covered outpatient drugs.</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="fu">## Metadata</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: s7_object</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>end <span class="ot">&lt;-</span> <span class="fu">caid_endpoint</span>(<span class="st">"caid_drug_rebate"</span>)</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="fu">print_meta</span>(end)</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="fu">### Dictionary</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: dict</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: true</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>dict <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"data/caid_data_dictionary.csv"</span>), </span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>  providertwo<span class="sc">:::</span><span class="fu">subset_detect</span>(title, <span class="st">"Newly Reported Drugs Data Dictionary"</span>)</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="fu">print_dict_tbl</span>(dict)</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: http_request</span></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>resp <span class="ot">&lt;-</span> <span class="fu">quick</span>(<span class="st">"caid_drug_rebate"</span>, <span class="at">offset =</span> <span class="dv">0</span>, <span class="at">limit =</span> <span class="dv">8000</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>    <span class="at">drug_category     =</span> <span class="fu">factor_</span>(drug_category),</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">drug_type         =</span> <span class="fu">factor_</span>(drug_type),</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>    <span class="at">unit_type         =</span> <span class="fu">factor_</span>(unit_type),</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>    <span class="at">tec_code          =</span> <span class="fu">factor_</span>(tec_code),</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">cod_status        =</span> <span class="fu">factor_</span>(cod_status),</span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>    <span class="at">upps              =</span> <span class="fu">as.double</span>(upps),</span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>    <span class="at">line_extension    =</span> <span class="fu">gsub</span>(<span class="st">"N/A"</span>, <span class="cn">NA</span>, line_extension),</span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>    <span class="at">fda_approval_date =</span> anytime<span class="sc">::</span><span class="fu">anydate</span>(fda_approval_date),</span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>    <span class="at">market_date       =</span> anytime<span class="sc">::</span><span class="fu">anydate</span>(fda_approval_date),</span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>    <span class="at">date_transferred  =</span> anytime<span class="sc">::</span><span class="fu">anydate</span>(date_transferred_from_ddr_to_mdr),</span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>    <span class="at">termination_date  =</span> anytime<span class="sc">::</span><span class="fu">anydate</span>(termination_date),</span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>    <span class="at">date_transferred_from_ddr_to_mdr =</span> <span class="cn">NULL</span>)</span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>resp</span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a><span class="fu">### Overview</span></span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: overview</span></span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a>resp <span class="sc">|&gt;</span> <span class="fu">data_codebook</span>()</span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a><span class="fu">### Distribution</span></span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: distribution</span></span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">describe_distribution</span>(resp)</span>
+<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a>res</span>
+<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: distribution_plot</span></span>
+<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a><span class="co">#| layout-ncol: 2</span></span>
+<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a>plots <span class="ot">&lt;-</span> <span class="fu">plot</span>(res, <span class="at">dispersion =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a><span class="fu">walk</span>(plots, print)</span>
+<span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+<script src="site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

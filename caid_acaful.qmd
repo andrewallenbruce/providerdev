@@ -8,11 +8,12 @@ editor_options:
 #| include: false
 #| warning: false
 source("includes/_common.R")
+# ACA FUL
 ```
 
 # ACA Federal Upper Limits {#sec-acaful}
 
-__Affordable Care Act Federal Upper Limits (FUL)__ based on the weighted average of the most recently reported monthly average manufacturer price (AMP) for pharmaceutically and therapeutically equivalent multiple source drug products that are available for purchase by retail community pharmacies on a nationwide basis.
+__Affordable Care Act Federal Upper Limits (FUL)__ based on the weighted average of the most recently reported monthly __average manufacturer price (AMP)__ for pharmaceutical and therapeutically equivalent multiple source drug products that are available for purchase by retail community pharmacies on a nationwide basis.
 
 ## Metadata
 
@@ -29,16 +30,10 @@ print_meta(end)
 #| label: dict
 #| echo: false
 #| message: true
-dict <- end@metadata$dictionary |> 
-  request() |>
-  providertwo:::perform_simple() |>
-    _[["data"]] |> 
-  _[["fields"]]
-
-dict <- new_tbl(
-  field = dict$name, 
-  description = dict$description)
-
+dict <- read_csv(
+  here("data/caid_data_dictionary.csv"), 
+  show_col_types = FALSE) |> 
+  sbt(title == "Federal Upper Limits Data Dictionary")
 print_dict_tbl(dict)
 ```
 
@@ -65,13 +60,6 @@ resp <- quick("aca_ful", offset = 0, limit = 8000) |>
   )
 
 resp |> str()
-```
-
-### Overview
-
-```{r}
-#| label: overview
-resp |> data_codebook()
 ```
 
 ### Distribution

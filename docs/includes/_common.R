@@ -160,9 +160,9 @@ print_resources <- function(x) {
   list_resources(x) |>
     glue_data_col(
       "[{green {format(toupper(ext), justify = 'right')}}] ",
-      "{underline {red {format(str_squish(size), justify = 'left')}}} ",
+      "{red {format(str_squish(size), justify = 'right')}} ",
       "{year} {bold {blue {file}}}\n ",
-      "<{underline {silver {download}}}>",
+      # "<{underline {silver {download}}}>",
       .na = cli::symbol$menu
     )
 }
