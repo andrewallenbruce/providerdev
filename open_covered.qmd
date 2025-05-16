@@ -1,0 +1,60 @@
+---
+editor_options: 
+   chunk_output_type: console
+---
+
+```{r}
+#| label: setup-common-01
+#| include: false
+#| warning: false
+source("includes/_common.R")
+# Covered Recipient
+```
+
+# Covered Recipient Profile Supplement {#sec-opencov}
+
+The Covered Recipient Profile Supplement file contains information about physicians and non-physician practitioners who have been indicated as recipients of payments, other transfers of value, or ownership and investment interest in payment records, as well as physicians and non-physician practitioners who have been identified as principal investigators associated with research payment records published by Open Payments. 
+
+This file contains only those physicians that have at least one published payment record in this cycle of the publication as of January 30, 2025. The criteria used by the Centers for Medicare & Medicaid Services (CMS) to determine which payment records are eligible for publication is available in the Open Payments Methodology and Data Dictionary Document. 
+
+This document can be found on the Resources page of the Open Payments website (https://www.cms.gov/OpenPayments/Resources). The Methodology and Data Dictionary Document also includes information on the data collection and reporting methodology, data fields included in the files, and any notes or special considerations that users should be aware of.
+
+### Metadata
+
+```{r}
+#| label: s7_object
+#| echo: false
+end  <- open_endpoint("profile_covered")
+print_meta(end)
+```
+
+### Dictionary
+
+```{r}
+#| label: dict
+#| echo: false
+#| message: true
+dict <- providertwo:::open_dictionary()$covered_recipient_profile_supplement
+dict <- slt(dict, field = name, description)
+print_dict_tbl(dict)
+```
+
+## Data
+
+```{r}
+#| label: http_request
+#| message: true
+#| echo: false
+resp <- quick("profile_covered", limit = 500)
+resp |> str()
+```
+
+## Tidyup
+
+```{r}
+#| label: tidyup
+#| message: false
+#| echo: true
+x <- cheapr::overview(resp, hist = TRUE)
+x$categorical |> slt(col, n_missing, n_unique)
+```
