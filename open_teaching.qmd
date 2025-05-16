@@ -8,6 +8,7 @@ editor_options:
 #| include: false
 #| warning: false
 source("includes/_common.R")
+# Teaching Hospital
 ```
 
 # Teaching Hospital Profile {#sec-openteach}
@@ -27,6 +28,10 @@ print_meta(end)
 #| label: http_request
 #| message: true
 #| echo: false
-resp <- quick("profile_teaching", limit = 500)
+resp <- list(
+  quick("profile_teaching", offset = 0, limit = 500),
+  quick("profile_teaching", offset = 500, limit = 500),
+  quick("profile_teaching", offset = 1000, limit = 500)) |> 
+  list_rbind()
 resp
 ```

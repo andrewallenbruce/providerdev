@@ -373,7 +373,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./open_teaching.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Teaching Hospital Profile</span></span></a>
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Teaching Hospital</span></span></a>
   </div>
 </li>
       </ul>
@@ -468,7 +468,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
 <li><a href="#metadata" id="toc-metadata" class="nav-link active" data-scroll-target="#metadata">Metadata</a></li>
   <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
-  <li><a href="#tidyup" id="toc-tidyup" class="nav-link" data-scroll-target="#tidyup">Tidyup</a></li>
   </ul><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li><li><a href="https://github.com/andrewallenbruce/providertwo"><i class="bi bi-file-code"></i>providertwo</a></li></ul></div></nav>
     </div>
 <!-- main -->
@@ -499,71 +498,309 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section><section id="data" class="level2"><h2 class="anchored" data-anchor-id="data">Data</h2>
 <div class="cell">
-<pre class="r-output"><code><span style="color: #555555;"># A tibble: 500 × 28</span>
-   country_code country_name  state_code state_name            nature_of_payment
-   <span style="color: #555555; font-style: italic;"><chr></chr></span>        <span style="color: #555555; font-style: italic;"><chr></chr></span>         <span style="color: #555555; font-style: italic;"><chr></chr></span>      <span style="color: #555555; font-style: italic;"><chr></chr></span>                 <span style="color: #555555; font-style: italic;"><chr></chr></span>            
-<span style="color: #555555;"> 1</span> US           United States AA         Armed Forces Americas Acquisitions     
-<span style="color: #555555;"> 2</span> US           United States AA         Armed Forces Americas Charitable Contr…
-<span style="color: #555555;"> 3</span> US           United States AA         Armed Forces Americas Compensation for…
-<span style="color: #555555;"> 4</span> US           United States AA         Armed Forces Americas Compensation for…
-<span style="color: #555555;"> 5</span> US           United States AA         Armed Forces Americas Compensation for…
-<span style="color: #555555;"> 6</span> US           United States AA         Armed Forces Americas Compensation for…
-<span style="color: #555555;"> 7</span> US           United States AA         Armed Forces Americas Consulting Fee   
-<span style="color: #555555;"> 8</span> US           United States AA         Armed Forces Americas Current or prosp…
-<span style="color: #555555;"> 9</span> US           United States AA         Armed Forces Americas Debt forgiveness 
-<span style="color: #555555;">10</span> US           United States AA         Armed Forces Americas Education        
-<span style="color: #555555;"># ℹ 490 more rows</span>
-<span style="color: #555555;"># ℹ 23 more variables: recipient_type <chr>, program_year <chr>,</chr></chr></span>
-<span style="color: #555555;">#   total_number_of_physicians <chr>,</chr></span>
-<span style="color: #555555;">#   total_number_of_non_physician_practitioners <chr>,</chr></span>
-<span style="color: #555555;">#   total_number_of_teaching_hospitals <chr>,</chr></span>
-<span style="color: #555555;">#   total_payment_amount_physician <chr>,</chr></span>
-<span style="color: #555555;">#   total_payment_amount_non_physician_practitioner <chr>, …</chr></span>
+<pre class="r-output"><code>Acquisitions
+Charitable Contribution
+Compensation for services other than consulting, including serving as faculty or as a speaker at a venue other than a continuing education program
+Compensation for serving as faculty or as a speaker for a medical education program
+Faculty/Speaker Compensation
+Compensation for serving as faculty or as a speaker for a non-accredited and noncertified continuing education program
+Consulting Fee
+Current or prospective ownership or investment interest
+Debt forgiveness
+Education
+Entertainment
+Food and Beverage
+Gift
+Grant
+Honoraria
+Long term medical supply or device loan
+Royalty or License
+Space rental or facility fees (teaching hospital only)
+Travel and Lodging
 </code></pre>
 </div>
-</section><section id="tidyup" class="level2"><h2 class="anchored" data-anchor-id="tidyup">Tidyup</h2>
 <div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">resp</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">as_tbl</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">mtt</span><span class="op">(</span>recipient_type <span class="op">=</span> <span class="fu">providertwo</span><span class="fu">:::</span><span class="fu">clean_names</span><span class="op">(</span><span class="va">recipient_type</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">rsplit</span><span class="op">(</span><span class="op">~</span> <span class="va">recipient_type</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">x</span><span class="op">$</span><span class="va">covered_recipient_physician</span> <span class="op">&lt;-</span> <span class="fu">fcompute</span><span class="op">(</span></span>
-<span>  <span class="va">x</span><span class="op">$</span><span class="va">covered_recipient_physician</span>,</span>
-<span>  year            <span class="op">=</span> <span class="fu">factor_</span><span class="op">(</span><span class="va">program_year</span><span class="op">)</span>,</span>
-<span>  payment_type    <span class="op">=</span> <span class="fu">factor_</span><span class="op">(</span><span class="va">payment_type</span><span class="op">)</span>,</span>
-<span>  recipient_type  <span class="op">=</span> <span class="st">"Physician"</span>,</span>
-<span>  recipient_n     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">total_number_of_physicians</span><span class="op">)</span>,</span>
-<span>  payment_sum     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">total_payment_amount_physician</span><span class="op">)</span>,</span>
-<span>  payment_mean    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">mean_total_payment_amount_physician</span><span class="op">)</span>,</span>
-<span>  payment_median  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">median_total_payment_amount_physician</span><span class="op">)</span>,</span>
-<span>  payments_n      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">total_payment_count_physician</span><span class="op">)</span>,</span>
-<span>  payments_mean   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html">as.double</a></span><span class="op">(</span><span class="va">mean_total_payment_count_physician</span><span class="op">)</span>,</span>
-<span>  payments_median <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html">as.double</a></span><span class="op">(</span><span class="va">median_total_payment_count_physician</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<pre class="r-output"><code>Error in eval(substitute(list(...)), .data, parent.frame()): object 'payment_type' not found
-</code></pre>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">x</span><span class="op">$</span><span class="va">covered_recipient_non_physician_practitioner</span> <span class="op">&lt;-</span> <span class="fu">fcompute</span><span class="op">(</span></span>
-<span>  <span class="va">x</span><span class="op">$</span><span class="va">covered_recipient_non_physician_practitioner</span>,</span>
-<span>  year            <span class="op">=</span> <span class="fu">factor_</span><span class="op">(</span><span class="va">program_year</span><span class="op">)</span>,</span>
-<span>  payment_type    <span class="op">=</span> <span class="fu">factor_</span><span class="op">(</span><span class="va">payment_type</span><span class="op">)</span>,</span>
-<span>  recipient_type  <span class="op">=</span> <span class="st">"Non-Physician Practitioner"</span>,</span>
-<span>  recipient_n     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">total_number_of_non_physician_practitioners</span><span class="op">)</span>,</span>
-<span>  payment_sum     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">total_payment_amount_non_physician_practitioner</span><span class="op">)</span>,</span>
-<span>  payment_mean    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">mean_total_payment_amount_non_physician_practitioner</span><span class="op">)</span>,</span>
-<span>  payment_median  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">median_total_payment_amount_non_physician_practitioner</span><span class="op">)</span>,</span>
-<span>  payments_n      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">total_payment_count_non_physician_practitioner</span><span class="op">)</span>,</span>
-<span>  payments_mean   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html">as.double</a></span><span class="op">(</span><span class="va">mean_total_payment_count_non_physician_practitioner</span><span class="op">)</span>,</span>
-<span>  payments_median <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html">as.double</a></span><span class="op">(</span><span class="va">median_total_payment_count_non_physician_practitioner</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<pre class="r-output"><code>Error in fcompute(x$covered_recipient_non_physician_practitioner, year = factor_(program_year), : .data needs to be a list of equal length columns or a data.frame
-</code></pre>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">x</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">rowbind</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">mtt</span><span class="op">(</span>recipient_type <span class="op">=</span> <span class="fu">factor_</span><span class="op">(</span><span class="va">recipient_type</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">roworder</span><span class="op">(</span><span class="va">recipient_type</span>, <span class="va">payment_type</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">as_tbl</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<pre class="r-output"><code>Error in eval(ei, .data, pe): object 'recipient_type' not found
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">descr</span><span class="op">(</span><span class="va">resp</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="r-output"><code>Dataset: resp, 26 Variables, N = 5500
+--------------------------------------------------------------------------------
+year (factor): 
+Statistics
+     N  Ndist
+  5500      1
+Table
+     Freq  Perc
+ALL  5500   100
+--------------------------------------------------------------------------------
+country (character): 
+Statistics
+     N  Ndist
+  5500    229
+Table
+                Freq   Perc
+US              1178  21.42
+AE                19   0.35
+AF                19   0.35
+AG                19   0.35
+AI                19   0.35
+AL                19   0.35
+AM                19   0.35
+AN                19   0.35
+AO                19   0.35
+AQ                19   0.35
+AR                19   0.35
+AT                19   0.35
+AU                19   0.35
+AW                19   0.35
+... 215 Others  4075  74.09
+
+Summary of Table Frequencies
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+      9      19      19      24      19    1178 
+--------------------------------------------------------------------------------
+state (character): 
+Statistics (78.6% NAs)
+     N  Ndist
+  1178     62
+Table
+               Freq   Perc
+AA               19   1.61
+AE               19   1.61
+AK               19   1.61
+AL               19   1.61
+AP               19   1.61
+AR               19   1.61
+AS               19   1.61
+AZ               19   1.61
+CA               19   1.61
+CO               19   1.61
+CT               19   1.61
+DC               19   1.61
+DE               19   1.61
+FL               19   1.61
+... 48 Others   912  77.42
+
+Summary of Table Frequencies
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+     19      19      19      19      19      19 
+--------------------------------------------------------------------------------
+recip_type (factor): 
+Statistics
+     N  Ndist
+  5500      1
+Table
+                             Freq  Perc
+Covered Recipient Physician  5500   100
+--------------------------------------------------------------------------------
+pay_nature (character): 
+Statistics
+     N  Ndist
+  5500     19
+Table
+                                                                                                                                                    Freq
+Acquisitions                                                                                                                                         290
+Charitable Contribution                                                                                                                              290
+Compensation for services other than consulting, including serving as faculty or as a speaker at a venue other than a continuing education program   290
+Compensation for serving as faculty or as a speaker for a medical education program                                                                  290
+Faculty/Speaker Compensation                                                                                                                         290
+Compensation for serving as faculty or as a speaker for a non-accredited and noncertified continuing education program                               290
+Consulting Fee                                                                                                                                       290
+Current or prospective ownership or investment interest                                                                                              290
+Debt forgiveness                                                                                                                                     290
+Education                                                                                                                                            289
+Entertainment                                                                                                                                        289
+Food and Beverage                                                                                                                                    289
+Gift                                                                                                                                                 289
+Grant                                                                                                                                                289
+... 5 Others                                                                                                                                        1445
+                                                                                                                                                     Perc
+Acquisitions                                                                                                                                         5.27
+Charitable Contribution                                                                                                                              5.27
+Compensation for services other than consulting, including serving as faculty or as a speaker at a venue other than a continuing education program   5.27
+Compensation for serving as faculty or as a speaker for a medical education program                                                                  5.27
+Faculty/Speaker Compensation                                                                                                                         5.27
+Compensation for serving as faculty or as a speaker for a non-accredited and noncertified continuing education program                               5.27
+Consulting Fee                                                                                                                                       5.27
+Current or prospective ownership or investment interest                                                                                              5.27
+Debt forgiveness                                                                                                                                     5.27
+Education                                                                                                                                            5.25
+Entertainment                                                                                                                                        5.25
+Food and Beverage                                                                                                                                    5.25
+Gift                                                                                                                                                 5.25
+Grant                                                                                                                                                5.25
+... 5 Others                                                                                                                                        26.27
+
+Summary of Table Frequencies
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    289     289     289     290     290     290 
+--------------------------------------------------------------------------------
+num_phys (integer): 
+Statistics
+     N  Ndist    Mean       SD  Min     Max   Skew    Kurt
+  5500    562  408.38  3804.04    0  135403  20.26  534.57
+Quantiles
+  1%  5%  10%  25%  50%  75%  90%  95%      99%
+   0   0    0    0    0    0   95  696  8895.72
+--------------------------------------------------------------------------------
+num_npp (integer): 
+Statistics
+     N  Ndist  Mean  SD  Min  Max  Skew  Kurt
+  5500      1     0   0    0    0     -     -
+Quantiles
+  1%  5%  10%  25%  50%  75%  90%  95%  99%
+   0   0    0    0    0    0    0    0    0
+--------------------------------------------------------------------------------
+num_teach (integer): 
+Statistics
+     N  Ndist  Mean  SD  Min  Max  Skew  Kurt
+  5500      1     0   0    0    0     -     -
+Quantiles
+  1%  5%  10%  25%  50%  75%  90%  95%  99%
+   0   0    0    0    0    0    0    0    0
+--------------------------------------------------------------------------------
+pay_phys (numeric): 
+Statistics
+     N  Ndist         Mean           SD  Min         Max   Skew    Kurt
+  5500   1090  2'827135.59  20'515817.6    0  562'702006  13.97  259.17
+Quantiles
+  1%  5%  10%  25%  50%  75%        90%          95%          99%
+   0   0    0    0    0    0  802170.97  6'498296.77  76'541014.5
+--------------------------------------------------------------------------------
+pay_npp (numeric): 
+Statistics
+     N  Ndist  Mean  SD  Min  Max  Skew  Kurt
+  5500      1     0   0    0    0     -     -
+Quantiles
+  1%  5%  10%  25%  50%  75%  90%  95%  99%
+   0   0    0    0    0    0    0    0    0
+--------------------------------------------------------------------------------
+pay_teach (numeric): 
+Statistics
+     N  Ndist  Mean  SD  Min  Max  Skew  Kurt
+  5500      1     0   0    0    0     -     -
+Quantiles
+  1%  5%  10%  25%  50%  75%  90%  95%  99%
+   0   0    0    0    0    0    0    0    0
+--------------------------------------------------------------------------------
+avg_pay_phys (numeric): 
+Statistics
+     N  Ndist      Mean         SD  Min          Max   Skew     Kurt
+  5500   1090  25179.34  376505.24    0  16'620129.1  34.72  1389.56
+Quantiles
+  1%  5%  10%  25%  50%  75%      90%       95%        99%
+   0   0    0    0    0    0  5235.32  17460.01  531170.71
+--------------------------------------------------------------------------------
+avg_pay_npp (numeric): 
+Statistics
+     N  Ndist  Mean  SD  Min  Max  Skew  Kurt
+  5500      1     0   0    0    0     -     -
+Quantiles
+  1%  5%  10%  25%  50%  75%  90%  95%  99%
+   0   0    0    0    0    0    0    0    0
+--------------------------------------------------------------------------------
+avg_pay_teach (numeric): 
+Statistics
+     N  Ndist  Mean  SD  Min  Max  Skew  Kurt
+  5500      1     0   0    0    0     -     -
+Quantiles
+  1%  5%  10%  25%  50%  75%  90%  95%  99%
+   0   0    0    0    0    0    0    0    0
+--------------------------------------------------------------------------------
+med_pay_phys (numeric): 
+Statistics
+     N  Ndist     Mean         SD  Min        Max  Skew     Kurt
+  5500    690  7777.37  233931.38    0  16'620129  65.9  4634.48
+Quantiles
+  1%  5%  10%  25%  50%  75%     90%   95%       99%
+   0   0    0    0    0    0  1397.1  3900  92525.17
+--------------------------------------------------------------------------------
+med_pay_npp (numeric): 
+Statistics
+     N  Ndist  Mean  SD  Min  Max  Skew  Kurt
+  5500      1     0   0    0    0     -     -
+Quantiles
+  1%  5%  10%  25%  50%  75%  90%  95%  99%
+   0   0    0    0    0    0    0    0    0
+--------------------------------------------------------------------------------
+med_pay_teach (numeric): 
+Statistics
+     N  Ndist  Mean  SD  Min  Max  Skew  Kurt
+  5500      1     0   0    0    0     -     -
+Quantiles
+  1%  5%  10%  25%  50%  75%  90%  95%  99%
+   0   0    0    0    0    0    0    0    0
+--------------------------------------------------------------------------------
+pmts_phys (integer): 
+Statistics
+     N  Ndist      Mean         SD  Min       Max   Skew    Kurt
+  5500    728  11840.84  168310.59    0  5'787473  23.64  666.84
+Quantiles
+  1%  5%  10%  25%  50%  75%    90%      95%        99%
+   0   0    0    0    0    0  302.2  3525.75  124272.62
+--------------------------------------------------------------------------------
+pmts_npp (integer): 
+Statistics
+     N  Ndist  Mean  SD  Min  Max  Skew  Kurt
+  5500      1     0   0    0    0     -     -
+Quantiles
+  1%  5%  10%  25%  50%  75%  90%  95%  99%
+   0   0    0    0    0    0    0    0    0
+--------------------------------------------------------------------------------
+pmts_teach (integer): 
+Statistics
+     N  Ndist  Mean  SD  Min  Max  Skew  Kurt
+  5500      1     0   0    0    0     -     -
+Quantiles
+  1%  5%  10%  25%  50%  75%  90%  95%  99%
+   0   0    0    0    0    0    0    0    0
+--------------------------------------------------------------------------------
+avg_pmts_phys (numeric): 
+Statistics
+     N  Ndist  Mean    SD  Min  Max  Skew   Kurt
+  5500     53  1.41  5.26    0   71  6.79  61.33
+Quantiles
+  1%  5%  10%  25%  50%  75%  90%  95%  99%
+   0   0    0    0    0    0    3    8   23
+--------------------------------------------------------------------------------
+avg_pmts_npp (numeric): 
+Statistics
+     N  Ndist  Mean  SD  Min  Max  Skew  Kurt
+  5500      1     0   0    0    0     -     -
+Quantiles
+  1%  5%  10%  25%  50%  75%  90%  95%  99%
+   0   0    0    0    0    0    0    0    0
+--------------------------------------------------------------------------------
+avg_pmts_teach (numeric): 
+Statistics
+     N  Ndist  Mean  SD  Min  Max  Skew  Kurt
+  5500      1     0   0    0    0     -     -
+Quantiles
+  1%  5%  10%  25%  50%  75%  90%  95%  99%
+   0   0    0    0    0    0    0    0    0
+--------------------------------------------------------------------------------
+med_pmts_phys (numeric): 
+Statistics
+     N  Ndist  Mean    SD  Min  Max   Skew    Kurt
+  5500     26  0.54  2.02    0   65  12.24  275.54
+Quantiles
+  1%  5%  10%  25%  50%  75%  90%  95%   99%
+   0   0    0    0    0    0    2    3  8.01
+--------------------------------------------------------------------------------
+med_pmts_npp (numeric): 
+Statistics
+     N  Ndist  Mean  SD  Min  Max  Skew  Kurt
+  5500      1     0   0    0    0     -     -
+Quantiles
+  1%  5%  10%  25%  50%  75%  90%  95%  99%
+   0   0    0    0    0    0    0    0    0
+--------------------------------------------------------------------------------
+med_pmts_teach (numeric): 
+Statistics
+     N  Ndist  Mean  SD  Min  Max  Skew  Kurt
+  5500      1     0   0    0    0     -     -
+Quantiles
+  1%  5%  10%  25%  50%  75%  90%  95%  99%
+   0   0    0    0    0    0    0    0    0
+--------------------------------------------------------------------------------
 </code></pre>
 </div>
 
@@ -1030,86 +1267,92 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb4" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">   chunk_output_type: console</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup-common-01</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"includes/_common.R"</span>)</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="fu"># Summary Nature {#sec-opennature}</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>Groups payment data by state, recipient type, and nature of payment</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="fu">### Metadata</span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: s7_object</span></span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>end  <span class="ot">&lt;-</span> <span class="fu">open_endpoint</span>(<span class="st">"summary_nature"</span>)</span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="fu">print_meta</span>(end)</span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data</span></span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: http_request</span></span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: true</span></span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>resp <span class="ot">&lt;-</span> <span class="fu">quick</span>(<span class="st">"summary_nature"</span>, <span class="at">limit =</span> <span class="dv">500</span>)</span>
-<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>resp</span>
-<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a><span class="fu">## Tidyup</span></span>
-<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tidyup</span></span>
-<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> resp <span class="sc">|&gt;</span></span>
-<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tbl</span>() <span class="sc">|&gt;</span></span>
-<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(<span class="at">recipient_type =</span> providertwo<span class="sc">:::</span><span class="fu">clean_names</span>(recipient_type)) <span class="sc">|&gt;</span></span>
-<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rsplit</span>(<span class="sc">~</span> recipient_type)</span>
-<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span>covered_recipient_physician <span class="ot">&lt;-</span> <span class="fu">fcompute</span>(</span>
-<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>  x<span class="sc">$</span>covered_recipient_physician,</span>
-<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>  <span class="at">year            =</span> <span class="fu">factor_</span>(program_year),</span>
-<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>  <span class="at">payment_type    =</span> <span class="fu">factor_</span>(payment_type),</span>
-<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>  <span class="at">recipient_type  =</span> <span class="st">"Physician"</span>,</span>
-<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>  <span class="at">recipient_n     =</span> <span class="fu">as.integer</span>(total_number_of_physicians),</span>
-<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>  <span class="at">payment_sum     =</span> <span class="fu">as.numeric</span>(total_payment_amount_physician),</span>
-<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>  <span class="at">payment_mean    =</span> <span class="fu">as.numeric</span>(mean_total_payment_amount_physician),</span>
-<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>  <span class="at">payment_median  =</span> <span class="fu">as.numeric</span>(median_total_payment_amount_physician),</span>
-<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>  <span class="at">payments_n      =</span> <span class="fu">as.integer</span>(total_payment_count_physician),</span>
-<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>  <span class="at">payments_mean   =</span> <span class="fu">as.double</span>(mean_total_payment_count_physician),</span>
-<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>  <span class="at">payments_median =</span> <span class="fu">as.double</span>(median_total_payment_count_physician)</span>
-<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span>covered_recipient_non_physician_practitioner <span class="ot">&lt;-</span> <span class="fu">fcompute</span>(</span>
-<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a>  x<span class="sc">$</span>covered_recipient_non_physician_practitioner,</span>
-<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a>  <span class="at">year            =</span> <span class="fu">factor_</span>(program_year),</span>
-<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a>  <span class="at">payment_type    =</span> <span class="fu">factor_</span>(payment_type),</span>
-<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a>  <span class="at">recipient_type  =</span> <span class="st">"Non-Physician Practitioner"</span>,</span>
-<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a>  <span class="at">recipient_n     =</span> <span class="fu">as.integer</span>(total_number_of_non_physician_practitioners),</span>
-<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a>  <span class="at">payment_sum     =</span> <span class="fu">as.numeric</span>(total_payment_amount_non_physician_practitioner),</span>
-<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a>  <span class="at">payment_mean    =</span> <span class="fu">as.numeric</span>(mean_total_payment_amount_non_physician_practitioner),</span>
-<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a>  <span class="at">payment_median  =</span> <span class="fu">as.numeric</span>(median_total_payment_amount_non_physician_practitioner),</span>
-<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a>  <span class="at">payments_n      =</span> <span class="fu">as.integer</span>(total_payment_count_non_physician_practitioner),</span>
-<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a>  <span class="at">payments_mean   =</span> <span class="fu">as.double</span>(mean_total_payment_count_non_physician_practitioner),</span>
-<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a>  <span class="at">payments_median =</span> <span class="fu">as.double</span>(median_total_payment_count_non_physician_practitioner)</span>
-<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a>x <span class="sc">|&gt;</span></span>
-<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowbind</span>() <span class="sc">|&gt;</span></span>
-<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(<span class="at">recipient_type =</span> <span class="fu">factor_</span>(recipient_type)) <span class="sc">|&gt;</span></span>
-<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roworder</span>(recipient_type, payment_type) <span class="sc">|&gt;</span></span>
-<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tbl</span>()</span>
-<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<div class="sourceCode" id="cb2" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">   chunk_output_type: console</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup-common-01</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"includes/_common.R"</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="fu"># Summary Nature {#sec-opennature}</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>Groups payment data by state, recipient type, and nature of payment</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="fu">### Metadata</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: s7_object</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>end  <span class="ot">&lt;-</span> <span class="fu">open_endpoint</span>(<span class="st">"summary_nature"</span>)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="fu">print_meta</span>(end)</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: http_request</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: true</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>comp_txt <span class="ot">&lt;-</span> <span class="st">"Compensation for serving as faculty or as a speaker for an accredited or certified continuing education program"</span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>resp <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">quick</span>(<span class="st">"summary_nature"</span>, <span class="at">offset =</span> <span class="dv">0</span>, <span class="at">limit =</span> <span class="dv">500</span>),</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">quick</span>(<span class="st">"summary_nature"</span>, <span class="at">offset =</span> <span class="dv">500</span>, <span class="at">limit =</span> <span class="dv">500</span>),</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">quick</span>(<span class="st">"summary_nature"</span>, <span class="at">offset =</span> <span class="dv">1000</span>, <span class="at">limit =</span> <span class="dv">500</span>),</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">quick</span>(<span class="st">"summary_nature"</span>, <span class="at">offset =</span> <span class="dv">1500</span>, <span class="at">limit =</span> <span class="dv">500</span>),</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">quick</span>(<span class="st">"summary_nature"</span>, <span class="at">offset =</span> <span class="dv">2000</span>, <span class="at">limit =</span> <span class="dv">500</span>),</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">quick</span>(<span class="st">"summary_nature"</span>, <span class="at">offset =</span> <span class="dv">2500</span>, <span class="at">limit =</span> <span class="dv">500</span>),</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">quick</span>(<span class="st">"summary_nature"</span>, <span class="at">offset =</span> <span class="dv">3000</span>, <span class="at">limit =</span> <span class="dv">500</span>),</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">quick</span>(<span class="st">"summary_nature"</span>, <span class="at">offset =</span> <span class="dv">3500</span>, <span class="at">limit =</span> <span class="dv">500</span>),</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">quick</span>(<span class="st">"summary_nature"</span>, <span class="at">offset =</span> <span class="dv">4000</span>, <span class="at">limit =</span> <span class="dv">500</span>),</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">quick</span>(<span class="st">"summary_nature"</span>, <span class="at">offset =</span> <span class="dv">4500</span>, <span class="at">limit =</span> <span class="dv">500</span>),</span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">quick</span>(<span class="st">"summary_nature"</span>, <span class="at">offset =</span> <span class="dv">5000</span>, <span class="at">limit =</span> <span class="dv">500</span>)</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list_rbind</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fcompute</span>(</span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">year           =</span> <span class="fu">factor_</span>(program_year),</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>    <span class="at">country        =</span> country_code,</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">state          =</span> state_code,</span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>    <span class="at">recip_type     =</span> <span class="fu">factor_</span>(recipient_type),</span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">pay_nature     =</span> <span class="fu">cheapr_if_else</span>(nature_of_payment <span class="sc">==</span> comp_txt, <span class="st">"Faculty/Speaker Compensation"</span>, nature_of_payment),</span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>    <span class="at">num_phys       =</span> <span class="fu">as.integer</span>(total_number_of_physicians),</span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>    <span class="at">num_npp        =</span> <span class="fu">as.integer</span>(total_number_of_non_physician_practitioners),</span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">num_teach      =</span> <span class="fu">as.integer</span>(total_number_of_teaching_hospitals),</span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>    <span class="at">pay_phys       =</span> <span class="fu">as.double</span>(total_payment_amount_physician),</span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>    <span class="at">pay_npp        =</span> <span class="fu">as.double</span>(total_payment_amount_non_physician_practitioner),</span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>    <span class="at">pay_teach      =</span> <span class="fu">as.double</span>(total_payment_amount_teaching_hospital),</span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg_pay_phys   =</span> <span class="fu">as.double</span>(mean_total_payment_amount_physician),</span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg_pay_npp    =</span> <span class="fu">as.double</span>(mean_total_payment_amount_non_physician_practitioner),</span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg_pay_teach  =</span> <span class="fu">as.double</span>(mean_total_payment_amount_teaching_hospital),</span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>    <span class="at">med_pay_phys   =</span> <span class="fu">as.double</span>(median_total_payment_amount_physician),</span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a>    <span class="at">med_pay_npp    =</span> <span class="fu">as.double</span>(median_total_payment_amount_non_physician_practitioner),</span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>    <span class="at">med_pay_teach  =</span> <span class="fu">as.double</span>(median_total_payment_amount_teaching_hospital),</span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a>    <span class="at">pmts_phys      =</span> <span class="fu">as.integer</span>(total_payment_count_physician),</span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>    <span class="at">pmts_npp       =</span> <span class="fu">as.integer</span>(total_payment_count_non_physician_practitioner),</span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>    <span class="at">pmts_teach     =</span> <span class="fu">as.integer</span>(total_payment_count_teaching_hospital),</span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg_pmts_phys  =</span> <span class="fu">as.double</span>(mean_total_payment_count_physician),</span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg_pmts_npp   =</span> <span class="fu">as.double</span>(mean_total_payment_count_non_physician_practitioner),</span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg_pmts_teach =</span> <span class="fu">as.double</span>(mean_total_payment_count_teaching_hospital),</span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a>    <span class="at">med_pmts_phys  =</span> <span class="fu">as.double</span>(median_total_payment_count_physician),</span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a>    <span class="at">med_pmts_npp   =</span> <span class="fu">as.double</span>(median_total_payment_count_non_physician_practitioner),</span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a>    <span class="at">med_pmts_teach =</span> <span class="fu">as.double</span>(median_total_payment_count_teaching_hospital)</span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a>resp <span class="sc">|&gt;</span> </span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fcount</span>(pay_nature) <span class="sc">|&gt;</span> </span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a>  _<span class="sc">$</span>pay_nature <span class="sc">|&gt;</span> </span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="at">sep =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a><span class="fu">descr</span>(resp)</span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

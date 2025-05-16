@@ -373,7 +373,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./open_teaching.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Teaching Hospital Profile</span></span></a>
+ <span class="menu-text"><span class="chapter-number">30</span>&nbsp; <span class="chapter-title">Teaching Hospital</span></span></a>
   </div>
 </li>
       </ul>
@@ -468,7 +468,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
 <li><a href="#metadata" id="toc-metadata" class="nav-link active" data-scroll-target="#metadata">Metadata</a></li>
   <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
-  <li><a href="#tidyup" id="toc-tidyup" class="nav-link" data-scroll-target="#tidyup">Tidyup</a></li>
   </ul><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li><li><a href="https://github.com/andrewallenbruce/providertwo"><i class="bi bi-file-code"></i>providertwo</a></li></ul></div></nav>
     </div>
 <!-- main -->
@@ -498,84 +497,196 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section><section id="data" class="level2"><h2 class="anchored" data-anchor-id="data">Data</h2>
 <div class="cell">
-<pre class="r-output"><code><span style="color: #555555;"># A tibble: 24 × 18</span>
-   metric_level payment_type recipient_type  program_year total_number_of_phys…¹
-   <span style="color: #555555; font-style: italic;"><chr></chr></span>        <span style="color: #555555; font-style: italic;"><chr></chr></span>        <span style="color: #555555; font-style: italic;"><chr></chr></span>           <span style="color: #555555; font-style: italic;"><chr></chr></span>        <span style="color: #555555; font-style: italic;"><chr></chr></span>                 
-<span style="color: #555555;"> 1</span> National     Research     Covered Recipi… 2017         7326                  
-<span style="color: #555555;"> 2</span> National     General      Covered Recipi… 2017         635227                
-<span style="color: #555555;"> 3</span> National     Research     Covered Recipi… 2018         6845                  
-<span style="color: #555555;"> 4</span> National     General      Covered Recipi… 2018         631460                
-<span style="color: #555555;"> 5</span> National     Research     Covered Recipi… 2019         7333                  
-<span style="color: #555555;"> 6</span> National     General      Covered Recipi… 2019         624949                
-<span style="color: #555555;"> 7</span> National     Research     Covered Recipi… 2020         6880                  
-<span style="color: #555555;"> 8</span> National     General      Covered Recipi… 2020         489144                
-<span style="color: #555555;"> 9</span> National     Research     Covered Recipi… 2021         5285                  
-<span style="color: #555555;">10</span> National     Research     Covered Recipi… 2021         0                     
-<span style="color: #555555;"># ℹ 14 more rows</span>
-<span style="color: #555555;"># ℹ abbreviated name: ¹​total_number_of_physicians</span>
-<span style="color: #555555;"># ℹ 13 more variables: total_number_of_non_physician_practitioners <chr>,</chr></span>
-<span style="color: #555555;">#   total_payment_amount_physician <chr>,</chr></span>
-<span style="color: #555555;">#   total_payment_amount_non_physician_practitioner <chr>,</chr></span>
-<span style="color: #555555;">#   mean_total_payment_amount_physician <chr>,</chr></span>
-<span style="color: #555555;">#   mean_total_payment_amount_non_physician_practitioner <chr>, …</chr></span>
-</code></pre>
-</div>
-</section><section id="tidyup" class="level2"><h2 class="anchored" data-anchor-id="tidyup">Tidyup</h2>
-<div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">resp</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">as_tbl</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">mtt</span><span class="op">(</span>recipient_type <span class="op">=</span> <span class="fu">providertwo</span><span class="fu">:::</span><span class="fu">clean_names</span><span class="op">(</span><span class="va">recipient_type</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">rsplit</span><span class="op">(</span><span class="op">~</span> <span class="va">recipient_type</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">fmt_covered</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span>, <span class="va">what</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">what</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/match.arg.html">match.arg</a></span><span class="op">(</span></span>
+<span>    <span class="va">what</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span></span>
+<span>      <span class="st">"Covered Recipient Physician"</span>,</span>
+<span>      <span class="st">"Covered Recipient Non-Physician Practitioner"</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="fu">sbt</span><span class="op">(</span><span class="va">x</span>, <span class="va">recipient_type</span> <span class="op">==</span> <span class="va">what</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu">fcompute</span><span class="op">(</span></span>
+<span>      year            <span class="op">=</span> <span class="fu">factor_</span><span class="op">(</span><span class="va">program_year</span><span class="op">)</span>,</span>
+<span>      payment_type    <span class="op">=</span> <span class="fu">factor_</span><span class="op">(</span><span class="va">payment_type</span><span class="op">)</span>,</span>
+<span>      recipient_type  <span class="op">=</span> <span class="va">what</span>,</span>
+<span>      recipient_n     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">total_number_of_physicians</span><span class="op">)</span>,</span>
+<span>      payment_sum     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">total_payment_amount_physician</span><span class="op">)</span>,</span>
+<span>      payment_mean    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">mean_total_payment_amount_physician</span><span class="op">)</span>,</span>
+<span>      payment_median  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">median_total_payment_amount_physician</span><span class="op">)</span>,</span>
+<span>      payments_n      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">total_payment_count_physician</span><span class="op">)</span>,</span>
+<span>      payments_mean   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html">as.double</a></span><span class="op">(</span><span class="va">mean_total_payment_count_physician</span><span class="op">)</span>,</span>
+<span>      payments_median <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html">as.double</a></span><span class="op">(</span><span class="va">median_total_payment_count_physician</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="op">}</span></span>
 <span></span>
-<span><span class="va">x</span><span class="op">$</span><span class="va">covered_recipient_physician</span> <span class="op">&lt;-</span> <span class="fu">fcompute</span><span class="op">(</span></span>
-<span>  <span class="va">x</span><span class="op">$</span><span class="va">covered_recipient_physician</span>,</span>
-<span>  year            <span class="op">=</span> <span class="fu">factor_</span><span class="op">(</span><span class="va">program_year</span><span class="op">)</span>,</span>
-<span>  payment_type    <span class="op">=</span> <span class="fu">factor_</span><span class="op">(</span><span class="va">payment_type</span><span class="op">)</span>,</span>
-<span>  recipient_type  <span class="op">=</span> <span class="st">"Physician"</span>,</span>
-<span>  recipient_n     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">total_number_of_physicians</span><span class="op">)</span>,</span>
-<span>  payment_sum     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">total_payment_amount_physician</span><span class="op">)</span>,</span>
-<span>  payment_mean    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">mean_total_payment_amount_physician</span><span class="op">)</span>,</span>
-<span>  payment_median  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">median_total_payment_amount_physician</span><span class="op">)</span>,</span>
-<span>  payments_n      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">total_payment_count_physician</span><span class="op">)</span>,</span>
-<span>  payments_mean   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html">as.double</a></span><span class="op">(</span><span class="va">mean_total_payment_count_physician</span><span class="op">)</span>,</span>
-<span>  payments_median <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html">as.double</a></span><span class="op">(</span><span class="va">median_total_payment_count_physician</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
+<span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu">quick</span><span class="op">(</span><span class="st">"summary_national"</span>, limit <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">x</span><span class="op">$</span><span class="va">covered_recipient_non_physician_practitioner</span> <span class="op">&lt;-</span> <span class="fu">fcompute</span><span class="op">(</span></span>
-<span>  <span class="va">x</span><span class="op">$</span><span class="va">covered_recipient_non_physician_practitioner</span>,</span>
-<span>  year            <span class="op">=</span> <span class="fu">factor_</span><span class="op">(</span><span class="va">program_year</span><span class="op">)</span>,</span>
-<span>  payment_type    <span class="op">=</span> <span class="fu">factor_</span><span class="op">(</span><span class="va">payment_type</span><span class="op">)</span>,</span>
-<span>  recipient_type  <span class="op">=</span> <span class="st">"Non-Physician Practitioner"</span>,</span>
-<span>  recipient_n     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">total_number_of_non_physician_practitioners</span><span class="op">)</span>,</span>
-<span>  payment_sum     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">total_payment_amount_non_physician_practitioner</span><span class="op">)</span>,</span>
-<span>  payment_mean    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">mean_total_payment_amount_non_physician_practitioner</span><span class="op">)</span>,</span>
-<span>  payment_median  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">median_total_payment_amount_non_physician_practitioner</span><span class="op">)</span>,</span>
-<span>  payments_n      <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">total_payment_count_non_physician_practitioner</span><span class="op">)</span>,</span>
-<span>  payments_mean   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html">as.double</a></span><span class="op">(</span><span class="va">mean_total_payment_count_non_physician_practitioner</span><span class="op">)</span>,</span>
-<span>  payments_median <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html">as.double</a></span><span class="op">(</span><span class="va">median_total_payment_count_non_physician_practitioner</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">x</span> <span class="op">|&gt;</span></span>
+<span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu">funique</span><span class="op">(</span><span class="va">resp</span><span class="op">$</span><span class="va">recipient_type</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">map</span><span class="op">(</span>\<span class="op">(</span><span class="va">type</span><span class="op">)</span> <span class="fu">fmt_covered</span><span class="op">(</span>x <span class="op">=</span> <span class="va">resp</span>, what <span class="op">=</span> <span class="va">type</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">rowbind</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">mtt</span><span class="op">(</span>recipient_type <span class="op">=</span> <span class="fu">factor_</span><span class="op">(</span><span class="va">recipient_type</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">roworder</span><span class="op">(</span><span class="va">recipient_type</span>, <span class="va">payment_type</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">as_tbl</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  <span class="fu">roworder</span><span class="op">(</span><span class="va">recipient_type</span>, <span class="va">payment_type</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span>n <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <pre class="r-output"><code><span style="color: #555555;"># A tibble: 24 × 10</span>
    year  payment_type recipient_type        recipient_n payment_sum payment_mean
    <span style="color: #555555; font-style: italic;"><fct></fct></span> <span style="color: #555555; font-style: italic;"><fct></fct></span>        <span style="color: #555555; font-style: italic;"><fct></fct></span>                       <span style="color: #555555; font-style: italic;"><int></int></span>       <span style="color: #555555; font-style: italic;"><dbl></dbl></span>        <span style="color: #555555; font-style: italic;"><dbl></dbl></span>
-<span style="color: #555555;"> 1</span> 2021  General      Non-Physician Practi…      <span style="text-decoration: underline;">235</span>295  122<span style="text-decoration: underline;">322</span>841.         520.
-<span style="color: #555555;"> 2</span> 2022  General      Non-Physician Practi…      <span style="text-decoration: underline;">274</span>191  170<span style="text-decoration: underline;">574</span>491.         622.
-<span style="color: #555555;"> 3</span> 2023  General      Non-Physician Practi…      <span style="text-decoration: underline;">309</span>374  209<span style="text-decoration: underline;">135</span>792.         676 
-<span style="color: #555555;"> 4</span> ALL   General      Non-Physician Practi…      <span style="text-decoration: underline;">414</span>843  502<span style="text-decoration: underline;">033</span>124.        <span style="text-decoration: underline;">1</span>210.
-<span style="color: #555555;"> 5</span> 2021  Research     Non-Physician Practi…          86     <span style="text-decoration: underline;">424</span>947.        <span style="text-decoration: underline;">4</span>941.
-<span style="color: #555555;"> 6</span> 2022  Research     Non-Physician Practi…         127     <span style="text-decoration: underline;">413</span>856.        <span style="text-decoration: underline;">3</span>259.
-<span style="color: #555555;"> 7</span> 2023  Research     Non-Physician Practi…         226     <span style="text-decoration: underline;">531</span>520.        <span style="text-decoration: underline;">2</span>352.
-<span style="color: #555555;"> 8</span> ALL   Research     Non-Physician Practi…         391    1<span style="text-decoration: underline;">370</span>324.        <span style="text-decoration: underline;">3</span>505.
-<span style="color: #555555;"> 9</span> 2017  General      Physician                  <span style="text-decoration: underline;">635</span>227 <span style="text-decoration: underline;">2</span>193<span style="text-decoration: underline;">219</span>859.        <span style="text-decoration: underline;">3</span>453.
-<span style="color: #555555;">10</span> 2018  General      Physician                  <span style="text-decoration: underline;">631</span>460 <span style="text-decoration: underline;">2</span>268<span style="text-decoration: underline;">764</span>326.        <span style="text-decoration: underline;">3</span>593.
-<span style="color: #555555;"># ℹ 14 more rows</span>
+<span style="color: #555555;"> 1</span> 2021  General      Covered Recipient No…           0     0   <span style="color: #555555;"> </span>             0 
+<span style="color: #555555;"> 2</span> 2022  General      Covered Recipient No…           0     0   <span style="color: #555555;"> </span>             0 
+<span style="color: #555555;"> 3</span> 2023  General      Covered Recipient No…           0     0   <span style="color: #555555;"> </span>             0 
+<span style="color: #555555;"> 4</span> ALL   General      Covered Recipient No…           0     0   <span style="color: #555555;"> </span>             0 
+<span style="color: #555555;"> 5</span> 2021  Research     Covered Recipient No…           0     0   <span style="color: #555555;"> </span>             0 
+<span style="color: #555555;"> 6</span> 2022  Research     Covered Recipient No…           0     0   <span style="color: #555555;"> </span>             0 
+<span style="color: #555555;"> 7</span> 2023  Research     Covered Recipient No…           0     0   <span style="color: #555555;"> </span>             0 
+<span style="color: #555555;"> 8</span> ALL   Research     Covered Recipient No…           0     0   <span style="color: #555555;"> </span>             0 
+<span style="color: #555555;"> 9</span> 2017  General      Covered Recipient Ph…      <span style="text-decoration: underline;">635</span>227     2.19<span style="color: #555555;">e</span> 9        <span style="text-decoration: underline;">3</span>453.
+<span style="color: #555555;">10</span> 2018  General      Covered Recipient Ph…      <span style="text-decoration: underline;">631</span>460     2.27<span style="color: #555555;">e</span> 9        <span style="text-decoration: underline;">3</span>593.
+<span style="color: #555555;">11</span> 2019  General      Covered Recipient Ph…      <span style="text-decoration: underline;">624</span>949     2.43<span style="color: #555555;">e</span> 9        <span style="text-decoration: underline;">3</span>890.
+<span style="color: #555555;">12</span> 2020  General      Covered Recipient Ph…      <span style="text-decoration: underline;">489</span>144     1.69<span style="color: #555555;">e</span> 9        <span style="text-decoration: underline;">3</span>445.
+<span style="color: #555555;">13</span> 2021  General      Covered Recipient Ph…      <span style="text-decoration: underline;">534</span>963     2.16<span style="color: #555555;">e</span> 9        <span style="text-decoration: underline;">4</span>031.
+<span style="color: #555555;">14</span> 2022  General      Covered Recipient Ph…      <span style="text-decoration: underline;">592</span>270     2.54<span style="color: #555555;">e</span> 9        <span style="text-decoration: underline;">4</span>287.
+<span style="color: #555555;">15</span> 2023  General      Covered Recipient Ph…      <span style="text-decoration: underline;">628</span>916     2.28<span style="color: #555555;">e</span> 9        <span style="text-decoration: underline;">3</span>617.
+<span style="color: #555555;">16</span> ALL   General      Covered Recipient Ph…     1<span style="text-decoration: underline;">117</span>674     1.55<span style="color: #555555;">e</span>10       <span style="text-decoration: underline;">13</span>912.
+<span style="color: #555555;">17</span> 2017  Research     Covered Recipient Ph…        <span style="text-decoration: underline;">7</span>326     1.12<span style="color: #555555;">e</span> 8       <span style="text-decoration: underline;">15</span>230.
+<span style="color: #555555;">18</span> 2018  Research     Covered Recipient Ph…        <span style="text-decoration: underline;">6</span>845     1.09<span style="color: #555555;">e</span> 8       <span style="text-decoration: underline;">15</span>875.
+<span style="color: #555555;">19</span> 2019  Research     Covered Recipient Ph…        <span style="text-decoration: underline;">7</span>333     9.99<span style="color: #555555;">e</span> 7       <span style="text-decoration: underline;">13</span>619.
+<span style="color: #555555;">20</span> 2020  Research     Covered Recipient Ph…        <span style="text-decoration: underline;">6</span>880     8.15<span style="color: #555555;">e</span> 7       <span style="text-decoration: underline;">11</span>849.
+<span style="color: #555555;">21</span> 2021  Research     Covered Recipient Ph…        <span style="text-decoration: underline;">5</span>285     8.02<span style="color: #555555;">e</span> 7       <span style="text-decoration: underline;">15</span>169.
+<span style="color: #555555;">22</span> 2022  Research     Covered Recipient Ph…        <span style="text-decoration: underline;">5</span>269     7.80<span style="color: #555555;">e</span> 7       <span style="text-decoration: underline;">14</span>807.
+<span style="color: #555555;">23</span> 2023  Research     Covered Recipient Ph…        <span style="text-decoration: underline;">5</span>430     7.11<span style="color: #555555;">e</span> 7       <span style="text-decoration: underline;">13</span>093.
+<span style="color: #555555;">24</span> ALL   Research     Covered Recipient Ph…       <span style="text-decoration: underline;">23</span>251     6.31<span style="color: #555555;">e</span> 8       <span style="text-decoration: underline;">27</span>135.
 <span style="color: #555555;"># ℹ 4 more variables: payment_median <dbl>, payments_n <int>,</int></dbl></span>
 <span style="color: #555555;">#   payments_mean <dbl>, payments_median <dbl></dbl></dbl></span>
+</code></pre>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">describe_distribution</span><span class="op">(</span><span class="va">resp</span>, by <span class="op">=</span> <span class="st">"recipient_type"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="r-output"><code>recipient_type                               |        Variable |     Mean
+-------------------------------------------------------------------------
+Covered Recipient Non-Physician Practitioner |     recipient_n |     0.00
+Covered Recipient Non-Physician Practitioner |     payment_sum |     0.00
+Covered Recipient Non-Physician Practitioner |    payment_mean |     0.00
+Covered Recipient Non-Physician Practitioner |  payment_median |     0.00
+Covered Recipient Non-Physician Practitioner |      payments_n |     0.00
+Covered Recipient Non-Physician Practitioner |   payments_mean |     0.00
+Covered Recipient Non-Physician Practitioner | payments_median |     0.00
+Covered Recipient Physician                  |     recipient_n | 3.33e+05
+Covered Recipient Physician                  |     payment_sum | 2.02e+09
+Covered Recipient Physician                  |    payment_mean | 10437.86
+Covered Recipient Physician                  |  payment_median |  1209.95
+Covered Recipient Physician                  |      payments_n | 8.17e+06
+Covered Recipient Physician                  |   payments_mean |    13.06
+Covered Recipient Physician                  | payments_median |     3.25
+
+recipient_type                               |       SD |      IQR
+------------------------------------------------------------------
+Covered Recipient Non-Physician Practitioner |     0.00 |     0.00
+Covered Recipient Non-Physician Practitioner |     0.00 |     0.00
+Covered Recipient Non-Physician Practitioner |     0.00 |     0.00
+Covered Recipient Non-Physician Practitioner |     0.00 |     0.00
+Covered Recipient Non-Physician Practitioner |     0.00 |     0.00
+Covered Recipient Non-Physician Practitioner |     0.00 |     0.00
+Covered Recipient Non-Physician Practitioner |     0.00 |     0.00
+Covered Recipient Physician                  | 3.60e+05 | 6.21e+05
+Covered Recipient Physician                  | 3.76e+09 | 2.19e+09
+Covered Recipient Physician                  |  6912.92 | 11392.83
+Covered Recipient Physician                  |  1100.25 |  1968.39
+Covered Recipient Physician                  | 1.59e+07 | 1.03e+07
+Covered Recipient Physician                  |    13.15 |    11.50
+Covered Recipient Physician                  |     1.77 |     2.00
+
+recipient_type                               |                Range | Skewness
+------------------------------------------------------------------------------
+Covered Recipient Non-Physician Practitioner |         [0.00, 0.00] |         
+Covered Recipient Non-Physician Practitioner |         [0.00, 0.00] |         
+Covered Recipient Non-Physician Practitioner |         [0.00, 0.00] |         
+Covered Recipient Non-Physician Practitioner |         [0.00, 0.00] |         
+Covered Recipient Non-Physician Practitioner |         [0.00, 0.00] |         
+Covered Recipient Non-Physician Practitioner |         [0.00, 0.00] |         
+Covered Recipient Non-Physician Practitioner |         [0.00, 0.00] |         
+Covered Recipient Physician                  |  [5269.00, 1.12e+06] |     0.56
+Covered Recipient Physician                  | [7.11e+07, 1.55e+10] |     3.48
+Covered Recipient Physician                  |  [3445.15, 27134.73] |     0.72
+Covered Recipient Physician                  |    [114.71, 2800.00] |     0.22
+Covered Recipient Physician                  | [22271.00, 6.51e+07] |     3.41
+Covered Recipient Physician                  |        [4.00, 58.00] |     2.91
+Covered Recipient Physician                  |         [2.00, 9.00] |     2.45
+
+recipient_type                               | Kurtosis |  n | n_Missing
+------------------------------------------------------------------------
+Covered Recipient Non-Physician Practitioner |          |  8 |         0
+Covered Recipient Non-Physician Practitioner |          |  8 |         0
+Covered Recipient Non-Physician Practitioner |          |  8 |         0
+Covered Recipient Non-Physician Practitioner |          |  8 |         0
+Covered Recipient Non-Physician Practitioner |          |  8 |         0
+Covered Recipient Non-Physician Practitioner |          |  8 |         0
+Covered Recipient Non-Physician Practitioner |          |  8 |         0
+Covered Recipient Physician                  |    -0.70 | 16 |         0
+Covered Recipient Physician                  |    13.08 | 16 |         0
+Covered Recipient Physician                  |     0.41 | 16 |         0
+Covered Recipient Physician                  |    -1.88 | 16 |         0
+Covered Recipient Physician                  |    12.66 | 16 |         0
+Covered Recipient Physician                  |     9.99 | 16 |         0
+Covered Recipient Physician                  |     7.57 | 16 |         0
+</code></pre>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">report</span><span class="fu">::</span><span class="fu"><a href="https://easystats.github.io/report/reference/report_sample.html">report_sample</a></span><span class="op">(</span><span class="va">resp</span>, by <span class="op">=</span> <span class="st">"recipient_type"</span>, n <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="r-output"><code><span style="color: #0000BB;"># Descriptive Statistics
+
+</span>Variable                     
+-----------------------------
+year [2017], %, n            
+year [2018], %, n            
+year [2019], %, n            
+year [2020], %, n            
+year [2021], %, n            
+year [2022], %, n            
+year [2023], %, n            
+year [ALL], %, n             
+payment_type [Research], %, n
+Mean recipient_n (SD), n     
+Mean payment_sum (SD), n     
+Mean payment_mean (SD), n    
+Mean payment_median (SD), n  
+Mean payments_n (SD), n      
+Mean payments_mean (SD), n   
+Mean payments_median (SD), n 
+
+Covered Recipient Non-Physician Practitioner (n=8)
+--------------------------------------------------
+                                            0.0, 0
+                                            0.0, 0
+                                            0.0, 0
+                                            0.0, 0
+                                           25.0, 2
+                                           25.0, 2
+                                           25.0, 2
+                                           25.0, 2
+                                           50.0, 4
+                                    0.00 (0.00), 8
+                                    0.00 (0.00), 8
+                                    0.00 (0.00), 8
+                                    0.00 (0.00), 8
+                                    0.00 (0.00), 8
+                                    0.00 (0.00), 8
+                                    0.00 (0.00), 8
+
+Covered Recipient Physician (n=16) |                      Total (n=24)
+----------------------------------------------------------------------
+                           12.5, 2 |                            8.3, 2
+                           12.5, 2 |                            8.3, 2
+                           12.5, 2 |                            8.3, 2
+                           12.5, 2 |                            8.3, 2
+                           12.5, 2 |                           16.7, 4
+                           12.5, 2 |                           16.7, 4
+                           12.5, 2 |                           16.7, 4
+                           12.5, 2 |                           16.7, 4
+                           50.0, 8 |                          50.0, 12
+         332638.88 (360021.05), 16 |         221759.25 (331947.70), 24
+ 2022519511.80 (3757382288.64), 16 | 1348346341.20 (3186829412.60), 24
+            10437.86 (6912.92), 16 |             6958.57 (7511.98), 24
+             1209.95 (1100.25), 16 |              806.64 (1062.53), 24
+      8167242.00 (15921584.00), 16 |      5444828.00 (13445876.01), 24
+                 13.06 (13.15), 16 |                  8.71 (12.34), 24
+                   3.25 (1.77), 16 |                   2.17 (2.12), 24
 </code></pre>
 </div>
 
@@ -1042,86 +1153,74 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb2" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">   chunk_output_type: console</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup-common-01</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"includes/_common.R"</span>)</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="fu"># Summary National {#sec-opennation}</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>National Level Payment Total and Averages for all Years</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="fu">### Metadata</span></span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: s7_object</span></span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>end  <span class="ot">&lt;-</span> <span class="fu">open_endpoint</span>(<span class="st">"summary_national"</span>)</span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="fu">print_meta</span>(end)</span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data</span></span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: http_request</span></span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: true</span></span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>resp <span class="ot">&lt;-</span> <span class="fu">quick</span>(<span class="st">"summary_national"</span>, <span class="at">limit =</span> <span class="dv">500</span>)</span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>resp</span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a><span class="fu">## Tidyup</span></span>
-<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tidyup</span></span>
-<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
-<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> resp <span class="sc">|&gt;</span></span>
-<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tbl</span>() <span class="sc">|&gt;</span></span>
-<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(<span class="at">recipient_type =</span> providertwo<span class="sc">:::</span><span class="fu">clean_names</span>(recipient_type)) <span class="sc">|&gt;</span></span>
-<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rsplit</span>(<span class="sc">~</span> recipient_type)</span>
-<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span>covered_recipient_physician <span class="ot">&lt;-</span> <span class="fu">fcompute</span>(</span>
-<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>  x<span class="sc">$</span>covered_recipient_physician,</span>
-<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>  <span class="at">year            =</span> <span class="fu">factor_</span>(program_year),</span>
-<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>  <span class="at">payment_type    =</span> <span class="fu">factor_</span>(payment_type),</span>
-<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>  <span class="at">recipient_type  =</span> <span class="st">"Physician"</span>,</span>
-<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>  <span class="at">recipient_n     =</span> <span class="fu">as.integer</span>(total_number_of_physicians),</span>
-<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a>  <span class="at">payment_sum     =</span> <span class="fu">as.numeric</span>(total_payment_amount_physician),</span>
-<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a>  <span class="at">payment_mean    =</span> <span class="fu">as.numeric</span>(mean_total_payment_amount_physician),</span>
-<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a>  <span class="at">payment_median  =</span> <span class="fu">as.numeric</span>(median_total_payment_amount_physician),</span>
-<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a>  <span class="at">payments_n      =</span> <span class="fu">as.integer</span>(total_payment_count_physician),</span>
-<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a>  <span class="at">payments_mean   =</span> <span class="fu">as.double</span>(mean_total_payment_count_physician),</span>
-<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a>  <span class="at">payments_median =</span> <span class="fu">as.double</span>(median_total_payment_count_physician)</span>
-<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span>covered_recipient_non_physician_practitioner <span class="ot">&lt;-</span> <span class="fu">fcompute</span>(</span>
-<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a>  x<span class="sc">$</span>covered_recipient_non_physician_practitioner,</span>
-<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a>  <span class="at">year            =</span> <span class="fu">factor_</span>(program_year),</span>
-<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a>  <span class="at">payment_type    =</span> <span class="fu">factor_</span>(payment_type),</span>
-<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>  <span class="at">recipient_type  =</span> <span class="st">"Non-Physician Practitioner"</span>,</span>
-<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>  <span class="at">recipient_n     =</span> <span class="fu">as.integer</span>(total_number_of_non_physician_practitioners),</span>
-<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a>  <span class="at">payment_sum     =</span> <span class="fu">as.numeric</span>(total_payment_amount_non_physician_practitioner),</span>
-<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a>  <span class="at">payment_mean    =</span> <span class="fu">as.numeric</span>(mean_total_payment_amount_non_physician_practitioner),</span>
-<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a>  <span class="at">payment_median  =</span> <span class="fu">as.numeric</span>(median_total_payment_amount_non_physician_practitioner),</span>
-<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a>  <span class="at">payments_n      =</span> <span class="fu">as.integer</span>(total_payment_count_non_physician_practitioner),</span>
-<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a>  <span class="at">payments_mean   =</span> <span class="fu">as.double</span>(mean_total_payment_count_non_physician_practitioner),</span>
-<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a>  <span class="at">payments_median =</span> <span class="fu">as.double</span>(median_total_payment_count_non_physician_practitioner)</span>
-<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a>x <span class="sc">|&gt;</span></span>
-<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowbind</span>() <span class="sc">|&gt;</span></span>
-<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(<span class="at">recipient_type =</span> <span class="fu">factor_</span>(recipient_type)) <span class="sc">|&gt;</span></span>
-<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roworder</span>(recipient_type, payment_type) <span class="sc">|&gt;</span></span>
-<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tbl</span>()</span>
-<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<div class="sourceCode" id="cb4" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">   chunk_output_type: console</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup-common-01</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"includes/_common.R"</span>)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="fu"># Summary National {#sec-opennation}</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>National Level Payment Total and Averages for all Years</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="fu">### Metadata</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: s7_object</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>end  <span class="ot">&lt;-</span> <span class="fu">open_endpoint</span>(<span class="st">"summary_national"</span>)</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="fu">print_meta</span>(end)</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: http_request</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: true</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: true</span></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>fmt_covered <span class="ot">&lt;-</span> <span class="cf">function</span>(x, what) {</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>  what <span class="ot">&lt;-</span> <span class="fu">match.arg</span>(</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>    what,</span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Covered Recipient Physician"</span>,</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Covered Recipient Non-Physician Practitioner"</span></span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sbt</span>(x, recipient_type <span class="sc">==</span> what) <span class="sc">|&gt;</span></span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fcompute</span>(</span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>      <span class="at">year            =</span> <span class="fu">factor_</span>(program_year),</span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>      <span class="at">payment_type    =</span> <span class="fu">factor_</span>(payment_type),</span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>      <span class="at">recipient_type  =</span> what,</span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>      <span class="at">recipient_n     =</span> <span class="fu">as.integer</span>(total_number_of_physicians),</span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>      <span class="at">payment_sum     =</span> <span class="fu">as.numeric</span>(total_payment_amount_physician),</span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>      <span class="at">payment_mean    =</span> <span class="fu">as.numeric</span>(mean_total_payment_amount_physician),</span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>      <span class="at">payment_median  =</span> <span class="fu">as.numeric</span>(median_total_payment_amount_physician),</span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>      <span class="at">payments_n      =</span> <span class="fu">as.integer</span>(total_payment_count_physician),</span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>      <span class="at">payments_mean   =</span> <span class="fu">as.double</span>(mean_total_payment_count_physician),</span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>      <span class="at">payments_median =</span> <span class="fu">as.double</span>(median_total_payment_count_physician)</span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>resp <span class="ot">&lt;-</span> <span class="fu">quick</span>(<span class="st">"summary_national"</span>, <span class="at">limit =</span> <span class="dv">500</span>)</span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>resp <span class="ot">&lt;-</span> <span class="fu">funique</span>(resp<span class="sc">$</span>recipient_type) <span class="sc">|&gt;</span></span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(\(type) <span class="fu">fmt_covered</span>(<span class="at">x =</span> resp, <span class="at">what =</span> type)) <span class="sc">|&gt;</span></span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rowbind</span>() <span class="sc">|&gt;</span></span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(<span class="at">recipient_type =</span> <span class="fu">factor_</span>(recipient_type)) <span class="sc">|&gt;</span></span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roworder</span>(recipient_type, payment_type) <span class="sc">|&gt;</span> </span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="cn">Inf</span>)</span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a><span class="fu">describe_distribution</span>(resp, <span class="at">by =</span> <span class="st">"recipient_type"</span>)</span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a>report<span class="sc">::</span><span class="fu">report_sample</span>(resp, <span class="at">by =</span> <span class="st">"recipient_type"</span>, <span class="at">n =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

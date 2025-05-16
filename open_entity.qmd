@@ -21,8 +21,6 @@ Reporting Entity Profile Information
 #| echo: false
 end  <- open_endpoint("profile_entity")
 print_meta(end)
-end@metadata
-
 ```
 
 ## Data
@@ -31,6 +29,13 @@ end@metadata
 #| label: http_request
 #| message: true
 #| echo: false
-resp <- quick("profile_entity", limit = 500)
+resp <- list(
+  quick("profile_entity", offset = 0, limit = 500),
+  quick("profile_entity", offset = 500, limit = 500),
+  quick("profile_entity", offset = 1000, limit = 500),
+  quick("profile_entity", offset = 1500, limit = 500),
+  quick("profile_entity", offset = 2000, limit = 500),
+  quick("profile_entity", offset = 2500, limit = 500)) |> 
+  list_rbind()
 resp
 ```

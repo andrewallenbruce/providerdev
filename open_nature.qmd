@@ -29,53 +29,59 @@ print_meta(end)
 #| label: http_request
 #| message: true
 #| echo: false
-resp <- quick("summary_nature", limit = 500)
-resp
+comp_txt <- "Compensation for serving as faculty or as a speaker for an accredited or certified continuing education program"
+
+resp <- list(
+  quick("summary_nature", offset = 0, limit = 500),
+  quick("summary_nature", offset = 500, limit = 500),
+  quick("summary_nature", offset = 1000, limit = 500),
+  quick("summary_nature", offset = 1500, limit = 500),
+  quick("summary_nature", offset = 2000, limit = 500),
+  quick("summary_nature", offset = 2500, limit = 500),
+  quick("summary_nature", offset = 3000, limit = 500),
+  quick("summary_nature", offset = 3500, limit = 500),
+  quick("summary_nature", offset = 4000, limit = 500),
+  quick("summary_nature", offset = 4500, limit = 500),
+  quick("summary_nature", offset = 5000, limit = 500)
+  ) |> 
+  list_rbind() |> 
+  fcompute(
+    year           = factor_(program_year),
+    country        = country_code,
+    state          = state_code,
+    recip_type     = factor_(recipient_type),
+    pay_nature     = cheapr_if_else(nature_of_payment == comp_txt, "Faculty/Speaker Compensation", nature_of_payment),
+    num_phys       = as.integer(total_number_of_physicians),
+    num_npp        = as.integer(total_number_of_non_physician_practitioners),
+    num_teach      = as.integer(total_number_of_teaching_hospitals),
+    pay_phys       = as.double(total_payment_amount_physician),
+    pay_npp        = as.double(total_payment_amount_non_physician_practitioner),
+    pay_teach      = as.double(total_payment_amount_teaching_hospital),
+    avg_pay_phys   = as.double(mean_total_payment_amount_physician),
+    avg_pay_npp    = as.double(mean_total_payment_amount_non_physician_practitioner),
+    avg_pay_teach  = as.double(mean_total_payment_amount_teaching_hospital),
+    med_pay_phys   = as.double(median_total_payment_amount_physician),
+    med_pay_npp    = as.double(median_total_payment_amount_non_physician_practitioner),
+    med_pay_teach  = as.double(median_total_payment_amount_teaching_hospital),
+    pmts_phys      = as.integer(total_payment_count_physician),
+    pmts_npp       = as.integer(total_payment_count_non_physician_practitioner),
+    pmts_teach     = as.integer(total_payment_count_teaching_hospital),
+    avg_pmts_phys  = as.double(mean_total_payment_count_physician),
+    avg_pmts_npp   = as.double(mean_total_payment_count_non_physician_practitioner),
+    avg_pmts_teach = as.double(mean_total_payment_count_teaching_hospital),
+    med_pmts_phys  = as.double(median_total_payment_count_physician),
+    med_pmts_npp   = as.double(median_total_payment_count_non_physician_practitioner),
+    med_pmts_teach = as.double(median_total_payment_count_teaching_hospital)
+  )
+
+resp |> 
+  fcount(pay_nature) |> 
+  _$pay_nature |> 
+  cat(sep = "\n")
 ```
 
-## Tidyup
 
 ```{r}
-#| label: tidyup
-#| message: false
-#| echo: true
-x <- resp |>
-  as_tbl() |>
-  mtt(recipient_type = providertwo:::clean_names(recipient_type)) |>
-  rsplit(~ recipient_type)
-
-x$covered_recipient_physician <- fcompute(
-  x$covered_recipient_physician,
-  year            = factor_(program_year),
-  payment_type    = factor_(payment_type),
-  recipient_type  = "Physician",
-  recipient_n     = as.integer(total_number_of_physicians),
-  payment_sum     = as.numeric(total_payment_amount_physician),
-  payment_mean    = as.numeric(mean_total_payment_amount_physician),
-  payment_median  = as.numeric(median_total_payment_amount_physician),
-  payments_n      = as.integer(total_payment_count_physician),
-  payments_mean   = as.double(mean_total_payment_count_physician),
-  payments_median = as.double(median_total_payment_count_physician)
-)
-
-x$covered_recipient_non_physician_practitioner <- fcompute(
-  x$covered_recipient_non_physician_practitioner,
-  year            = factor_(program_year),
-  payment_type    = factor_(payment_type),
-  recipient_type  = "Non-Physician Practitioner",
-  recipient_n     = as.integer(total_number_of_non_physician_practitioners),
-  payment_sum     = as.numeric(total_payment_amount_non_physician_practitioner),
-  payment_mean    = as.numeric(mean_total_payment_amount_non_physician_practitioner),
-  payment_median  = as.numeric(median_total_payment_amount_non_physician_practitioner),
-  payments_n      = as.integer(total_payment_count_non_physician_practitioner),
-  payments_mean   = as.double(mean_total_payment_count_non_physician_practitioner),
-  payments_median = as.double(median_total_payment_count_non_physician_practitioner)
-)
-
-x |>
-  rowbind() |>
-  mtt(recipient_type = factor_(recipient_type)) |>
-  roworder(recipient_type, payment_type) |>
-  as_tbl()
+descr(resp)
 ```
 
