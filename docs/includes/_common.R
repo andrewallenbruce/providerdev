@@ -16,11 +16,45 @@ knitr::knit_hooks$set(
   error   = ansi_aware_handler
 )
 
-options(crayon.enabled = TRUE, scipen = 999, digits = 3)
+knitr::opts_chunk$set(
+  comment = "#>",
+  collapse = TRUE
+  # cache = TRUE
+  # fig.retina = 0.8, # figures are either vectors or 300 dpi diagrams
+  # dpi = 300,
+  # out.width = "70%",
+  # fig.align = 'center',
+  # fig.width = 6,
+  # fig.asp = 0.618,  # 1 / phi
+  # fig.show = "hold"
+)
+
+options(
+  digits = 3,
+  width = 68,
+  str = strOptions(strict.width = "cut"),
+  crayon.enabled = TRUE,
+  scipen = 999
+)
+knitr::opts_chunk$set(
+  comment = "#>",
+  collapse = TRUE,
+  width = 68,
+  dev = "ragg_png",
+  # cache = TRUE
+  # fig.retina = 0.8, # figures are either vectors or 300 dpi diagrams
+  dpi = 300,
+  out.width = "70%",
+  fig.align = 'center',
+  fig.width = 6,
+  fig.asp = 0.618,  # 1 / phi
+  fig.show = "hold"
+  )
 
 library(here)
 library(tidyverse)
 library(RcppSimdJson)
+library(rlang)
 library(collapse)
 library(fastplyr)
 library(cheapr)
@@ -29,19 +63,17 @@ library(stringi)
 library(httr2)
 library(glue)
 library(S7)
-library(rlang)
 library(arrow)
 
 library(provider)
 library(providertwo)
 
-library(gt)
-library(pointblank)
 library(datawizard)
 library(see)
-library(ggplot2)
-theme_set(theme_modern())
+# theme_set(theme_modern())
 
+# library(gt)
+# library(pointblank)
 # library(curl)
 # library(weburl)
 # library(urlparse)
@@ -58,11 +90,11 @@ browse_link <- function(x, link) {
   )
 }
 
-unscore <- \(x) gsub("___owner$", "", x, perl = TRUE)
-charbin <- \(x) val_match(x, "N" ~ 0L, "Y" ~ 1L)
-as_prop <- \(x) case(x == "0" ~ 0, is_na(x) ~ NA_real_, .default = as.double(x) / 100)
+unscore <- function(x) gsub("___owner$", "", x, perl = TRUE)
+charbin <- function(x) val_match(x, "N" ~ 0L, "Y" ~ 1L)
+as_prop <- function(x) case(x == "0" ~ 0, is_na(x) ~ NA_real_, .default = as.double(x) / 100)
 
-purse <- \(
+purse <- function(
   x,
   pre = paste0(cli::symbol$bullet, " "),
   wid = 0,
@@ -133,7 +165,7 @@ print_ls <- function(ls, prefix = "", postfix = "") {
 
 print_meta <- function(x, ...) {
 
-  dims   <- function(x) if (x@dimensions@pages == 1) "rows" else c("rows", "pages")
+  dims     <- function(x) if (x@dimensions@pages == 1) "rows" else c("rows", "pages")
   inj_list <- function(e1, e2) list2(!!!e1, !!!e2)
 
   meta <- switch(
@@ -175,4 +207,9 @@ print_dict_tbl <- function(x) {
 print_dict_list <- function(x) {
   dict <- set_names(wrap(unname(x), width = 50), names(x))
   glue_col("{bold {red {underline {names(dict)}}}}\n{silver {unname(dict)}}\n\n")
+}
+
+caid_dictionary <- function() {
+  read_csv(here("data/caid_data_dictionary.csv"), show_col_types = FALSE) |>
+    sbt(title == "Federal Upper Limits Data Dictionary")
 }

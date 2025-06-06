@@ -51,7 +51,7 @@ dict <- new_tbl(
     "END_DATE"
   ),
   description = c(
-    "Provider's CCN (6-digit format).", 
+    "Provider's CCN.", 
     "Provider's number of eligible discharges used for PSI-11 measure calculations.", 
     "Provider's PSI-11 smoothed measure rate (per 1k discharges).", 
     "95% confidence interval lower limit surrounding provider's smoothed measure rate.", 
@@ -71,17 +71,17 @@ print_dict_tbl(dict)
 #| label: http_request
 #| message: true
 #| echo: false
-resp <- quick("ahqr_psi11", limit = 5000)
-
-resp <- resp|> 
+resp <- quick("ahqr_psi11", offset = 0, limit = 5000) |> 
   mtt(START_DATE           = clock::date_parse(START_DATE, format = "%m/%d/%Y"),
       END_DATE             = clock::date_parse(END_DATE, format = "%m/%d/%Y"),
       ADM_DISC             = as.double(ADM_DISC),
       RATE                 = as.double(RATE),
       INTERVAL_LOWER_LIMIT = as.double(INTERVAL_LOWER_LIMIT),
       INTERVAL_HIGHER_LIMIT= as.double(INTERVAL_HIGHER_LIMIT)) |> 
-  sbt(!is.na(RATE))
+  sbt(!cheapr::is_na(RATE))
 resp
+
+cheapr::overview(resp)
 ```
 
 ### Distribution
