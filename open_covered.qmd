@@ -34,9 +34,10 @@ print_meta(end)
 #| label: dict
 #| echo: false
 #| message: true
-dict <- providertwo:::open_dictionary()$covered_recipient_profile_supplement
-dict <- slt(dict, field = name, description)
-print_dict_tbl(dict)
+providertwo:::open_dictionary() |> 
+  sbt(providertwo:::gdetect(endpoint, "^Covered")) |> 
+  slt(field, description) |> 
+  print_dict_tbl()
 ```
 
 ## Data
@@ -56,5 +57,6 @@ resp |> str()
 #| message: false
 #| echo: true
 x <- cheapr::overview(resp, hist = TRUE)
+
 x$categorical |> slt(col, n_missing, n_unique)
 ```

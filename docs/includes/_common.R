@@ -16,9 +16,9 @@ knitr::knit_hooks$set(
   error   = ansi_aware_handler
 )
 
-knitr::opts_chunk$set(
-  comment = "#>",
-  collapse = TRUE
+# knitr::opts_chunk$set(
+#   comment = "#>",
+#   collapse = TRUE
   # cache = TRUE
   # fig.retina = 0.8, # figures are either vectors or 300 dpi diagrams
   # dpi = 300,
@@ -27,7 +27,7 @@ knitr::opts_chunk$set(
   # fig.width = 6,
   # fig.asp = 0.618,  # 1 / phi
   # fig.show = "hold"
-)
+# )
 
 options(
   digits = 3,
@@ -37,7 +37,7 @@ options(
   scipen = 999
 )
 knitr::opts_chunk$set(
-  comment = "#>",
+  comment = "",
   collapse = TRUE,
   width = 68,
   dev = "ragg_png",
@@ -91,7 +91,7 @@ browse_link <- function(x, link) {
 }
 
 unscore <- function(x) gsub("___owner$", "", x, perl = TRUE)
-charbin <- function(x) val_match(x, "N" ~ 0L, "Y" ~ 1L)
+charbin <- function(x) val_match(x, "N" ~ 0L, "Y" ~ 1L, "No" ~ 0L, "Yes" ~ 1L) |> as.integer()
 as_prop <- function(x) case(x == "0" ~ 0, is_na(x) ~ NA_real_, .default = as.double(x) / 100)
 
 purse <- function(
@@ -117,20 +117,19 @@ wrap <- function(string,
                  whitespace_only = TRUE) {
 
   strc <- function(..., sep = "", collapse = NULL) {
-    # rlang::check_string(sep)
-    # rlang::check_string(collapse, allow_null = TRUE)
+    providertwo:::check_string(sep)
+    providertwo:::check_string(collapse, allow_null = TRUE)
     dots <- list(...)
     dots <- dots[!purrr::map_lgl(dots, is.null)]
     vctrs::vec_size_common(!!!dots)
     rlang::inject(stringi::stri_c(!!!dots, sep = sep, collapse = collapse))
   }
 
-  # rlang::check_number_decimal(width)
-  if (width <= 0)
-    width <- 1
-  # rlang::check_number_whole(indent)
-  # rlang::check_number_whole(exdent)
-  # rlang::check_bool(whitespace_only)
+  providertwo:::check_number_decimal(width)
+  if (width <= 0) width <- 1
+  providertwo:::check_number_whole(indent)
+  providertwo:::check_number_whole(exdent)
+  providertwo:::check_bool(whitespace_only)
   out <- stringi::stri_wrap(
     string,
     width = width,
@@ -161,8 +160,6 @@ print_ls <- function(ls, prefix = "", postfix = "") {
   invisible(ls)
 }
 
-
-
 print_meta <- function(x, ...) {
 
   dims     <- function(x) if (x@dimensions@pages == 1) "rows" else c("rows", "pages")
@@ -177,14 +174,9 @@ print_meta <- function(x, ...) {
     hgov_endpoint = c("issued", "modified", "periodicity", "download")
   )
 
-  inj_list(
-    c(
-      props(x@dimensions)[dims(x)],
-      fields = fnobs(prop(x@dimensions, "fields") |>
-                       unlist(use.names = FALSE))
-      ),
-    end@metadata[meta]
-    ) |>
+  inj_list(c(props(x@dimensions)[dims(x)], fields = fnobs(prop(
+    x@dimensions, "fields"
+  ) |> names())), end@metadata[meta]) |>
     print_ls(...)
 }
 
@@ -200,7 +192,7 @@ print_resources <- function(x) {
 }
 
 print_dict_tbl <- function(x) {
-  dict <- set_names(wrap(dict$description, width = 50), dict$field)
+  dict <- set_names(wrap(x$description, width = 50), x$field)
   glue_col("{bold {red {underline {names(dict)}}}}\n{silver {unname(dict)}}\n\n")
 }
 
@@ -209,7 +201,7 @@ print_dict_list <- function(x) {
   glue_col("{bold {red {underline {names(dict)}}}}\n{silver {unname(dict)}}\n\n")
 }
 
-caid_dictionary <- function() {
+caid_dictionary <- function(nm) {
   read_csv(here("data/caid_data_dictionary.csv"), show_col_types = FALSE) |>
-    sbt(title == "Federal Upper Limits Data Dictionary")
+    providertwo:::subset_detect(j = title, p = nm)
 }

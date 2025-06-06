@@ -182,7 +182,7 @@ enroll_resp <- list(
       org_type  = ifelse(org_type == "OTHER", org_other, org_type)) |>
   slt(-address_line_1, -address_line_2, -org_other)
 
-enroll_resp |> data_codebook()
+enroll_resp |> cheapr::overview()
 ```
 
 ## RHC All Owners
@@ -285,21 +285,9 @@ owners_resp <- list(
       -own_role_cd,
       -own_role_desc)
 
-owners_resp |> data_codebook()
-```
+owners_resp
 
-#### Join
-
-```{r}
-#| label: join_rhc
-#| message: false
-#| echo: false
-join(
-  owners_resp,
-  enroll_resp,
-  on     = c("enid", "pac", "org_name"),
-  overid = 2) |> 
-  str()
+owners_resp |> cheapr::overview()
 ```
 
 ## RHC Change of Ownership (CHOW)
@@ -317,5 +305,7 @@ rhc_chow <- read_csv(
       multi_npi_seller = charbin(multi_npi_seller))
 
 rhc_chow
+
+rhc_chow |> cheapr::overview()
 ```
 

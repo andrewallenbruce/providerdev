@@ -22,7 +22,7 @@ Data Dictionary Access Lines of Authority: __/AB-NIPR-Health-Line-Of-AuthorityNI
 ```{r}
 #| label: s7_object
 #| echo: false
-end <- hgov_endpoint("ab_registration_completion")
+end <- hgov_endpoint("hgov_ab_reg_comp")
 print_meta(end)
 ```
 
@@ -42,15 +42,17 @@ print_meta(end)
 #| message: false
 #| warning: false
 #| echo: false
-resp <- quick("ab_registration_completion", offset = 10000, limit = 500) |>
+resp <- quick("hgov_ab_reg_comp", offset = 100000, limit = 500) |> 
   fcompute(
   NPN              = npn,
   plan_year        = as.integer(applicable_plan_year),
-  ind_mkt_cmp_date = anytime::anydate(individual_registration_completion_date),
-  ind_mkt_end_date = anytime::anydate(individual_marketplace_end_date),
-  shop_cmp_date    = anytime::anydate(shop_registration_completion_date),
-  shop_end_date    = anytime::anydate(shop_end_date),
+  ind_mkt_cmp_date = providertwo:::as_date(individual_registration_completion_date),
+  ind_mkt_end_date = providertwo:::as_date(individual_marketplace_end_date),
+  shop_cmp_date    = providertwo:::as_date(shop_registration_completion_date),
+  shop_end_date    = providertwo:::as_date(shop_end_date),
   npn_valid        = npn_valid_current_plan_year_only)
 
-resp |> print(n = Inf)
+resp
+
+resp |> cheapr::overview()
 ```

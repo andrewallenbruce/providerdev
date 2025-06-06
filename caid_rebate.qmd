@@ -31,11 +31,8 @@ print_meta(end)
 #| label: dict
 #| echo: false
 #| message: true
-dict <- read_csv(
-  here("data/caid_data_dictionary.csv"), 
-  show_col_types = FALSE) |> 
-  providertwo:::subset_detect(title, "Newly Reported Drugs Data Dictionary")
-print_dict_tbl(dict)
+caid_dictionary("Newly Reported Drugs Data Dictionary") |> 
+  print_dict_tbl()
 ```
 
 ## Data
@@ -54,23 +51,15 @@ resp <- quick("caid_drug_rebate", offset = 0, limit = 8000) |>
     cod_status        = factor_(cod_status),
     upps              = as.double(upps),
     line_extension    = gsub("N/A", NA, line_extension),
-    fda_approval_date = anytime::anydate(fda_approval_date),
-    market_date       = anytime::anydate(fda_approval_date),
-    date_transferred  = anytime::anydate(date_transferred_from_ddr_to_mdr),
-    termination_date  = anytime::anydate(termination_date),
+    fda_approval_date = providertwo:::as_date(fda_approval_date),
+    market_date       = providertwo:::as_date(fda_approval_date),
+    date_transferred  = providertwo:::as_date(date_transferred_from_ddr_to_mdr),
+    termination_date  = providertwo:::as_date(termination_date),
     date_transferred_from_ddr_to_mdr = NULL)
 
 resp
-```
 
-### Overview
-
-```{r}
-#| label: overview
-#| message: false
-#| warning: false
-#| echo: false
-resp |> data_codebook()
+resp |> cheapr::overview()
 ```
 
 ### Distribution

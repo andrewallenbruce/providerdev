@@ -78,7 +78,8 @@ resp <- quick("ahqr_psi11", offset = 0, limit = 5000) |>
       RATE                 = as.double(RATE),
       INTERVAL_LOWER_LIMIT = as.double(INTERVAL_LOWER_LIMIT),
       INTERVAL_HIGHER_LIMIT= as.double(INTERVAL_HIGHER_LIMIT)) |> 
-  sbt(!cheapr::is_na(RATE))
+  sbt(!cheapr::is_na(RATE)) |> 
+  roworder(HOSP_ID)
 resp
 
 cheapr::overview(resp)
