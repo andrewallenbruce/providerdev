@@ -1,9 +1,26 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
 # Format Experiments {#sec-bslib}
 
 ```{r}
-#| label: setup-common-01
+#| label: setup
 #| include: false
-#| warning: false
+source("includes/_common.R")
+
+knitr::opts_chunk$set(
+  collapse  = FALSE,
+  echo      = TRUE, 
+  message   = TRUE, 
+  warning   = FALSE,
+  error     = TRUE,
+  comment   = "",
+  dpi       = 300, 
+  out.width = "100%"
+)
 source("includes/_common.R")
 library(bslib)
 library(htmltools)
@@ -114,7 +131,7 @@ page_fillable(
 ### Accordion
 
 ```{r}
-items <- lapply(LETTERS, function(x) {
+items <- lapply(LETTERS[1:5], function(x) {
   accordion_panel(paste("Section", x), paste("Some narrative for section", x))
 })
 

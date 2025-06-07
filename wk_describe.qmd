@@ -1,0 +1,56 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+# Describe
+
+```{r}
+#| label: setup
+#| include: false
+#| warning: false
+source("includes/_common.R")
+```
+
+-   [ ] `character`
+-   [ ] `Date`
+-   [ ] `double`
+-   [ ] `factor`
+-   [ ] `integer`
+-   [ ] `logical`
+-   [ ] `numeric`
+
+## Test Data
+
+```{r}
+#| label: backend
+#| echo: false
+end <- caid_endpoint("caid_drug_rebate")
+print_meta(end)
+```
+
+## Endpoint
+
+```{r}
+#| label: endpoint
+#| message: false
+#| warning: false
+#| echo: false
+resp <- quick("caid_drug_rebate", offset = 0, limit = 8000) |> 
+  mtt(
+    drug_category     = factor_(drug_category),
+    drug_type         = factor_(drug_type),
+    unit_type         = factor_(unit_type),
+    tec_code          = factor_(tec_code),
+    cod_status        = factor_(cod_status),
+    upps              = as.double(upps),
+    line_extension    = gsub("N/A", NA, line_extension),
+    fda_approval_date = providertwo:::as_date(fda_approval_date),
+    market_date       = providertwo:::as_date(fda_approval_date),
+    date_transferred  = providertwo:::as_date(date_transferred_from_ddr_to_mdr),
+    termination_date  = providertwo:::as_date(termination_date),
+    date_transferred_from_ddr_to_mdr = NULL)
+
+resp
+```
