@@ -497,11 +497,10 @@ div.sourceCode > pre.sourceCode.r::before {
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-<li><a href="#load-packages" id="toc-load-packages" class="nav-link active" data-scroll-target="#load-packages">Load Packages</a></li>
-  <li><a href="#rural-health-clinics" id="toc-rural-health-clinics" class="nav-link" data-scroll-target="#rural-health-clinics">Rural Health Clinics</a></li>
-  <li><a href="#geocode-with-tidygeocoder" id="toc-geocode-with-tidygeocoder" class="nav-link" data-scroll-target="#geocode-with-tidygeocoder">Geocode with {tidygeocoder}</a></li>
-  <li><a href="#retrieve-georgia-counties-shapefile-from-tigris" id="toc-retrieve-georgia-counties-shapefile-from-tigris" class="nav-link" data-scroll-target="#retrieve-georgia-counties-shapefile-from-tigris">Retrieve Georgia counties shapefile from {tigris}</a></li>
-  <li><a href="#map-with-ggplot" id="toc-map-with-ggplot" class="nav-link" data-scroll-target="#map-with-ggplot">Map with {ggplot}</a></li>
+<li><a href="#rural-health-clinics" id="toc-rural-health-clinics" class="nav-link active" data-scroll-target="#rural-health-clinics">Rural Health Clinics</a></li>
+  <li><a href="#geocode" id="toc-geocode" class="nav-link" data-scroll-target="#geocode">Geocode</a></li>
+  <li><a href="#georgia-counties-shapefile" id="toc-georgia-counties-shapefile" class="nav-link" data-scroll-target="#georgia-counties-shapefile">Georgia Counties Shapefile</a></li>
+  <li><a href="#georgia-rhcs-map" id="toc-georgia-rhcs-map" class="nav-link" data-scroll-target="#georgia-rhcs-map">Georgia RHCs Map</a></li>
   </ul><div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/andrewallenbruce/provider"><i class="bi bi-file-code"></i>Provider GitHub</a></li><li><a href="https://github.com/andrewallenbruce/providertwo"><i class="bi bi-file-code"></i>providertwo</a></li></ul></div></nav>
     </div>
 <!-- main -->
@@ -520,44 +519,13 @@ div.sourceCode > pre.sourceCode.r::before {
   
 
 
-</header><div class="cell">
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">underscore</span> <span class="op">&lt;-</span> \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span><span class="op">(</span><span class="st">"___owner$"</span>, <span class="st">""</span>, <span class="va">x</span>, perl <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="va">char_binary</span> <span class="op">&lt;-</span> \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">val_match</span><span class="op">(</span><span class="va">x</span>, <span class="st">"N"</span> <span class="op">~</span> <span class="fl">0L</span>, <span class="st">"Y"</span> <span class="op">~</span> <span class="fl">1L</span><span class="op">)</span></span>
-<span><span class="va">pct_prop</span> <span class="op">&lt;-</span> \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu">cheapr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cheapr/man/case.html">case</a></span><span class="op">(</span></span>
-<span>    <span class="va">x</span> <span class="op">==</span> <span class="st">"0"</span> <span class="op">~</span> <span class="fl">0</span>,</span>
-<span>    <span class="fu">cheapr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cheapr/man/is_na.html">is_na</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">~</span> <span class="cn">NA_real_</span>,</span>
-<span>    .default <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html">as.double</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">/</span> <span class="fl">100</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<section id="load-packages" class="level2"><h2 class="anchored" data-anchor-id="load-packages">Load Packages</h2>
-<div class="cell">
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://jessecambon.github.io/tidygeocoder/">tidygeocoder</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/walkerke/tigris">tigris</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ateucher/rmapshaper">rmapshaper</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>tigris_use_cache <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section><section id="rural-health-clinics" class="level2"><h2 class="anchored" data-anchor-id="rural-health-clinics">Rural Health Clinics</h2>
-<div class="cell">
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu">careGroup</span><span class="op">(</span><span class="st">"rural_health"</span><span class="op">)</span><span class="op">@</span><span class="va">groups</span> <span class="op">|&gt;</span></span>
-<span>  <span class="va">_</span><span class="op">[[</span><span class="st">"rural_health_clinic_enrollments"</span><span class="op">]</span><span class="op">]</span> <span class="op">|&gt;</span></span>
-<span>  <span class="va">_</span><span class="op">[[</span><span class="st">"endpoints"</span><span class="op">]</span><span class="op">]</span> <span class="op">|&gt;</span></span>
-<span>  <span class="va">_</span><span class="op">[[</span><span class="st">"identifier"</span><span class="op">]</span><span class="op">]</span> <span class="op">|&gt;</span></span>
+</header><section id="rural-health-clinics" class="level2"><h2 class="anchored" data-anchor-id="rural-health-clinics">Rural Health Clinics</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rhc</span> <span class="op">&lt;-</span> <span class="fu">care_group</span><span class="op">(</span><span class="st">"rhc"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="va">rhc</span><span class="op">@</span><span class="va">members</span><span class="op">$</span><span class="va">rhc_enrollments</span><span class="op">@</span><span class="va">identifier</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">request</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">req_url_query</span><span class="op">(</span></span>
-<span>    <span class="st">"filter[STATE]"</span> <span class="op">=</span> <span class="st">"GA"</span></span>
-<span>  <span class="op">)</span></span>
-<span></span>
-<span><span class="va">nres</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">req_url_path_append</span><span class="op">(</span><span class="st">"stats"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">providertwo</span><span class="fu">:::</span><span class="fu">perform_simple</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="va">_</span><span class="op">[[</span><span class="st">"data"</span><span class="op">]</span><span class="op">]</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="va">_</span><span class="op">[[</span><span class="st">"found_rows"</span><span class="op">]</span><span class="op">]</span></span>
-<span></span>
-<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">req_url_query</span><span class="op">(</span>offset <span class="op">=</span> <span class="fl">0L</span>, size <span class="op">=</span> <span class="fl">5000L</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">req_url_query</span><span class="op">(</span><span class="st">"filter[STATE]"</span> <span class="op">=</span> <span class="st">"GA"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">req_perform</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">providertwo</span><span class="fu">:::</span><span class="fu">resp_simple_json</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">get_elem</span><span class="op">(</span><span class="st">"^data$|headers"</span>, regex <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -568,11 +536,8 @@ div.sourceCode > pre.sourceCode.r::before {
 <span>  <span class="fu">roworder</span><span class="op">(</span><span class="va">`ORGANIZATION NAME`</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">janitor</span><span class="fu">::</span><span class="fu"><a href="https://sfirke.github.io/janitor/reference/clean_names.html">clean_names</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">mtt</span><span class="op">(</span>incorporation_date <span class="op">=</span> <span class="fu">providertwo</span><span class="fu">:::</span><span class="fu">as_date</span><span class="op">(</span><span class="va">incorporation_date</span><span class="op">)</span>,</span>
-<span>      multiple_npi_flag <span class="op">=</span> <span class="fu">char_binary</span><span class="op">(</span><span class="va">multiple_npi_flag</span><span class="op">)</span>,</span>
-<span>      address <span class="op">=</span> <span class="fu">cheapr_if_else</span><span class="op">(</span></span>
-<span>        <span class="fu">cheapr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cheapr/man/is_na.html">is_na</a></span><span class="op">(</span><span class="va">address_line_2</span><span class="op">)</span>, </span>
-<span>        <span class="va">address_line_1</span>, </span>
-<span>        <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">address_line_1</span>, <span class="va">address_line_2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>      multiple_npi_flag <span class="op">=</span> <span class="fu">charbin</span><span class="op">(</span><span class="va">multiple_npi_flag</span><span class="op">)</span>,</span>
+<span>      address <span class="op">=</span> <span class="fu">providertwo</span><span class="fu">:::</span><span class="fu">make_address</span><span class="op">(</span><span class="va">address_line_1</span>, <span class="va">address_line_2</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">slt</span><span class="op">(</span></span>
 <span>    <span class="va">npi</span>,</span>
 <span>    has_mult_npi <span class="op">=</span> <span class="va">multiple_npi_flag</span>,</span>
@@ -581,94 +546,75 @@ div.sourceCode > pre.sourceCode.r::before {
 <span>    enid <span class="op">=</span> <span class="va">enrollment_id</span>,</span>
 <span>    enid_state <span class="op">=</span> <span class="va">enrollment_state</span>,</span>
 <span>    org_name <span class="op">=</span> <span class="va">organization_name</span>,</span>
-<span>    dba_name <span class="op">=</span> <span class="va">doing_business_as_name</span>,</span>
+<span>    dba <span class="op">=</span> <span class="va">doing_business_as_name</span>,</span>
 <span>    inc_date <span class="op">=</span> <span class="va">incorporation_date</span>,</span>
 <span>    inc_state <span class="op">=</span> <span class="va">incorporation_state</span>,</span>
 <span>    org_type <span class="op">=</span> <span class="va">organization_type_structure</span>,</span>
 <span>    org_type_2 <span class="op">=</span> <span class="va">organization_other_type_text</span>,</span>
-<span>    <span class="va">proprietary_nonprofit</span>,</span>
+<span>    prop_non <span class="op">=</span> <span class="va">proprietary_nonprofit</span>,</span>
 <span>    <span class="va">address</span>,</span>
 <span>    <span class="va">city</span>,</span>
 <span>    <span class="va">state</span>,</span>
 <span>    zip <span class="op">=</span> <span class="va">zip_code</span><span class="op">)</span></span>
 <span></span>
-<span></span>
 <span><span class="va">rhc_enr</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">purse</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; - $npi                   c85 1639774714                        1174104657   ...
-#&gt; - $has_mult_npi          i85 0                                 0            ...
-#&gt; - $ccn                   c85 118915                            118917       ...
-#&gt; - $pac                   c85 2961814694                        2961814694   ...
-#&gt; - $enid                  c85 O20210409001138                   O20211123003 ...
-#&gt; - $enid_state            c85 GA                                GA           ...
-#&gt; - $org_name              c85 ACCESS MEDICAL CLINIC GEORGIA LLC ACCESS MEDIC ...
-#&gt; - $dba_name              c85 NA                                NA           ...
-#&gt; - $inc_date              D85 2020-07-29                        2021-01-11   ...
-#&gt; - $inc_state             c85 GA                                GA           ...
-#&gt; - $org_type              c85 LLC                               LLC          ...
-#&gt; - $org_type_2            c85 NA                                NA           ...
-#&gt; - $proprietary_nonprofit c85 P                                 P            ...
-#&gt; - $address               c85 304 N WESTBERRY ST                37 341 BYP   ...
-#&gt; - $city                  c85 SYLVESTER                         HAWKINSVILLE ...
-#&gt; - $state                 c85 GA                                GA           ...
-#&gt; - $zip                   c85 317912125                         310364839    ...</code></pre>
+<pre class="r-output"><code>• <span style="color: #DADADA;">$</span>npi          <span style="color: #5FAF87;">c83</span> <span style="color: #3A3A3A;">1639774714                       </span><span style="color: #DADADA;"> </span><span style="color: #3A3A3A;">1174104657           </span> ...
+• <span style="color: #DADADA;">$</span>has_mult_npi <span style="color: #5FAF87;">i83</span> <span style="color: #3A3A3A;">0                                </span><span style="color: #DADADA;"> </span><span style="color: #3A3A3A;">0                    </span> ...
+• <span style="color: #DADADA;">$</span>ccn          <span style="color: #5FAF87;">c83</span> <span style="color: #3A3A3A;">118915                           </span><span style="color: #DADADA;"> </span><span style="color: #3A3A3A;">118917               </span> ...
+• <span style="color: #DADADA;">$</span>pac          <span style="color: #5FAF87;">c83</span> <span style="color: #3A3A3A;">2961814694                       </span><span style="color: #DADADA;"> </span><span style="color: #3A3A3A;">2961814694           </span> ...
+• <span style="color: #DADADA;">$</span>enid         <span style="color: #5FAF87;">c83</span> <span style="color: #3A3A3A;">O20210409001138                  </span><span style="color: #DADADA;"> </span><span style="color: #3A3A3A;">O20211123003251      </span> ...
+• <span style="color: #DADADA;">$</span>enid_state   <span style="color: #5FAF87;">c83</span> <span style="color: #3A3A3A;">GA                               </span><span style="color: #DADADA;"> </span><span style="color: #3A3A3A;">GA                   </span> ...
+• <span style="color: #DADADA;">$</span>org_name     <span style="color: #5FAF87;">c83</span> <span style="color: #3A3A3A;">ACCESS MEDICAL CLINIC GEORGIA LLC</span><span style="color: #DADADA;"> </span><span style="color: #3A3A3A;">ACCESS MEDICAL CLINIC</span> ...
+• <span style="color: #DADADA;">$</span>dba          <span style="color: #5FAF87;">c83</span> <span style="color: #3A3A3A;">NA                               </span><span style="color: #DADADA;"> </span><span style="color: #3A3A3A;">NA                   </span> ...
+• <span style="color: #DADADA;">$</span>inc_date     <span style="color: #5FAF87;">D83</span> <span style="color: #3A3A3A;">2020-07-29                       </span><span style="color: #DADADA;"> </span><span style="color: #3A3A3A;">2021-01-11           </span> ...
+• <span style="color: #DADADA;">$</span>inc_state    <span style="color: #5FAF87;">c83</span> <span style="color: #3A3A3A;">GA                               </span><span style="color: #DADADA;"> </span><span style="color: #3A3A3A;">GA                   </span> ...
+• <span style="color: #DADADA;">$</span>org_type     <span style="color: #5FAF87;">c83</span> <span style="color: #3A3A3A;">LLC                              </span><span style="color: #DADADA;"> </span><span style="color: #3A3A3A;">LLC                  </span> ...
+• <span style="color: #DADADA;">$</span>org_type_2   <span style="color: #5FAF87;">c83</span> <span style="color: #3A3A3A;">NA                               </span><span style="color: #DADADA;"> </span><span style="color: #3A3A3A;">NA                   </span> ...
+• <span style="color: #DADADA;">$</span>prop_non     <span style="color: #5FAF87;">c83</span> <span style="color: #3A3A3A;">P                                </span><span style="color: #DADADA;"> </span><span style="color: #3A3A3A;">P                    </span> ...
+• <span style="color: #DADADA;">$</span>address      <span style="color: #5FAF87;">c83</span> <span style="color: #3A3A3A;">304 N WESTBERRY ST               </span><span style="color: #DADADA;"> </span><span style="color: #3A3A3A;">37 341 BYP           </span> ...
+• <span style="color: #DADADA;">$</span>city         <span style="color: #5FAF87;">c83</span> <span style="color: #3A3A3A;">SYLVESTER                        </span><span style="color: #DADADA;"> </span><span style="color: #3A3A3A;">HAWKINSVILLE         </span> ...
+• <span style="color: #DADADA;">$</span>state        <span style="color: #5FAF87;">c83</span> <span style="color: #3A3A3A;">GA                               </span><span style="color: #DADADA;"> </span><span style="color: #3A3A3A;">GA                   </span> ...
+• <span style="color: #DADADA;">$</span>zip          <span style="color: #5FAF87;">c83</span> <span style="color: #3A3A3A;">317912125                        </span><span style="color: #DADADA;"> </span><span style="color: #3A3A3A;">310364839            </span> ...
+</code></pre>
 </div>
-</div>
-<div class="cell">
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">req</span> <span class="op">&lt;-</span> <span class="fu">careGroup</span><span class="op">(</span><span class="st">"rural_health"</span><span class="op">)</span><span class="op">@</span><span class="va">groups</span> <span class="op">|&gt;</span></span>
-<span>  <span class="va">_</span><span class="op">[[</span><span class="st">"rural_health_clinic_all_owners"</span><span class="op">]</span><span class="op">]</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="va">_</span><span class="op">[[</span><span class="st">"endpoints"</span><span class="op">]</span><span class="op">]</span> <span class="op">|&gt;</span></span>
-<span>  <span class="va">_</span><span class="op">[[</span><span class="st">"identifier"</span><span class="op">]</span><span class="op">]</span> <span class="op">|&gt;</span></span>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">res2</span> <span class="op">&lt;-</span> <span class="va">rhc</span><span class="op">@</span><span class="va">members</span><span class="op">$</span><span class="va">rhc_owners</span><span class="op">@</span><span class="va">identifier</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">request</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">req_url_query</span><span class="op">(</span><span class="st">"filter[STATE - OWNER]"</span> <span class="op">=</span> <span class="st">"GA"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">nres</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">req_url_path_append</span><span class="op">(</span><span class="st">"stats"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">providertwo</span><span class="fu">:::</span><span class="fu">perform_simple</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="va">_</span><span class="op">[[</span><span class="st">"data"</span><span class="op">]</span><span class="op">]</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="va">_</span><span class="op">[[</span><span class="st">"found_rows"</span><span class="op">]</span><span class="op">]</span></span>
-<span></span>
-<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="va">req</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">req_url_query</span><span class="op">(</span>offset <span class="op">=</span> <span class="fl">0L</span>, size <span class="op">=</span> <span class="fl">5000L</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">req_url_query</span><span class="op">(</span><span class="st">"filter[STATE - OWNER]"</span> <span class="op">=</span> <span class="st">"GA"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">req_perform</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">providertwo</span><span class="fu">:::</span><span class="fu">resp_simple_json</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">get_elem</span><span class="op">(</span><span class="st">"^data$|headers"</span>, regex <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">rhc_owner</span> <span class="op">&lt;-</span> <span class="fu">as_tbl</span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">data</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">set_names</span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">meta</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">rhc_own</span> <span class="op">&lt;-</span> <span class="fu">as_tbl</span><span class="op">(</span><span class="va">res2</span><span class="op">$</span><span class="va">data</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">set_names</span><span class="op">(</span><span class="va">res2</span><span class="op">$</span><span class="va">meta</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">providertwo</span><span class="fu">:::</span><span class="fu">map_na_if</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">janitor</span><span class="fu">::</span><span class="fu"><a href="https://sfirke.github.io/janitor/reference/clean_names.html">clean_names</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">rnm</span><span class="op">(</span></span>
-<span>    enid <span class="op">=</span> <span class="va">enrollment_id</span>,</span>
-<span>    pac <span class="op">=</span> <span class="va">associate_id_owner</span>, </span>
-<span>    org_name <span class="op">=</span> <span class="va">organization_name</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">mtt</span><span class="op">(</span></span>
-<span>    association_date <span class="op">=</span> <span class="fu">providertwo</span><span class="fu">:::</span><span class="fu">as_date</span><span class="op">(</span><span class="va">association_date_owner</span><span class="op">)</span>,</span>
-<span>    address <span class="op">=</span> <span class="fu">cheapr_if_else</span><span class="op">(</span><span class="fu">cheapr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cheapr/man/is_na.html">is_na</a></span><span class="op">(</span><span class="va">address_line_2_owner</span><span class="op">)</span>, <span class="va">address_line_1_owner</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">address_line_1_owner</span>, <span class="va">address_line_2_owner</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    percentage_ownership <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">percentage_ownership</span><span class="op">)</span>,</span>
-<span>    role_code <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">role_code_owner</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">mtt</span><span class="op">(</span>assoc_date <span class="op">=</span> <span class="fu">providertwo</span><span class="fu">:::</span><span class="fu">as_date</span><span class="op">(</span><span class="va">association_date_owner</span><span class="op">)</span>,</span>
+<span>      address <span class="op">=</span> <span class="fu">providertwo</span><span class="fu">:::</span><span class="fu">make_address</span><span class="op">(</span></span>
+<span>        <span class="va">address_line_1_owner</span>, </span>
+<span>        <span class="va">address_line_2_owner</span><span class="op">)</span>,</span>
+<span>      pct_own <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="va">percentage_ownership</span><span class="op">)</span>,</span>
+<span>      role_code <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="va">role_code_owner</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">slt</span><span class="op">(</span></span>
-<span>    <span class="va">pac</span>,</span>
-<span>    <span class="va">enid</span>,</span>
-<span>    <span class="va">org_name</span>,</span>
-<span>    pac_owner <span class="op">=</span> <span class="va">associate_id</span>, </span>
-<span>    org_name_owner <span class="op">=</span> <span class="va">organization_name_owner</span>,</span>
-<span>    entity <span class="op">=</span> <span class="va">type_owner</span>,</span>
+<span>    enid <span class="op">=</span> <span class="va">enrollment_id</span>, </span>
+<span>    pac_own <span class="op">=</span> <span class="va">associate_id_owner</span>, </span>
+<span>    org_name <span class="op">=</span> <span class="va">organization_name</span>,</span>
+<span>    org_name_own <span class="op">=</span> <span class="va">organization_name_owner</span>,</span>
+<span>    entity_own <span class="op">=</span> <span class="va">type_owner</span>,</span>
 <span>    <span class="va">role_code</span>,</span>
 <span>    role_text <span class="op">=</span> <span class="va">role_text_owner</span>,</span>
-<span>    <span class="va">association_date_owner</span>,</span>
-<span>    <span class="va">first_name_owner</span>,</span>
-<span>    <span class="va">middle_name_owner</span>,</span>
-<span>    <span class="va">last_name_owner</span>,</span>
-<span>    <span class="va">title_owner</span>,</span>
-<span>    dba_name <span class="op">=</span> <span class="va">doing_business_as_name_owner</span>,</span>
-<span>    <span class="va">address</span>,</span>
-<span>    <span class="va">city_owner</span>,</span>
-<span>    <span class="va">state_owner</span>,</span>
-<span>    zip <span class="op">=</span> <span class="va">zip_code_owner</span>,</span>
-<span>    <span class="va">percentage_ownership</span>,</span>
+<span>    <span class="va">assoc_date</span>,</span>
+<span>    first_own <span class="op">=</span> <span class="va">first_name_owner</span>,</span>
+<span>    middle_own <span class="op">=</span> <span class="va">middle_name_owner</span>,</span>
+<span>    last_own <span class="op">=</span> <span class="va">last_name_owner</span>,</span>
+<span>    title_own <span class="op">=</span> <span class="va">title_owner</span>,</span>
+<span>    dba_own <span class="op">=</span> <span class="va">doing_business_as_name_owner</span>,</span>
+<span>    addr_own <span class="op">=</span> <span class="va">address</span>,</span>
+<span>    city_own <span class="op">=</span> <span class="va">city_owner</span>,</span>
+<span>    state_own <span class="op">=</span> <span class="va">state_owner</span>,</span>
+<span>    zip_own <span class="op">=</span> <span class="va">zip_code_owner</span>,</span>
+<span>    <span class="va">pct_own</span>,</span>
 <span>    is_for_acq <span class="op">=</span> <span class="va">created_for_acquisition_owner</span>,</span>
 <span>    is_corp <span class="op">=</span> <span class="va">corporation_owner</span>,</span>
 <span>    is_llc <span class="op">=</span> <span class="va">llc_owner</span>,</span>
@@ -685,537 +631,174 @@ div.sourceCode > pre.sourceCode.r::before {
 <span>    other_type <span class="op">=</span> <span class="va">other_type_text_owner</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">mtt</span><span class="op">(</span></span>
-<span>    is_for_acq <span class="op">=</span> <span class="fu">char_binary</span><span class="op">(</span><span class="va">is_for_acq</span><span class="op">)</span>,</span>
-<span>    is_corp <span class="op">=</span> <span class="fu">char_binary</span><span class="op">(</span><span class="va">is_corp</span><span class="op">)</span>,</span>
-<span>    is_llc <span class="op">=</span> <span class="fu">char_binary</span><span class="op">(</span><span class="va">is_llc</span><span class="op">)</span>,</span>
-<span>    is_med_prov_supp <span class="op">=</span> <span class="fu">char_binary</span><span class="op">(</span><span class="va">is_med_prov_supp</span><span class="op">)</span>,</span>
-<span>    is_mgmt_serv_co <span class="op">=</span> <span class="fu">char_binary</span><span class="op">(</span><span class="va">is_mgmt_serv_co</span><span class="op">)</span>,</span>
-<span>    is_med_staff_co <span class="op">=</span> <span class="fu">char_binary</span><span class="op">(</span><span class="va">is_med_staff_co</span><span class="op">)</span>,</span>
-<span>    is_holding_co <span class="op">=</span> <span class="fu">char_binary</span><span class="op">(</span><span class="va">is_holding_co</span><span class="op">)</span>,</span>
-<span>    is_invest_firm <span class="op">=</span> <span class="fu">char_binary</span><span class="op">(</span><span class="va">is_invest_firm</span><span class="op">)</span>,</span>
-<span>    is_fin_inst <span class="op">=</span> <span class="fu">char_binary</span><span class="op">(</span><span class="va">is_fin_inst</span><span class="op">)</span>,</span>
-<span>    is_consult_firm <span class="op">=</span> <span class="fu">char_binary</span><span class="op">(</span><span class="va">is_consult_firm</span><span class="op">)</span>,</span>
-<span>    is_for_profit <span class="op">=</span> <span class="fu">char_binary</span><span class="op">(</span><span class="va">is_for_profit</span><span class="op">)</span>,</span>
-<span>    is_non_profit <span class="op">=</span> <span class="fu">char_binary</span><span class="op">(</span><span class="va">is_non_profit</span><span class="op">)</span>,</span>
-<span>    is_other_type <span class="op">=</span> <span class="fu">char_binary</span><span class="op">(</span><span class="va">is_other_type</span><span class="op">)</span></span>
+<span>    is_for_acq <span class="op">=</span> <span class="fu">charbin</span><span class="op">(</span><span class="va">is_for_acq</span><span class="op">)</span>,</span>
+<span>    is_corp <span class="op">=</span> <span class="fu">charbin</span><span class="op">(</span><span class="va">is_corp</span><span class="op">)</span>,</span>
+<span>    is_llc <span class="op">=</span> <span class="fu">charbin</span><span class="op">(</span><span class="va">is_llc</span><span class="op">)</span>,</span>
+<span>    is_med_prov_supp <span class="op">=</span> <span class="fu">charbin</span><span class="op">(</span><span class="va">is_med_prov_supp</span><span class="op">)</span>,</span>
+<span>    is_mgmt_serv_co <span class="op">=</span> <span class="fu">charbin</span><span class="op">(</span><span class="va">is_mgmt_serv_co</span><span class="op">)</span>,</span>
+<span>    is_med_staff_co <span class="op">=</span> <span class="fu">charbin</span><span class="op">(</span><span class="va">is_med_staff_co</span><span class="op">)</span>,</span>
+<span>    is_holding_co <span class="op">=</span> <span class="fu">charbin</span><span class="op">(</span><span class="va">is_holding_co</span><span class="op">)</span>,</span>
+<span>    is_invest_firm <span class="op">=</span> <span class="fu">charbin</span><span class="op">(</span><span class="va">is_invest_firm</span><span class="op">)</span>,</span>
+<span>    is_fin_inst <span class="op">=</span> <span class="fu">charbin</span><span class="op">(</span><span class="va">is_fin_inst</span><span class="op">)</span>,</span>
+<span>    is_consult_firm <span class="op">=</span> <span class="fu">charbin</span><span class="op">(</span><span class="va">is_consult_firm</span><span class="op">)</span>,</span>
+<span>    is_for_profit <span class="op">=</span> <span class="fu">charbin</span><span class="op">(</span><span class="va">is_for_profit</span><span class="op">)</span>,</span>
+<span>    is_non_profit <span class="op">=</span> <span class="fu">charbin</span><span class="op">(</span><span class="va">is_non_profit</span><span class="op">)</span>,</span>
+<span>    is_other_type <span class="op">=</span> <span class="fu">charbin</span><span class="op">(</span><span class="va">is_other_type</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="va">rhc_owner</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; # A tibble: 86 × 33
-#&gt;    pac        enid  org_name pac_owner org_name_owner entity role_code role_text
-#&gt;    &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;          &lt;chr&gt;      &lt;int&gt; &lt;chr&gt;    
-#&gt;  1 0547179665 O200… TMC HAR… 87299978… TMC/HIGGINS G… O             34 5% OR GR…
-#&gt;  2 1557271731 O200… HIAWASS… 15572717… HIAWASSEE FAM… O             43 OPERATIO…
-#&gt;  3 5991616039 O200… TMC WES… 59916160… TMC WEST CARR… O             34 5% OR GR…
-#&gt;  4 1850294034 O200… BACON C… 18502940… BACON COUNTY … O             34 5% OR GR…
-#&gt;  5 1850294034 O200… BACON C… 18502940… BACON COUNTY … O             43 OPERATIO…
-#&gt;  6 2264415538 O200… BOWDON-… 22644155… BOWDON- MT. Z… O             36 5% OR GR…
-#&gt;  7 2264415538 O200… BOWDON-… 22644155… BOWDON- MT. Z… O             43 OPERATIO…
-#&gt;  8 4981502622 O200… HOSPITA… 60027245… JOHN D. ARCHB… O             43 OPERATIO…
-#&gt;  9 4981502622 O200… HOSPITA… 60027245… JOHN D. ARCHB… O             43 OPERATIO…
-#&gt; 10 4183529183 O200… PHOEBE … 08401045… PHOEBE PUTNEY… O             34 5% OR GR…
-#&gt; # ℹ 76 more rows
-#&gt; # ℹ 25 more variables: association_date_owner &lt;chr&gt;, first_name_owner &lt;chr&gt;,
-#&gt; #   middle_name_owner &lt;chr&gt;, last_name_owner &lt;chr&gt;, title_owner &lt;chr&gt;,
-#&gt; #   dba_name &lt;chr&gt;, address &lt;chr&gt;, city_owner &lt;chr&gt;, state_owner &lt;chr&gt;,
-#&gt; #   zip &lt;chr&gt;, percentage_ownership &lt;dbl&gt;, is_for_acq &lt;int&gt;, is_corp &lt;int&gt;,
-#&gt; #   is_llc &lt;int&gt;, is_med_prov_supp &lt;int&gt;, is_mgmt_serv_co &lt;int&gt;,
-#&gt; #   is_med_staff_co &lt;int&gt;, is_holding_co &lt;int&gt;, is_invest_firm &lt;int&gt;, …</code></pre>
+<span><span class="va">rhc_own</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="r-output"><code><span style="color: #555555;"># A tibble: 85 × 32</span>
+   enid  pac_own org_name org_name_own entity_own role_code role_text assoc_date
+   <span style="color: #555555; font-style: italic;"><chr></chr></span> <span style="color: #555555; font-style: italic;"><chr></chr></span>   <span style="color: #555555; font-style: italic;"><chr></chr></span>    <span style="color: #555555; font-style: italic;"><chr></chr></span>        <span style="color: #555555; font-style: italic;"><chr></chr></span>          <span style="color: #555555; font-style: italic;"><int></int></span> <span style="color: #555555; font-style: italic;"><chr></chr></span>     <span style="color: #555555; font-style: italic;"><date></date></span>    
+<span style="color: #555555;"> 1</span> O200… 054717… TMC HAR… TMC/HIGGINS… O                 34 5% OR GR… 2003-02-01
+<span style="color: #555555;"> 2</span> O200… 155727… HIAWASS… HIAWASSEE F… O                 43 OPERATIO… 2000-08-01
+<span style="color: #555555;"> 3</span> O200… 599161… TMC WES… TMC WEST CA… O                 34 5% OR GR… 1999-11-01
+<span style="color: #555555;"> 4</span> O200… 185029… BACON C… BACON COUNT… O                 34 5% OR GR… 2012-12-17
+<span style="color: #555555;"> 5</span> O200… 185029… BACON C… BACON COUNT… O                 43 OPERATIO… 2002-11-20
+<span style="color: #555555;"> 6</span> O200… 226441… BOWDON-… BOWDON- MT.… O                 36 5% OR GR… 2012-06-01
+<span style="color: #555555;"> 7</span> O200… 226441… BOWDON-… BOWDON- MT.… O                 43 OPERATIO… 1980-10-09
+<span style="color: #555555;"> 8</span> O200… 498150… HOSPITA… JOHN D. ARC… O                 43 OPERATIO… 2014-05-29
+<span style="color: #555555;"> 9</span> O200… 498150… HOSPITA… JOHN D. ARC… O                 43 OPERATIO… 1990-07-02
+<span style="color: #555555;">10</span> O200… 418352… PHOEBE … PHOEBE PUTN… O                 34 5% OR GR… 2008-02-12
+<span style="color: #555555;"># ℹ 75 more rows</span>
+<span style="color: #555555;"># ℹ 24 more variables: first_own <chr>, middle_own <chr>, last_own <chr>,</chr></chr></chr></span>
+<span style="color: #555555;">#   title_own <chr>, dba_own <chr>, addr_own <chr>, city_own <chr>,</chr></chr></chr></chr></span>
+<span style="color: #555555;">#   state_own <chr>, zip_own <chr>, pct_own <dbl>, is_for_acq <int>,</int></dbl></chr></chr></span>
+<span style="color: #555555;">#   is_corp <int>, is_llc <int>, is_med_prov_supp <int>, is_mgmt_serv_co <int>,</int></int></int></int></span>
+<span style="color: #555555;">#   is_med_staff_co <int>, is_holding_co <int>, is_invest_firm <int>,</int></int></int></span>
+<span style="color: #555555;">#   is_fin_inst <int>, is_consult_firm <int>, is_for_profit <int>, …</int></int></int></span>
+</code></pre>
 </div>
-</div>
-<div class="cell">
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html">tic</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">rhc_nppes</span> <span class="op">&lt;-</span> <span class="fu">npi_nppes</span><span class="op">(</span>npi <span class="op">=</span> <span class="va">rhc_enr</span><span class="op">$</span><span class="va">npi</span><span class="op">)</span></span>
-<span><span class="fu">tictoc</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tictoc/man/tic.html">toc</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; 1.13 sec elapsed</code></pre>
-</div>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rhc_nppes</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">slt</span><span class="op">(</span><span class="op">-</span><span class="va">endpoints</span>, <span class="op">-</span><span class="va">enumeration_type</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; # A tibble: 85 × 7
-#&gt;    number     addresses    practiceLocations basic        taxonomies identifiers
-#&gt;    &lt;chr&gt;      &lt;list&gt;       &lt;list&gt;            &lt;list&gt;       &lt;list&gt;     &lt;list&gt;     
-#&gt;  1 1639774714 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt;  2 1174104657 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt;  3 1568100519 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt;  4 1821017831 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt;  5 1558898882 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt;  6 1750339511 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt;  7 1417906348 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt;  8 1538117932 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt;  9 1851969372 &lt;df [2 × 9]&gt; &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 10 1639211956 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt; 11 1881758753 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt; 12 1790992352 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt; 13 1376750976 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt; 14 1427333095 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt; 15 1821662008 &lt;df [2 × 9]&gt; &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 16 1922672120 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 17 1255948717 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt; 18 1811020407 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 19 1750686382 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 20 1700237633 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 21 1063832202 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 22 1437577350 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 23 1366784415 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 24 1912319997 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 25 1538586243 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 26 1285706879 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt; 27 1790088169 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 28 1912379082 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 29 1699782037 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt; 30 1215943915 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt; 31 1801801543 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt; 32 1366472003 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt; 33 1922211515 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt; 34 1881960151 &lt;df [2 × 9]&gt; &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 35 1801128863 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 36 1023332970 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt; 37 1649670894 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 38 1912430224 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 39 1063459899 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt; 40 1851334015 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt; 41 1467602482 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 42 1760632780 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 43 1912564618 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 44 1518398049 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt; 45 1780695775 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt; 46 1275714438 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt; 47 1376778001 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt; 48 1891770764 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt; 49 1659700763 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 50 1053802553 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 51 1386339141 &lt;df [2 × 9]&gt; &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 52 1841432044 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 53 1033428214 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 54 1811233828 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 55 1386708154 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 56 1649853862 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 57 1285893818 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 58 1972762508 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 59 1285132415 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 60 1568713873 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 61 1720227895 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 62 1073752143 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 63 1255570321 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 64 1740778828 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 65 1528110103 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt; 66 1235227752 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt; 67 1083816128 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt; 68 1891863569 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt; 69 1275775314 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 70 1871816918 &lt;df&gt;         &lt;df [1 × 10]&gt;     &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt; 71 1487284956 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 72 1861022329 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 73 1063042562 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 74 1588294045 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 75 1649800111 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 76 1508801416 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 77 1992710610 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt; 78 1497760243 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt; 79 1982631321 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt; 80 1578682696 &lt;df [2 × 9]&gt; &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt; 81 1427384353 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 82 1144276452 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 83 1700392438 &lt;df&gt;         &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;df&gt;       
-#&gt; 84 1174024665 &lt;df [2 × 9]&gt; &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; 85 1629531694 &lt;df [2 × 9]&gt; &lt;NULL&gt;            &lt;named list&gt; &lt;df&gt;       &lt;NULL&gt;     
-#&gt; # ℹ 1 more variable: other_names &lt;list&gt;</code></pre>
-</div>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rhc_nppes</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">slt</span><span class="op">(</span><span class="va">number</span>, <span class="va">addresses</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">unnest</span><span class="op">(</span><span class="va">addresses</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">mtt</span><span class="op">(</span>address <span class="op">=</span> <span class="fu">cheapr_if_else</span><span class="op">(</span><span class="fu">cheapr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cheapr/man/is_na.html">is_na</a></span><span class="op">(</span><span class="va">address_2</span><span class="op">)</span>, <span class="va">address_1</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">address_1</span>, <span class="va">address_2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">slt</span><span class="op">(</span><span class="op">-</span><span class="va">address_1</span>, <span class="op">-</span><span class="va">address_2</span>, <span class="op">-</span><span class="va">address_type</span>, <span class="op">-</span><span class="va">country_code</span>, <span class="op">-</span><span class="va">country_name</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; # A tibble: 170 × 8
-#&gt;    number    address_purpose city  state postal_code telephone_number fax_number
-#&gt;    &lt;chr&gt;     &lt;chr&gt;           &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;            &lt;chr&gt;     
-#&gt;  1 16397747… LOCATION        SYLV… GA    317912125   229-463-7071     833-606-0…
-#&gt;  2 16397747… MAILING         HARDY AR    725428002   &lt;NA&gt;             &lt;NA&gt;      
-#&gt;  3 11741046… LOCATION        HAWK… GA    310360000   478-845-4842     833-606-0…
-#&gt;  4 11741046… MAILING         HARDY AR    725428002   &lt;NA&gt;             870-856-2…
-#&gt;  5 15681005… LOCATION        BRUN… GA    315238285   870-856-1202     870-856-2…
-#&gt;  6 15681005… MAILING         HARDY AR    725428002   870-856-1202     866-500-4…
-#&gt;  7 18210178… MAILING         ALMA  GA    315102908   912-632-2952     912-632-8…
-#&gt;  8 18210178… LOCATION        ALMA  GA    315102908   912-632-2952     912-632-8…
-#&gt;  9 15588988… LOCATION        NICH… GA    31554       912-632-2952     &lt;NA&gt;      
-#&gt; 10 15588988… MAILING         ALMA  GA    315102922   912-632-8961     912-632-5…
-#&gt; # ℹ 160 more rows
-#&gt; # ℹ 1 more variable: address &lt;chr&gt;</code></pre>
-</div>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rhc_nppes</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">slt</span><span class="op">(</span><span class="va">number</span>, <span class="va">basic</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">unnest_wider</span><span class="op">(</span><span class="va">basic</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; # A tibble: 85 × 16
-#&gt;    number organization_name organizational_subpart enumeration_date last_updated
-#&gt;    &lt;chr&gt;  &lt;chr&gt;             &lt;chr&gt;                  &lt;chr&gt;            &lt;chr&gt;       
-#&gt;  1 16397… ACCESS MEDICAL C… NO                     2020-12-04       2021-10-06  
-#&gt;  2 11741… ACCESS MEDICAL C… NO                     2021-04-16       2022-09-13  
-#&gt;  3 15681… ACCESS MEDICAL C… NO                     2022-05-20       2024-02-27  
-#&gt;  4 18210… BACON COUNTY HEA… NO                     2006-07-19       2012-10-10  
-#&gt;  5 15588… BACON COUNTY HEA… NO                     2017-05-17       2018-05-22  
-#&gt;  6 17503… BOWDON- MT. ZION… YES                    2006-05-04       2022-02-21  
-#&gt;  7 14179… BOWDENMTZION PRI… NO                     2006-05-08       2022-03-21  
-#&gt;  8 15381… BOWDON- MT. ZION… NO                     2006-05-05       2023-02-28  
-#&gt;  9 18519… BURKE HOSPITAL C… NO                     2021-06-11       2022-10-03  
-#&gt; 10 16392… COFFEE REGIONAL … NO                     2007-02-13       2022-09-23  
-#&gt; # ℹ 75 more rows
-#&gt; # ℹ 11 more variables: certification_date &lt;chr&gt;, status &lt;chr&gt;,
-#&gt; #   authorized_official_first_name &lt;chr&gt;, authorized_official_last_name &lt;chr&gt;,
-#&gt; #   authorized_official_telephone_number &lt;chr&gt;,
-#&gt; #   authorized_official_title_or_position &lt;chr&gt;,
-#&gt; #   authorized_official_name_prefix &lt;chr&gt;,
-#&gt; #   authorized_official_name_suffix &lt;chr&gt;, …</code></pre>
-</div>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rhc_nppes</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">slt</span><span class="op">(</span><span class="va">number</span>, <span class="va">taxonomies</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">unnest</span><span class="op">(</span><span class="va">taxonomies</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; # A tibble: 156 × 7
-#&gt;    number     code       taxonomy_group              desc  state license primary
-#&gt;    &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;                       &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;   &lt;lgl&gt;  
-#&gt;  1 1639774714 207Q00000X "193200000X - Multi-Specia… Fami… &lt;NA&gt;  &lt;NA&gt;    FALSE  
-#&gt;  2 1639774714 261QR1300X ""                          Clin… &lt;NA&gt;  &lt;NA&gt;    TRUE   
-#&gt;  3 1174104657 207Q00000X "193200000X - Multi-Specia… Fami… &lt;NA&gt;  &lt;NA&gt;    FALSE  
-#&gt;  4 1174104657 261QR1300X ""                          Clin… &lt;NA&gt;  &lt;NA&gt;    TRUE   
-#&gt;  5 1568100519 207Q00000X "193200000X - Multi-Specia… Fami… &lt;NA&gt;  &lt;NA&gt;    FALSE  
-#&gt;  6 1568100519 261QR1300X ""                          Clin… &lt;NA&gt;  &lt;NA&gt;    TRUE   
-#&gt;  7 1821017831 282NR1301X ""                          Gene… &lt;NA&gt;  &lt;NA&gt;    TRUE   
-#&gt;  8 1558898882 282NR1301X ""                          Gene… &lt;NA&gt;  &lt;NA&gt;    FALSE  
-#&gt;  9 1558898882 363LF0000X "193200000X - Multi-Specia… Nurs… &lt;NA&gt;  &lt;NA&gt;    TRUE   
-#&gt; 10 1750339511 261QR1300X ""                          Clin… &lt;NA&gt;  &lt;NA&gt;    TRUE   
-#&gt; # ℹ 146 more rows</code></pre>
-</div>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rhc_nppes</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">slt</span><span class="op">(</span><span class="va">number</span>, <span class="va">identifiers</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">unnest</span><span class="op">(</span><span class="va">identifiers</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; # A tibble: 47 × 6
-#&gt;    number     code  desc                 issuer                 identifier state
-#&gt;    &lt;chr&gt;      &lt;chr&gt; &lt;chr&gt;                &lt;chr&gt;                  &lt;chr&gt;      &lt;chr&gt;
-#&gt;  1 1821017831 05    MEDICAID             &lt;NA&gt;                   000000118C GA   
-#&gt;  2 1821017831 01    Other (non-Medicare) Oscar Number           113408     GA   
-#&gt;  3 1750339511 05    MEDICAID             &lt;NA&gt;                   000254064A GA   
-#&gt;  4 1417906348 05    MEDICAID             &lt;NA&gt;                   000213749B GA   
-#&gt;  5 1417906348 05    MEDICAID             &lt;NA&gt;                   000573262A GA   
-#&gt;  6 1538117932 05    MEDICAID             &lt;NA&gt;                   000228588A GA   
-#&gt;  7 1639211956 05    MEDICAID             &lt;NA&gt;                   00000448D  GA   
-#&gt;  8 1881758753 05    MEDICAID             &lt;NA&gt;                   00002021D  GA   
-#&gt;  9 1881758753 05    MEDICAID             &lt;NA&gt;                   00002021E  GA   
-#&gt; 10 1790992352 05    MEDICAID             &lt;NA&gt;                   00000514F  GA   
-#&gt; 11 1376750976 01    Other (non-Medicare) MCR CCN                11-8907    GA   
-#&gt; 12 1427333095 05    MEDICAID             &lt;NA&gt;                   000548369c GA   
-#&gt; 13 1255948717 05    MEDICAID             &lt;NA&gt;                   003257063A GA   
-#&gt; 14 1285706879 05    MEDICAID             &lt;NA&gt;                   000195665I GA   
-#&gt; 15 1285706879 05    MEDICAID             &lt;NA&gt;                   89011JU    NC   
-#&gt; 16 1699782037 05    MEDICAID             &lt;NA&gt;                   000001031D GA   
-#&gt; 17 1215943915 05    MEDICAID             &lt;NA&gt;                   000001031B GA   
-#&gt; 18 1801801543 05    MEDICAID             &lt;NA&gt;                   000001031E GA   
-#&gt; 19 1366472003 05    MEDICAID             &lt;NA&gt;                   000001339G GA   
-#&gt; 20 1366472003 01    Other (non-Medicare) CLIA                   11D0909917 &lt;NA&gt; 
-#&gt; 21 1922211515 01    Other (non-Medicare) CLIA                   11D1056726 GA   
-#&gt; 22 1922211515 05    MEDICAID             &lt;NA&gt;                   841859123C GA   
-#&gt; 23 1023332970 05    MEDICAID             &lt;NA&gt;                   003110986A GA   
-#&gt; 24 1063459899 05    MEDICAID             &lt;NA&gt;                   00700917A  GA   
-#&gt; 25 1063459899 01    Other (non-Medicare) PALMETTO GBA RAILROAD  CE5080     GA   
-#&gt; 26 1851334015 05    MEDICAID             &lt;NA&gt;                   00679775A  GA   
-#&gt; 27 1851334015 01    Other (non-Medicare) PALMETTO GBA RAILROAD  CA6260     GA   
-#&gt; 28 1518398049 05    MEDICAID             &lt;NA&gt;                   003155331A GA   
-#&gt; 29 1518398049 01    Other (non-Medicare) Medicare Part A        11-8912    GA   
-#&gt; 30 1780695775 01    Other (non-Medicare) RAILROAD MEDICARE      080137303  GA   
-#&gt; 31 1275714438 01    Other (non-Medicare) RAILROAD MEDICARE      080137303  GA   
-#&gt; 32 1376778001 05    MEDICAID             &lt;NA&gt;                   003112355A GA   
-#&gt; 33 1891770764 05    MEDICAID             &lt;NA&gt;                   00002109E  GA   
-#&gt; 34 1528110103 05    MEDICAID             &lt;NA&gt;                   0000014821 GA   
-#&gt; 35 1235227752 05    MEDICAID             &lt;NA&gt;                   003140349A GA   
-#&gt; 36 1083816128 05    MEDICAID             &lt;NA&gt;                   251066475A GA   
-#&gt; 37 1891863569 05    MEDICAID             &lt;NA&gt;                   85000124G  GA   
-#&gt; 38 1871816918 05    MEDICAID             &lt;NA&gt;                   003109531A GA   
-#&gt; 39 1992710610 05    MEDICAID             &lt;NA&gt;                   300033792A GA   
-#&gt; 40 1992710610 01    Other (non-Medicare) clinic rendering       367607289A GA   
-#&gt; 41 1992710610 01    Other (non-Medicare) Medicare ID            DG2920     GA   
-#&gt; 42 1497760243 01    Other (non-Medicare) Clinic rendering numb… 367607289B GA   
-#&gt; 43 1497760243 05    MEDICAID             &lt;NA&gt;                   540960632A GA   
-#&gt; 44 1497760243 01    Other (non-Medicare) Medicare ID            CH7677     GA   
-#&gt; 45 1982631321 05    MEDICAID             &lt;NA&gt;                   000750274A GA   
-#&gt; 46 1578682696 01    Other (non-Medicare) RHC NUMBER             11-8516    GA   
-#&gt; 47 1700392438 05    MEDICAID             &lt;NA&gt;                   003213614A GA</code></pre>
-</div>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rhc_nppes</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">slt</span><span class="op">(</span><span class="va">number</span>, <span class="va">other_names</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">unnest</span><span class="op">(</span><span class="va">other_names</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; # A tibble: 76 × 4
-#&gt;    number     organization_name                                   type     code 
-#&gt;    &lt;chr&gt;      &lt;chr&gt;                                               &lt;chr&gt;    &lt;chr&gt;
-#&gt;  1 1174104657 ACCESS MEDICAL CLINIC                               Doing B… 3    
-#&gt;  2 1821017831 BACON COUNTY RURAL HEALTH CLINIC                    Doing B… 3    
-#&gt;  3 1558898882 NICHOLLS FAMILY HEALTHCARE                          Doing B… 3    
-#&gt;  4 1750339511 CARROLL CO PRIMARY HEALTH CARE                      Doing B… 3    
-#&gt;  5 1417906348 FRANKLIN CLINIC                                     Doing B… 3    
-#&gt;  6 1538117932 CARROLL COUNTY PRIMARY HEALTH CARE                  Doing B… 3    
-#&gt;  7 1639211956 COFFEE REGIONAL FIRST CARE                          Doing B… 3    
-#&gt;  8 1881758753 COLQUITT REGIONAL PRIMARY CARE CLINIC               Doing B… 3    
-#&gt;  9 1790992352 WARWICK HEALTH CARE CLINIC                          Doing B… 3    
-#&gt; 10 1376750976 CRISP REGIONAL CONVENIENT CARE                      Doing B… 3    
-#&gt; 11 1427333095 DAHLONEGA PEDIATRICS                                Doing B… 3    
-#&gt; 12 1821662008 DMC INTERNAL MEDICINE AND FAMILY HEALTH             Doing B… 3    
-#&gt; 13 1821662008 DMC INTERNAL AND FAMILY MEDICINE CLINIC             Doing B… 3    
-#&gt; 14 1922672120 DMC PRIMARY CARE                                    Doing B… 3    
-#&gt; 15 1255948717 EASTMAN FAMILY PRACTICE                             Doing B… 3    
-#&gt; 16 1811020407 EFFINGHAM FAMILY MEDICINE AT GOSHEN                 Doing B… 3    
-#&gt; 17 1750686382 EFFINGHAM FAMILY MEDICINE AT TWENTY-ONE             Doing B… 3    
-#&gt; 18 1700237633 ELLIJAY URGENT CARE &amp; FAMILY PRACTICE               Doing B… 3    
-#&gt; 19 1063832202 RAY MEDICAL CLINIC                                  Doing B… 3    
-#&gt; 20 1437577350 EMANUEL FAMILY MEDICAL CLINIC                       Doing B… 3    
-#&gt; 21 1366784415 SWAINSBORO INTERNAL MEDICINE                        Doing B… 3    
-#&gt; 22 1912319997 TWIN CITY FAMILY MEDICAL CLINIC                     Doing B… 3    
-#&gt; 23 1538586243 PORTER FAMILY MEDICAL CLINIC                        Doing B… 3    
-#&gt; 24 1790088169 CANDLER MEDICAL GROUP RHC                           Doing B… 3    
-#&gt; 25 1912379082 JEFF DAVIS FAMILY MEDICAL GROUP                     Doing B… 3    
-#&gt; 26 1699782037 PHYSICIANS HEALTH GROUP WADLEY                      Doing B… 3    
-#&gt; 27 1215943915 PHYSICIANS' HEALTH GROUP                            Doing B… 3    
-#&gt; 28 1801801543 WRENS PHYSICIANS' HEALTH GROUP                      Doing B… 3    
-#&gt; 29 1366472003 THE CAMILLA PEDIATRIC CENTER                        Doing B… 3    
-#&gt; 30 1922211515 MEDICAL GROUP OF MITCHELL COUNTY                    Doing B… 3    
-#&gt; 31 1881960151 ARCHBOLD - PELHAM PRIMARY CARE CLINIC               Doing B… 3    
-#&gt; 32 1801128863 COMMUNITY MEDICAL ASSOCIATES OF LINCOLNTON          Doing B… 3    
-#&gt; 33 1023332970 COMMUNITY MEDICAL ASSOCIATES OF WASHINGTON          Doing B… 3    
-#&gt; 34 1649670894 IRWIN COUNTY HOSPITAL AUTHORITY                     Former … 4    
-#&gt; 35 1649670894 WILLACOOCHEE CLINIC                                 Doing B… 3    
-#&gt; 36 1912430224 LIFEBRITE FAMILY MEDICAL OF EARLY                   Doing B… 3    
-#&gt; 37 1063459899 MEDICAL ASSOCIATES                                  Doing B… 3    
-#&gt; 38 1851334015 NORTH JEFFERSON MEDICAL CENTER                      Doing B… 3    
-#&gt; 39 1467602482 CHI MEMORIAL FAMILY PRACTICE ASSOCIATES - TRENTON   Doing B… 3    
-#&gt; 40 1760632780 CHI MEMORIAL FAMILY PRACTICE ASSOCIATES - LAFAYETTE Doing B… 3    
-#&gt; 41 1912564618 WARM SPRINGS MEDICAL CENTER                         Doing B… 3    
-#&gt; 42 1376778001 PHOEBE SUMTER ELLAVILLE CLINIC                      Doing B… 3    
-#&gt; 43 1891770764 PHOEBE WORTH FAMILY MEDICINE                        Doing B… 3    
-#&gt; 44 1659700763 FLINT RIVER RURAL HEALTH CLINIC - OGLETHORPE        Doing B… 3    
-#&gt; 45 1053802553 PRESTON FAMILY MEDICINE                             Doing B… 3    
-#&gt; 46 1386339141 MOUNTAIN LAKES PHYSICIANS GROUP                     Doing B… 3    
-#&gt; 47 1841432044 OPTIM PRIMARY CARE - SYLVANIA                       Doing B… 3    
-#&gt; 48 1033428214 OPTIM PRIMARY CARE MILLEN                           Doing B… 3    
-#&gt; 49 1649853862 SCHPG-PRIMARY CARE                                  Doing B… 3    
-#&gt; 50 1285893818 OPTIM PRIMARY CARE-REIDSVILLE                       Doing B… 3    
-#&gt; 51 1972762508 OPTIM PRIMARY CARE- GLENNVILLE                      Doing B… 3    
-#&gt; 52 1285132415 OPTIM PRIMARY CARE METTER                           Doing B… 3    
-#&gt; 53 1568713873 TAYLOR PHYSICIANS PRACTICE # 3                      Doing B… 3    
-#&gt; 54 1720227895 APPLING PEDIATRICS                                  Doing B… 3    
-#&gt; 55 1073752143 APPLING MEDICAL GROUP                               Doing B… 3    
-#&gt; 56 1255570321 SOUTH GEORGIA MEDICAL ASSOCIATES                    Doing B… 3    
-#&gt; 57 1740778828 INTERNAL MEDICINE AND GERIATRICS-RHC                Doing B… 3    
-#&gt; 58 1740778828 HABERSHAM MEDICAL GROUP                             Doing B… 3    
-#&gt; 59 1528110103 MILLER COUNTY MEDICAL CENTER                        Doing B… 3    
-#&gt; 60 1235227752 ROBERT E JENNINGS MEDICAL CLINIC                    Doing B… 3    
-#&gt; 61 1275775314 ATRIUM HEALTH NAVICENT PRIMARY CARE FORT VALLEY     Doing B… 3    
-#&gt; 62 1275775314 VALLEY MEDICAL CENTER                               Doing B… 3    
-#&gt; 63 1871816918 SOUTHWELL MEDICAL ADEL PRIMARY CARE                 Doing B… 3    
-#&gt; 64 1871816918 COOK PRIMARY CARE                                   Doing B… 3    
-#&gt; 65 1487284956 SOUTHWELL MEDICAL SYLVESTER PRIMARY CARE            Doing B… 3    
-#&gt; 66 1861022329 SOUTHWELL MEDICAL CLINIC                            Doing B… 3    
-#&gt; 67 1063042562 SOUTHWELL MEDICAL ASHBURN PRIMARY CARE              Doing B… 3    
-#&gt; 68 1588294045 SOUTHWELL MEDICAL NASHVILLE PRIMARY CARE            Doing B… 3    
-#&gt; 69 1649800111 SOUTHWELL MEDICAL COMMUNITY HEALTH CENTER           Doing B… 3    
-#&gt; 70 1508801416 BUCHANAN MEDICAL CLINIC                             Doing B… 3    
-#&gt; 71 1992710610 PRIMARY CARE OF BREMEN                              Doing B… 3    
-#&gt; 72 1982631321 WEST CARROLL FAMILY HEALTHCARE                      Doing B… 3    
-#&gt; 73 1578682696 UNION GENERAL FAMILY MEDICINE                       Doing B… 3    
-#&gt; 74 1427384353 CHATUGE MEDICAL GROUP                               Other N… 5    
-#&gt; 75 1700392438 UPSON REGIONAL MEDICAL CENTER                       Doing B… 3    
-#&gt; 76 1174024665 C/O HOSPITAL AUTHORITY OF WASHINGTON COUNTY         Other N… 5</code></pre>
-</div>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">rhc_nppes</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">slt</span><span class="op">(</span><span class="va">number</span>, <span class="va">practiceLocations</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">unnest_wider</span><span class="op">(</span><span class="va">practiceLocations</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">sbt</span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">state</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; # A tibble: 1 × 11
-#&gt;   number  country_code country_name address_purpose address_type address_1 city 
-#&gt;   &lt;chr&gt;   &lt;chr&gt;        &lt;chr&gt;        &lt;chr&gt;           &lt;chr&gt;        &lt;chr&gt;     &lt;chr&gt;
-#&gt; 1 187181… US           United Stat… LOCATION        DOM          308 N PA… ADEL 
-#&gt; # ℹ 4 more variables: state &lt;chr&gt;, postal_code &lt;chr&gt;, telephone_number &lt;chr&gt;,
-#&gt; #   fax_number &lt;chr&gt;</code></pre>
-</div>
-</div>
-</section><section id="geocode-with-tidygeocoder" class="level2"><h2 class="anchored" data-anchor-id="geocode-with-tidygeocoder">Geocode with {tidygeocoder}</h2>
-<div class="cell">
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">geo_census</span> <span class="op">&lt;-</span> <span class="fu">tidygeocoder</span><span class="fu">::</span><span class="fu"><a href="https://jessecambon.github.io/tidygeocoder/reference/geocode.html">geocode</a></span><span class="op">(</span></span>
-<span>  <span class="va">rhc_enr</span>,</span>
+</section><section id="geocode" class="level2"><h2 class="anchored" data-anchor-id="geocode">Geocode</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">geo_census</span> <span class="op">&lt;-</span> <span class="fu">tidygeocoder</span><span class="fu">::</span><span class="fu"><a href="https://jessecambon.github.io/tidygeocoder/reference/geocode.html">geocode</a></span><span class="op">(</span></span>
+<span>  <span class="fu">mtt</span><span class="op">(</span><span class="va">rhc_enr</span>, </span>
+<span>      zip <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substr.html">substr</a></span><span class="op">(</span><span class="va">zip</span>, <span class="fl">1</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  street <span class="op">=</span> <span class="va">address</span>,</span>
-<span>  city    <span class="op">=</span> <span class="va">city</span>,</span>
-<span>  state   <span class="op">=</span> <span class="va">state</span>,</span>
+<span>  city <span class="op">=</span> <span class="va">city</span>,</span>
+<span>  state <span class="op">=</span> <span class="va">state</span>,</span>
 <span>  postalcode <span class="op">=</span> <span class="va">zip</span>,</span>
 <span>  method <span class="op">=</span> <span class="st">"census"</span>, </span>
 <span>  full_results <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>#&gt; Passing 84 addresses to the US Census batch geocoder</code></pre>
+<pre class="r-output"><code>Passing 82 addresses to the US Census batch geocoder
+</code></pre>
+<pre class="r-output"><code>Query completed in: 1 seconds
+</code></pre>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">geo_census</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">slt</span><span class="op">(</span><span class="va">lat</span><span class="op">:</span><span class="va">matched_address</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">sbt</span><span class="op">(</span><span class="fu">cheapr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cheapr/man/is_na.html">is_na</a></span><span class="op">(</span><span class="va">lat</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="r-output"><code><span style="color: #555555;"># A tibble: 15 × 7</span>
+     lat  long    id input_address    match_indicator match_type matched_address
+   <span style="color: #555555; font-style: italic;"><dbl></dbl></span> <span style="color: #555555; font-style: italic;"><dbl></dbl></span> <span style="color: #555555; font-style: italic;"><int></int></span> <span style="color: #555555; font-style: italic;"><chr></chr></span>            <span style="color: #555555; font-style: italic;"><chr></chr></span>           <span style="color: #555555; font-style: italic;"><chr></chr></span>      <span style="color: #555555; font-style: italic;"><chr></chr></span>          
+<span style="color: #555555;"> 1</span>    <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>     6 41 WELLINGTON M… No_Match        <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>             
+<span style="color: #555555;"> 2</span>    <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>    11 1 MAGNOLIA CT, … No_Match        <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>             
+<span style="color: #555555;"> 3</span>    <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>    13 216 HOSPITAL DR… No_Match        <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>             
+<span style="color: #555555;"> 4</span>    <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>    16 246 BENJAMIN H … No_Match        <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>             
+<span style="color: #555555;"> 5</span>    <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>    20 97 HEFNER ST ST… No_Match        <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>             
+<span style="color: #555555;"> 6</span>    <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>    24 115 GILLIKIN ST… No_Match        <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>             
+<span style="color: #555555;"> 7</span>    <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>    38 134 FLEETWOOD A… No_Match        <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>             
+<span style="color: #555555;"> 8</span>    <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>    39 11045 COLUMBIA … No_Match        <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>             
+<span style="color: #555555;"> 9</span>    <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>    42 12978 N MAIN ST… No_Match        <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>             
+<span style="color: #555555;">10</span>    <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>    52 180 LEGACY PT S… No_Match        <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>             
+<span style="color: #555555;">11</span>    <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>    55 218 FALLS RD, T… No_Match        <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>             
+<span style="color: #555555;">12</span>    <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>    65 103 R E JENNING… No_Match        <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>             
+<span style="color: #555555;">13</span>    <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>    66 8 LAUREL CT, MO… No_Match        <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>             
+<span style="color: #555555;">14</span>    <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>    74 2908 BUSINESS 2… No_Match        <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>             
+<span style="color: #555555;">15</span>    <span style="color: #BB0000;">NA</span>    <span style="color: #BB0000;">NA</span>    80 51 LINDSEY LN, … No_Match        <span style="color: #BB0000;">NA</span>         <span style="color: #BB0000;">NA</span>             
+</code></pre>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">geo_census</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">sbt</span><span class="op">(</span><span class="va">match_type</span> <span class="op">==</span> <span class="st">"Non_Exact"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">slt</span><span class="op">(</span><span class="va">input_address</span>, <span class="va">matched_address</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span>n <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="r-output"><code><span style="color: #555555;"># A tibble: 21 × 2</span>
+   input_address                                           matched_address      
+   <span style="color: #555555; font-style: italic;"><chr></chr></span>                                                   <span style="color: #555555; font-style: italic;"><chr></chr></span>                
+<span style="color: #555555;"> 1</span> 1301 PETERSON AVE S STE B, DOUGLAS, GA, 31533           1301 S PETERSON AVE,…
+<span style="color: #555555;"> 2</span> 118 NORMAN DORMINY DR, FITZGERALD, GA, 31750            118 NORMAN DORMING D…
+<span style="color: #555555;"> 3</span> 1451 HIGHWAY 21 S STE H, SPRINGFIELD, GA, 31329         1451 STATE RTE 21, S…
+<span style="color: #555555;"> 4</span> 119 VICTORY DR SUITE A, SWAINSBORO, GA, 30401           119 VICTORY DR, SWAI…
+<span style="color: #555555;"> 5</span> 56 HOSPITAL ST, HIAWASSEE, GA, 30546                    56 HOSPITAL DR, HIAW…
+<span style="color: #555555;"> 6</span> 259 US HIGHWAY 19 N, CAMILLA, GA, 31730                 259 US HWY 19, CAMIL…
+<span style="color: #555555;"> 7</span> 611 N WASHINGTON ST STE A, LINCOLNTON, GA, 30817        611 WASHINGTON ST, L…
+<span style="color: #555555;"> 8</span> 406 EAST BROAD ST, WRENS, GA, 30833                     406 BROAD ST, WRENS,…
+<span style="color: #555555;"> 9</span> 64A JONES MILL RD, WOODBURY, GA, 30293                  64A JONES MILL RD, W…
+<span style="color: #555555;">10</span> 139 E BROAD, NORMAN PARK, GA, 31771                     139 E BROAD ST, NORM…
+<span style="color: #555555;">11</span> 1000 N VETERANS BLVD STE B, GLENNVILLE, GA, 30427       1000 S VETERANS BLVD…
+<span style="color: #555555;">12</span> 380A CEDAR ST, METTER, GA, 30439                        380A CEDAR ST, METTE…
+<span style="color: #555555;">13</span> 222 PERRY HWY BLDG A SUITE 104, HAWKINSVILLE, GA, 31036 222 PERRY HWY, HAWKI…
+<span style="color: #555555;">14</span> 105 E TOLLISON ST STE D, BAXLEY, GA, 31513              105 TOLLISON ST, BAX…
+<span style="color: #555555;">15</span> 105 E TOLLISON ST STE B, BAXLEY, GA, 31513              105 TOLLISON ST, BAX…
+<span style="color: #555555;">16</span> 208N CUTHBERT ST, COLQUITT, GA, 39837                   208 N CUTHBERT ST, C…
+<span style="color: #555555;">17</span> 416 E MCPHERSON AVE STE A, NASHVILLE, GA, 31639         416 E MCPHERSON AVE,…
+<span style="color: #555555;">18</span> 25W LYON ST, TALLAPOOSA, GA, 30176                      25W LYON ST, TALLAPO…
+<span style="color: #555555;">19</span> 1125E HIGHWAY 166, BOWDON, GA, 30108                    1125 E HWY 166, BOWD…
+<span style="color: #555555;">20</span> 162 HOSPITAL RD STE A, BLAIRSVILLE, GA, 30512           162 HOSPITAL ST, BLA…
+<span style="color: #555555;">21</span> 103 CHURCH ST STE A, HIAWASSEE, GA, 30546               103 CHURCH ST, HIAWA…
+</code></pre>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">geo_census</span> <span class="op">&lt;-</span> <span class="fu">sbt</span><span class="op">(</span><span class="va">geo_census</span>, <span class="op">!</span><span class="fu">cheapr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cheapr/man/is_na.html">is_na</a></span><span class="op">(</span><span class="va">lat</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell-output cell-output-stderr">
-<pre><code>#&gt; Query completed in: 1 seconds</code></pre>
+</section><section id="georgia-counties-shapefile" class="level2"><h2 class="anchored" data-anchor-id="georgia-counties-shapefile">Georgia Counties Shapefile</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">ga_county</span> <span class="op">&lt;-</span> <span class="fu">tigris</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tigris/man/counties.html">counties</a></span><span class="op">(</span>state <span class="op">=</span> <span class="st">"GA"</span>, year <span class="op">=</span> <span class="fl">2024</span><span class="op">)</span></span>
+<span><span class="va">ga_county_simple</span> <span class="op">&lt;-</span> <span class="fu">rmapshaper</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rmapshaper/man/ms_simplify.html">ms_simplify</a></span><span class="op">(</span><span class="va">ga_county</span><span class="op">)</span></span>
+<span><span class="va">ga_county_simple</span><span class="op">$</span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_centroid</a></span><span class="op">(</span><span class="va">ga_county_simple</span><span class="op">$</span><span class="va">geometry</span><span class="op">)</span></span>
+<span><span class="va">ga_county_simple</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre class="r-output"><code>Simple feature collection with 159 features and 18 fields
+Active geometry column: geometry
+Geometry type: GEOMETRY
+Dimension:     XY
+Bounding box:  xmin: -85.6 ymin: 30.4 xmax: -80.8 ymax: 35
+Geodetic CRS:  NAD83
+First 10 features:
+   CBSAFP CSAFP COUNTYNS CLASSFP METDIVFP     NAME        GEOIDFQ
+1   12260  <na> 00348794      H1     <na> McDuffie 0500000US13189
+2   15260  <na> 00351605      H1     <na> Brantley 0500000US13025
+3    <na><na> 00326713      H1     <na>    Lamar 0500000US13171
+4   40660   122 00353665      H1     <na>    Floyd 0500000US13115
+5   10500  <na> 00352238      H1     <na>  Terrell 0500000US13273
+6   12060   122 01672399      H1    12054  Clayton 0500000US13063
+7   12260  <na> 00348865      H1     <na> Columbia 0500000US13073
+8    <na><na> 00346957      H1     <na>    Macon 0500000US13193
+9    <na><na> 00357747      H1     <na> Charlton 0500000US13049
+10  16340   122 00343585      H1     <na>     Polk 0500000US13233
+          NAMELSAD GEOID COUNTYFP FUNCSTAT    INTPTLAT LSAD MTFCC STATEFP
+1  McDuffie County 13189      189        A +33.4806102   06 G4020      13
+2  Brantley County 13025      025        A +31.1973339   06 G4020      13
+3     Lamar County 13171      171        A +33.0744405   06 G4020      13
+4     Floyd County 13115      115        A +34.2636901   06 G4020      13
+5   Terrell County 13273      273        A +31.7771909   06 G4020      13
+6   Clayton County 13063      063        A +33.5522420   06 G4020      13
+7  Columbia County 13073      073        A +33.5520746   06 G4020      13
+8     Macon County 13193      193        A +32.3626859   06 G4020      13
+9  Charlton County 13049      049        A +30.7799036   06 G4020      13
+10     Polk County 13233      233        A +33.9960153   06 G4020      13
+        ALAND   AWATER     INTPTLON                       geometry
+1   666608438 23095606 -082.4795718 POLYGON ((-82.6 33.6, -82.6...
+2  1147972265 10291548 -081.9829779 POLYGON ((-81.9 31, -81.9 3...
+3   475264402  6044329 -084.1466893 POLYGON ((-84.2 33.2, -84.2...
+4  1320461793 22356808 -085.2136849 POLYGON ((-85 34.1, -85 34....
+5   869695790  4951325 -084.4394464 POLYGON ((-84.3 31.7, -84.3...
+6   367009134  6914194 -084.4129728 POLYGON ((-84.3 33.6, -84.4...
+7   751599702 45344735 -082.2496077 POLYGON ((-82.4 33.7, -82.4...
+8  1037709939 13841916 -084.0512306 MULTIPOLYGON (((-83.8 32.3,...
+9  2020415649  5963237 -082.1396442 POLYGON ((-82.1 31, -82.2 3...
+10  803776466  4663881 -085.1883384 POLYGON ((-85.4 33.9, -85.3...
+                  mid
+1  POINT (-82.5 33.5)
+2    POINT (-82 31.2)
+3  POINT (-84.1 33.1)
+4  POINT (-85.2 34.3)
+5  POINT (-84.4 31.8)
+6  POINT (-84.4 33.5)
+7  POINT (-82.3 33.5)
+8    POINT (-84 32.4)
+9  POINT (-82.1 30.8)
+10   POINT (-85.2 34)
+</na></na></na></na></na></na></na></na></na></na></na></na></na></na></na></na></na></na></na></code></pre>
 </div>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">geo_census</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; # A tibble: 85 × 26
-#&gt;    npi    has_mult_npi ccn   pac   enid  enid_state org_name dba_name inc_date  
-#&gt;    &lt;chr&gt;         &lt;int&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt;    &lt;chr&gt;    &lt;date&gt;    
-#&gt;  1 16397…            0 1189… 2961… O202… GA         ACCESS … &lt;NA&gt;     2020-07-29
-#&gt;  2 11741…            0 1189… 2961… O202… GA         ACCESS … &lt;NA&gt;     2021-01-11
-#&gt;  3 15681…            0 1189… 2961… O202… GA         ACCESS … &lt;NA&gt;     2020-07-29
-#&gt;  4 18210…            1 1134… 1850… O200… GA         BACON C… BACON C… 1995-06-15
-#&gt;  5 15588…            0 1185… 1850… O201… GA         BACON C… NICHOLL… 1995-06-15
-#&gt;  6 17503…            0 1138… 2264… O200… GA         BOWDON-… CARROLL… 1980-10-09
-#&gt;  7 14179…            0 1138… 2264… O200… GA         BOWDON-… FRANLKI… 1980-10-09
-#&gt;  8 15381…            0 1138… 2264… O201… GA         BOWDON-… CARROLL… 1980-10-09
-#&gt;  9 18519…            0 1185… 3476… O202… GA         BURKE H… BURKE M… NA        
-#&gt; 10 16392…            0 1134… 4587… O201… GA         COFFEE … COFFEE … NA        
-#&gt; # ℹ 75 more rows
-#&gt; # ℹ 17 more variables: inc_state &lt;chr&gt;, org_type &lt;chr&gt;, org_type_2 &lt;chr&gt;,
-#&gt; #   proprietary_nonprofit &lt;chr&gt;, address &lt;chr&gt;, city &lt;chr&gt;, state &lt;chr&gt;,
-#&gt; #   zip &lt;chr&gt;, lat &lt;dbl&gt;, long &lt;dbl&gt;, id &lt;int&gt;, input_address &lt;chr&gt;,
-#&gt; #   match_indicator &lt;chr&gt;, match_type &lt;chr&gt;, matched_address &lt;chr&gt;,
-#&gt; #   tiger_line_id &lt;int&gt;, tiger_side &lt;chr&gt;</code></pre>
-</div>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">geo_arcgis</span> <span class="op">&lt;-</span> <span class="fu">tidygeocoder</span><span class="fu">::</span><span class="fu"><a href="https://jessecambon.github.io/tidygeocoder/reference/geocode.html">geocode</a></span><span class="op">(</span></span>
-<span>  <span class="va">rhc_enr</span>,</span>
-<span>  street <span class="op">=</span> <span class="va">address</span>,</span>
-<span>  city    <span class="op">=</span> <span class="va">city</span>,</span>
-<span>  state   <span class="op">=</span> <span class="va">state</span>,</span>
-<span>  postalcode <span class="op">=</span> <span class="va">zip</span>,</span>
-<span>  method <span class="op">=</span> <span class="st">"arcgis"</span>, </span>
-<span>  full_results <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>#&gt; Passing 84 addresses to the ArcGIS single address geocoder</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>#&gt; Query completed in: 35.6 seconds</code></pre>
-</div>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">geo_arcgis</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; # A tibble: 85 × 87
-#&gt;    npi    has_mult_npi ccn   pac   enid  enid_state org_name dba_name inc_date  
-#&gt;    &lt;chr&gt;         &lt;int&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt;    &lt;chr&gt;    &lt;date&gt;    
-#&gt;  1 16397…            0 1189… 2961… O202… GA         ACCESS … &lt;NA&gt;     2020-07-29
-#&gt;  2 11741…            0 1189… 2961… O202… GA         ACCESS … &lt;NA&gt;     2021-01-11
-#&gt;  3 15681…            0 1189… 2961… O202… GA         ACCESS … &lt;NA&gt;     2020-07-29
-#&gt;  4 18210…            1 1134… 1850… O200… GA         BACON C… BACON C… 1995-06-15
-#&gt;  5 15588…            0 1185… 1850… O201… GA         BACON C… NICHOLL… 1995-06-15
-#&gt;  6 17503…            0 1138… 2264… O200… GA         BOWDON-… CARROLL… 1980-10-09
-#&gt;  7 14179…            0 1138… 2264… O200… GA         BOWDON-… FRANLKI… 1980-10-09
-#&gt;  8 15381…            0 1138… 2264… O201… GA         BOWDON-… CARROLL… 1980-10-09
-#&gt;  9 18519…            0 1185… 3476… O202… GA         BURKE H… BURKE M… NA        
-#&gt; 10 16392…            0 1134… 4587… O201… GA         COFFEE … COFFEE … NA        
-#&gt; # ℹ 75 more rows
-#&gt; # ℹ 78 more variables: inc_state &lt;chr&gt;, org_type &lt;chr&gt;, org_type_2 &lt;chr&gt;,
-#&gt; #   proprietary_nonprofit &lt;chr&gt;, address &lt;chr&gt;, city &lt;chr&gt;, state &lt;chr&gt;,
-#&gt; #   zip &lt;chr&gt;, lat &lt;dbl&gt;, long &lt;dbl&gt;, arcgis_address &lt;chr&gt;, score &lt;dbl&gt;,
-#&gt; #   location.x &lt;dbl&gt;, location.y &lt;dbl&gt;, attributes.Loc_name &lt;chr&gt;,
-#&gt; #   attributes.Status &lt;chr&gt;, attributes.Score &lt;dbl&gt;,
-#&gt; #   attributes.Match_addr &lt;chr&gt;, attributes.LongLabel &lt;chr&gt;, …</code></pre>
-</div>
-</div>
-</section><section id="retrieve-georgia-counties-shapefile-from-tigris" class="level2"><h2 class="anchored" data-anchor-id="retrieve-georgia-counties-shapefile-from-tigris">Retrieve Georgia counties shapefile from {tigris}</h2>
-<div class="cell">
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">tig_cnt</span> <span class="op">&lt;-</span> <span class="fu">tigris</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tigris/man/counties.html">counties</a></span><span class="op">(</span></span>
-<span>  state <span class="op">=</span> <span class="st">"GA"</span>,</span>
-<span>  year <span class="op">=</span> <span class="fl">2022</span>,</span>
-<span>  progress_bar <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">tig_cnt</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt; Simple feature collection with 159 features and 17 fields
-#&gt; Geometry type: MULTIPOLYGON
-#&gt; Dimension:     XY
-#&gt; Bounding box:  xmin: -85.6 ymin: 30.4 xmax: -80.8 ymax: 35
-#&gt; Geodetic CRS:  NAD83
-#&gt; First 10 features:
-#&gt;     STATEFP COUNTYFP COUNTYNS GEOID     NAME        NAMELSAD LSAD CLASSFP MTFCC
-#&gt; 16       13      189 00348794 13189 McDuffie McDuffie County   06      H1 G4020
-#&gt; 53       13      025 00351605 13025 Brantley Brantley County   06      H1 G4020
-#&gt; 54       13      171 00326713 13171    Lamar    Lamar County   06      H1 G4020
-#&gt; 83       13      115 00353665 13115    Floyd    Floyd County   06      H1 G4020
-#&gt; 101      13      273 00352238 13273  Terrell  Terrell County   06      H1 G4020
-#&gt; 102      13      063 01672399 13063  Clayton  Clayton County   06      H1 G4020
-#&gt; 105      13      073 00348865 13073 Columbia Columbia County   06      H1 G4020
-#&gt; 126      13      193 00346957 13193    Macon    Macon County   06      H1 G4020
-#&gt; 146      13      049 00357747 13049 Charlton Charlton County   06      H1 G4020
-#&gt; 147      13      233 00343585 13233     Polk     Polk County   06      H1 G4020
-#&gt;     CSAFP CBSAFP METDIVFP FUNCSTAT      ALAND   AWATER    INTPTLAT     INTPTLON
-#&gt; 16   &lt;NA&gt;   &lt;NA&gt;     &lt;NA&gt;        A  666591525 23112523 +33.4806126 -082.4795333
-#&gt; 53   &lt;NA&gt;   &lt;NA&gt;     &lt;NA&gt;        A 1147972258 10291563 +31.1973339 -081.9829779
-#&gt; 54   &lt;NA&gt;   &lt;NA&gt;     &lt;NA&gt;        A  475264405  6044329 +33.0744405 -084.1466893
-#&gt; 83   &lt;NA&gt;   &lt;NA&gt;     &lt;NA&gt;        A 1320431515 22387093 +34.2636901 -085.2136849
-#&gt; 101  &lt;NA&gt;   &lt;NA&gt;     &lt;NA&gt;        A  869695791  4951325 +31.7771909 -084.4394464
-#&gt; 102  &lt;NA&gt;   &lt;NA&gt;     &lt;NA&gt;        A  367145192  6928044 +33.5516027 -084.4128678
-#&gt; 105  &lt;NA&gt;   &lt;NA&gt;     &lt;NA&gt;        A  751598754 45345677 +33.5520746 -082.2496077
-#&gt; 126  &lt;NA&gt;   &lt;NA&gt;     &lt;NA&gt;        A 1037709945 13841916 +32.3626859 -084.0512306
-#&gt; 146  &lt;NA&gt;   &lt;NA&gt;     &lt;NA&gt;        A 2020415648  5963237 +30.7799036 -082.1396442
-#&gt; 147  &lt;NA&gt;   &lt;NA&gt;     &lt;NA&gt;        A  803775591  4664760 +33.9960153 -085.1883384
-#&gt;                           geometry
-#&gt; 16  MULTIPOLYGON (((-82.6 33.6,...
-#&gt; 53  MULTIPOLYGON (((-81.9 31.1,...
-#&gt; 54  MULTIPOLYGON (((-84.2 33.1,...
-#&gt; 83  MULTIPOLYGON (((-85 34.3, -...
-#&gt; 101 MULTIPOLYGON (((-84.3 31.7,...
-#&gt; 102 MULTIPOLYGON (((-84.5 33.6,...
-#&gt; 105 MULTIPOLYGON (((-82.4 33.6,...
-#&gt; 126 MULTIPOLYGON (((-83.8 32.4,...
-#&gt; 146 MULTIPOLYGON (((-82.4 30.8,...
-#&gt; 147 MULTIPOLYGON (((-85.2 33.9,...</code></pre>
-</div>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">tig_cnt</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>#&gt;    STATEFP            COUNTYFP           COUNTYNS            GEOID          
-#&gt;  Length:159         Length:159         Length:159         Length:159        
-#&gt;  Class :character   Class :character   Class :character   Class :character  
-#&gt;  Mode  :character   Mode  :character   Mode  :character   Mode  :character  
-#&gt;                                                                             
-#&gt;                                                                             
-#&gt;                                                                             
-#&gt;      NAME             NAMELSAD             LSAD             CLASSFP         
-#&gt;  Length:159         Length:159         Length:159         Length:159        
-#&gt;  Class :character   Class :character   Class :character   Class :character  
-#&gt;  Mode  :character   Mode  :character   Mode  :character   Mode  :character  
-#&gt;                                                                             
-#&gt;                                                                             
-#&gt;                                                                             
-#&gt;     MTFCC              CSAFP              CBSAFP            METDIVFP        
-#&gt;  Length:159         Length:159         Length:159         Length:159        
-#&gt;  Class :character   Class :character   Class :character   Class :character  
-#&gt;  Mode  :character   Mode  :character   Mode  :character   Mode  :character  
-#&gt;                                                                             
-#&gt;                                                                             
-#&gt;                                                                             
-#&gt;    FUNCSTAT             ALAND                AWATER            INTPTLAT        
-#&gt;  Length:159         Min.   : 308985572   Min.   :   488463   Length:159        
-#&gt;  Class :character   1st Qu.: 645741035   1st Qu.:  6553565   Class :character  
-#&gt;  Mode  :character   Median : 887636774   Median : 11818093   Mode  :character  
-#&gt;                     Mean   : 940165210   Mean   : 27790668                     
-#&gt;                     3rd Qu.:1151923513   3rd Qu.: 19959364                     
-#&gt;                     Max.   :2329020700   Max.   :509854701                     
-#&gt;    INTPTLON                  geometry  
-#&gt;  Length:159         MULTIPOLYGON :159  
-#&gt;  Class :character   epsg:4269    :  0  
-#&gt;  Mode  :character   +proj=long...:  0  
-#&gt;                                        
-#&gt;                                        
-#&gt; </code></pre>
-</div>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sf_cnt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rmapshaper/man/ms_simplify.html">ms_simplify</a></span><span class="op">(</span><span class="va">tig_cnt</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">sf_cnt</span><span class="op">$</span><span class="va">mid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_centroid</a></span><span class="op">(</span><span class="va">sf_cnt</span><span class="op">$</span><span class="va">geometry</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section><section id="map-with-ggplot" class="level2"><h2 class="anchored" data-anchor-id="map-with-ggplot">Map with {ggplot}</h2>
-<div class="cell">
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">sf_cnt</span><span class="op">)</span> <span class="op">+</span></span>
+</section><section id="georgia-rhcs-map" class="level2"><h2 class="anchored" data-anchor-id="georgia-rhcs-map">Georgia RHCs Map</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">ggplot</span><span class="op">(</span><span class="va">ga_county_simple</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_sf</span><span class="op">(</span></span>
 <span>    fill <span class="op">=</span> <span class="st">"skyblue"</span>,</span>
 <span>    colour <span class="op">=</span> <span class="st">"white"</span>,</span>
@@ -1223,7 +806,7 @@ div.sourceCode > pre.sourceCode.r::before {
 <span>  <span class="fu">geom_sf_text</span><span class="op">(</span></span>
 <span>    <span class="fu">aes</span><span class="op">(</span>geometry <span class="op">=</span> <span class="va">geometry</span>, </span>
 <span>        label <span class="op">=</span> <span class="va">NAME</span><span class="op">)</span>,</span>
-<span>    size <span class="op">=</span> <span class="fl">3.5</span>,</span>
+<span>    size <span class="op">=</span> <span class="fl">2.5</span>,</span>
 <span>    check_overlap <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">geom_jitter</span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">geo_census</span>,</span>
@@ -1231,13 +814,13 @@ div.sourceCode > pre.sourceCode.r::before {
 <span>    fill <span class="op">=</span> <span class="st">"yellow"</span>,</span>
 <span>    color <span class="op">=</span> <span class="st">"darkred"</span>,</span>
 <span>    alpha <span class="op">=</span> <span class="fl">0.75</span>,</span>
-<span>    size <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>    size <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>    shape <span class="op">=</span> <span class="fl">21</span>,</span>
 <span>    stroke <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">theme_void</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div>
-<figure class="figure"><p><img src="demo_geo_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="demo_geo_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%"></p>
 </figure>
 </div>
 </div>
@@ -1706,313 +1289,211 @@ div.sourceCode > pre.sourceCode.r::before {
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb39" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="an">output:</span><span class="co"> html_document</span></span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="co">  chunk_output_type: console</span></span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="fu"># Geospatial {#sec-demogeo}</span></span>
-<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup-common-01</span></span>
-<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
-<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"includes/_common.R"</span>)</span>
-<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(</span>
-<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">collapse  =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">echo      =</span> <span class="cn">TRUE</span>, </span>
-<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">message   =</span> <span class="cn">TRUE</span>, </span>
-<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">warning   =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">error     =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">comment   =</span> <span class="st">"#&gt;"</span>,</span>
-<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">dpi       =</span> <span class="dv">300</span>, </span>
-<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">out.width =</span> <span class="st">"100%"</span></span>
-<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">scipen =</span> <span class="dv">999</span>)</span>
-<span id="cb39-26"><a href="#cb39-26" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-27"><a href="#cb39-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-30"><a href="#cb39-30" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-31"><a href="#cb39-31" aria-hidden="true" tabindex="-1"></a>underscore <span class="ot">&lt;-</span> \(x) <span class="fu">gsub</span>(<span class="st">"___owner$"</span>, <span class="st">""</span>, x, <span class="at">perl =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb39-32"><a href="#cb39-32" aria-hidden="true" tabindex="-1"></a>char_binary <span class="ot">&lt;-</span> \(x) <span class="fu">val_match</span>(x, <span class="st">"N"</span> <span class="sc">~</span> <span class="dv">0</span>L, <span class="st">"Y"</span> <span class="sc">~</span> <span class="dv">1</span>L)</span>
-<span id="cb39-33"><a href="#cb39-33" aria-hidden="true" tabindex="-1"></a>pct_prop <span class="ot">&lt;-</span> \(x) {</span>
-<span id="cb39-34"><a href="#cb39-34" aria-hidden="true" tabindex="-1"></a>  cheapr<span class="sc">::</span><span class="fu">case</span>(</span>
-<span id="cb39-35"><a href="#cb39-35" aria-hidden="true" tabindex="-1"></a>    x <span class="sc">==</span> <span class="st">"0"</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
-<span id="cb39-36"><a href="#cb39-36" aria-hidden="true" tabindex="-1"></a>    cheapr<span class="sc">::</span><span class="fu">is_na</span>(x) <span class="sc">~</span> <span class="cn">NA_real_</span>,</span>
-<span id="cb39-37"><a href="#cb39-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">.default =</span> <span class="fu">as.double</span>(x) <span class="sc">/</span> <span class="dv">100</span></span>
-<span id="cb39-38"><a href="#cb39-38" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb39-39"><a href="#cb39-39" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb39-40"><a href="#cb39-40" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-41"><a href="#cb39-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-42"><a href="#cb39-42" aria-hidden="true" tabindex="-1"></a><span class="fu">## Load Packages</span></span>
-<span id="cb39-43"><a href="#cb39-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-46"><a href="#cb39-46" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-47"><a href="#cb39-47" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
-<span id="cb39-48"><a href="#cb39-48" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb39-49"><a href="#cb39-49" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidygeocoder)</span>
-<span id="cb39-50"><a href="#cb39-50" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tigris)</span>
-<span id="cb39-51"><a href="#cb39-51" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rmapshaper)</span>
-<span id="cb39-52"><a href="#cb39-52" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
-<span id="cb39-53"><a href="#cb39-53" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">tigris_use_cache =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb39-54"><a href="#cb39-54" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-55"><a href="#cb39-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-56"><a href="#cb39-56" aria-hidden="true" tabindex="-1"></a><span class="fu">## Rural Health Clinics</span></span>
-<span id="cb39-57"><a href="#cb39-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-60"><a href="#cb39-60" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-61"><a href="#cb39-61" aria-hidden="true" tabindex="-1"></a>req <span class="ot">&lt;-</span> <span class="fu">careGroup</span>(<span class="st">"rural_health"</span>)<span class="sc">@</span>groups <span class="sc">|&gt;</span></span>
-<span id="cb39-62"><a href="#cb39-62" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"rural_health_clinic_enrollments"</span>]] <span class="sc">|&gt;</span></span>
-<span id="cb39-63"><a href="#cb39-63" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"endpoints"</span>]] <span class="sc">|&gt;</span></span>
-<span id="cb39-64"><a href="#cb39-64" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"identifier"</span>]] <span class="sc">|&gt;</span></span>
-<span id="cb39-65"><a href="#cb39-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">request</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb39-66"><a href="#cb39-66" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_query</span>(</span>
-<span id="cb39-67"><a href="#cb39-67" aria-hidden="true" tabindex="-1"></a>    <span class="st">"filter[STATE]"</span> <span class="ot">=</span> <span class="st">"GA"</span></span>
-<span id="cb39-68"><a href="#cb39-68" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb39-69"><a href="#cb39-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-70"><a href="#cb39-70" aria-hidden="true" tabindex="-1"></a>nres <span class="ot">&lt;-</span> req <span class="sc">|&gt;</span> </span>
-<span id="cb39-71"><a href="#cb39-71" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_path_append</span>(<span class="st">"stats"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb39-72"><a href="#cb39-72" aria-hidden="true" tabindex="-1"></a>  providertwo<span class="sc">:::</span><span class="fu">perform_simple</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb39-73"><a href="#cb39-73" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"data"</span>]] <span class="sc">|&gt;</span> </span>
-<span id="cb39-74"><a href="#cb39-74" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"found_rows"</span>]]</span>
-<span id="cb39-75"><a href="#cb39-75" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-76"><a href="#cb39-76" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> req <span class="sc">|&gt;</span> </span>
-<span id="cb39-77"><a href="#cb39-77" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_query</span>(<span class="at">offset =</span> <span class="dv">0</span>L, <span class="at">size =</span> <span class="dv">5000</span>L) <span class="sc">|&gt;</span> </span>
-<span id="cb39-78"><a href="#cb39-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb39-79"><a href="#cb39-79" aria-hidden="true" tabindex="-1"></a>  providertwo<span class="sc">:::</span><span class="fu">resp_simple_json</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb39-80"><a href="#cb39-80" aria-hidden="true" tabindex="-1"></a>  <span class="fu">get_elem</span>(<span class="st">"^data$|headers"</span>, <span class="at">regex =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb39-81"><a href="#cb39-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-82"><a href="#cb39-82" aria-hidden="true" tabindex="-1"></a>rhc_enr <span class="ot">&lt;-</span> <span class="fu">as_tbl</span>(res<span class="sc">$</span>data) <span class="sc">|&gt;</span> </span>
-<span id="cb39-83"><a href="#cb39-83" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(res<span class="sc">$</span>meta) <span class="sc">|&gt;</span> </span>
-<span id="cb39-84"><a href="#cb39-84" aria-hidden="true" tabindex="-1"></a>  providertwo<span class="sc">:::</span><span class="fu">map_na_if</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb39-85"><a href="#cb39-85" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roworder</span>(<span class="st">`</span><span class="at">ORGANIZATION NAME</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
-<span id="cb39-86"><a href="#cb39-86" aria-hidden="true" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>() <span class="sc">|&gt;</span></span>
-<span id="cb39-87"><a href="#cb39-87" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(<span class="at">incorporation_date =</span> providertwo<span class="sc">:::</span><span class="fu">as_date</span>(incorporation_date),</span>
-<span id="cb39-88"><a href="#cb39-88" aria-hidden="true" tabindex="-1"></a>      <span class="at">multiple_npi_flag =</span> <span class="fu">char_binary</span>(multiple_npi_flag),</span>
-<span id="cb39-89"><a href="#cb39-89" aria-hidden="true" tabindex="-1"></a>      <span class="at">address =</span> <span class="fu">cheapr_if_else</span>(</span>
-<span id="cb39-90"><a href="#cb39-90" aria-hidden="true" tabindex="-1"></a>        cheapr<span class="sc">::</span><span class="fu">is_na</span>(address_line_2), </span>
-<span id="cb39-91"><a href="#cb39-91" aria-hidden="true" tabindex="-1"></a>        address_line_1, </span>
-<span id="cb39-92"><a href="#cb39-92" aria-hidden="true" tabindex="-1"></a>        <span class="fu">paste</span>(address_line_1, address_line_2))) <span class="sc">|&gt;</span></span>
-<span id="cb39-93"><a href="#cb39-93" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(</span>
-<span id="cb39-94"><a href="#cb39-94" aria-hidden="true" tabindex="-1"></a>    npi,</span>
-<span id="cb39-95"><a href="#cb39-95" aria-hidden="true" tabindex="-1"></a>    <span class="at">has_mult_npi =</span> multiple_npi_flag,</span>
-<span id="cb39-96"><a href="#cb39-96" aria-hidden="true" tabindex="-1"></a>    ccn,</span>
-<span id="cb39-97"><a href="#cb39-97" aria-hidden="true" tabindex="-1"></a>    <span class="at">pac =</span> associate_id,</span>
-<span id="cb39-98"><a href="#cb39-98" aria-hidden="true" tabindex="-1"></a>    <span class="at">enid =</span> enrollment_id,</span>
-<span id="cb39-99"><a href="#cb39-99" aria-hidden="true" tabindex="-1"></a>    <span class="at">enid_state =</span> enrollment_state,</span>
-<span id="cb39-100"><a href="#cb39-100" aria-hidden="true" tabindex="-1"></a>    <span class="at">org_name =</span> organization_name,</span>
-<span id="cb39-101"><a href="#cb39-101" aria-hidden="true" tabindex="-1"></a>    <span class="at">dba_name =</span> doing_business_as_name,</span>
-<span id="cb39-102"><a href="#cb39-102" aria-hidden="true" tabindex="-1"></a>    <span class="at">inc_date =</span> incorporation_date,</span>
-<span id="cb39-103"><a href="#cb39-103" aria-hidden="true" tabindex="-1"></a>    <span class="at">inc_state =</span> incorporation_state,</span>
-<span id="cb39-104"><a href="#cb39-104" aria-hidden="true" tabindex="-1"></a>    <span class="at">org_type =</span> organization_type_structure,</span>
-<span id="cb39-105"><a href="#cb39-105" aria-hidden="true" tabindex="-1"></a>    <span class="at">org_type_2 =</span> organization_other_type_text,</span>
-<span id="cb39-106"><a href="#cb39-106" aria-hidden="true" tabindex="-1"></a>    proprietary_nonprofit,</span>
-<span id="cb39-107"><a href="#cb39-107" aria-hidden="true" tabindex="-1"></a>    address,</span>
-<span id="cb39-108"><a href="#cb39-108" aria-hidden="true" tabindex="-1"></a>    city,</span>
-<span id="cb39-109"><a href="#cb39-109" aria-hidden="true" tabindex="-1"></a>    state,</span>
-<span id="cb39-110"><a href="#cb39-110" aria-hidden="true" tabindex="-1"></a>    <span class="at">zip =</span> zip_code)</span>
-<span id="cb39-111"><a href="#cb39-111" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-112"><a href="#cb39-112" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-113"><a href="#cb39-113" aria-hidden="true" tabindex="-1"></a>rhc_enr <span class="sc">|&gt;</span> </span>
-<span id="cb39-114"><a href="#cb39-114" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span>
-<span id="cb39-115"><a href="#cb39-115" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-116"><a href="#cb39-116" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-119"><a href="#cb39-119" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-120"><a href="#cb39-120" aria-hidden="true" tabindex="-1"></a>req <span class="ot">&lt;-</span> <span class="fu">careGroup</span>(<span class="st">"rural_health"</span>)<span class="sc">@</span>groups <span class="sc">|&gt;</span></span>
-<span id="cb39-121"><a href="#cb39-121" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"rural_health_clinic_all_owners"</span>]] <span class="sc">|&gt;</span> </span>
-<span id="cb39-122"><a href="#cb39-122" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"endpoints"</span>]] <span class="sc">|&gt;</span></span>
-<span id="cb39-123"><a href="#cb39-123" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"identifier"</span>]] <span class="sc">|&gt;</span></span>
-<span id="cb39-124"><a href="#cb39-124" aria-hidden="true" tabindex="-1"></a>  <span class="fu">request</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb39-125"><a href="#cb39-125" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_query</span>(<span class="st">"filter[STATE - OWNER]"</span> <span class="ot">=</span> <span class="st">"GA"</span>)</span>
-<span id="cb39-126"><a href="#cb39-126" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-127"><a href="#cb39-127" aria-hidden="true" tabindex="-1"></a>nres <span class="ot">&lt;-</span> req <span class="sc">|&gt;</span> </span>
-<span id="cb39-128"><a href="#cb39-128" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_path_append</span>(<span class="st">"stats"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb39-129"><a href="#cb39-129" aria-hidden="true" tabindex="-1"></a>  providertwo<span class="sc">:::</span><span class="fu">perform_simple</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb39-130"><a href="#cb39-130" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"data"</span>]] <span class="sc">|&gt;</span> </span>
-<span id="cb39-131"><a href="#cb39-131" aria-hidden="true" tabindex="-1"></a>  _[[<span class="st">"found_rows"</span>]]</span>
-<span id="cb39-132"><a href="#cb39-132" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-133"><a href="#cb39-133" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> req <span class="sc">|&gt;</span> </span>
-<span id="cb39-134"><a href="#cb39-134" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_query</span>(<span class="at">offset =</span> <span class="dv">0</span>L, <span class="at">size =</span> <span class="dv">5000</span>L) <span class="sc">|&gt;</span> </span>
-<span id="cb39-135"><a href="#cb39-135" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb39-136"><a href="#cb39-136" aria-hidden="true" tabindex="-1"></a>  providertwo<span class="sc">:::</span><span class="fu">resp_simple_json</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb39-137"><a href="#cb39-137" aria-hidden="true" tabindex="-1"></a>  <span class="fu">get_elem</span>(<span class="st">"^data$|headers"</span>, <span class="at">regex =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb39-138"><a href="#cb39-138" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-139"><a href="#cb39-139" aria-hidden="true" tabindex="-1"></a>rhc_owner <span class="ot">&lt;-</span> <span class="fu">as_tbl</span>(res<span class="sc">$</span>data) <span class="sc">|&gt;</span> </span>
-<span id="cb39-140"><a href="#cb39-140" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(res<span class="sc">$</span>meta) <span class="sc">|&gt;</span> </span>
-<span id="cb39-141"><a href="#cb39-141" aria-hidden="true" tabindex="-1"></a>  providertwo<span class="sc">:::</span><span class="fu">map_na_if</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb39-142"><a href="#cb39-142" aria-hidden="true" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb39-143"><a href="#cb39-143" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rnm</span>(</span>
-<span id="cb39-144"><a href="#cb39-144" aria-hidden="true" tabindex="-1"></a>    <span class="at">enid =</span> enrollment_id,</span>
-<span id="cb39-145"><a href="#cb39-145" aria-hidden="true" tabindex="-1"></a>    <span class="at">pac =</span> associate_id_owner, </span>
-<span id="cb39-146"><a href="#cb39-146" aria-hidden="true" tabindex="-1"></a>    <span class="at">org_name =</span> organization_name) <span class="sc">|&gt;</span></span>
-<span id="cb39-147"><a href="#cb39-147" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(</span>
-<span id="cb39-148"><a href="#cb39-148" aria-hidden="true" tabindex="-1"></a>    <span class="at">association_date =</span> providertwo<span class="sc">:::</span><span class="fu">as_date</span>(association_date_owner),</span>
-<span id="cb39-149"><a href="#cb39-149" aria-hidden="true" tabindex="-1"></a>    <span class="at">address =</span> <span class="fu">cheapr_if_else</span>(cheapr<span class="sc">::</span><span class="fu">is_na</span>(address_line_2_owner), address_line_1_owner, <span class="fu">paste</span>(address_line_1_owner, address_line_2_owner)),</span>
-<span id="cb39-150"><a href="#cb39-150" aria-hidden="true" tabindex="-1"></a>    <span class="at">percentage_ownership =</span> <span class="fu">as.numeric</span>(percentage_ownership),</span>
-<span id="cb39-151"><a href="#cb39-151" aria-hidden="true" tabindex="-1"></a>    <span class="at">role_code =</span> <span class="fu">as.integer</span>(role_code_owner)</span>
-<span id="cb39-152"><a href="#cb39-152" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb39-153"><a href="#cb39-153" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(</span>
-<span id="cb39-154"><a href="#cb39-154" aria-hidden="true" tabindex="-1"></a>    pac,</span>
-<span id="cb39-155"><a href="#cb39-155" aria-hidden="true" tabindex="-1"></a>    enid,</span>
-<span id="cb39-156"><a href="#cb39-156" aria-hidden="true" tabindex="-1"></a>    org_name,</span>
-<span id="cb39-157"><a href="#cb39-157" aria-hidden="true" tabindex="-1"></a>    <span class="at">pac_owner =</span> associate_id, </span>
-<span id="cb39-158"><a href="#cb39-158" aria-hidden="true" tabindex="-1"></a>    <span class="at">org_name_owner =</span> organization_name_owner,</span>
-<span id="cb39-159"><a href="#cb39-159" aria-hidden="true" tabindex="-1"></a>    <span class="at">entity =</span> type_owner,</span>
-<span id="cb39-160"><a href="#cb39-160" aria-hidden="true" tabindex="-1"></a>    role_code,</span>
-<span id="cb39-161"><a href="#cb39-161" aria-hidden="true" tabindex="-1"></a>    <span class="at">role_text =</span> role_text_owner,</span>
-<span id="cb39-162"><a href="#cb39-162" aria-hidden="true" tabindex="-1"></a>    association_date_owner,</span>
-<span id="cb39-163"><a href="#cb39-163" aria-hidden="true" tabindex="-1"></a>    first_name_owner,</span>
-<span id="cb39-164"><a href="#cb39-164" aria-hidden="true" tabindex="-1"></a>    middle_name_owner,</span>
-<span id="cb39-165"><a href="#cb39-165" aria-hidden="true" tabindex="-1"></a>    last_name_owner,</span>
-<span id="cb39-166"><a href="#cb39-166" aria-hidden="true" tabindex="-1"></a>    title_owner,</span>
-<span id="cb39-167"><a href="#cb39-167" aria-hidden="true" tabindex="-1"></a>    <span class="at">dba_name =</span> doing_business_as_name_owner,</span>
-<span id="cb39-168"><a href="#cb39-168" aria-hidden="true" tabindex="-1"></a>    address,</span>
-<span id="cb39-169"><a href="#cb39-169" aria-hidden="true" tabindex="-1"></a>    city_owner,</span>
-<span id="cb39-170"><a href="#cb39-170" aria-hidden="true" tabindex="-1"></a>    state_owner,</span>
-<span id="cb39-171"><a href="#cb39-171" aria-hidden="true" tabindex="-1"></a>    <span class="at">zip =</span> zip_code_owner,</span>
-<span id="cb39-172"><a href="#cb39-172" aria-hidden="true" tabindex="-1"></a>    percentage_ownership,</span>
-<span id="cb39-173"><a href="#cb39-173" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_for_acq =</span> created_for_acquisition_owner,</span>
-<span id="cb39-174"><a href="#cb39-174" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_corp =</span> corporation_owner,</span>
-<span id="cb39-175"><a href="#cb39-175" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_llc =</span> llc_owner,</span>
-<span id="cb39-176"><a href="#cb39-176" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_med_prov_supp =</span> medical_provider_supplier_owner,</span>
-<span id="cb39-177"><a href="#cb39-177" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_mgmt_serv_co =</span> management_services_company_owner,</span>
-<span id="cb39-178"><a href="#cb39-178" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_med_staff_co =</span> medical_staffing_company_owner,</span>
-<span id="cb39-179"><a href="#cb39-179" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_holding_co =</span> holding_company_owner,</span>
-<span id="cb39-180"><a href="#cb39-180" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_invest_firm =</span> investment_firm_owner,</span>
-<span id="cb39-181"><a href="#cb39-181" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_fin_inst =</span> financial_institution_owner,</span>
-<span id="cb39-182"><a href="#cb39-182" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_consult_firm =</span> consulting_firm_owner,</span>
-<span id="cb39-183"><a href="#cb39-183" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_for_profit =</span> for_profit_owner,</span>
-<span id="cb39-184"><a href="#cb39-184" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_non_profit =</span> non_profit_owner,</span>
-<span id="cb39-185"><a href="#cb39-185" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_other_type =</span> other_type_owner,</span>
-<span id="cb39-186"><a href="#cb39-186" aria-hidden="true" tabindex="-1"></a>    <span class="at">other_type =</span> other_type_text_owner</span>
-<span id="cb39-187"><a href="#cb39-187" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb39-188"><a href="#cb39-188" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(</span>
-<span id="cb39-189"><a href="#cb39-189" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_for_acq =</span> <span class="fu">char_binary</span>(is_for_acq),</span>
-<span id="cb39-190"><a href="#cb39-190" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_corp =</span> <span class="fu">char_binary</span>(is_corp),</span>
-<span id="cb39-191"><a href="#cb39-191" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_llc =</span> <span class="fu">char_binary</span>(is_llc),</span>
-<span id="cb39-192"><a href="#cb39-192" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_med_prov_supp =</span> <span class="fu">char_binary</span>(is_med_prov_supp),</span>
-<span id="cb39-193"><a href="#cb39-193" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_mgmt_serv_co =</span> <span class="fu">char_binary</span>(is_mgmt_serv_co),</span>
-<span id="cb39-194"><a href="#cb39-194" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_med_staff_co =</span> <span class="fu">char_binary</span>(is_med_staff_co),</span>
-<span id="cb39-195"><a href="#cb39-195" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_holding_co =</span> <span class="fu">char_binary</span>(is_holding_co),</span>
-<span id="cb39-196"><a href="#cb39-196" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_invest_firm =</span> <span class="fu">char_binary</span>(is_invest_firm),</span>
-<span id="cb39-197"><a href="#cb39-197" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_fin_inst =</span> <span class="fu">char_binary</span>(is_fin_inst),</span>
-<span id="cb39-198"><a href="#cb39-198" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_consult_firm =</span> <span class="fu">char_binary</span>(is_consult_firm),</span>
-<span id="cb39-199"><a href="#cb39-199" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_for_profit =</span> <span class="fu">char_binary</span>(is_for_profit),</span>
-<span id="cb39-200"><a href="#cb39-200" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_non_profit =</span> <span class="fu">char_binary</span>(is_non_profit),</span>
-<span id="cb39-201"><a href="#cb39-201" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_other_type =</span> <span class="fu">char_binary</span>(is_other_type)</span>
-<span id="cb39-202"><a href="#cb39-202" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb39-203"><a href="#cb39-203" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-204"><a href="#cb39-204" aria-hidden="true" tabindex="-1"></a>rhc_owner</span>
-<span id="cb39-205"><a href="#cb39-205" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-206"><a href="#cb39-206" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-207"><a href="#cb39-207" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-210"><a href="#cb39-210" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-211"><a href="#cb39-211" aria-hidden="true" tabindex="-1"></a>tictoc<span class="sc">::</span><span class="fu">tic</span>()</span>
-<span id="cb39-212"><a href="#cb39-212" aria-hidden="true" tabindex="-1"></a>rhc_nppes <span class="ot">&lt;-</span> <span class="fu">npi_nppes</span>(<span class="at">npi =</span> rhc_enr<span class="sc">$</span>npi)</span>
-<span id="cb39-213"><a href="#cb39-213" aria-hidden="true" tabindex="-1"></a>tictoc<span class="sc">::</span><span class="fu">toc</span>()</span>
-<span id="cb39-214"><a href="#cb39-214" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-215"><a href="#cb39-215" aria-hidden="true" tabindex="-1"></a>rhc_nppes <span class="sc">|&gt;</span> </span>
-<span id="cb39-216"><a href="#cb39-216" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(<span class="sc">-</span>endpoints, <span class="sc">-</span>enumeration_type) <span class="sc">|&gt;</span> </span>
-<span id="cb39-217"><a href="#cb39-217" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">100</span>)</span>
-<span id="cb39-218"><a href="#cb39-218" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-219"><a href="#cb39-219" aria-hidden="true" tabindex="-1"></a>rhc_nppes <span class="sc">|&gt;</span> </span>
-<span id="cb39-220"><a href="#cb39-220" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(number, addresses) <span class="sc">|&gt;</span> </span>
-<span id="cb39-221"><a href="#cb39-221" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(addresses) <span class="sc">|&gt;</span> </span>
-<span id="cb39-222"><a href="#cb39-222" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(<span class="at">address =</span> <span class="fu">cheapr_if_else</span>(cheapr<span class="sc">::</span><span class="fu">is_na</span>(address_2), address_1, <span class="fu">paste</span>(address_1, address_2))) <span class="sc">|&gt;</span> </span>
-<span id="cb39-223"><a href="#cb39-223" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(<span class="sc">-</span>address_1, <span class="sc">-</span>address_2, <span class="sc">-</span>address_type, <span class="sc">-</span>country_code, <span class="sc">-</span>country_name)</span>
-<span id="cb39-224"><a href="#cb39-224" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-225"><a href="#cb39-225" aria-hidden="true" tabindex="-1"></a>rhc_nppes <span class="sc">|&gt;</span> </span>
-<span id="cb39-226"><a href="#cb39-226" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(number, basic) <span class="sc">|&gt;</span> </span>
-<span id="cb39-227"><a href="#cb39-227" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(basic)</span>
-<span id="cb39-228"><a href="#cb39-228" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-229"><a href="#cb39-229" aria-hidden="true" tabindex="-1"></a>rhc_nppes <span class="sc">|&gt;</span> </span>
-<span id="cb39-230"><a href="#cb39-230" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(number, taxonomies) <span class="sc">|&gt;</span> </span>
-<span id="cb39-231"><a href="#cb39-231" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(taxonomies)</span>
-<span id="cb39-232"><a href="#cb39-232" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-233"><a href="#cb39-233" aria-hidden="true" tabindex="-1"></a>rhc_nppes <span class="sc">|&gt;</span> </span>
-<span id="cb39-234"><a href="#cb39-234" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(number, identifiers) <span class="sc">|&gt;</span> </span>
-<span id="cb39-235"><a href="#cb39-235" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(identifiers) <span class="sc">|&gt;</span> </span>
-<span id="cb39-236"><a href="#cb39-236" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">100</span>)</span>
-<span id="cb39-237"><a href="#cb39-237" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-238"><a href="#cb39-238" aria-hidden="true" tabindex="-1"></a>rhc_nppes <span class="sc">|&gt;</span> </span>
-<span id="cb39-239"><a href="#cb39-239" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(number, other_names) <span class="sc">|&gt;</span> </span>
-<span id="cb39-240"><a href="#cb39-240" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(other_names) <span class="sc">|&gt;</span> </span>
-<span id="cb39-241"><a href="#cb39-241" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">100</span>)</span>
-<span id="cb39-242"><a href="#cb39-242" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-243"><a href="#cb39-243" aria-hidden="true" tabindex="-1"></a>rhc_nppes <span class="sc">|&gt;</span> </span>
-<span id="cb39-244"><a href="#cb39-244" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(number, practiceLocations) <span class="sc">|&gt;</span> </span>
-<span id="cb39-245"><a href="#cb39-245" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(practiceLocations) <span class="sc">|&gt;</span> </span>
-<span id="cb39-246"><a href="#cb39-246" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sbt</span>(<span class="sc">!</span><span class="fu">is.na</span>(state)) <span class="sc">|&gt;</span> </span>
-<span id="cb39-247"><a href="#cb39-247" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">100</span>)</span>
-<span id="cb39-248"><a href="#cb39-248" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-249"><a href="#cb39-249" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-250"><a href="#cb39-250" aria-hidden="true" tabindex="-1"></a><span class="fu">## Geocode with {tidygeocoder}</span></span>
-<span id="cb39-251"><a href="#cb39-251" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-254"><a href="#cb39-254" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-255"><a href="#cb39-255" aria-hidden="true" tabindex="-1"></a>geo_census <span class="ot">&lt;-</span> tidygeocoder<span class="sc">::</span><span class="fu">geocode</span>(</span>
-<span id="cb39-256"><a href="#cb39-256" aria-hidden="true" tabindex="-1"></a>  rhc_enr,</span>
-<span id="cb39-257"><a href="#cb39-257" aria-hidden="true" tabindex="-1"></a>  <span class="at">street =</span> address,</span>
-<span id="cb39-258"><a href="#cb39-258" aria-hidden="true" tabindex="-1"></a>  <span class="at">city    =</span> city,</span>
-<span id="cb39-259"><a href="#cb39-259" aria-hidden="true" tabindex="-1"></a>  <span class="at">state   =</span> state,</span>
-<span id="cb39-260"><a href="#cb39-260" aria-hidden="true" tabindex="-1"></a>  <span class="at">postalcode =</span> zip,</span>
-<span id="cb39-261"><a href="#cb39-261" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"census"</span>, </span>
-<span id="cb39-262"><a href="#cb39-262" aria-hidden="true" tabindex="-1"></a>  <span class="at">full_results =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb39-263"><a href="#cb39-263" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-264"><a href="#cb39-264" aria-hidden="true" tabindex="-1"></a>geo_census</span>
-<span id="cb39-265"><a href="#cb39-265" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-266"><a href="#cb39-266" aria-hidden="true" tabindex="-1"></a>geo_arcgis <span class="ot">&lt;-</span> tidygeocoder<span class="sc">::</span><span class="fu">geocode</span>(</span>
-<span id="cb39-267"><a href="#cb39-267" aria-hidden="true" tabindex="-1"></a>  rhc_enr,</span>
-<span id="cb39-268"><a href="#cb39-268" aria-hidden="true" tabindex="-1"></a>  <span class="at">street =</span> address,</span>
-<span id="cb39-269"><a href="#cb39-269" aria-hidden="true" tabindex="-1"></a>  <span class="at">city    =</span> city,</span>
-<span id="cb39-270"><a href="#cb39-270" aria-hidden="true" tabindex="-1"></a>  <span class="at">state   =</span> state,</span>
-<span id="cb39-271"><a href="#cb39-271" aria-hidden="true" tabindex="-1"></a>  <span class="at">postalcode =</span> zip,</span>
-<span id="cb39-272"><a href="#cb39-272" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"arcgis"</span>, </span>
-<span id="cb39-273"><a href="#cb39-273" aria-hidden="true" tabindex="-1"></a>  <span class="at">full_results =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb39-274"><a href="#cb39-274" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-275"><a href="#cb39-275" aria-hidden="true" tabindex="-1"></a>geo_arcgis</span>
-<span id="cb39-276"><a href="#cb39-276" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-277"><a href="#cb39-277" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-278"><a href="#cb39-278" aria-hidden="true" tabindex="-1"></a><span class="fu">## Retrieve Georgia counties shapefile from {tigris}</span></span>
-<span id="cb39-279"><a href="#cb39-279" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-282"><a href="#cb39-282" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-283"><a href="#cb39-283" aria-hidden="true" tabindex="-1"></a>tig_cnt <span class="ot">&lt;-</span> tigris<span class="sc">::</span><span class="fu">counties</span>(</span>
-<span id="cb39-284"><a href="#cb39-284" aria-hidden="true" tabindex="-1"></a>  <span class="at">state =</span> <span class="st">"GA"</span>,</span>
-<span id="cb39-285"><a href="#cb39-285" aria-hidden="true" tabindex="-1"></a>  <span class="at">year =</span> <span class="dv">2022</span>,</span>
-<span id="cb39-286"><a href="#cb39-286" aria-hidden="true" tabindex="-1"></a>  <span class="at">progress_bar =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb39-287"><a href="#cb39-287" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-288"><a href="#cb39-288" aria-hidden="true" tabindex="-1"></a>tig_cnt</span>
-<span id="cb39-289"><a href="#cb39-289" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-290"><a href="#cb39-290" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(tig_cnt)</span>
-<span id="cb39-291"><a href="#cb39-291" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-292"><a href="#cb39-292" aria-hidden="true" tabindex="-1"></a>sf_cnt <span class="ot">&lt;-</span> <span class="fu">ms_simplify</span>(tig_cnt)</span>
-<span id="cb39-293"><a href="#cb39-293" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-294"><a href="#cb39-294" aria-hidden="true" tabindex="-1"></a>sf_cnt<span class="sc">$</span>mid <span class="ot">&lt;-</span> <span class="fu">st_centroid</span>(sf_cnt<span class="sc">$</span>geometry)</span>
-<span id="cb39-295"><a href="#cb39-295" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb39-296"><a href="#cb39-296" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-297"><a href="#cb39-297" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-298"><a href="#cb39-298" aria-hidden="true" tabindex="-1"></a><span class="fu">## Map with {ggplot}</span></span>
-<span id="cb39-299"><a href="#cb39-299" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-302"><a href="#cb39-302" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb39-303"><a href="#cb39-303" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.width: 5</span></span>
-<span id="cb39-304"><a href="#cb39-304" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.height: 8</span></span>
-<span id="cb39-305"><a href="#cb39-305" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sf_cnt) <span class="sc">+</span></span>
-<span id="cb39-306"><a href="#cb39-306" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(</span>
-<span id="cb39-307"><a href="#cb39-307" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"skyblue"</span>,</span>
-<span id="cb39-308"><a href="#cb39-308" aria-hidden="true" tabindex="-1"></a>    <span class="at">colour =</span> <span class="st">"white"</span>,</span>
-<span id="cb39-309"><a href="#cb39-309" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb39-310"><a href="#cb39-310" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf_text</span>(</span>
-<span id="cb39-311"><a href="#cb39-311" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">geometry =</span> geometry, </span>
-<span id="cb39-312"><a href="#cb39-312" aria-hidden="true" tabindex="-1"></a>        <span class="at">label =</span> NAME),</span>
-<span id="cb39-313"><a href="#cb39-313" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">3.5</span>,</span>
-<span id="cb39-314"><a href="#cb39-314" aria-hidden="true" tabindex="-1"></a>    <span class="at">check_overlap =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
-<span id="cb39-315"><a href="#cb39-315" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(</span>
-<span id="cb39-316"><a href="#cb39-316" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> geo_census,</span>
-<span id="cb39-317"><a href="#cb39-317" aria-hidden="true" tabindex="-1"></a>    <span class="at">mapping =</span> <span class="fu">aes</span>(long, lat),</span>
-<span id="cb39-318"><a href="#cb39-318" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"yellow"</span>,</span>
-<span id="cb39-319"><a href="#cb39-319" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"darkred"</span>,</span>
-<span id="cb39-320"><a href="#cb39-320" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.75</span>,</span>
-<span id="cb39-321"><a href="#cb39-321" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">4</span>,</span>
-<span id="cb39-322"><a href="#cb39-322" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape =</span> <span class="dv">21</span>,</span>
-<span id="cb39-323"><a href="#cb39-323" aria-hidden="true" tabindex="-1"></a>    <span class="at">stroke =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb39-324"><a href="#cb39-324" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span>
-<span id="cb39-325"><a href="#cb39-325" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<div class="sourceCode" id="cb9" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="an">output:</span><span class="co"> html_document</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">  chunk_output_type: console</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu"># Geospatial {#sec-demogeo}</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"includes/_common.R"</span>)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">collapse  =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">echo      =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">message   =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">warning   =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">error     =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">comment   =</span> <span class="st">""</span>,</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">dpi       =</span> <span class="dv">300</span>, </span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">out.width =</span> <span class="st">"100%"</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidygeocoder)</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tigris)</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rmapshaper)</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">tigris_use_cache =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a><span class="fu">## Rural Health Clinics</span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>rhc <span class="ot">&lt;-</span> <span class="fu">care_group</span>(<span class="st">"rhc"</span>)</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> rhc<span class="sc">@</span>members<span class="sc">$</span>rhc_enrollments<span class="sc">@</span>identifier <span class="sc">|&gt;</span> </span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">request</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_query</span>(<span class="st">"filter[STATE]"</span> <span class="ot">=</span> <span class="st">"GA"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>  providertwo<span class="sc">:::</span><span class="fu">resp_simple_json</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">get_elem</span>(<span class="st">"^data$|headers"</span>, <span class="at">regex =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>rhc_enr <span class="ot">&lt;-</span> <span class="fu">as_tbl</span>(res<span class="sc">$</span>data) <span class="sc">|&gt;</span> </span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(res<span class="sc">$</span>meta) <span class="sc">|&gt;</span> </span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>  providertwo<span class="sc">:::</span><span class="fu">map_na_if</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roworder</span>(<span class="st">`</span><span class="at">ORGANIZATION NAME</span><span class="st">`</span>) <span class="sc">|&gt;</span></span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>() <span class="sc">|&gt;</span></span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(<span class="at">incorporation_date =</span> providertwo<span class="sc">:::</span><span class="fu">as_date</span>(incorporation_date),</span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>      <span class="at">multiple_npi_flag =</span> <span class="fu">charbin</span>(multiple_npi_flag),</span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>      <span class="at">address =</span> providertwo<span class="sc">:::</span><span class="fu">make_address</span>(address_line_1, address_line_2)) <span class="sc">|&gt;</span></span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(</span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>    npi,</span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">has_mult_npi =</span> multiple_npi_flag,</span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a>    ccn,</span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">pac =</span> associate_id,</span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a>    <span class="at">enid =</span> enrollment_id,</span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>    <span class="at">enid_state =</span> enrollment_state,</span>
+<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">org_name =</span> organization_name,</span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a>    <span class="at">dba =</span> doing_business_as_name,</span>
+<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a>    <span class="at">inc_date =</span> incorporation_date,</span>
+<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a>    <span class="at">inc_state =</span> incorporation_state,</span>
+<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a>    <span class="at">org_type =</span> organization_type_structure,</span>
+<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a>    <span class="at">org_type_2 =</span> organization_other_type_text,</span>
+<span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a>    <span class="at">prop_non =</span> proprietary_nonprofit,</span>
+<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a>    address,</span>
+<span id="cb9-70"><a href="#cb9-70" aria-hidden="true" tabindex="-1"></a>    city,</span>
+<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a>    state,</span>
+<span id="cb9-72"><a href="#cb9-72" aria-hidden="true" tabindex="-1"></a>    <span class="at">zip =</span> zip_code)</span>
+<span id="cb9-73"><a href="#cb9-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-74"><a href="#cb9-74" aria-hidden="true" tabindex="-1"></a>rhc_enr <span class="sc">|&gt;</span> </span>
+<span id="cb9-75"><a href="#cb9-75" aria-hidden="true" tabindex="-1"></a>  <span class="fu">purse</span>()</span>
+<span id="cb9-76"><a href="#cb9-76" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-77"><a href="#cb9-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-80"><a href="#cb9-80" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-81"><a href="#cb9-81" aria-hidden="true" tabindex="-1"></a>res2 <span class="ot">&lt;-</span> rhc<span class="sc">@</span>members<span class="sc">$</span>rhc_owners<span class="sc">@</span>identifier <span class="sc">|&gt;</span> </span>
+<span id="cb9-82"><a href="#cb9-82" aria-hidden="true" tabindex="-1"></a>  <span class="fu">request</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb9-83"><a href="#cb9-83" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_url_query</span>(<span class="st">"filter[STATE - OWNER]"</span> <span class="ot">=</span> <span class="st">"GA"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb9-84"><a href="#cb9-84" aria-hidden="true" tabindex="-1"></a>  <span class="fu">req_perform</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb9-85"><a href="#cb9-85" aria-hidden="true" tabindex="-1"></a>  providertwo<span class="sc">:::</span><span class="fu">resp_simple_json</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb9-86"><a href="#cb9-86" aria-hidden="true" tabindex="-1"></a>  <span class="fu">get_elem</span>(<span class="st">"^data$|headers"</span>, <span class="at">regex =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-87"><a href="#cb9-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-88"><a href="#cb9-88" aria-hidden="true" tabindex="-1"></a>rhc_own <span class="ot">&lt;-</span> <span class="fu">as_tbl</span>(res2<span class="sc">$</span>data) <span class="sc">|&gt;</span> </span>
+<span id="cb9-89"><a href="#cb9-89" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(res2<span class="sc">$</span>meta) <span class="sc">|&gt;</span> </span>
+<span id="cb9-90"><a href="#cb9-90" aria-hidden="true" tabindex="-1"></a>  providertwo<span class="sc">:::</span><span class="fu">map_na_if</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb9-91"><a href="#cb9-91" aria-hidden="true" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">clean_names</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb9-92"><a href="#cb9-92" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(<span class="at">assoc_date =</span> providertwo<span class="sc">:::</span><span class="fu">as_date</span>(association_date_owner),</span>
+<span id="cb9-93"><a href="#cb9-93" aria-hidden="true" tabindex="-1"></a>      <span class="at">address =</span> providertwo<span class="sc">:::</span><span class="fu">make_address</span>(</span>
+<span id="cb9-94"><a href="#cb9-94" aria-hidden="true" tabindex="-1"></a>        address_line_1_owner, </span>
+<span id="cb9-95"><a href="#cb9-95" aria-hidden="true" tabindex="-1"></a>        address_line_2_owner),</span>
+<span id="cb9-96"><a href="#cb9-96" aria-hidden="true" tabindex="-1"></a>      <span class="at">pct_own =</span> <span class="fu">as.numeric</span>(percentage_ownership),</span>
+<span id="cb9-97"><a href="#cb9-97" aria-hidden="true" tabindex="-1"></a>      <span class="at">role_code =</span> <span class="fu">as.integer</span>(role_code_owner)) <span class="sc">|&gt;</span></span>
+<span id="cb9-98"><a href="#cb9-98" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(</span>
+<span id="cb9-99"><a href="#cb9-99" aria-hidden="true" tabindex="-1"></a>    <span class="at">enid =</span> enrollment_id, </span>
+<span id="cb9-100"><a href="#cb9-100" aria-hidden="true" tabindex="-1"></a>    <span class="at">pac_own =</span> associate_id_owner, </span>
+<span id="cb9-101"><a href="#cb9-101" aria-hidden="true" tabindex="-1"></a>    <span class="at">org_name =</span> organization_name,</span>
+<span id="cb9-102"><a href="#cb9-102" aria-hidden="true" tabindex="-1"></a>    <span class="at">org_name_own =</span> organization_name_owner,</span>
+<span id="cb9-103"><a href="#cb9-103" aria-hidden="true" tabindex="-1"></a>    <span class="at">entity_own =</span> type_owner,</span>
+<span id="cb9-104"><a href="#cb9-104" aria-hidden="true" tabindex="-1"></a>    role_code,</span>
+<span id="cb9-105"><a href="#cb9-105" aria-hidden="true" tabindex="-1"></a>    <span class="at">role_text =</span> role_text_owner,</span>
+<span id="cb9-106"><a href="#cb9-106" aria-hidden="true" tabindex="-1"></a>    assoc_date,</span>
+<span id="cb9-107"><a href="#cb9-107" aria-hidden="true" tabindex="-1"></a>    <span class="at">first_own =</span> first_name_owner,</span>
+<span id="cb9-108"><a href="#cb9-108" aria-hidden="true" tabindex="-1"></a>    <span class="at">middle_own =</span> middle_name_owner,</span>
+<span id="cb9-109"><a href="#cb9-109" aria-hidden="true" tabindex="-1"></a>    <span class="at">last_own =</span> last_name_owner,</span>
+<span id="cb9-110"><a href="#cb9-110" aria-hidden="true" tabindex="-1"></a>    <span class="at">title_own =</span> title_owner,</span>
+<span id="cb9-111"><a href="#cb9-111" aria-hidden="true" tabindex="-1"></a>    <span class="at">dba_own =</span> doing_business_as_name_owner,</span>
+<span id="cb9-112"><a href="#cb9-112" aria-hidden="true" tabindex="-1"></a>    <span class="at">addr_own =</span> address,</span>
+<span id="cb9-113"><a href="#cb9-113" aria-hidden="true" tabindex="-1"></a>    <span class="at">city_own =</span> city_owner,</span>
+<span id="cb9-114"><a href="#cb9-114" aria-hidden="true" tabindex="-1"></a>    <span class="at">state_own =</span> state_owner,</span>
+<span id="cb9-115"><a href="#cb9-115" aria-hidden="true" tabindex="-1"></a>    <span class="at">zip_own =</span> zip_code_owner,</span>
+<span id="cb9-116"><a href="#cb9-116" aria-hidden="true" tabindex="-1"></a>    pct_own,</span>
+<span id="cb9-117"><a href="#cb9-117" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_for_acq =</span> created_for_acquisition_owner,</span>
+<span id="cb9-118"><a href="#cb9-118" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_corp =</span> corporation_owner,</span>
+<span id="cb9-119"><a href="#cb9-119" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_llc =</span> llc_owner,</span>
+<span id="cb9-120"><a href="#cb9-120" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_med_prov_supp =</span> medical_provider_supplier_owner,</span>
+<span id="cb9-121"><a href="#cb9-121" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_mgmt_serv_co =</span> management_services_company_owner,</span>
+<span id="cb9-122"><a href="#cb9-122" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_med_staff_co =</span> medical_staffing_company_owner,</span>
+<span id="cb9-123"><a href="#cb9-123" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_holding_co =</span> holding_company_owner,</span>
+<span id="cb9-124"><a href="#cb9-124" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_invest_firm =</span> investment_firm_owner,</span>
+<span id="cb9-125"><a href="#cb9-125" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_fin_inst =</span> financial_institution_owner,</span>
+<span id="cb9-126"><a href="#cb9-126" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_consult_firm =</span> consulting_firm_owner,</span>
+<span id="cb9-127"><a href="#cb9-127" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_for_profit =</span> for_profit_owner,</span>
+<span id="cb9-128"><a href="#cb9-128" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_non_profit =</span> non_profit_owner,</span>
+<span id="cb9-129"><a href="#cb9-129" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_other_type =</span> other_type_owner,</span>
+<span id="cb9-130"><a href="#cb9-130" aria-hidden="true" tabindex="-1"></a>    <span class="at">other_type =</span> other_type_text_owner</span>
+<span id="cb9-131"><a href="#cb9-131" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb9-132"><a href="#cb9-132" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(</span>
+<span id="cb9-133"><a href="#cb9-133" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_for_acq =</span> <span class="fu">charbin</span>(is_for_acq),</span>
+<span id="cb9-134"><a href="#cb9-134" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_corp =</span> <span class="fu">charbin</span>(is_corp),</span>
+<span id="cb9-135"><a href="#cb9-135" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_llc =</span> <span class="fu">charbin</span>(is_llc),</span>
+<span id="cb9-136"><a href="#cb9-136" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_med_prov_supp =</span> <span class="fu">charbin</span>(is_med_prov_supp),</span>
+<span id="cb9-137"><a href="#cb9-137" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_mgmt_serv_co =</span> <span class="fu">charbin</span>(is_mgmt_serv_co),</span>
+<span id="cb9-138"><a href="#cb9-138" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_med_staff_co =</span> <span class="fu">charbin</span>(is_med_staff_co),</span>
+<span id="cb9-139"><a href="#cb9-139" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_holding_co =</span> <span class="fu">charbin</span>(is_holding_co),</span>
+<span id="cb9-140"><a href="#cb9-140" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_invest_firm =</span> <span class="fu">charbin</span>(is_invest_firm),</span>
+<span id="cb9-141"><a href="#cb9-141" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_fin_inst =</span> <span class="fu">charbin</span>(is_fin_inst),</span>
+<span id="cb9-142"><a href="#cb9-142" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_consult_firm =</span> <span class="fu">charbin</span>(is_consult_firm),</span>
+<span id="cb9-143"><a href="#cb9-143" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_for_profit =</span> <span class="fu">charbin</span>(is_for_profit),</span>
+<span id="cb9-144"><a href="#cb9-144" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_non_profit =</span> <span class="fu">charbin</span>(is_non_profit),</span>
+<span id="cb9-145"><a href="#cb9-145" aria-hidden="true" tabindex="-1"></a>    <span class="at">is_other_type =</span> <span class="fu">charbin</span>(is_other_type)</span>
+<span id="cb9-146"><a href="#cb9-146" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-147"><a href="#cb9-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-148"><a href="#cb9-148" aria-hidden="true" tabindex="-1"></a>rhc_own</span>
+<span id="cb9-149"><a href="#cb9-149" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-150"><a href="#cb9-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-151"><a href="#cb9-151" aria-hidden="true" tabindex="-1"></a><span class="fu">## Geocode</span></span>
+<span id="cb9-152"><a href="#cb9-152" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-155"><a href="#cb9-155" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-156"><a href="#cb9-156" aria-hidden="true" tabindex="-1"></a>geo_census <span class="ot">&lt;-</span> tidygeocoder<span class="sc">::</span><span class="fu">geocode</span>(</span>
+<span id="cb9-157"><a href="#cb9-157" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mtt</span>(rhc_enr, </span>
+<span id="cb9-158"><a href="#cb9-158" aria-hidden="true" tabindex="-1"></a>      <span class="at">zip =</span> <span class="fu">substr</span>(zip, <span class="dv">1</span>, <span class="dv">5</span>)),</span>
+<span id="cb9-159"><a href="#cb9-159" aria-hidden="true" tabindex="-1"></a>  <span class="at">street =</span> address,</span>
+<span id="cb9-160"><a href="#cb9-160" aria-hidden="true" tabindex="-1"></a>  <span class="at">city =</span> city,</span>
+<span id="cb9-161"><a href="#cb9-161" aria-hidden="true" tabindex="-1"></a>  <span class="at">state =</span> state,</span>
+<span id="cb9-162"><a href="#cb9-162" aria-hidden="true" tabindex="-1"></a>  <span class="at">postalcode =</span> zip,</span>
+<span id="cb9-163"><a href="#cb9-163" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"census"</span>, </span>
+<span id="cb9-164"><a href="#cb9-164" aria-hidden="true" tabindex="-1"></a>  <span class="at">full_results =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-165"><a href="#cb9-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-166"><a href="#cb9-166" aria-hidden="true" tabindex="-1"></a>geo_census <span class="sc">|&gt;</span> </span>
+<span id="cb9-167"><a href="#cb9-167" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(lat<span class="sc">:</span>matched_address) <span class="sc">|&gt;</span> </span>
+<span id="cb9-168"><a href="#cb9-168" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sbt</span>(cheapr<span class="sc">::</span><span class="fu">is_na</span>(lat))</span>
+<span id="cb9-169"><a href="#cb9-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-170"><a href="#cb9-170" aria-hidden="true" tabindex="-1"></a>geo_census <span class="sc">|&gt;</span> </span>
+<span id="cb9-171"><a href="#cb9-171" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sbt</span>(match_type <span class="sc">==</span> <span class="st">"Non_Exact"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb9-172"><a href="#cb9-172" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slt</span>(input_address, matched_address) <span class="sc">|&gt;</span> </span>
+<span id="cb9-173"><a href="#cb9-173" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="cn">Inf</span>)</span>
+<span id="cb9-174"><a href="#cb9-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-175"><a href="#cb9-175" aria-hidden="true" tabindex="-1"></a>geo_census <span class="ot">&lt;-</span> <span class="fu">sbt</span>(geo_census, <span class="sc">!</span>cheapr<span class="sc">::</span><span class="fu">is_na</span>(lat))</span>
+<span id="cb9-176"><a href="#cb9-176" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-177"><a href="#cb9-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-178"><a href="#cb9-178" aria-hidden="true" tabindex="-1"></a><span class="fu">## Georgia Counties Shapefile</span></span>
+<span id="cb9-179"><a href="#cb9-179" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-182"><a href="#cb9-182" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-183"><a href="#cb9-183" aria-hidden="true" tabindex="-1"></a>ga_county <span class="ot">&lt;-</span> tigris<span class="sc">::</span><span class="fu">counties</span>(<span class="at">state =</span> <span class="st">"GA"</span>, <span class="at">year =</span> <span class="dv">2024</span>)</span>
+<span id="cb9-184"><a href="#cb9-184" aria-hidden="true" tabindex="-1"></a>ga_county_simple <span class="ot">&lt;-</span> rmapshaper<span class="sc">::</span><span class="fu">ms_simplify</span>(ga_county)</span>
+<span id="cb9-185"><a href="#cb9-185" aria-hidden="true" tabindex="-1"></a>ga_county_simple<span class="sc">$</span>mid <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_centroid</span>(ga_county_simple<span class="sc">$</span>geometry)</span>
+<span id="cb9-186"><a href="#cb9-186" aria-hidden="true" tabindex="-1"></a>ga_county_simple</span>
+<span id="cb9-187"><a href="#cb9-187" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb9-188"><a href="#cb9-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-189"><a href="#cb9-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-190"><a href="#cb9-190" aria-hidden="true" tabindex="-1"></a><span class="fu">## Georgia RHCs Map</span></span>
+<span id="cb9-191"><a href="#cb9-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-194"><a href="#cb9-194" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb9-195"><a href="#cb9-195" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.width: 5</span></span>
+<span id="cb9-196"><a href="#cb9-196" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig.height: 8</span></span>
+<span id="cb9-197"><a href="#cb9-197" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ga_county_simple) <span class="sc">+</span></span>
+<span id="cb9-198"><a href="#cb9-198" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(</span>
+<span id="cb9-199"><a href="#cb9-199" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"skyblue"</span>,</span>
+<span id="cb9-200"><a href="#cb9-200" aria-hidden="true" tabindex="-1"></a>    <span class="at">colour =</span> <span class="st">"white"</span>,</span>
+<span id="cb9-201"><a href="#cb9-201" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb9-202"><a href="#cb9-202" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf_text</span>(</span>
+<span id="cb9-203"><a href="#cb9-203" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">geometry =</span> geometry, </span>
+<span id="cb9-204"><a href="#cb9-204" aria-hidden="true" tabindex="-1"></a>        <span class="at">label =</span> NAME),</span>
+<span id="cb9-205"><a href="#cb9-205" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">2.5</span>,</span>
+<span id="cb9-206"><a href="#cb9-206" aria-hidden="true" tabindex="-1"></a>    <span class="at">check_overlap =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb9-207"><a href="#cb9-207" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(</span>
+<span id="cb9-208"><a href="#cb9-208" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> geo_census,</span>
+<span id="cb9-209"><a href="#cb9-209" aria-hidden="true" tabindex="-1"></a>    <span class="at">mapping =</span> <span class="fu">aes</span>(long, lat),</span>
+<span id="cb9-210"><a href="#cb9-210" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"yellow"</span>,</span>
+<span id="cb9-211"><a href="#cb9-211" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"darkred"</span>,</span>
+<span id="cb9-212"><a href="#cb9-212" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.75</span>,</span>
+<span id="cb9-213"><a href="#cb9-213" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">3</span>,</span>
+<span id="cb9-214"><a href="#cb9-214" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape =</span> <span class="dv">21</span>,</span>
+<span id="cb9-215"><a href="#cb9-215" aria-hidden="true" tabindex="-1"></a>    <span class="at">stroke =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb9-216"><a href="#cb9-216" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>()</span>
+<span id="cb9-217"><a href="#cb9-217" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
