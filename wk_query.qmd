@@ -1,14 +1,123 @@
 # Query {#sec-querying}
 
 ```{r}
-#| label: setup-common-01
+#| label: setup
 #| include: false
 source("includes/_common.R")
-
 # test_url <- glue::as_glue("https://data.cms.gov/data-api/v1/dataset/d10d792e-ea6e-4145-8512-34efbc1be04b/data?size=10&offset=0&")
-# 
 # test_url <- test_url + greater_or_equal("overall_rating", 3)
 ```
+
+## Quick Query
+
+```{r}
+#| label: quick_query
+#| message: true
+x <- pro_endpoint("asc_facility")
+
+`%|||%` <- function(x, y) {
+  if (!is.null(x)) y else NULL
+}
+
+cli_query <- function(x) {
+  x <- unlist(x)
+  glue_col("{silver {names(x)}=}{red {bold {unname(x)}}}") |> glue_collapse(sep = "&")
+}
+
+quick_query_ <- new_generic("quick_query_", "x")
+
+method(quick_query_, providertwo:::class_endpoint) <- function(x, query = NULL) {
+  n <- providertwo:::identifier_(x) |>
+    request() |>
+    req_url_query(
+      count   = "true",
+      format  = "json",
+      keys    = "true",
+      results = "false",
+      rowIds  = "false",
+      schema  = "false",
+      offset  = 0L,
+      limit   = 1L,
+      !!!query
+    ) |>
+    providertwo:::perform_simple() |>
+    _$count
+  
+  if (n == 0) {
+    cli::cli_alert_danger("Query {.var {cli_query(query)}} returned {.emph 0} results.", wrap = TRUE)
+    return(invisible(NULL))
+  }
+  
+  if (n <= providertwo:::limit_(x)) {
+    cli::cli_alert_success("Returning {.emph {n}} results...", wrap = TRUE)
+    return(
+      providertwo:::identifier_(x) |>
+        map(
+          function(i)
+            request(i) |>
+            req_url_query(
+              count   = "false",
+              format  = "json",
+              keys    = "true",
+              results = "true",
+              rowIds  = "false",
+              schema  = "false",
+              offset  = 0L,
+              limit   = providertwo:::limit_(x),
+              !!!query
+            )
+        ) |>
+        req_perform_parallel(on_error = "continue") |>
+        map(
+          function(x)
+            providertwo:::parse_string(x, query = "results") |>
+            as_tbl() |>
+            providertwo:::map_na_if()
+        ) |>
+        pluck(1) |>
+        providertwo:::name_fields_(x)
+    )
+  }
+  
+  if (n > providertwo:::limit_(x)) {
+    cli::cli_alert_danger(
+      "UNIMPLEMENTED: Query returned {.emph {n}} results, exceeding the limit of {providertwo:::limit_(x)}.",
+      wrap = TRUE
+    )
+    return(invisible(NULL))
+  }
+}
+
+q1 <- list(
+  "conditions[0][property]" = "state",
+  "conditions[0][operator]" = "=",
+  "conditions[0][value]" = "NY"
+)
+
+q2 <- list(
+  "conditions[0][property]" = "state",
+  "conditions[0][operator]" = "IN",
+  "conditions[0][value][1]" = "CA",
+  "conditions[0][value][2]" = "GA",
+  "conditions[0][value][3]" = "NY"
+)
+
+q3 <- list(
+  "conditions[0][property]" = "asc2_rate",
+  "conditions[0][operator]" = "<",
+  "conditions[0][value]" = "0.02"
+)
+
+r1 <- quick_query_(pro_endpoint("asc_facility"), query = q1)
+r1 |> str()
+
+quick_query_(pro_endpoint("asc_facility"), query = q2)
+
+r3 <- quick_query_(pro_endpoint("asc_facility"), query = q3)
+r3 |> str()
+
+```
+
 
 ### Params with length > 1
 
@@ -25,54 +134,21 @@ foo <- function(x) {
 ID <- 5:7
 
 foo(ID)
+
+foo(x = list(ID = 1:2))
 ```
 
+### Multi-value Params
 
 ```{r}
+#| label: multi
 multi_value <- function(x) {
   glue::glue("[{seq_along(x)}]={x}") |> 
     glue::glue_collapse(sep = "&")
 }
 
-multi_value(state.abb)
-
-new_query <- function(
-    args = list(state = c("GA", "MD"), 
-                last_name = "AMITH", 
-                npi = 1234567890), 
-    operator = c("IN", "STARTS_WITH", "=")) {
-  
-  len    <- cheapr::lengths_(args, names = TRUE)
-  single <- args[cheapr::which_(len == 1)]
-  multi  <- args[cheapr::which_(len > 1)]
-  
-  x <- list(s = if (vctrs::vec_is_empty(single)) NULL else single, 
-            m = if (vctrs::vec_is_empty(multi)) NULL else multi)
-  
-  idx <- rlang::set_names(seq_along(args), names(args))
-  opr <- rlang::set_names(operator, names(args))
-
-  g_single <- glue::glue(
-    "filter[{idx[names(x$s)]}][condition][path]={names(x$s)}\n",
-    "filter[{idx[names(x$s)]}][condition][operator]={opr[names(x$s)]}\n",
-    "filter[{idx[names(x$s)]}][condition][value]={providertwo:::delist(x$s)}")
-  
-  g_mult <- glue::as_glue(
-    c(
-      glue::glue(
-        "filter[{idx[names(x$m)]}][condition][path]={names(x$m)}\n",
-        "filter[{idx[names(x$m)]}][condition][operator]={opr[names(x$m)]}"), 
-      glue::glue(
-        "filter[{idx[names(x$m)]}][condition][value]",
-        "[{seq_along(providertwo:::delist(x$m))}]={providertwo:::delist(x$m)}"))
-    )
-  
-  glue::glue_collapse(c(g_single, g_mult), sep = "\n")
-}
-
-new_query()
+multi_value(state.abb[1:5])
 ```
-
 
 ## Query Generation
 
@@ -107,6 +183,45 @@ list(
   providertwo:::print_list()
 ```
 
+
+```{r}
+#| label: query_generation
+new_query <- function(args, operator) {
+  
+  len    <- cheapr::lengths_(args, names = TRUE)
+  single <- args[cheapr::which_(len == 1)]
+  multi  <- args[cheapr::which_(len > 1)]
+  
+  x <- list(s = if (vctrs::vec_is_empty(single)) NULL else single, 
+            m = if (vctrs::vec_is_empty(multi)) NULL else multi)
+  
+  idx <- rlang::set_names(seq_along(args), names(args))
+  opr <- rlang::set_names(operator, names(args))
+
+  g_single <- glue::glue(
+    "filter[{idx[names(x$s)]}][condition][path]={names(x$s)}\n",
+    "filter[{idx[names(x$s)]}][condition][operator]={opr[names(x$s)]}\n",
+    "filter[{idx[names(x$s)]}][condition][value]={providertwo:::delist(x$s)}")
+  
+  g_mult <- glue::as_glue(
+    c(
+      glue::glue(
+        "filter[{idx[names(x$m)]}][condition][path]={names(x$m)}\n",
+        "filter[{idx[names(x$m)]}][condition][operator]={opr[names(x$m)]}"), 
+      glue::glue(
+        "filter[{idx[names(x$m)]}][condition][value]",
+        "[{seq_along(providertwo:::delist(x$m))}]={providertwo:::delist(x$m)}"))
+    )
+  
+  glue::glue_collapse(c(g_single, g_mult), sep = "\n")
+}
+
+new_query(args = list(state = c("GA", "MD"), 
+                      last_name = "SMITH", 
+                      npi = 1234567890), 
+          operator = c("IN", "STARTS_WITH", "="))
+```
+
 ### `class_query`
 
 ```{r}
@@ -137,6 +252,12 @@ ex <- list(
   state  = c("GA", "MD"), 
   name   = "Jerry", 
   number = 300.12)
+
+list_lengths(ex)
+
+args <- list_combine(ex, i = set_names(seq_along(ex), names(ex)))
+
+list_assign(x = ex, values = set_names(as.list(seq_along(ex)), names(ex)))
 ```
 
 #### `query_comparison`
@@ -146,25 +267,21 @@ ex <- list(
 query_comparison <- function(args, 
                              operator = c("=", ">", ">=", "<", "<=", "<>")) {
   
-  operator <- match.arg(operator)
-  args     <- args[
-    cheapr::which_(
-      cheapr::lengths_(
-        args, 
-        names = TRUE) == 1
-      )]
+  o <- match.arg(operator)
+  x <- args[cheapr::which_(cheapr::lengths_(args, names = TRUE) == 1)]
+  i <- args$i[names(x)]
   
   glue::glue(
   "
-  filter[{seq_along(args)}][condition][path]={names(args)}
-  filter[{seq_along(args)}][condition][operator]={operator}
-  filter[{seq_along(args)}][condition][value]={providertwo:::delist(args)}
+  filter[{i}][condition][path]={names(x)}
+  filter[{i}][condition][operator]={o}
+  filter[{i}][condition][value]={providertwo:::delist(x)}
   "
   )
 }
 
-query_comparison(ex)
-query_comparison(ex, ">=")
+query_comparison(args)
+query_comparison(args, ">=")
 ```
 
 #### `query_equals_simple`
@@ -173,18 +290,9 @@ query_comparison(ex, ">=")
 #| label: query_equals_simple
 query_equals_simple <- function(args) {
   
-  args <- args[
-    cheapr::which_(
-      cheapr::lengths_(
-        args, 
-        names = TRUE) == 1
-      )]
+  args <- args[cheapr::which_(cheapr::lengths_(args, names = TRUE) == 1)]
   
-  glue::glue(
-  "
-  filter[{names(args)}]={providertwo:::delist(args)}
-  "
-  )
+  glue::glue("filter[{names(args)}]={providertwo:::delist(args)}")
 }
 
 query_equals_simple(ex)
@@ -194,28 +302,30 @@ query_equals_simple(ex)
 
 ```{r}
 #| label: query_in_notin
-query_in_notin <- function(args, 
-                           operator = c("IN", "NOT IN")) {
+query_in_notin <- function(args, operator = "IN") {
   
-  operator <- match.arg(operator)
-  args     <- args[cheapr::which_(cheapr::lengths_(args, names = TRUE) > 1)]
+  o <- match.arg(operator, c("IN", "NOT IN"))
+  x <- args[cheapr::which_(cheapr::lengths_(args, names = TRUE) > 1)]
+  i <- args$i[names(x)]
+  i <- names(i)[!cheapr::is_na(names(i))]
+  x$i <- NULL
   
   glue::as_glue(
     c(
       glue::glue(
-        "filter[f{seq_along(args)}][condition][path]={names(args)}
-        filter[f{seq_along(args)}][condition][operator]={operator}"
+        "filter[{i}][condition][path]={names(x)} ",
+        "filter[{i}][condition][operator]={o}"
         ), 
       glue::glue(
-        "filter[f{seq_along(args)}]",
+        "filter[{i}]",
         "[condition][value]",
-        "[{seq_along(providertwo:::delist(args))}]={providertwo:::delist(args)}"
+        "[{seq_along(providertwo:::delist(x))}]={providertwo:::delist(x)}"
         )
       )
     )
 }
 
-query_in_notin(ex)
+query_in_notin(args, "IN")
 query_in_notin(ex, "NOT IN")
 ```
 
@@ -498,6 +608,8 @@ resp |>
 Select Dataset
 
 ```{r}
+#| label: select_dataset
+#| eval: false
 distribution <- read_json_arrow(
   file = "https://data.cms.gov/data.json",
   col_select = c("dataset"),
@@ -526,6 +638,7 @@ accessURL
 Format Query
 
 ```{r}
+#| eval: false
 query <- glue::glue(
   'c(
     "filter[{i}][path]"  = "{PATH}",
@@ -547,6 +660,7 @@ query
 Retrieve Number of Results
 
 ```{r}
+#| eval: false
 queryurl <- accessURL |> 
   request() |> 
   req_url_query(size = 5000, !!!query)
@@ -562,12 +676,14 @@ nresults
 
 
 ```{r}
+#| eval: false
 url_parse(queryurl$url)
 ```
 
 Generate and Send Requests
 
 ```{r}
+#| eval: false
 reqs <- map(
   glue(
     "{url}", 

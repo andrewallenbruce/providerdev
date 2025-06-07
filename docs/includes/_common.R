@@ -17,25 +17,21 @@ knitr::knit_hooks$set(
 )
 
 options(
-  digits = 3,
-  width = 80,
-  str = strOptions(strict.width = "cut"),
+  digits         = 3,
+  width          = 80,
+  str            = strOptions(strict.width = "cut"),
   crayon.enabled = TRUE,
-  scipen = 999
+  scipen         = 999
 )
 knitr::opts_chunk$set(
-  comment = "",
-  collapse = TRUE,
-  width = 68,
-  dev = "ragg_png",
-  # cache = TRUE
-  # fig.retina = 0.8, # figures are either vectors or 300 dpi diagrams
-  dpi = 300,
+  comment   = "",
+  collapse  = TRUE,
+  dev       = "ragg_png",
+  dpi       = 300,
   out.width = "70%",
-  fig.align = 'center',
   fig.width = 6,
-  fig.asp = 0.618,  # 1 / phi
-  fig.show = "hold"
+  fig.align = 'center',
+  fig.asp   = 0.618  # 1 / phi
   )
 
 library(here)
@@ -65,6 +61,10 @@ library(see)
 # library(curl)
 # library(weburl)
 # library(urlparse)
+
+out2fig <- function(out_width = 0.95, out_width_default = 0.7, fig_width_default = 6) {
+  fig_width_default * out_width / out_width_default
+}
 
 browse_link <- function(x, link) {
   link <- match.arg(link, c("dictionary", "site", "references"))
