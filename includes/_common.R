@@ -201,7 +201,9 @@ print_dict_list <- function(x) {
   glue_col("{bold {red {underline {names(dict)}}}}\n{silver {unname(dict)}}\n\n")
 }
 
-caid_dictionary <- function(nm) {
+caid_dictionary <- function(nm = NULL) {
+  if (is.null(nm)) return(read_csv(here("data/caid_data_dictionary.csv"), show_col_types = FALSE))
+
   read_csv(here("data/caid_data_dictionary.csv"), show_col_types = FALSE) |>
     providertwo:::subset_detect(j = title, p = nm)
 }

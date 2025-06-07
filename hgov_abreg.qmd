@@ -29,10 +29,33 @@ print_meta(end)
 ### Dictionary
 
 ```{r}
-#| label: dict
+#| label: data_dict
 #| echo: false
-#| eval: false
-# browse_link(end, link = "dictionary")
+new_tbl(
+  field = c(
+    "NPN", 
+    "Plan Year", 
+    "Individual Market Registration Completion Date",
+    "Individual Market Registration End Date",
+    "SHOP Registration Completion Date", 
+    "SHOP Registration End Date",
+    "NPN Valid [Current Plan Year]",
+    "* (footnote)",
+    "Notes:"
+  ),
+  description = c(
+    "The National Producer Number (NPN) of the agent or broker as entered by the agent or broker on the Marketplace Learning Management System (MLMS) as part of FFM registration. This column includes personal NPNs entered by agents and brokers, in addition to NPNs of business entities and web-brokers, when agents and brokers self-identify as the authorized representative of a business entity and/or web-broker.*",
+    "The consecutive 12 month period during which a health plan provides coverage for health benefits, described at 45 CFR 155.20. A plan year may be a calendar year or otherwise.",
+    "The date on which the agent or broker completed Individual FFM registration for the individual market for the applicable plan year.",
+    "The date on which the agent's or broker's FFM registration for the individual market expires for the applicable plan year. The agent or broker may not continue to assist with or facilitate enrollment of qualified individuals in coverage in a manner that constitutes enrollment through an FFM or SBM-FP, or assists individuals in applying for advance payments of the premium tax credit and cost-sharing reductions for QHPs sold through a FFM or SBM-FP after this date, unless and until the FFM registration and CMS agreements for the following plan year has been completed.",
+    "The date on which the agent or broker FF-SHOP registration for the applicable plan year.",
+    "The date on which the agent's or broker's FF-SHOP SHOP registration FFM expires for the applicable plan year. The agent or broker may not continue to assist with or facilitate enrollment of qualified employers or qualified employees in coverage in a manner that constitutes enrollment through an FF-SHOP or an SBM-FP that uses the Federal platform to support select SHOP eligibility and enrollment functions after this date, unless and until FF-SHOP registration for the following plan year has been completed.",
+    "Indicator for the current plan year. A 'Y' means that the NPN is valid in the National Insurance Producer Registry (NIPR) and has an active status in a healthcare line of authority. 'N' means that the NPN is invalid in NIPR or the NPN is not active in a healthcare related line of authority. Previous plan years will have a dash (–) in the column.",
+    "Be aware that an agent's or broker's registration effective date for a particular plan year may fall before, during, or after a plan year's individual market open enrollment period. Agents and brokers may only assist consumers with Marketplace transactions while they have a valid FFM registration for the applicable plan year.",
+    "FFM Registration takes place on the CMS Enterprise Portal, where agents and brokers create an FFM User Account, complete identity proofing, and complete training through either a CMS-approved third-party vendor or the Marketplace Learning Management System (MLMS) provided by CMS. In addition, all agents and brokers must electronically sign the applicable Agreement(s) on the MLMS. The applicable state(s) should be contacted to confirm the licensure status of agents and brokers. If there is an inquiry regarding the licensure status of an NPN, the inquiry should be routed to NIPR customer service (http://www.nipr.com/index_contacts.htm). For more information about agent and broker participation in the FFM, please visit: http://go.cms.gov/CCIIOAB. Source: CMS compilation of data from the MLMS, NIPR and the Enterprise Identity Management System (EIDM)."
+  )
+) |> 
+  print_dict_tbl()
 ```
 
 ## Data
@@ -42,7 +65,7 @@ print_meta(end)
 #| message: false
 #| warning: false
 #| echo: false
-resp <- quick("hgov_ab_reg_comp", offset = 100000, limit = 500) |> 
+resp <- quick("hgov_ab_reg_comp", offset = 800000, limit = 500) |> 
   fcompute(
   NPN              = npn,
   plan_year        = as.integer(applicable_plan_year),

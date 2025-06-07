@@ -1,0 +1,83 @@
+---
+editor_options: 
+   chunk_output_type: console
+---
+
+```{r}
+#| label: setup-common-01
+#| include: false
+#| warning: false
+source("includes/_common.R")
+# AB Suspension/Termination
+```
+
+# AB Suspension and Termination List {#sec-absus}
+
+## Metadata
+
+```{r}
+#| label: s7_object
+#| echo: false
+end <- hgov_endpoint("hgov_ab_sus_term")
+print_meta(end)
+```
+
+### Dictionary
+
+```{r}
+#| label: data_dict
+#| echo: false
+new_tbl(
+  field = c(
+    "NPN", 
+    "Effective Plan Year", 
+    "Marketplaces",
+    "Registration Completion Date",
+    "Individual Registration Date",
+    "SHOP Registration Date",
+    "Termination or Suspension Date",
+    "Termination Reconsidered or Suspension Lifted",
+    "Notes:"
+  ),
+  description = c(
+    "The National Producer Number (NPN) of the agent or broker as entered by the agent or broker on the Marketplace Learning Management System (MLMS) as part of FFM registration. This column includes personal NPNs entered by agents and brokers, in addition to NPNs of business entities and web-brokers, when agents and brokers self-identify as the authorized representative of a business entity and/or web-broker.*",
+    "The consecutive 12 month period during which a health plan provides coverage for health benefits, described at 45 CFR 155.20. A plan year may be a calendar year or otherwise.",
+    "The Marketplaces for which the agent or broker has completed FFM Registration. 'Individual' indicates that the agent or broker has completed FFM Registration for the Individual Marketplace; 'SHOP' indicates that the agent or broker has completed FFM Registration for the SHOP Marketplace; 'Both' indicates that the agent or broker has completed FFM Registration for both Marketplaces. Consistent with 45 CFR 155.220(l), the FFM registration requirements also extends to agents and brokers participating in State-based Marketplaces on the Federal Platform.",
+    "The date on which the agent or broker completed all applicable registration requirements (e.g., training, testing, signing the Marketplace Agreement(s), and identity proofing) to participate in a Federally-facilitated Marketplace or State-based Marketplace on the Federal Platform for the applicable plan year. If the agent or broker is participating in both Marketplaces (Individual and SHOP), but completed the registration requirements for each Marketplace on two different dates, this date represents the earlier of the two dates.",
+    
+    "The date on which the agent or broker completed Individual Marketplace registration requirements (i.e., training, testing, signing the Marketplace Agreement and identity proofing) to participate in the Individual Marketplace for the applicable plan year.",
+    
+    "The date on which the agent or broker completed SHOP registration requirements (i.e., signing the Marketplace Agreement and identity proofing) to participate in the SHOP Marketplace for the applicable plan year.",
+    
+    "The effective date of the termination or suspension of the agent's or broker's Individual and/or Small Business Health Options Program (SHOP) Marketplace registration and Marketplace agreement(s). During the suspension period and upon termination, the agent or broker is not permitted to assist with or facilitate enrollment of qualified individuals, qualified employers, or qualified employees in coverage in a manner that constitutes enrollment through the Marketplaces, or permitted to assist individuals in applying for advance payments of the premium tax credit and cost-sharing reductions for qualified health plans (QHPs) offered through the Marketplaces. The agent or broker must continue to protect any personally identifiable information accessed during the term of its Marketplace agreement(s). Termination and suspension are described in regulation at 45 CFR 155.220(f)-(g).",
+    
+    "If applicable, this is the date the termination was reconsidered or the suspension lifted. After this date, the agent or broker may assist with or facilitate enrollment of qualified individuals, qualified employers, or qualified employees in coverage in a manner that constitutes enrollment through the Marketplaces, or assist individuals in applying for advance payments of the premium tax credit and cost-sharing reductions for qualified health plans (QHPs) offered through the Marketplaces, under the terms of their reinstated Marketplace agreement(s).",
+    
+    "CCIIO may terminate the FFM registration of an agent or broker per authority provided in 45 CFR 155.220(g). FFM Registration takes place on the CMS Enterprise Portal, where agents and brokers create an FFM User Account, complete identity proofing, and complete applicable training through either a CMS-approved third-party vendor or the Marketplace Learning Management System (MLMS) provided by CMS. In addition, all agents and brokers must electronically sign the applicable Marketplace Agreement(s) on the MLMS. The applicable state(s) should be contacted to confirm the licensure status of an agent and broker."
+  )
+) |> 
+  print_dict_tbl()
+```
+
+## Data
+
+```{r}
+#| label: http_request
+#| message: false
+#| warning: false
+#| echo: false
+resp <- quick("hgov_ab_sus_term", offset = 0, limit = 500) |> 
+  fcompute(
+  NPN = npn,
+  effective_plan_year = as.integer(effective_plan_year),
+  marketplaces = cheapr::factor_(marketplaces),
+  reg_cmp_date = providertwo:::as_date(registration_completion_date, fmt = "%m/%d/%Y"),
+  ind_reg_date = providertwo:::as_date(individual_registration_date, fmt = "%m/%d/%Y"),
+  shop_reg_date = providertwo:::as_date(shop_registration_date, fmt = "%m/%d/%Y"),
+  term_or_susp_date = providertwo:::as_date(termination_or_suspension_date, fmt = "%m/%d/%Y"),
+  term_or_susp_lift = providertwo:::as_date(termination_reconsidered_or_suspension_lifted, fmt = "%m/%d/%Y"))
+
+resp
+
+resp |> cheapr::overview()
+```

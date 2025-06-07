@@ -1,0 +1,49 @@
+---
+editor_options: 
+   chunk_output_type: console
+---
+
+```{r}
+#| label: setup-common-01
+#| include: false
+#| warning: false
+source("includes/_common.R")
+# Auto-Pop
+```
+
+# Auto-Population File {#sec-autopop}
+
+ECP Autofill data
+
+## Metadata
+
+```{r}
+#| label: s7_object
+#| echo: false
+end <- hgov_endpoint("hgov_auto_pop")
+print_meta(end)
+```
+
+### Dictionary
+
+```{r}
+#| label: data_dict
+#| echo: false
+#| warning: false
+providertwo:::fields_(end) |> 
+  print_dict_list()
+```
+
+## Data
+
+```{r}
+#| label: http_request
+#| message: false
+#| warning: false
+#| echo: false
+resp <- quick("hgov_auto_pop", offset = 0, limit = 500)
+
+resp |> str()
+
+resp |> cheapr::overview()
+```
