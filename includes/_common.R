@@ -16,22 +16,9 @@ knitr::knit_hooks$set(
   error   = ansi_aware_handler
 )
 
-# knitr::opts_chunk$set(
-#   comment = "#>",
-#   collapse = TRUE
-  # cache = TRUE
-  # fig.retina = 0.8, # figures are either vectors or 300 dpi diagrams
-  # dpi = 300,
-  # out.width = "70%",
-  # fig.align = 'center',
-  # fig.width = 6,
-  # fig.asp = 0.618,  # 1 / phi
-  # fig.show = "hold"
-# )
-
 options(
   digits = 3,
-  width = 68,
+  width = 80,
   str = strOptions(strict.width = "cut"),
   crayon.enabled = TRUE,
   scipen = 999
@@ -52,6 +39,7 @@ knitr::opts_chunk$set(
   )
 
 library(here)
+library(crayon)
 library(tidyverse)
 library(RcppSimdJson)
 library(rlang)
@@ -106,7 +94,10 @@ purse <- function(
     prefix = pre,
     width = wid,
     max_vec_len = max,
-    config = list(gsep = sep, colour_nth = "lightblue", nth = 3)
+    config = list(gsep = sep
+                  # colour_nth = "lightblue",
+                  # nth = 3
+                  )
   )
 }
 
@@ -191,13 +182,28 @@ print_resources <- function(x) {
     )
 }
 
-print_dict_tbl <- function(x) {
-  dict <- set_names(wrap(x$description, width = 50), x$field)
+print_dict <- function(x, type = "tbl") {
+
+  dict <- switch(
+    type,
+    lst = set_names(unname(x), names(x)),
+    tbl = set_names(x$description, x$field)
+  )
+
+  glue_col(
+    "{silver {format(seq_along(names(dict)), justify = 'right')}} ",
+    "{bold {red {underline {names(dict)}}}}: ",
+    "{silver {unname(dict)}}\n\n"
+    )
+}
+
+print_dict_tbl <- function(x, w = 50) {
+  dict <- set_names(wrap(x$description, width = w), x$field)
   glue_col("{bold {red {underline {names(dict)}}}}\n{silver {unname(dict)}}\n\n")
 }
 
-print_dict_list <- function(x) {
-  dict <- set_names(wrap(unname(x), width = 50), names(x))
+print_dict_list <- function(x, w = 50) {
+  dict <- set_names(wrap(unname(x), width = w), names(x))
   glue_col("{bold {red {underline {names(dict)}}}}\n{silver {unname(dict)}}\n\n")
 }
 

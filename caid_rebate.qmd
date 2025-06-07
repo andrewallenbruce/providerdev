@@ -4,7 +4,7 @@ editor_options:
 ---
 
 ```{r}
-#| label: setup-common-01
+#| label: setup
 #| include: false
 #| warning: false
 source("includes/_common.R")
@@ -19,26 +19,42 @@ The Table below, updated weekly, contains newly reported, active covered outpati
 ## Metadata
 
 ```{r}
-#| label: s7_object
+#| label: backend
 #| echo: false
 end <- caid_endpoint("caid_drug_rebate")
 print_meta(end)
 ```
 
-### Dictionary
+## Dictionary
+
+::: panel-tabset
+
+### Newly Reported Drugs
 
 ```{r}
-#| label: dict
+#| label: dict1
 #| echo: false
 #| message: true
 caid_dictionary("Newly Reported Drugs Data Dictionary") |> 
-  print_dict_tbl()
+  print_dict("tbl")
 ```
 
-## Data
+### Drug Products
 
 ```{r}
-#| label: http_request
+#| label: dict2
+#| echo: false
+#| message: true
+caid_dictionary("Drug Products Data Dictionary") |> 
+  print_dict("tbl")
+```
+
+:::
+
+## Endpoint
+
+```{r}
+#| label: endpoint
 #| message: false
 #| warning: false
 #| echo: false
@@ -58,7 +74,19 @@ resp <- quick("caid_drug_rebate", offset = 0, limit = 8000) |>
     date_transferred_from_ddr_to_mdr = NULL)
 
 resp
+```
 
+## Overview
+
+::: panel-tabset
+
+### Summary
+
+```{r}
+#| label: overview
+#| message: false
+#| warning: false
+#| echo: false
 resp |> cheapr::overview()
 ```
 
@@ -73,6 +101,8 @@ res <- describe_distribution(resp)
 res
 ```
 
+### Plots
+
 ```{r}
 #| label: distribution_plot
 #| layout-ncol: 2
@@ -82,3 +112,5 @@ res
 plots <- plot(res, dispersion = TRUE)
 walk(plots, print)
 ```
+
+::: 
